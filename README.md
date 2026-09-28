@@ -1,4 +1,4 @@
-# ShareALedger Ledger Lab
+# Sharealedger Ledger Lab
 
 > **Ledger Lab** is the public research successor to the **Universal Ledger** POC.
 
