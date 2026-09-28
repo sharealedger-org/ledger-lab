@@ -1,0 +1,21 @@
+# External runtime datasets and generated outputs
+VARawFiles/
+VAPOData/
+VA_raw_downloads/
+output/
+logs/
+*.log
+
+# Local tooling and OS files
+.DS_Store
+.bob/
+.idea/
+.vscode/
+__pycache__/
+*.pyc
+
+# Temporary and build artifacts
+target/
+project/boot/
+*.tmp
+*.bak

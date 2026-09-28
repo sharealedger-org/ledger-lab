@@ -1,0 +1,10 @@
+# VendorMaster.sortspec — Sort specification for VendorMaster (date-effective history)
+#
+# VendorMaster is the Contract Attributes Record (CAR / Partition C).
+# Sorted by instID ascending, then instEffectDate ascending.
+# This order enables the streaming two-pointer as-of-date join in Step 5
+# and the streaming reclass walk in arrangementReclass.scala (Step 9).
+#
+# field_name,       col_index, type, order
+instID,             0,         CH,   A
+instEffectDate,     1,         CH,   A

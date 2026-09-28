@@ -1,0 +1,10 @@
+# VendorUpdate.sortspec — Sort specification for VendorUpdate files
+#
+# VendorUpdate records detected SAL attribute and instTypeID changes.
+# Sorted by instID ascending, then instEffectDate ascending.
+# This order enables the streaming two-pointer walk in arrangementReclass.scala (Step 9)
+# that generates reclass SJEs for RECLASS-type changes.
+#
+# field_name,       col_index, type, order
+instID,             0,         CH,   A
+instEffectDate,     2,         CH,   A

@@ -1,0 +1,13 @@
+# LDGR.sortspec — Sort specification for Instrument Ledger (LDGR) files
+#
+# LDGR is Partition B — the accumulated balance file produced by post.scala (Step 3).
+# Sorted by ldgrIPID (Instrument ID) ascending, then ldgrLedgerPeriod ascending.
+# This order enables the streaming as-of join in dataAggregation.scala (Step 5)
+# once the multi-pass memory issue is resolved (see BOB_WORK_LOG.md Session 21 open items).
+#
+# Note: post.scala writes LDGR in posting key order (same as SortedJE.sortspec).
+# This spec is used when LDGR needs to be re-sorted by instrument for Step 5 streaming.
+#
+# field_name,       col_index, type, order
+ldgrIPID,           0,         CH,   A
+ldgrLedgerPeriod,   18,        CH,   A

@@ -1,0 +1,63 @@
+# ViewSpec.csv — Declarative view definitions for dataAggregation (Step 5)
+#
+# Each row defines one output view produced from the LDGR + VendorMaster join.
+# The aggregation engine reads this file at runtime — no Scala changes needed
+# to add, remove, or vary views.
+#
+# COLUMNS:
+#   view_name       — output file prefix; year is appended: {view_name}_{year}.csv
+#   group_by_ldgr   — pipe-separated LDGR column names to group by (balance dimensions)
+#   group_by_sal    — pipe-separated VendorMaster column names to group by (SAL attributes)
+#                     empty = no SAL join dimension in this view
+#   filter_ldgr_col — LDGR column name to filter on (empty = no filter)
+#   filter_ldgr_val — value to match for filter (empty = no filter)
+#   filter_sal_col  — VendorMaster column name to filter on (empty = no filter)
+#   filter_sal_val  — value to match for filter (empty = no filter)
+#   top_n           — if > 0, sort descending by amount and emit only top N rows
+#   sal_attr_count  — number of SAL attributes active in this view (for permutation calc)
+#   enabled         — Y/N; set N to suppress a view without deleting the row
+#   description     — human-readable label for pivot_results.csv log
+#
+# EXPERIMENT 1 — Input-side cost curve:
+#   Comment out rows (or set enabled=N) to simulate reduced materialization configs.
+#   "minimal" config = DETAIL_BAL + SUMMARY_BAL only (all pivot views suppressed).
+#   "full-views" config = all enabled=Y rows active.
+#
+# EXPERIMENT 2 — Output-side Pivot Theorem (SAL attribute expansion):
+#   Each round adds one group_by_sal column and one or two new view rows.
+#   The pivot_results.csv accumulator records views_answerable and permutation cost per run.
+#   Run Step 5 after each round change; compare pivot_results.csv rows across rounds.
+#
+# SAL ATTRIBUTE STATUS (updated by enrich_vendormaster.py):
+#   Round 0: instTypeID     — ACTIVE  (original EXP/REV classification)
+#   Round 1: instNIGPClass  — ACTIVE  (dominant NIGP commodity class from PO data)
+#   Round 2: instGeoRegion  — ACTIVE  (dominant vendor state → 5-region label)
+#   Round 3: instContractType — PENDING (requires USASpending.gov or PO type enrichment)
+#
+# STANDARD VOCABULARY NOTE:
+#   VendorMaster.csv = Contract Attributes Record (CAR)
+#   instID / ldgrIPID = Instrument ID
+#   LDGR{year}.csv   = Instrument Ledger (L)
+#
+view_name,group_by_ldgr,group_by_sal,filter_ldgr_col,filter_ldgr_val,filter_sal_col,filter_sal_val,top_n,sal_attr_count,enabled,description
+TOP50,ldgrIPID,,,,,,50,0,Y,Top 50 vendors by absolute spend (no SAL pivot)
+DETAIL_BAL,ldgrIPID|ldgrNominalAccountID|ldgrLedgerPeriod|ldgrLedgerID|ldgrBookCodeID,,,,,,0,0,Y,Subledger view — vendor x account x period (baseline)
+SUMMARY_BAL,ldgrLegalEntityID|ldgrCenterID|ldgrProjectID|ldgrProductID|ldgrNominalAccountID|ldgrLedgerPeriod|ldgrLedgerID|ldgrBookCodeID,,,,,,0,0,Y,GL summary view — no vendor dimension
+# ── Experiment 2 Round 0: instTypeID (EXP/REV) — baseline real SAL attribute ───────────────
+BY_INST_TYPE,ldgrIPID|ldgrNominalAccountID|ldgrLedgerPeriod,instTypeID,,,,,,1,Y,Pivot by instrument type (EXP vs REV) x account x period
+SUMMARY_BY_INST_TYPE,ldgrLegalEntityID|ldgrNominalAccountID|ldgrLedgerPeriod,instTypeID,,,,,,1,Y,GL summary pivoted by instrument type
+# ── Experiment 2 Round 1: instNIGPClass — dominant NIGP commodity class per vendor ─────────
+# enrich_vendormaster.py adds instNIGPClass to VendorMaster.csv from EV01 PO data.
+# NIGP class = first 3 digits of the 5-digit NIGP code (e.g. "615" = Office Supplies).
+BY_NIGP_CLASS,ldgrNominalAccountID|ldgrLedgerPeriod,instTypeID|instNIGPClass,,,,,,2,Y,Pivot by NIGP commodity class x type x account x period
+SUMMARY_BY_NIGP,ldgrLegalEntityID|ldgrNominalAccountID|ldgrLedgerPeriod,instNIGPClass,,,,,,2,Y,GL summary by NIGP commodity class
+# ── Experiment 2 Round 2: instGeoRegion — vendor geographic region ────────────────────────
+# enrich_vendormaster.py adds instGeoRegion to VendorMaster.csv from EV01 ipState.
+# Regions: NE / SE / MW / SW / W / INT
+BY_GEO_REGION,ldgrNominalAccountID|ldgrLedgerPeriod,instTypeID|instNIGPClass|instGeoRegion,,,,,,3,Y,Pivot by geo region x NIGP class x type x account x period
+SUMMARY_BY_GEO,ldgrLegalEntityID|ldgrNominalAccountID|ldgrLedgerPeriod,instGeoRegion,,,,,,3,Y,GL summary by geographic region
+# ── Experiment 2 Round 3: instContractType — procurement channel ──────────────────────────
+# Requires enrichment from PO type field (EV01) or USASpending.gov.
+# Uncomment when instContractType column exists in VendorMaster.csv.
+#BY_CONTRACT_TYPE,ldgrNominalAccountID|ldgrLedgerPeriod,instTypeID|instNIGPClass|instGeoRegion|instContractType,,,,,,4,Y,Pivot by contract type x geo x NIGP x type x account
+#SUMMARY_BY_CONTRACT,ldgrLegalEntityID|ldgrNominalAccountID|ldgrLedgerPeriod,instContractType,,,,,,4,Y,GL summary by contract type

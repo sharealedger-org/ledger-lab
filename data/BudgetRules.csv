@@ -1,0 +1,49 @@
+# BudgetRules.csv — Budget projection rules for forecastingBudgeting.scala (Step 8)
+#
+# SCHEMA:
+#   nominalAccountPrefix — nominal account prefix to apply this growth factor to
+#                          (e.g. "EXP" matches all expense accounts; "EXP11" matches
+#                          personal services only; use "*" as a catch-all default)
+#   growthFactor         — multiplicative factor applied to prior-year actuals to
+#                          produce next-year budget (1.03 = 3% increase; 0.97 = 3% cut)
+#
+# STANDARD VOCABULARY:
+#   nominalAccountPrefix = Movement Key prefix (balance bucket designator)
+#
+# HOW IT WORKS:
+#   The forecasting engine reads the actuals LDGR, multiplies each balance by the
+#   matching growth factor, and writes a BUDGET_LDGR file with bookCodeID = "BUDGET".
+#   Rules are matched longest-prefix-first (most specific wins).
+#   The "*" catch-all default applies to any account not matched by a specific rule.
+#   Produces VARIANCE_{year}.csv: actual vs. budget by agency, fund, program, account.
+#
+# KEY INSIGHT (from the monograph — Paper 1 §3.2):
+#   Forecasting operates entirely on partition B (Balance History).  No partition A
+#   (Transaction History) input required.  Change the growth factor and re-run:
+#   instant new forecast.  This is why the balance file is the minimal store for
+#   both historical reporting AND forward projection.
+#
+# EXPERIMENT NOTES:
+#   This file is part of the C3 and C4 configurations.
+#   Varying growth factors between runs changes the forecast without touching the ledger.
+#   In the four-curve experiment: C3 cost ≈ C4 cost confirms single-pass universality.
+#
+# VA CONTEXT — fixture growth factors by VA nominal account category:
+#   EXP11 = Personal Services (salaries, benefits) — typically grows with headcount + COLA
+#   EXP12 = Contractual Services — variable; use general inflation proxy
+#   EXP13 = Supplies and Materials — tied to commodity prices; held flat here
+#   EXP14 = Transfer Payments — policy-driven; held flat here
+#   EXP15 = Continuous Charges — insurance, leases; slight growth
+#   EXP   = all other EXP accounts (catch-all)
+#   REV   = revenue accounts (modest growth assumption)
+#   *     = catch-all for any prefix not matched above
+#
+nominalAccountPrefix,growthFactor
+EXP11,1.035
+EXP12,1.025
+EXP13,1.000
+EXP14,1.000
+EXP15,1.020
+EXP,1.030
+REV,1.015
+*,1.030

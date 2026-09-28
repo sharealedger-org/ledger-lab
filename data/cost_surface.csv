@@ -1,0 +1,2 @@
+run_id,run_timestamp,curve,config_description,years,steps,total_compute_s,total_storage_bytes,master_file_count,total_cost_proxy
+run_20260917_224112,2026-09-17T22:41:12,C2,chronological-sal-pipeline,"2003+2004","2+3+5",676.01,61067909,9,827.08

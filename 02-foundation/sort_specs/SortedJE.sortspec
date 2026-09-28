@@ -1,0 +1,25 @@
+# SortedJE.sortspec — Sort specification for Step 2 output (SortedJE files)
+#
+# This is the 15-field composite posting key that post.scala (Step 3) requires.
+# It is the GenevaERS CKB contract: post.scala reads the sorted file in a single
+# O(M) sequential pass and trusts this order unconditionally.
+#
+# DFSORT equivalent:
+#   SORT FIELDS=(transIPID,transLedgerID,...,transFiscalPeriod),FORMAT=CH,ORDER=A
+#
+# field_name,                     col_index, type, order
+transIPID,                         0,        CH,   A
+transLedgerID,                     9,        CH,   A
+transJrnlType,                    10,        CH,   A
+transBookCodeID,                  11,        CH,   A
+transLegalEntityID,               12,        CH,   A
+transCenterID,                    13,        CH,   A
+transProjectID,                   14,        CH,   A
+transProductID,                   15,        CH,   A
+transNominalAccountID,            16,        CH,   A
+transAltAccountID,                17,        CH,   A
+transCurrencyCodeSourceID,        18,        CH,   A
+transCurrencyTypeCodeSourceID,    19,        CH,   A
+transCurrencyCodeTargetID,        20,        CH,   A
+transCurrencyTypeCodeTargetID,    21,        CH,   A
+transFiscalPeriod,                22,        CH,   A

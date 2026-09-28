@@ -1,0 +1,38 @@
+# InteragencyTransfers.csv — Interagency transfer identification for consolidation.scala (Step 7)
+#
+# SCHEMA:
+#   agencyA      — legal entity ID of the paying agency (records EXP)
+#   agencyB      — legal entity ID of the receiving agency (records REV)
+#   nominalPrefix — nominal account prefix that identifies this transfer type
+#                   (e.g. "EXP14" = transfer payments; "REV" = any revenue)
+#
+# STANDARD VOCABULARY:
+#   agencyA / agencyB = Legal Entity IDs
+#   nominalPrefix = Movement Key prefix (balance bucket designator)
+#
+# HOW IT WORKS:
+#   The consolidation engine:
+#     1. Reads all LDGR files and combines into a state-wide view
+#     2. For each row in this file: finds the matching EXP balance in agencyA
+#        and the matching REV balance in agencyB for the same period
+#     3. Generates elimination SJEs: debit agencyB REV × -1 + credit agencyA EXP × -1
+#     4. Writes ELIM_SJE{year}.csv and CONSOL_LDGR{year}.csv
+#     5. Verifies all flagged pairs net to zero in the consolidated view
+#
+# IF THIS FILE IS ABSENT:
+#   Auto-detection heuristic: any REV balance in one agency with a matching EXP balance
+#   in another agency (same amount, same period) is treated as an interagency transfer.
+#   Explicit rules here are more reliable and preferred for production use.
+#
+# VA CONTEXT:
+#   Virginia state agencies frequently make interagency service charges through VITA
+#   (Virginia Information Technologies Agency) and shared services centers.
+#   Transfer payments (nominal prefix EXP14) to other state agencies are the primary
+#   interagency category in the VA expenditure data.
+#
+# FIXTURE DATA — illustrative interagency transfer pair:
+#   "267" → "267": same agency (intra-agency) — included to test the elimination engine
+#   In full VA data, replace with real payer/receiver agency pairs from the PO file.
+#   Leave this file empty (header only) to rely on auto-detection.
+#
+agencyA,agencyB,nominalPrefix
