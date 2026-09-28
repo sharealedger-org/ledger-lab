@@ -196,6 +196,14 @@ object arrangementReclass {
     val reclassSJEFile = dataPath + "RECLASS_SJE.csv"
     val reclassOut = new PrintWriter(new File(reclassSJEFile))
     writeSJEHeader(reclassOut)
+    val reclassOutByYear = mutable.Map[String, PrintWriter]()
+
+    def reclassWriterForYear(year: String): PrintWriter =
+      reclassOutByYear.getOrElseUpdate(year, {
+        val writer = new PrintWriter(new File(dataPath + s"RECLASS_SJE_$year.csv"))
+        writeSJEHeader(writer)
+        writer
+      })
 
     //─────────────────────────────────────────────────────────────────────────
     // (4) Process each LDGR file — scan, reclass affected rows, rewrite
@@ -205,6 +213,7 @@ object arrangementReclass {
     for (ldgrFile <- ldgrFiles) {
       filesProcessed += 1
       println(s"Processing ledger file: ${ldgrFile.getName}")
+      val ledgerYear = ldgrFile.getName.stripPrefix("LDGR").stripSuffix(".csv")
 
       val tmpFile = ldgrFile.getAbsolutePath.replace("LDGR", "LDGRtemp")
       val ldgrOut = new PrintWriter(new File(tmpFile))
@@ -280,6 +289,7 @@ object arrangementReclass {
                 seqNum    = reclassSJEsWritten + 1
               )
               writeSJE(reclassOut, sje1)
+              writeSJE(reclassWriterForYear(ledgerYear), sje1)
               reclassSJEsWritten += 1
 
               //─────────────────────────────────────────────────────────────
@@ -293,6 +303,7 @@ object arrangementReclass {
                 seqNum    = reclassSJEsWritten + 1
               )
               writeSJE(reclassOut, sje2)
+              writeSJE(reclassWriterForYear(ledgerYear), sje2)
               reclassSJEsWritten += 1
 
               // Write the OLD balance row zeroed out (amount = 0 after reversal)
@@ -322,6 +333,7 @@ object arrangementReclass {
     }
 
     reclassOut.close()
+    reclassOutByYear.values.foreach(_.close())
 
     //─────────────────────────────────────────────────────────────────────────
     // (5) Post the reclass SJEs back through the standard posting engine
@@ -331,12 +343,15 @@ object arrangementReclass {
       println("-" * 60)
       println("Posting reclass SJEs back to ledger via standard post engine...")
 
-      // Sort the reclass SJE file so the posting engine can consume it
-      // (post.scala expects SortedJE-prefixed files sorted on the full balance key)
-      val reclassSortedFile = fileOutLocation + "SortedJE_RECLASS.csv"
-      sortSJEFile(reclassSJEFile, reclassSortedFile)
+      // Create year-keyed files so post targets the correct ledger and skips original journals.
+      reclassOutByYear.keys.toSeq.sorted.foreach { year =>
+        val shortYear = year.takeRight(2)
+        val yearSjeFile = dataPath + s"RECLASS_SJE_$year.csv"
+        val reclassSortedFile = dataPath + s"SortedJEFY${shortYear}_RECLASS.csv"
+        sortSJEFile(yearSjeFile, reclassSortedFile)
+      }
 
-      post(fileOutLocation, fileOutLocation)
+      post(fileOutLocation, fileOutLocation, journalNameContains = "_RECLASS")
       println("Reclass SJEs posted successfully.")
     }
 

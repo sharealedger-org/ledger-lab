@@ -137,13 +137,27 @@ run_step() {
   local step="$1" year="$2" quarter="${3:-01}"
   log "START  step=$step  year=$year  quarter=$quarter"
 
+  local vm_arg=""
+  if [[ "$step" == "2" ]]; then
+    local vm_candidate
+    for vm_candidate in \
+      "$IN_PATH/VendorMaster_full.csv" \
+      "$IN_PATH/VendorMaster_enriched.csv" \
+      "$IN_PATH/VendorMaster.csv"; do
+      if [[ -f "$vm_candidate" ]]; then
+        vm_arg=" --vendormaster $vm_candidate"
+        break
+      fi
+    done
+  fi
+
   local start_epoch
   start_epoch=$(date +%s)
 
   # Capture output while still streaming it to terminal
   local out
   out=$(cd "$SBT_PROJECT" && sbt -batch \
-    "run --step $step --inPath $IN_PATH --outPath $OUT_PATH --year $year --quarter $quarter" \
+    "run --step $step --inPath $IN_PATH --outPath $OUT_PATH --year $year --quarter $quarter$vm_arg" \
     2>&1 | tee /dev/stderr)
 
   local rc=$?

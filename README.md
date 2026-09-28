@@ -26,8 +26,9 @@ development; the full raw dataset remains external to Git and is supplied at run
 There is a mathematically definable interior minimum to the total cost of maintaining enterprise
 financial data (compute + storage + reconciliation obligation). Most enterprises have drifted
 past that minimum by pre-materializing balance structures for every anticipated reporting cut.
-The pipeline demonstrates where the minimum lies by running the same data through four process
-configurations (C1–C4) and measuring all three cost dimensions at each.
+Experiments should compare named workload and materialization profiles on the same input, measuring
+cost alongside the reporting capabilities and controls each profile delivers. Runner labels are
+execution metadata, not the research taxonomy.
 
 **Claim 2 — The Instrument Pivot Theorem.**
 A balance store keyed on Instrument ID, joined at query time to a Subledger Attribute Ledger
@@ -84,6 +85,11 @@ pipe, and in-memory execution model.
 See [docs/MEASUREMENT_AND_LOGGING.md](docs/MEASUREMENT_AND_LOGGING.md) for the canonical run,
 process, partition, sort, engine, perspective, and reconciliation metrics.
 
+Every run ends with a post-run interpretation stage in [99-interpretation](99-interpretation/README.md).
+It maps the evidence to the 01-05 architecture, distinguishes implemented scope from what actually
+ran, and explains what conclusions and next tests the results support. It does not process financial
+records or count toward measured engine cost.
+
 The implementation paths below are currently the physical Foundation Layer paths:
 
 ```
@@ -116,7 +122,7 @@ data/
   pipeline_log.csv           Per-step timing log
 
 scripts/
-  run_c1_smoke_test.sh       C1 smoke test (FY2003+FY2004, Steps 2+3)
+  run_c1_smoke_test.sh       Legacy VA posting smoke test (FY2003+FY2004)
   run_pipeline_orchestrator.sh  Full multi-year orchestrator
   standardize_and_sort.py    [Reference only — superseded by standardizeAndSort.scala]
   data_aggregation.py        [Reference only — superseded by dataAggregation.scala]
@@ -172,7 +178,7 @@ This produces `target/scala-2.12/va_pipeline-assembly-*.jar`.
 python3 scripts/download_va_data.py --output data/VARawFiles
 ```
 
-### Run the C1 smoke test (FY2003 + FY2004, Steps 2 + 3)
+### Run the legacy VA posting smoke test (FY2003 + FY2004)
 
 ```bash
 bash scripts/run_c1_smoke_test.sh
@@ -181,7 +187,7 @@ bash scripts/run_c1_smoke_test.sh
 Pass criteria:
 - Sum of all `ldgrTransAmount` = 0.00 per year (zero-sum proof)
 - FY2003 LDGR rows = 345,955 (established benchmark)
-- `data/cost_surface.csv` gains a C1 row
+- `data/cost_surface.csv` gains a compatibility-format run row
 
 ### Run the full pipeline
 
@@ -189,6 +195,10 @@ Pass criteria:
 bash scripts/run_pipeline_orchestrator.sh --curve C2 --years 2003-2016
 ```
 
+The orchestrator's `C2` option is a legacy selector that enables its reporting workload; it is not
+the name of an architectural layer or a research claim. Current VA workloads are physical
+compositions of older jobs and do not map one-to-one to layers 01–05.
+
 For the full dataset, keep large inputs and generated outputs outside the repository and pass
 `--data-root PATH` (or set `UL_DATA_ROOT`). See [docs/RUNTIME_DATA_LAYOUT.md](docs/RUNTIME_DATA_LAYOUT.md)
 for the expected directory layout.
@@ -199,23 +209,29 @@ for the expected directory layout.
 
 ---
 
-## The Four Experiment Curves
+## Current VA Workload Profiles
 
-| Curve | Steps | What it measures |
+These descriptive profiles explain what the existing VA implementation can run. The versioned
+research taxonomy and interpretation contract live in
+[99-interpretation](99-interpretation/README.md).
+
+| Workload profile | Current VA workload | Evidence question |
 |---|---|---|
-| C1 | 2 + 3 | Baseline: post only (SortedJE → LDGR) |
-| C2 | 2 + 3 + 5 | + SAL pivot views (marginal cost should be near-zero) |
-| C3 | 2 + 3 + 5 + 8 + 9 | + Reval-class processes |
-| C4 | 2 + 3 + 5 + 6 + 7 + 8 + 9 + 4 | Full pipeline — hypothesis: C4 ≈ C3 |
+| Instrument-state baseline | Convert source expenditure to balanced journal events, order them for posting, and produce instrument-level balances. | Are source-to-ledger records balanced and reconstructible, and what baseline resources do they require? |
+| Attribute-derived reporting | Aggregate ledger balances with configured effective-dated vendor attributes. | Which configured reporting cuts are supported, what controls reconcile them, and what additional storage is materialized? |
+| Temporal treatments | Produce budget/variance outputs and apply effective-dated instrument reclassification through balanced generated events. | Does the run preserve history and lineage while applying dated changes, and what work do these treatments add? |
+| Integrated financial close | Exercise allocation, consolidation/elimination, and final contra reconciliation around the same ledger. | Which controls and capabilities work together, and which stages had meaningful input rather than a no-op? |
 
-The overlap of C3 and C4 on the cost surface is the empirical proof that the SAL design collapses
-key-widening cost to zero while maintaining full reporting completeness.
+These profiles describe legacy VA job compositions, not the target process topology. Running the
+existing view or reclassification code does not establish that the generalized 04 Engine or 05
+Perspective implementations are complete. Checked-in fixtures support functional and control-flow
+tests; cost conclusions require comparable runtime-data runs with the required evidence.
 
 ---
 
 ## Output Files
 
-After a full C2 run, the key output files are:
+After an attribute-derived reporting run, the key output files are:
 
 | File | Contents |
 |---|---|

@@ -110,24 +110,28 @@ For automated or agentic execution, use `run_pipeline.sh`:
 ```bash
 cd universal_ledger   # repo root
 
-# C1 — Post only (baseline curve)
+# Establish the instrument-state baseline
 bash scripts/run_pipeline.sh \
   --inPath data --outPath data/output \
-  --years 03 --steps 2,3 --curve C1 --config post-only
+  --years 03 --steps 2,3 --curve instrument-state-baseline --config baseline
 
-# C2 — Post + Analysis (adds reporting materialization)
+# Add attribute-derived reporting
 bash scripts/run_pipeline.sh \
   --inPath data --outPath data/output \
-  --years 03 --steps 2,3,5 --curve C2 --config full-views
+  --years 03 --steps 2,3,5 --curve attribute-derived-reporting --config configured-views
 
-# C4 — Full pipeline
+# Exercise the integrated financial workflow
 bash scripts/run_pipeline.sh \
   --inPath data --outPath data/output \
-  --years 03 --steps 2,3,5,6,7,8,9,4 --curve C4 --config full
+  --years 03 --steps 2,3,5,6,7,8,9,4 --curve integrated-financial-close --config full-workflow
 ```
 
-Each run appends one row to `data/output/cost_surface.csv`. Run C1, C2, C4 in sequence →
-three cost points. The convergence of C3 and C4 is the empirical proof of single-pass universality.
+The current runner writes the supplied descriptive profile into the legacy `curve` column of
+`cost_surface.csv`; the multi-year orchestrator still requires its older selector values. Those
+selectors are compatibility details, not experiment names. Compare named workloads using the same
+dataset and evaluate their cost alongside the capabilities and controls they deliver. See
+[99-interpretation](99-interpretation/README.md) for how results should be assessed. Cost similarity
+alone does not prove single-pass universality.
 
 ---
 
@@ -145,22 +149,27 @@ sbt run
 
 ## The Two Experiments
 
-### Experiment 1 — The Four-Curve Cost Surface
+### Experiment 1 — Cost and Capability Across Workloads
 
 **What it measures:** How does total pipeline cost change as process configurations are added?
 
-| Curve | Steps | What it shows |
+| Workload profile | Current VA workload | Evidence question |
 |---|---|---|
-| C1 | `2,3` | Baseline: posting only |
-| C2 | `2,3,5` | Marginal cost of reporting materialization |
-| C3 | `2,3,5,8,9` | Cost of generated-transaction passes (forecast + reclass) |
-| C4 | `2,3,5,6,7,8,9,4` | Full pipeline. If C4 ≈ C3, single-pass universality is proved empirically |
+| Instrument-state baseline | Source-to-journal transformation, ordering, and instrument-level posting. | Are source events represented by balanced, reconstructible ledger state? |
+| Attribute-derived reporting | Configured ledger and CAR/SAL aggregations. | Which reporting cuts work, what reconciles, and what storage is materialized? |
+| Temporal treatments | Budget/variance output and dated instrument reclassification. | Are changes effective-dated, traceable, and balanced? What incremental work is required? |
+| Integrated financial close | Allocation, consolidation/elimination, and final contra reconciliation. | Which capabilities and controls compose successfully, and which stages had active work? |
 
 Each run writes one row to `data/output/cost_surface.csv`:
 - `total_compute_s` — elapsed time
 - `total_storage_bytes` — bytes written
 - `master_file_count` — enabled=Y rows in ViewSpec.csv (the AHI metric, Paper 1 §5.2)
 - `total_cost_proxy` — weighted sum of all three
+
+Read cost together with the reporting capability and controls delivered by each workload. These
+profiles describe current VA job compositions, not one-to-one implementations of layers 01–05.
+Checked-in fixtures support functional and control-total checks; cost claims require comparable
+runs over the declared runtime dataset.
 
 ### Experiment 2 — The Output-Side Pivot Theorem (CAR Attribute Expansion)
 
@@ -187,7 +196,7 @@ the Instrument Pivot Theorem on public data.
 Both experiments can be driven by an AI agent. The agent interface is intentionally simple:
 
 1. **Edit** `data/ViewSpec.csv` — set `enabled=Y/N` flags or uncomment SAL rounds
-2. **Run** `bash scripts/run_pipeline.sh` from the repository root with chosen `--curve` and `--steps`
+2. **Run** `bash scripts/run_pipeline.sh` from the repository root with a descriptive workload value in `--curve` and the corresponding `--steps`
 3. **Read** `data/output/cost_surface.csv` and `data/output/pivot_results.csv`
 
 No Scala code involvement. Full API contract: **`scripts/AGENT_INTERFACE.md`**
@@ -231,9 +240,7 @@ C = attribute history (`VendorMaster.csv`). Steps 8 and 9 have no A input — th
 
 | Pipeline | Monograph | Claim demonstrated |
 |---|---|---|
-| C1 cost curve | Paper 1 §§3.2, 3.2a | Interior minimum on the posting-only cost curve |
-| C1 vs C4 engine comparison | Paper 1 §3.2a | Engine-specific minimum — Scala vs. Spark |
-| C3 ≈ C4 equality | Paper 1 §3.2 | Single-pass universality across all nine FSPs |
+| Workload cost/capability comparison | Paper 1 §§3.2, 3.2a | Whether measured workloads expose an observed cost minimum while preserving required reporting and controls |
 | Experiment 2 `ratio` | Paper 1 §3.4 | Instrument Pivot Theorem: O(v^m) views at O(1) balance cost |
 | `pivot_results.csv` | Paper 5 §§5.0a, 5.1 | Step-up join as operational mechanism |
 | All runs (public VA data) | Paper 3 §3.3 | Replicable controlled benchmark |
@@ -248,7 +255,7 @@ C = attribute history (`VendorMaster.csv`). Steps 8 and 9 have no A input — th
 | Drive both experiments automatically | `scripts/AGENT_INTERFACE.md` |
 | Understand the posting algorithm | Read `post.scala` — the 3-case match-merge loop |
 | Understand the Pivot Theorem empirically | Run Experiment 2; watch the `ratio` column grow |
-| Understand the minimum cost curve | Run Experiments 1 (C1→C4); read `cost_surface.csv` |
+| Understand the cost/capability frontier | Compare named workloads in `cost_surface.csv` and the 99 interpretation report |
 | Add a new Financial System Pattern | Read `docs/universal-ledger-DESIGN.md` §Adding a New Option |
 | Understand all design decisions | Read `PROJECT_BRIEF.md` |
 
