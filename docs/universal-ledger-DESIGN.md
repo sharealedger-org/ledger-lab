@@ -6,6 +6,12 @@
 Universal Ledger Demo System — a runnable canonical implementation of the Financial System
 Patterns series using Virginia state government public data.
 
+> **Document status:** Historical Universal Ledger design specification. Its menu sequence and
+> implementation claims describe the predecessor system, not the current 01–05 architecture or
+> the present repository status. Use the root [README](../README.md), current layer READMEs,
+> [99 interpretation contract](../99-interpretation/README.md), and
+> [measurement contract](MEASUREMENT_AND_LOGGING.md) as current references.
+
 ---
 
 ## Overview

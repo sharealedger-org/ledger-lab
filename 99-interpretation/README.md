@@ -1,9 +1,9 @@
 # Interpretation Layer
 
-`99-interpretation` is the terminal stage of a Ledger Lab run. It executes after the financial
-process topology has completed or stopped, after available evidence has been flushed. It is always
-the last run stage, but it is not a sixth financial layer and does not imply another pass over
-financial records.
+`99-interpretation` is the planned terminal stage of a Ledger Lab run. The run contract is that it
+will execute after the financial process topology completes or stops and available evidence is
+flushed. It will always be last, but it is not a sixth financial layer and must not imply another
+pass over financial records. The interpreter and automatic run hook are not implemented yet.
 
 Its purpose is to turn machine evidence into a reproducible account of what ran, what the results
 show, which architectural responsibilities were exercised, and what evidence is still needed.
@@ -23,10 +23,11 @@ records.
                               99 Interpretation
 ```
 
-The numbered 01-05 directories describe logical ownership, not mandatory physical passes. The
-interpretation stage runs after the actual process topology, which may combine layers in one CKB
-flow or split work at declared sort and materialization boundaries. It also runs for failed or
-partial executions, reporting incomplete evidence rather than treating a missing result as a pass.
+The numbered 01-05 directories describe logical ownership, not mandatory physical passes. When
+implemented, interpretation will follow the actual process topology, which may combine layers in
+one CKB flow or split work at declared sort and materialization boundaries. It must also run for
+failed or partial executions, reporting incomplete evidence rather than treating missing results as
+a pass.
 
 ## Interpretation Taxonomy
 
@@ -73,8 +74,8 @@ actual physical processes and artifacts to logical responsibilities explicitly.
 
 ## Inputs
 
-Canonical runtime evidence is read from `$UL_DATA_ROOT/metrics/`, linked by `run_id`,
-`process_id`, and `partition_id`:
+The planned canonical runtime evidence root is `$UL_DATA_ROOT/metrics/`. Once its producers exist,
+records will be linked by `run_id`, `process_id`, and `partition_id`:
 
 - `run_manifest.csv` for the planned point, inputs, configuration identities, software versions,
   timing, and overall status;
@@ -91,7 +92,7 @@ evidence source. See [the measurement contract](../docs/MEASUREMENT_AND_LOGGING.
 
 ## Outputs
 
-For each `run_id`, produce:
+For each `run_id`, the interpreter should produce:
 
 - a machine-readable interpretation record with evidence references and status dimensions;
 - a human-readable run report covering intent, actual execution, layer coverage, controls,

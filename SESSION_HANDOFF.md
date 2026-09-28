@@ -1,72 +1,41 @@
-# Ledger Lab Session Handoff
+# Ledger Lab Handoff
 
-## Current state
+Updated 2026-09-28. This file is a concise state snapshot; use the linked design contracts for details.
 
-This repository is the fresh local staging repo for the public `sharealedger-org/ledger-lab` project.
-It is derived from the original Universal Ledger POC, which remains the historical lineage.
+## Architecture Source of Truth
 
-Included:
+- `01-transformation/` through `05-perspectives/` define logical ownership, not a fixed sequence of processes or physical passes.
+- `99-interpretation/` defines the planned terminal, post-run interpretation contract. Its producers and automatic run hook are not implemented.
+- The current Virginia Scala application is a legacy physical baseline with mixed responsibilities. Its numbered options are not a one-to-one implementation of layers 01-05.
+- Start with [README.md](README.md), the five layer READMEs, [CKB_LAYER_EXECUTION_MODEL.md](docs/CKB_LAYER_EXECUTION_MODEL.md), and [MEASUREMENT_AND_LOGGING.md](docs/MEASUREMENT_AND_LOGGING.md).
 
-- Transformation/ARE boundary documented in `01-transformation/README.md`
-- Foundation-layer boundary documented in `02-foundation/README.md`
-- Instrument Ledger boundary documented in `03-instrument-ledger/README.md`
-- Engines scaffold under `04-engines/`
-- Perspective-layer design scaffold under `05-perspectives/`
-- Virginia Scala pipeline under `02-foundation/va_pipeline/`
-- sbt build files
-- Agentic runners under `scripts/`
-- Sort specifications under `02-foundation/sort_specs/`
-- Sanitized small fixtures and configuration data under `data/`
-- Sanitized workbook: `docs/Universal Journal Instrument Ledger Model v0.7.xlsx`
-- Curated design documentation under `docs/`
+## Current Implementation and Build
 
-Excluded:
+- Mainline financial processing is Scala; Bash orchestrates; Python is restricted to preparation, inspection, and post-run analysis. See [AGENTS.md](AGENTS.md).
+- The current Scala project is `02-foundation/va_pipeline/`, using Scala 2.12.18 and sbt 1.10.10.
+- Local compile command:
 
-- Full raw Virginia expenditure and PO datasets
-- Generated outputs and logs
-- Prototype VM/session artifacts
-- Local Git history from the source repository
+  ```bash
+  cd 02-foundation/va_pipeline
+  sbt -batch compile
+  ```
 
-## Runtime data
+- `data/` contains small sanitized samples and configuration fixtures. Full VA and PO histories remain external; see [RUNTIME_DATA_LAYOUT.md](docs/RUNTIME_DATA_LAYOUT.md).
+- The PostgreSQL JDBC dependency is present in the build, but the database-backed Perspective aggregation design is not implemented. Decisions are tracked in [step5-postgres-design.md](docs/step5-postgres-design.md).
 
-Large datasets must be supplied outside Git. Use either:
+## Validation Status
 
-```bash
-export UL_DATA_ROOT=/path/to/va-runtime-data
-bash scripts/run_pipeline_orchestrator.sh --years 2003,2004 --curve C2
-```
+- The Scala project compiled on macOS with JDK 21.
+- A small FY2003 fixture run exercised the current VA path through its legacy financial operations on macOS. It verified selected balance and reconciliation controls, but does not validate full-scale performance or generalized 04/05 implementations.
+- A separate Windows handoff branch contains fixes from that run and a fixture runner check. It has not yet been validated on Windows.
+- The canonical run/process/sort/partition/engine/perspective/reconciliation records are specified, but current runners do not emit the complete contract.
+- The 99 interpretation report and automatic end-of-run hook remain unimplemented.
 
-or:
+## Next Work
 
-```bash
-bash scripts/run_pipeline_orchestrator.sh \
-  --data-root /path/to/va-runtime-data \
-  --years 2003,2004 \
-  --curve C2
-```
-
-See `docs/RUNTIME_DATA_LAYOUT.md`.
-
-## Validation completed
-
-- Shell syntax checks pass.
-- Python syntax checks pass.
-- Orchestrator and C1 smoke-test dry runs pass with an external data root.
-- Fixture contact/address scrubbing completed.
-- Workbook ZIP/XML integrity validated; all 16 sheets preserved.
-- No copied-source matches for the audited credential, SSH, or internal-host patterns.
-
-A full Scala compile has not yet run because `sbt` is not currently available on the terminal `PATH`.
-
-The repository now has a conceptual two-layer architecture. The existing implementation remains
-at its current paths as the Foundation Layer until the first compile and path-migration review.
-Perspective-layer engine code has not started.
-
-## Suggested next steps
-
-1. Open this repository as the active VS Code workspace.
-2. Install or expose Java and sbt, then run `sbt -batch compile` from `02-foundation/va_pipeline/`.
-3. Run the fixture C1 smoke test.
-4. Supply the external runtime dataset and validate the full C1/C2 pipeline.
-5. Review the agent interface and add any configuration needed for cost-curve experiments.
-6. Decide which source files and fixtures belong in the first public commit.
+1. Validate the fixture handoff on Windows using the agreed Bash environment.
+2. Resolve the open PostgreSQL lifecycle and table-layout decisions before implementing the Perspective database path.
+3. Map current physical processes to 01-05 and label mixed or missing implementation explicitly.
+4. Add active small fixtures for allocation, interagency elimination, effective-dated change, and perspective controls.
+5. Implement canonical evidence producers, then the 99 interpreter and run hook.
+6. Define named research workloads and only then run comparable, replicated runtime studies.
