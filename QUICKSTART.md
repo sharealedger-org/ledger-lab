@@ -51,8 +51,7 @@ bash scripts/run_repo_fixture_smoke_test.sh
 This stages `data/FY03q1exp_small.txt` under the production filename, runs Steps 2 and 3, checks
 that sorted journal and ledger files are written, and verifies the ledger amount sum is balanced.
 It needs only JDK 21, sbt, Bash, and the files in this repository. Add `--keep-output` to retain
-the temporary output for inspection. The command prints `head`, `wc`, and `cat` commands for the
-retained files when that option is used.
+the temporary output and print a small journal/ledger sample, row counts, and both run summaries.
 
 ### Inspect A Successful Run
 
@@ -62,15 +61,19 @@ Run the fixture with output retained:
 bash scripts/run_repo_fixture_smoke_test.sh --keep-output
 ```
 
-The printed output directory contains a sorted journal, a ledger, and two small run summaries.
-Use the printed commands, or inspect the artifacts directly:
+The printed output directory contains a sorted journal, a ledger, and two small run summaries. The
+script displays representative rows and summaries automatically. For further inspection, copy the
+actual directory from the `Fixture output retained at:` line. The `/path/printed/output` text below
+is only a placeholder; do not type it literally. In Git Bash, verify the directory first:
 
 ```bash
-head -n 3 /path/printed/output/SortedJEFY03q1exp.csv
-head -n 3 /path/printed/output/LDGR2003.csv
-wc -l /path/printed/output/SortedJEFY03q1exp.csv /path/printed/output/LDGR2003.csv
-cat /path/printed/output/pipeline_results.log
-cat /path/printed/output/cost_surface.csv
+output_dir="/the/actual/path/printed/by/the/script/output"
+ls -la "$output_dir"
+head -n 3 "$output_dir/SortedJEFY03q1exp.csv"
+head -n 3 "$output_dir/LDGR2003.csv"
+wc -l "$output_dir/SortedJEFY03q1exp.csv" "$output_dir/LDGR2003.csv"
+cat "$output_dir/pipeline_results.log"
+cat "$output_dir/cost_surface.csv"
 ```
 
 The sorted journal shows the generated debit and credit lines that Step 2 sends to posting. The

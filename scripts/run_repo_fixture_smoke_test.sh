@@ -85,10 +85,21 @@ awk -F, '
 
 if [[ "$KEEP_OUTPUT" -eq 1 ]]; then
   echo
-  echo "Inspect the run with:"
-  echo "  head -n 3 \"$SORTED_FILE\""
-  echo "  head -n 3 \"$LEDGER_FILE\""
-  echo "  wc -l \"$SORTED_FILE\" \"$LEDGER_FILE\""
-  echo "  cat \"$OUTPUT_DIR/pipeline_results.log\""
-  echo "  cat \"$OUTPUT_DIR/cost_surface.csv\""
+  echo "=== Sorted journal sample (first 3 rows) ==="
+  head -n 3 "$SORTED_FILE"
+  echo
+  echo "=== Ledger sample (header plus first 2 rows) ==="
+  head -n 3 "$LEDGER_FILE"
+  echo
+  echo "=== Output row counts ==="
+  wc -l "$SORTED_FILE" "$LEDGER_FILE"
+  echo
+  echo "=== Pipeline results ==="
+  cat "$OUTPUT_DIR/pipeline_results.log"
+  echo
+  echo "=== Cost surface compatibility record ==="
+  cat "$OUTPUT_DIR/cost_surface.csv"
+  echo
+  echo "Inspect the retained directory with:"
+  echo "  ls -la \"$OUTPUT_DIR\""
 fi
