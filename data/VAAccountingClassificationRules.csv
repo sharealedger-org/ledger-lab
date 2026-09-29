@@ -1,0 +1,28 @@
+# Derived from data/VARefObjSrcFixedLength.txt, the Virginia APA object/source reference vocabulary.
+# This is a classification vocabulary, not a posting rule by itself.
+# The ARE must first resolve a raw object code through the VA reference table.
+vaMajorClassCode,vaReferenceLabel,canonicalClassification,defaultAccountingRole,allocationEligible,sourceReference
+11,PERSONAL SERVICES,PEOPLE_AND_COMPENSATION,operating_expense,policy,data/VARefObjSrcFixedLength.txt
+12,CONTRACTUAL SERVICES,EXTERNAL_SERVICES,operating_expense,policy,data/VARefObjSrcFixedLength.txt
+13,SUPPLIES AND MATERIALS,SUPPLIES_AND_MATERIALS,operating_expense,policy,data/VARefObjSrcFixedLength.txt
+14,TRANSFER PAYMENTS,TRANSFERS,operating_expense,policy,data/VARefObjSrcFixedLength.txt
+15,CONTINUOUS CHARGES,CONTINUING_OPERATING_COSTS,operating_expense,policy,data/VARefObjSrcFixedLength.txt
+16,UNALLOTTED NONPERSONAL SERVICES,UNALLOCATED_NONPERSONAL_SERVICES,unallocated,policy,data/VARefObjSrcFixedLength.txt
+21,PROPERTY IMPROVEMENTS,PROPERTY_IMPROVEMENTS,capital,policy,data/VARefObjSrcFixedLength.txt
+22,EQUIPMENT,EQUIPMENT,capital,policy,data/VARefObjSrcFixedLength.txt
+23,PLANT AND IMPROVEMENTS,PLANT_AND_IMPROVEMENTS,capital,policy,data/VARefObjSrcFixedLength.txt
+24,UNALLOTTED CAPITAL AMOUNT,UNALLOCATED_CAPITAL,unallocated,policy,data/VARefObjSrcFixedLength.txt
+25,UNALLOTTED CAPITAL DEF PRJ,UNALLOCATED_CAPITAL_PROJECT,unallocated,policy,data/VARefObjSrcFixedLength.txt
+31,OBLIGATIONS,OBLIGATIONS,liability_or_debt,policy,data/VARefObjSrcFixedLength.txt
+41,UNDIST BUDGET AMOUNTS,UNDISTRIBUTED_BUDGET,budget_control,policy,data/VARefObjSrcFixedLength.txt
+51,UNDIST SAVINGS AMOUNT,UNDISTRIBUTED_SAVINGS,budget_control,policy,data/VARefObjSrcFixedLength.txt
+61,UNDIST BIENNIAL BUDGET AMOUNTS,UNDISTRIBUTED_BIENNIAL_BUDGET,budget_control,policy,data/VARefObjSrcFixedLength.txt
+62,UNDIST NONPERS SVC REDUCT,UNDISTRIBUTED_NONPERSONAL_REDUCTION,budget_control,policy,data/VARefObjSrcFixedLength.txt
+71,UNDIST AMENDED BUDGET AMOUNTS,UNDISTRIBUTED_AMENDED_BUDGET,budget_control,policy,data/VARefObjSrcFixedLength.txt
+81,ANTICIPATION LOAN PRNCPLE RET,ANTICIPATION_LOAN_PRINCIPAL,liability_or_debt,policy,data/VARefObjSrcFixedLength.txt
+86,UNDISTRIB LEGISLATIVE APPROP,UNDISTRIBUTED_LEGISLATIVE_APPROPRIATION,budget_control,policy,data/VARefObjSrcFixedLength.txt
+87,INDIRECT COSTS,INDIRECT_COSTS,operating_expense,policy,data/VARefObjSrcFixedLength.txt
+88,CONTINGENCY EXPENSES,CONTINGENCY_EXPENSES,operating_expense,policy,data/VARefObjSrcFixedLength.txt
+89,PROBUD REDISTRIBUTION CODE,PROBUD_REDISTRIBUTION,budget_control,policy,data/VARefObjSrcFixedLength.txt
+90,UNDIST AMENDED APPROP,UNDISTRIBUTED_AMENDED_APPROPRIATION,budget_control,policy,data/VARefObjSrcFixedLength.txt
+91,SUBGRANTS TO STATE AGENCIES,SUBGRANTS,transfer,policy,data/VARefObjSrcFixedLength.txt

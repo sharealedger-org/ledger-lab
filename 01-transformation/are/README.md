@@ -103,6 +103,10 @@ The current VA mappings are hard-coded in `standardizeAndSort.scala`, including 
 - debit/offset flags;
 - source-system descriptions.
 
+The public VA object vocabulary and its separation from ARE policy are documented in
+[VA_ACCOUNTING_CLASSIFICATION.md](../../docs/VA_ACCOUNTING_CLASSIFICATION.md) and
+[VAAccountingClassificationRules.csv](../../data/VAAccountingClassificationRules.csv).
+
 These should move behind a versioned ARE specification. The first implementation can be CSV or another simple declarative format, but it must identify:
 
 - `rule_set_id` and `rule_version`;
