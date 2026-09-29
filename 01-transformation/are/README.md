@@ -107,6 +107,12 @@ The public VA object vocabulary and its separation from ARE policy are documente
 [VA_ACCOUNTING_CLASSIFICATION.md](../../docs/VA_ACCOUNTING_CLASSIFICATION.md) and
 [VAAccountingClassificationRules.csv](../../data/VAAccountingClassificationRules.csv).
 
+The first executable two-leg VA rule set is
+[VAAccountingRules.csv](../../data/VAAccountingRules.csv). It maps the source object into the
+expense leg, creates the explicit cash-clearing offset, and carries the rule-set and rule ID on
+both SJE lines. `0000` remains the compatibility clearing account until a public VA cash/chart
+of-accounts mapping is established; it is not treated as a complete accounting model.
+
 These should move behind a versioned ARE specification. The first implementation can be CSV or another simple declarative format, but it must identify:
 
 - `rule_set_id` and `rule_version`;

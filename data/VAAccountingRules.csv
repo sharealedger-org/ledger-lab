@@ -1,0 +1,5 @@
+# Versioned VA ARE rules. Both legs are emitted as SJE rows and must balance.
+# Expressions: EXP+object, EXP+program, REV+source, object, program, zero, or a literal account.
+recordType,ruleSetId,ruleVersion,ruleId,businessEventCode,debitAccountExpression,creditAccountExpression,debitProjectExpression,creditProjectExpression,offsetDescription,effectiveStart,effectiveEnd
+E,VA_PUBLIC_EXPENSE,1,VA_EXPENSE_OBJECT,EXPENSE_PAYMENT,EXP+object,0000,object,zero,CASH_CLEARING,2003-01-01,9999-12-31
+R,VA_PUBLIC_REVENUE,1,VA_REVENUE_SOURCE,REVENUE_RECEIPT,REV+source,0000,zero,zero,CASH_CLEARING,2003-01-01,9999-12-31

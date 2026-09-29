@@ -58,6 +58,7 @@ mkdir -p "$INPUT_DIR" "$OUTPUT_DIR"
 cp "$REPO_ROOT/data/FY03q1exp_small.txt" "$INPUT_DIR/FY03q1exp.txt"
 cp "$REPO_ROOT/data/VendorMaster.csv" "$INPUT_DIR/VendorMaster.csv"
 cp "$REPO_ROOT/data/AllocationDivisors_FY02_fixture.csv" "$INPUT_DIR/AllocationDivisors_FY02_fixture.csv"
+cp "$REPO_ROOT/data/VAAccountingRules.csv" "$INPUT_DIR/VAAccountingRules.csv"
 
 # Git Bash may report /tmp paths that the Windows JVM resolves differently.
 # Use a drive-qualified path when cygpath is available.

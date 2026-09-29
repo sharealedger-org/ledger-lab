@@ -107,6 +107,19 @@ import scala.io.Source
 
 object standardizeAndSort {
 
+  private case class AccountingRule(
+    recordType: String,
+    ruleSetId: String,
+    ruleVersion: String,
+    ruleId: String,
+    businessEventCode: String,
+    debitAccountExpression: String,
+    creditAccountExpression: String,
+    debitProjectExpression: String,
+    creditProjectExpression: String,
+    offsetDescription: String
+  )
+
   // ── Constants matching Transaction.scala defaults ──────────────────────────
   private val LEDGER_ID     = "ACTUALS"
   private val JRNL_TYPE     = "FIN"
@@ -142,6 +155,7 @@ object standardizeAndSort {
     val recType      = params.getOrElse("type",         "E").toUpperCase
     val chunkSize    = params.get("chunkSize").map(_.toInt).getOrElse(DEFAULT_CHUNK)
     val dryRun       = params.getOrElse("dryRun", "false").toLowerCase == "true"
+    val accountingRule = loadAccountingRule(params.get("accountingRules"), params.get("inPath"), recType)
 
     val year    = yearStr
     val quarter = quarterStr.toInt
@@ -214,7 +228,7 @@ object standardizeAndSort {
         if (raw.nonEmpty) {
           val cols = splitAndStrip(raw, delimiter)
           val pairs = buildJEPairs(cols, recFormat, recType, vendorMap,
-                                   year, acctDate, jrnlID + 1)
+                                   accountingRule, year, acctDate, jrnlID + 1)
           if (pairs.nonEmpty) {
             jrnlID += 1
             for ((rowStr, matched, amt) <- pairs) {
@@ -298,6 +312,48 @@ object standardizeAndSort {
     })
   }
 
+  private def loadAccountingRule(requested: Option[String], inputPath: Option[String], recType: String): AccountingRule = {
+    val candidates = requested.toSeq ++ inputPath.toSeq.map(_.stripSuffix("/") + "/VAAccountingRules.csv") ++ Seq(
+      "data/VAAccountingRules.csv",
+      "../data/VAAccountingRules.csv",
+      "../../data/VAAccountingRules.csv"
+    )
+    val path = candidates.find(p => new File(p).exists())
+    path.flatMap { rulePath =>
+      val source = Source.fromFile(rulePath)
+      try {
+        source.getLines()
+          .filter(line => line.trim.nonEmpty && !line.trim.startsWith("#"))
+          .drop(1)
+          .map(_.split(",", -1).map(_.trim))
+          .find(fields => fields.length >= 10 && fields(0).equalsIgnoreCase(recType))
+          .map(fields => AccountingRule(
+            fields(0), fields(1), fields(2), fields(3), fields(4), fields(5),
+            fields(6), fields(7), fields(8), fields(9)
+          ))
+      } finally {
+        source.close()
+      }
+    }.getOrElse {
+      if (recType == "R")
+        AccountingRule("R", "VA_COMPAT", "1", "VA_REVENUE_COMPAT", "REVENUE_RECEIPT", "REV+source", "0000", "zero", "zero", "CASH_CLEARING")
+      else
+        AccountingRule("E", "VA_COMPAT", "1", "VA_EXPENSE_COMPAT", "EXPENSE_PAYMENT", "EXP+program", "0000", "object", "zero", "CASH_CLEARING")
+    }
+  }
+
+  private def evaluateExpression(expression: String, objectCode: String,
+                                 program: String, source: String): String = expression match {
+    case "EXP+object"  => s"EXP$objectCode"
+    case "EXP+program" => s"EXP$program"
+    case "REV+source"  => s"REV$source"
+    case "object"      => objectCode
+    case "program"     => program
+    case "source"      => source
+    case "zero"        => "0000"
+    case literal        => literal
+  }
+
   private def resolveVmPath(requested: String): String = {
     val candidates = if (requested.nonEmpty)
       Seq(requested, s"../$requested", DEFAULT_VM_1, s"../$DEFAULT_VM_1", DEFAULT_VM_2, s"../$DEFAULT_VM_2", DEFAULT_VM_3, s"../$DEFAULT_VM_3")
@@ -347,7 +403,8 @@ object standardizeAndSort {
                       bizEvent: String, srcSys: String, descript: String,
                       agency: String, fund: String, objCode: String,
                       nominalAcct: String, year: String, acctDate: String,
-                      transDate: String, amount: String): String = {
+                      transDate: String, amount: String,
+                      ruleSetId: String, ruleId: String): String = {
     val descClean = descript.replace(",", " ")
     Seq(
       instId, "0", "0", jrnlId, lineId, bizEvent, srcSys, "Unknown", descClean,
@@ -355,7 +412,7 @@ object standardizeAndSort {
       agency, fund, objCode, PRODUCT_ID, nominalAcct, ALT_ACCOUNT,
       CCY_SRC, CCY_TYPE_SRC, CCY_TGT, CCY_TYPE_TGT,
       year, acctDate, transDate, amount,
-      " ", "0", "0", " ", " ", "D", "N", "N", " ", " ", " ", " ", " "
+      " ", "0", "0", ruleSetId, ruleId, "D", "N", "N", " ", " ", " ", " ", " "
     ).mkString(",")
   }
 
@@ -363,12 +420,13 @@ object standardizeAndSort {
   private def buildJEPairs(
       cols: Array[String], recFormat: String, recType: String,
       vendorMap: Map[String, String],
+      accountingRule: AccountingRule,
       year: String, acctDate: String, seqNo: Int
     ): Seq[(String, Boolean, BigDecimal)] = {
 
     try {
-      if (recType == "E") buildExpensePairs(cols, recFormat, vendorMap, year, acctDate, seqNo)
-      else                buildRevenuePairs(cols, recFormat, vendorMap, year, acctDate, seqNo)
+      if (recType == "E") buildExpensePairs(cols, recFormat, vendorMap, accountingRule, year, acctDate, seqNo)
+      else                buildRevenuePairs(cols, recFormat, vendorMap, accountingRule, year, acctDate, seqNo)
     } catch {
       case _: Exception => Seq.empty
     }
@@ -377,6 +435,7 @@ object standardizeAndSort {
   private def buildExpensePairs(
       cols: Array[String], recFormat: String,
       vendorMap: Map[String, String],
+      accountingRule: AccountingRule,
       year: String, acctDate: String, seqNo: Int
     ): Seq[(String, Boolean, BigDecimal)] = {
 
@@ -397,20 +456,25 @@ object standardizeAndSort {
     val matched = instId != UNKNOWN_INST
     val jid     = s"ID$seqNo$acctDate"
     val vDesc   = vendor.replace(",", " ")
+    val debitAccount = evaluateExpression(accountingRule.debitAccountExpression, objCode, prog, "")
+    val creditAccount = evaluateExpression(accountingRule.creditAccountExpression, objCode, prog, "")
+    val debitProject = evaluateExpression(accountingRule.debitProjectExpression, objCode, prog, "")
+    val creditProject = evaluateExpression(accountingRule.creditProjectExpression, objCode, prog, "")
 
     Seq(
-      (makeRow(instId, jid, "1", "Procurement",     "Payment Sys", vDesc,
-               agency, fund, objCode, s"EXP$prog", year, acctDate, transDate,
-               amt.toString()), matched, amt),
-      (makeRow(instId, jid, "2", "Cash Disbursement","Payment Sys", "Check to vendor",
-               agency, "0000", "0000", "0000",    year, acctDate, transDate,
-               (-amt).toString()), matched, -amt)
+      (makeRow(instId, jid, "1", accountingRule.businessEventCode, "Payment Sys", vDesc,
+               agency, fund, debitProject, debitAccount, year, acctDate, transDate,
+               amt.toString(), accountingRule.ruleSetId, accountingRule.ruleId), matched, amt),
+      (makeRow(instId, jid, "2", accountingRule.businessEventCode, "Payment Sys", accountingRule.offsetDescription,
+               agency, "0000", creditProject, creditAccount, year, acctDate, transDate,
+               (-amt).toString(), accountingRule.ruleSetId, accountingRule.ruleId), matched, -amt)
     )
   }
 
   private def buildRevenuePairs(
       cols: Array[String], recFormat: String,
       vendorMap: Map[String, String],
+      accountingRule: AccountingRule,
       year: String, acctDate: String, seqNo: Int
     ): Seq[(String, Boolean, BigDecimal)] = {
 
@@ -427,14 +491,18 @@ object standardizeAndSort {
     val instId  = vendorMap.getOrElse(agency.toUpperCase, UNKNOWN_INST)
     val matched = instId != UNKNOWN_INST
     val jid     = s"ID${seqNo}${acctDate}REV"
+    val debitAccount = evaluateExpression(accountingRule.debitAccountExpression, "", "", src)
+    val creditAccount = evaluateExpression(accountingRule.creditAccountExpression, "", "", src)
+    val debitProject = evaluateExpression(accountingRule.debitProjectExpression, "", "", src)
+    val creditProject = evaluateExpression(accountingRule.creditProjectExpression, "", "", src)
 
     Seq(
-      (makeRow(instId, jid, "1", "Tax Receipt",  "Revenue Sys", "Tax Receipt from Taxpayer",
-               agency, fund, " ", s"REV$src", year, acctDate, transDate,
-               amt.toString()), matched, amt),
-      (makeRow(instId, jid, "2", "Cash Receipt", "Revenue Sys", "Tax Cash or Check",
-               agency, "0000", "0000", "0000", year, acctDate, transDate,
-               (-amt).toString()), matched, -amt)
+      (makeRow(instId, jid, "1", accountingRule.businessEventCode, "Revenue Sys", "Tax Receipt from Taxpayer",
+               agency, fund, debitProject, debitAccount, year, acctDate, transDate,
+               amt.toString(), accountingRule.ruleSetId, accountingRule.ruleId), matched, amt),
+      (makeRow(instId, jid, "2", accountingRule.businessEventCode, "Revenue Sys", accountingRule.offsetDescription,
+               agency, "0000", creditProject, creditAccount, year, acctDate, transDate,
+               (-amt).toString(), accountingRule.ruleSetId, accountingRule.ruleId), matched, -amt)
     )
   }
 }
