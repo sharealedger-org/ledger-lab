@@ -78,6 +78,34 @@ ordered perspective extract
 
 This is not automatically a new layer pass. It is a conditional materialization and sort boundary determined by data volume, grouping cardinality, output order, and the scale-invariant memory contract.
 
+## Extract-Time Summarization
+
+CKB views can summarize while the ordered stream is being processed. The view allocates a bounded
+aggregation buffer based on the declared memory envelope and collapses records by the view's group
+key, normally applying a sum or another associative metric:
+
+```text
+sorted CKB stream
+        -> bounded key -> aggregate buffer
+        -> emit final groups when the stream completes
+
+buffer overflow
+        -> flush partial aggregates, not raw input rows
+        -> continue the stream with the bounded buffer
+        -> sort/reduce only the much smaller partial-aggregate file
+```
+
+When the final grouped output fits in the buffer, no later sort is required. When it does not, the
+overflow file contains at most one partial row per observed group per buffer flush, so its size can
+be dramatically smaller than the source stream. The final sort/sum is conditional and operates on
+that reduced file. This is an adaptive CKB view strategy, not a full-history in-memory aggregation
+and not an automatic new architectural pass.
+
+The view must declare its grouping key, associative metric, buffer capacity, spill format, and
+overflow reduction behavior. It must also record whether the result was completed in memory or
+required partial aggregation and final reduction. This makes the buffer size itself an experiment
+variable in the materialization frontier.
+
 ## Prior-State Divisors
 
 An allocation does not need to calculate a same-day global divisor by rescanning the current

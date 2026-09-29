@@ -143,10 +143,18 @@ run_id,perspective_id,view_id,view_spec_version,process_id,
 input_partition_id,output_partition_id,filter_definition,
 step_up_definition,grouping_definition,input_rows,output_rows,
 step_up_hits,step_up_misses,aggregation_state_peak,spill_bytes,
-output_bytes,reconciliation_obligation,capability_id,elapsed_seconds,status
+output_bytes,reconciliation_obligation,capability_id,elapsed_seconds,status,
+aggregation_buffer_peak_bytes,aggregation_buffer_peak_keys,buffer_overflow,
+partial_aggregate_rows,final_reduce_rows,final_reduce_seconds,reduction_ratio
 ```
 
 Perspectives aggregate only. These metrics describe output capability and aggregation cost; they do not describe generated accounting events.
+
+Extract-time summarization must distinguish successful in-memory completion from overflow
+completion. `partial_aggregate_rows` counts reduced rows written during buffer flushes,
+`final_reduce_rows` counts rows entering the conditional final sort/sum, and `reduction_ratio`
+compares those rows with the original input. A low final-reduce volume is part of the measured CKB
+advantage and must not be hidden inside a generic elapsed-time number.
 
 ## Reconciliation Results
 
