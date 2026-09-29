@@ -71,7 +71,8 @@ bash scripts/run_repo_fixture_smoke_test.sh --show-results --keep-output
 Each run also writes structured evidence under `output/metrics/`:
 
 - `run_manifest.csv` identifies the run, code revision, host, timing, and status.
-- `process_metrics.csv` records the Step 2 and Step 3 process boundaries and row/byte counts.
+- `process_metrics.csv` records the Step 2 and Step 3 process boundaries, row/byte counts, and
+  peak RSS when the host provides a compatible process timer.
 - `partition_catalog.csv` records the raw fixture, sorted journal, and ledger artifacts with checksums.
 - `sort_events.csv` records the Step 2 external sort boundary and sort contract.
 - `reconciliation_results.csv` records the journal and ledger balance controls.

@@ -153,9 +153,12 @@ append_process() {
   step_elapsed="$(grep -E "RESULT step=${step} year=${year} " "$LOG_FILE" | \
     sed -E 's/.*elapsed_s=([0-9]+).*/\1/' | tail -1)"
   [[ "$step_elapsed" =~ ^[0-9]+$ ]] || step_elapsed=""
+  peak_rss_bytes="$(grep -E "RESOURCE step=${step} year=${year} " "$LOG_FILE" | \
+    sed -E 's/.*peak_rss_bytes=([0-9]+).*/\1/' | tail -1)"
+  [[ "$peak_rss_bytes" =~ ^[0-9]+$ ]] || peak_rss_bytes=""
   append_csv_row "$PROCESS_METRICS" "$RUN_ID" "$process_id" "" "02-foundation" \
     "step-${step}" "legacy-va" "$input_partition" "$output_partition" "" "$step" \
-    "$RUN_TIMESTAMP" "$RUN_END_TIMESTAMP" "$step_elapsed" "" "" "" \
+    "$RUN_TIMESTAMP" "$RUN_END_TIMESTAMP" "$step_elapsed" "" "" "" "$peak_rss_bytes" "" "" "" \
     "" "" "" "" "$input_rows" "$input_bytes" "$output_rows" "$output_bytes" "" "complete"
   if [[ "$step" == "2" ]]; then
     append_partition "$input_partition" "raw_source" "01-transformation" "$process_id" "" \

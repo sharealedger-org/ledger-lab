@@ -166,15 +166,39 @@ run_step() {
 
   # Capture output while still streaming it to terminal
   local out
-  out=$(cd "$SBT_PROJECT" && sbt -batch \
-    "run --step $step --inPath $IN_PATH --outPath $OUT_PATH --year $year --quarter $quarter$vm_arg" \
-    2>&1 | tee /dev/stderr)
+  local time_mode=""
+  if [[ "$(uname -s 2>/dev/null)" == "Darwin" && -x /usr/bin/time ]]; then
+    time_mode="macos"
+  elif /usr/bin/time --version >/dev/null 2>&1; then
+    time_mode="gnu"
+  fi
+  if [[ "$time_mode" == "macos" ]]; then
+    out=$(cd "$SBT_PROJECT" && /usr/bin/time -l sbt -batch \
+      "run --step $step --inPath $IN_PATH --outPath $OUT_PATH --year $year --quarter $quarter$vm_arg" \
+      2>&1 | tee /dev/stderr)
+  elif [[ "$time_mode" == "gnu" ]]; then
+    out=$(cd "$SBT_PROJECT" && /usr/bin/time -v sbt -batch \
+      "run --step $step --inPath $IN_PATH --outPath $OUT_PATH --year $year --quarter $quarter$vm_arg" \
+      2>&1 | tee /dev/stderr)
+  else
+    out=$(cd "$SBT_PROJECT" && sbt -batch \
+      "run --step $step --inPath $IN_PATH --outPath $OUT_PATH --year $year --quarter $quarter$vm_arg" \
+      2>&1 | tee /dev/stderr)
+  fi
 
   local rc=$?
   local end_epoch
   end_epoch=$(date +%s)
   local elapsed=$(( end_epoch - start_epoch ))
   LAST_ELAPSED=$elapsed  # exported for TOTAL_COMPUTE_S accumulation in main loop
+  LAST_PEAK_RSS_BYTES=""
+  if [[ "$time_mode" == "macos" ]]; then
+    LAST_PEAK_RSS_BYTES=$(printf '%s\n' "$out" | awk '/maximum resident set size/ { print $1; exit }')
+  elif [[ "$time_mode" == "gnu" ]]; then
+    local rss_kb
+    rss_kb=$(printf '%s\n' "$out" | awk -F': ' '/Maximum resident set size/ { print $2; exit }' | awk '{print $1}')
+    [[ "$rss_kb" =~ ^[0-9]+$ ]] && LAST_PEAK_RSS_BYTES=$((rss_kb * 1024))
+  fi
 
   # Extract key control-total lines from output for structured logging
   local records_read records_written
@@ -190,6 +214,7 @@ run_step() {
   # Structured result line — readable by agents and humans
   local result_line="RESULT step=$step year=$year quarter=$quarter elapsed_s=$elapsed rc=$rc records_read=$records_read records_written=$records_written outPath_bytes=$out_bytes"
   log "$result_line"
+  log "RESOURCE step=$step year=$year peak_rss_bytes=${LAST_PEAK_RSS_BYTES:-}"
 
   if [[ $rc -ne 0 ]]; then
     log "ERROR  step=$step year=$year exited with code $rc — pipeline halted"
