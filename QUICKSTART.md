@@ -51,7 +51,7 @@ bash scripts/run_repo_fixture_smoke_test.sh
 Run the separate active allocation profile when you want generated allocation results:
 
 ```bash
-bash scripts/run_repo_fixture_smoke_test.sh --with-allocation --show-results
+bash scripts/run_repo_fixture_smoke_test.sh --with-allocation --show-data
 ```
 
 This opt-in profile adds two synthetic VA `EXP6` salary source rows, loads
@@ -84,10 +84,10 @@ It needs only JDK 21, sbt, Bash, and the files in this repository.
 
 ### Inspect A Successful Run
 
-Ask the smoke test to print a small result sample. Temporary files are still cleaned up:
+Ask the smoke test to print a small data sample. Temporary files are still cleaned up:
 
 ```bash
-bash scripts/run_repo_fixture_smoke_test.sh --show-results
+bash scripts/run_repo_fixture_smoke_test.sh --show-data
 ```
 
 This displays selected journal and ledger fields in aligned columns, row counts, the balance sum,

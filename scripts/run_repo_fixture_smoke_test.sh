@@ -27,7 +27,7 @@ while [[ $# -gt 0 ]]; do
       KEEP_OUTPUT=1
       shift
       ;;
-    --show-results)
+    --show-results|--show-data)
       SHOW_RESULTS=1
       shift
       ;;
@@ -37,13 +37,13 @@ while [[ $# -gt 0 ]]; do
       ;;
     -h|--help)
       cat <<'EOF'
-Usage: bash scripts/run_repo_fixture_smoke_test.sh [--show-results] [--keep-output] [--with-allocation]
+Usage: bash scripts/run_repo_fixture_smoke_test.sh [--show-data] [--keep-output] [--with-allocation]
 
 Stages data/FY03q1exp_small.txt as FY03q1exp.txt, runs VA Steps 2 and 3,
 and verifies that sorted journal and ledger output are produced and balanced.
 No external VA data, Spark, PostgreSQL, or AI engine is required.
 
-Use --show-results to print small journal, ledger, count, and summary results.
+Use --show-data (alias: --show-results) to print small journal, ledger, count, and summary results.
 Use --keep-output to retain generated files for later inspection. The options
 may be combined. Use --with-allocation to add synthetic EXP6 salary source rows
 and run the active Step 6 allocation path.
