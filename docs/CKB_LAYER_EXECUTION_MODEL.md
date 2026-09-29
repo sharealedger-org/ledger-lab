@@ -62,6 +62,10 @@ The ordinary first hard boundary occurs after the ARE. The ARE receives source/p
 
 The external merge-sort is therefore a real job boundary because it changes the physical order contract. The resulting sorted SJE partition is a Foundation input to CKB.
 
+The first sort has a specific scope: it orders **today's ARE output** on the CKB posting key. It
+does not sort the full historical ledger. That distinction matters when comparing it with later
+view work.
+
 ### Conditional Later Sort
 
 A later sort is required only when a downstream operation needs an order that the current CKB stream does not provide and the required working state cannot be retained within the available memory contract.
@@ -105,6 +109,11 @@ The view must declare its grouping key, associative metric, buffer capacity, spi
 overflow reduction behavior. It must also record whether the result was completed in memory or
 required partial aggregation and final reduction. This makes the buffer size itself an experiment
 variable in the materialization frontier.
+
+The conditional sort in this technique has a different scope from the ARE sort: it orders only the
+reduced partial aggregates emitted by an overflowing view buffer. Its input is not today's raw
+transaction stream and not the full ledger history. A later sort may also substantiate a view for a
+downstream CKB section, but that sort is charged to that view's new order contract.
 
 ## Prior-State Divisors
 

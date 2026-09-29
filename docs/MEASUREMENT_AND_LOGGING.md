@@ -74,10 +74,12 @@ CPU, RSS, page, and context-switch values are process-level operating-system met
 run_id,sort_id,process_id,pass_id,input_partition_id,output_partition_id,
 sort_spec_id,sort_spec_hash,sort_key,input_rows,output_rows,input_bytes,
 output_bytes,chunk_size,spill_file_count,spill_bytes,peak_memory_bytes,
-elapsed_seconds,status
+elapsed_seconds,status,sort_reason,input_scope
 ```
 
-This is the authoritative record of physical pass boundaries.
+This is the authoritative record of physical pass boundaries. `sort_reason` distinguishes at least
+`are_to_ckb`, `extract_overflow_reduce`, and `next_pass_order`; `input_scope` records whether the
+sort covered today's source output, reduced partial aggregates, or another declared partition.
 
 ## Partition Catalog
 
