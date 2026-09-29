@@ -69,7 +69,9 @@ object financialAllocation {
     sourceNominalAccount: String,
     sourceAgency:         String,
     driverNominalAccount: String,
-    receiverAgency:       String
+    receiverAgency:       String,
+    divisorGrain:         String = "period+agency+driverAccount",
+    driverGrain:          String = "instrument"
   )
 
   def apply(fileOutLocation: String): Unit = {
@@ -92,20 +94,24 @@ object financialAllocation {
     // Load allocation rules
     //─────────────────────────────────────────────────────────────────────────
     val rules = mutable.ArrayBuffer[AllocationRule]()
-    val rulesFile = dataPath + "AllocationRules.csv"
+    val rulesFile = new File(dataPath, "AllocationRules.csv").getPath
     try {
       val rLines = Source.fromFile(rulesFile).getLines()
       for (line <- rLines if line.trim.nonEmpty && !line.startsWith("#")) {
         val e = line.split(fileDelimiter, -1).map(_.trim)
         if (e.length >= 4 && e(0) != "sourceNominalAccount")
-          rules += AllocationRule(e(0), e(1), e(2), e(3))
+          rules += AllocationRule(
+            e(0), e(1), e(2), e(3),
+            if (e.length >= 5 && e(4).nonEmpty) e(4) else "period+agency+driverAccount",
+            if (e.length >= 6 && e(5).nonEmpty) e(5) else "instrument"
+          )
       }
       println(s"Allocation rules loaded: ${rules.size} rules from $rulesFile")
     } catch {
       case _: java.io.FileNotFoundException =>
         // Default rule: any nominal account starting with "EXP" in project "999"
         // is overhead; distribute across all EXP balances in the same agency
-        rules += AllocationRule("EXP999", "*", "EXP", "*")
+        rules += AllocationRule("EXP999", "*", "EXP", "*", "period+agency+driverAccount", "instrument")
         println(s"No AllocationRules.csv found — applying default rule: EXP999 → all EXP in same agency")
     }
 
@@ -182,7 +188,8 @@ object financialAllocation {
             println(s"  Rule ${rule.sourceNominalAccount}: driver total is zero — cannot weight, skipping")
           } else {
             println(s"  Rule: source=${rule.sourceNominalAccount} sourceRows=${sourceRows.size} " +
-              s"driverRows=${driverRows.size} totalDriver=$totalDriverAmt")
+              s"driverRows=${driverRows.size} totalDriver=$totalDriverAmt " +
+              s"divisorGrain=${rule.divisorGrain} driverGrain=${rule.driverGrain}")
 
             for (srcRow <- sourceRows) {
               val srcAmt = srcRow.amount

@@ -9,6 +9,8 @@
 #                          (e.g. "EXP" means weight by each program's share of total expense)
 #   receiverAgency       — legal entity ID of the receiving agency
 #                          (use "*" to allocate to all agencies that have driver balances)
+#   divisorGrain         — explicit denominator key, such as period+agency+driverAccount
+#   driverGrain          — numerator/receiver key, such as instrument or account
 #
 # STANDARD VOCABULARY:
 #   sourceNominalAccount = Movement Key prefix (balance bucket designator)
@@ -42,5 +44,5 @@
 #   Agency 267 = Virginia Marine Resources Commission (smallest in FY03 fixture data)
 #   Driver = all EXP balances in the same agency (proportional share of total spend)
 #
-sourceNominalAccount,sourceAgency,driverNominalAccount,receiverAgency
-EXP999,*,EXP,*
+sourceNominalAccount,sourceAgency,driverNominalAccount,receiverAgency,divisorGrain,driverGrain
+EXP999,*,EXP,*,period+agency+driverAccount,instrument
