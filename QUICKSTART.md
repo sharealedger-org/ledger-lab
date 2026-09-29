@@ -60,9 +60,9 @@ Ask the smoke test to print a small result sample. Temporary files are still cle
 bash scripts/run_repo_fixture_smoke_test.sh --show-results
 ```
 
-This displays three sorted journal rows, the ledger header plus two rows, row counts, the pipeline
-log, and the compatibility cost record. It never prints the full input or output files. To retain
-the temporary files for further inspection, combine the options:
+This displays selected journal and ledger fields in aligned columns, row counts, the balance sum,
+key pipeline log lines, and the compatibility cost record. It never prints the full input or output
+files. To retain the temporary files for further inspection, combine the options:
 
 ```bash
 bash scripts/run_repo_fixture_smoke_test.sh --show-results --keep-output
@@ -78,6 +78,12 @@ head -n 3 "$output_dir/LDGR2003.csv"
 wc -l "$output_dir/SortedJEFY03q1exp.csv" "$output_dir/LDGR2003.csv"
 cat "$output_dir/pipeline_results.log"
 cat "$output_dir/cost_surface.csv"
+```
+
+The formatter is also available directly for a retained output directory:
+
+```bash
+bash scripts/show_repo_fixture_results.sh "$output_dir"
 ```
 
 The sorted journal shows the generated debit and credit lines that Step 2 sends to posting. The

@@ -91,22 +91,7 @@ awk -F, '
 ' "$LEDGER_FILE"
 
 if [[ "$SHOW_RESULTS" -eq 1 ]]; then
-  echo
-  echo "=== Sorted journal sample (first 3 rows) ==="
-  head -n 3 "$SORTED_FILE"
-  echo
-  echo "=== Ledger sample (header plus first 2 rows) ==="
-  head -n 3 "$LEDGER_FILE"
-  echo
-  echo "=== Output row counts ==="
-  wc -l "$SORTED_FILE" "$LEDGER_FILE"
-  echo
-  echo "=== Pipeline results ==="
-  cat "$OUTPUT_DIR/pipeline_results.log"
-  echo
-  echo "=== Cost surface compatibility record ==="
-  cat "$OUTPUT_DIR/cost_surface.csv"
-  echo
+  bash "$SCRIPT_DIR/show_repo_fixture_results.sh" "$OUTPUT_DIR"
 fi
 
 if [[ "$KEEP_OUTPUT" -eq 1 ]]; then
