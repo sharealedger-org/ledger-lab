@@ -54,6 +54,44 @@ sort required to establish the CKB key
 
 This is a logical flow, not a fixed sequence of physical files or independent scans.
 
+## Revised 02-05 Flow
+
+The practical 02-05 topology is an ordered CKB flow with canonical state, engine sections, and
+perspective views sharing the same record movement:
+
+```text
+A_t: today's ARE SJEs --------------------+
+B_t: prior Instrument Ledger state -------+|
+C_t: CAR, rates, rules, divisors --------+||
+                                          vvv
+                              02 Foundation / CKB
+                              ordered stream + bounded views
+                                          |
+                 +------------------------+-------------------------+
+                 |                        |                         |
+                 v                        v                         v
+       03 Instrument Ledger       04 Engine/view sections       05 Perspectives
+       apply/reconstruct state    allocation, FX,                select, join CAR,
+       preserve SJE lineage       revaluation, candidates        pair, translate,
+                                  and generated SJEs              summarize, report
+                 |                        |                         |
+                 +------------ canonical or view contracts --------+
+                                          |
+                 streamed result, persisted partition, or report output
+```
+
+The ownership boundaries are semantic inside this flow:
+
+| Concern | Owner | Output choice |
+|---|---|---|
+| Sort, buffer, spill, partition order | `02-foundation` | Stream or substantiated next-pass partition |
+| Canonical balances and SJE replay | `03-instrument-ledger` | Persistent state and lineage |
+| History/rule-dependent generated events or candidate views | `04-engines` | Generated SJE, side view, or candidate partition |
+| Reporting scope, CAR pivots, translation, pairing, summarization | `05-perspectives` | Report-time view or materialized perspective |
+
+An output may cross a logical boundary through the CKB buffer without creating a physical pass. The
+run only gets a new pass when its order, memory, or restart contract requires materialization.
+
 ## Sort Boundaries
 
 ### Required Initial Sort
