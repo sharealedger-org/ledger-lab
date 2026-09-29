@@ -1,0 +1,3 @@
+rule_id,expense_legal_entity,revenue_legal_entity,expense_account_prefix,revenue_account_prefix,counterparty_id,match_group,effective_start,effective_end,approval_required
+ELIM-IT-USD,101,202,EXP282,REV1410,CP-BETA,IC-001,2025-01-01,2025-12-31,Y
+ELIM-CONTRACT-EUR,101,202,EXP259,REV1410,CP-BETA,IC-002,2025-01-01,2025-12-31,Y

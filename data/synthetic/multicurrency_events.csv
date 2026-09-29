@@ -1,0 +1,5 @@
+event_id,event_date,period,source_system,instrument_id,legal_entity,account,source_amount,source_currency,book_currency,rate_id,conversion_policy,description
+FX-001,2025-01-15,2025-01,ERP-ALPHA,INST-1001,101,EXP265,1250.50,EUR,USD,FX-EUR-USD-20250115,report-time,classified salary expense
+FX-002,2025-01-15,2025-01,ERP-ALPHA,INST-1002,101,EXP253,0.02500000,BTC,USD,FX-BTC-USD-20250115,report-time,virtual asset compensation benefit
+FX-003,2025-01-16,2025-01,ERP-BETA,INST-2001,202,REV1410,9000.00,EUR,USD,FX-EUR-USD-20250116,report-time,intercompany recovery receipt
+FX-004,2025-01-15,2025-01,ERP-ALPHA,INST-1003,101,EXP6,300.00,USD,USD,FX-USD-USD-20250115,identity,domestic salary expense

@@ -1,0 +1,7 @@
+rate_id,rate_date,source_currency,target_currency,rate,decimal_scale,rate_source,rate_status
+FX-USD-USD-20250115,2025-01-15,USD,USD,1.00000000,2,synthetic-control,official
+FX-EUR-USD-20250115,2025-01-15,EUR,USD,1.08000000,2,synthetic-control,official
+FX-EUR-USD-20250116,2025-01-16,EUR,USD,1.07500000,2,synthetic-control,official
+FX-BTC-USD-20250115,2025-01-15,BTC,USD,65000.00000000,2,synthetic-control,official
+FX-BTC-USD-20250116,2025-01-16,BTC,USD,64250.00000000,2,synthetic-control,official
+FX-USD-EUR-20250115,2025-01-15,USD,EUR,0.92592593,8,synthetic-control,official

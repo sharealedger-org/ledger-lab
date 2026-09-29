@@ -1,0 +1,6 @@
+event_id,event_date,period,source_system,legal_entity,account,amount,currency,entry_role,counterparty_id,counterparty_legal_entity,match_group,elimination_eligible,description
+IC-001-EXP,2025-01-15,2025-01,ERP-ALPHA,101,EXP282,12000.00,USD,expense,CP-BETA,202,IC-001,Y,shared technology service charge
+IC-001-REV,2025-01-15,2025-01,ERP-BETA,202,REV1410,-12000.00,USD,recovery,CP-ALPHA,101,IC-001,Y,shared technology service recovery
+IC-002-EXP,2025-01-16,2025-01,ERP-ALPHA,101,EXP259,9000.00,EUR,expense,CP-BETA,202,IC-002,Y,shared contract service charge
+IC-002-REV,2025-01-16,2025-01,ERP-BETA,202,REV1410,-9000.00,EUR,recovery,CP-ALPHA,101,IC-002,Y,shared contract service recovery
+IC-003-EXP,2025-01-17,2025-01,ERP-ALPHA,101,EXP104,5000.00,USD,transfer,EXTERNAL-LOCALITY,,IC-003,N,external grant payment
