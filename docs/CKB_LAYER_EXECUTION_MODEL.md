@@ -204,6 +204,22 @@ can remain in the buffer or be materialized as a partition according to the work
 choice does not create a new pass. A new physical pass is introduced only by a required sort,
 unbounded materialization, or a different input-order contract.
 
+## Materialization as a View Contract
+
+Every materialization is an additional named view of the CKB flow, whether it is retained as a file,
+kept as a next-pass partition, or streamed through a pipe. Examples include:
+
+- an SJE view for generated accounting events;
+- a divisor or driver view for the next allocation period;
+- a translated-currency view for a report date;
+- an intercompany-candidate view containing paired and unmatched sides;
+- a ledger view after apply-back;
+- a sorted partition substantiated for a downstream CKB section.
+
+Persisting one of these views creates storage and reconciliation obligations, but it does not by
+itself create another logical process or financial layer. The physical cost boundary is recorded
+when the view must be materialized, sorted, spilled, or replayed as input to a later pass.
+
 ## Process Memory Contract
 
 Each compiled Scala process must declare:
