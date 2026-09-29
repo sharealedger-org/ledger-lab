@@ -30,7 +30,8 @@ import scala.io.Source
 
 
 object post {
-  def apply(fileInLocation: String, fileOutLocation: String, filterYear: String = ""): Unit = {
+  def apply(fileInLocation: String, fileOutLocation: String, filterYear: String = "",
+            journalNameContains: String = ""): Unit = {
 
     println("*" * 100)
     println("                                Post Module")
@@ -64,7 +65,12 @@ object post {
     } else {
       jrnlFileNames
     }
-    val jrnlFileNamesSorted = jrnlFileNamesFiltered.sortWith(_.getName < _.getName)
+    val jrnlFileNamesSelected = if (journalNameContains.nonEmpty) {
+      jrnlFileNamesFiltered.filter(_.getName.contains(journalNameContains))
+    } else {
+      jrnlFileNamesFiltered
+    }
+    val jrnlFileNamesSorted = jrnlFileNamesSelected.sortWith(_.getName < _.getName)
 
     //-----------------------------------------------------------------------------------------
     // Process Varilables
@@ -96,7 +102,7 @@ object post {
       // Temporary Output Ledger File--will be renamed to actual ledger file at end of this loop
       //-----------------------------------------------------------------------------------------
       val ledgerFileNameTemp = ledgerFilePrefix + "temp.csv"
-      val outLedger: PrintWriter = new PrintWriter(new File(VAOutDataPath + ledgerFileNameTemp ))
+      val outLedger: PrintWriter = new PrintWriter(new File(VAOutDataPath, ledgerFileNameTemp))
       var fileLdgrRowsWritten = 0
       ldgrHeader(outLedger) // write header record
 
@@ -118,7 +124,7 @@ object post {
       var fileLdgrRowsRead = 0
 
       def readLdgr(): Unit = {
-        val e: Array[String] = ldgrLine.next.split(fileDelimiter)
+        val e: Array[String] = ldgrLine.next.split(fileDelimiter, -1)
           ldgrRec = Ledger(e(0), e(1), e(2), e(3), e(4), e(5), e(6), e(7), e(8), e(9), e(10), e(11),
             e(12), e(13), e(14), e(15), e(16), e(17), e(18),
             BigDecimal(e(19)), // amount
@@ -246,7 +252,8 @@ object post {
       // Mainline Program Structure:
       //*****************************************************************************************
 
-      while (jrnlEOF == "N" || ldgrEOF == "N" ) {
+            while ((jrnlEOF == "N" || ldgrEOF == "N") &&
+              !(jrnlEOF == "Y" && ldgrEOF == "Y")) {
 
           if (testJrnlFullKey == testLdgrFullKey) {
             // if (debugPrint == "Y") {println("==: tran: " + testJrnlFullKey + " Bal: " + testLdgrFullKey + " remaining rec: " )}
@@ -281,6 +288,13 @@ object post {
                 if (ldgrEOF == "N") {
                   if (ldgrLine.hasNext) readLdgr()
                   else eofLdgr()
+                } else {
+                  formatBalwTran()
+                  ldgrAmtAccum = jrnlRec.transTransAmount
+                  if (jrnlEOF == "N") {
+                    if (jrnlLine.hasNext) readJrnl()
+                    else eofJrnl()
+                  }
                 }
               }
               else {
@@ -290,6 +304,10 @@ object post {
           }
         MMLoopCounter += 1
       } // End of While Loop on match merge logic
+
+      // Flush the final journal-only balance after both streams reach EOF.
+      // Without this, the sentinel keys compare equal forever and the loop cannot terminate.
+      writeBal()
 
       //*****************************************************************************************
       // Complete fn processing loop for current file name.
@@ -302,8 +320,8 @@ object post {
       // On Windows, Java File.renameTo fails silently if the destination file already exists.
       // Use java.nio.file.Files.move with REPLACE_EXISTING for cross-platform atomicity.
       java.nio.file.Files.move(
-        java.nio.file.Paths.get(VAOutDataPath + ledgerFileNameTemp),
-        java.nio.file.Paths.get(VAOutDataPath + ledgerFileName),
+        java.nio.file.Paths.get(VAOutDataPath, ledgerFileNameTemp),
+        java.nio.file.Paths.get(VAOutDataPath, ledgerFileName),
         java.nio.file.StandardCopyOption.REPLACE_EXISTING
       )
 

@@ -2,7 +2,7 @@
 
 > **Repo:** `ledger-lab` (derived from the public `KipTwitchell/universal_ledger` POC) — **Apache 2.0**
 > **Author:** Kip M. Twitchell
-> **Status:** All 9 FSPs implemented. ViewSpec-driven aggregation engine built. Four-curve experiment design formalized (Session 9). Next: full dataset access + fixture config files to make all four curves runnable.
+> **Document status:** Historical Universal Ledger POC brief. Its nine-FSP implementation claims, C1–C4 experiment taxonomy, and process map are not the current Ledger Lab architecture or implementation status. For the current design, read [README.md](README.md), the 01–05 layer READMEs, [99-interpretation](99-interpretation/README.md), and [MEASUREMENT_AND_LOGGING.md](docs/MEASUREMENT_AND_LOGGING.md).
 > **Monograph:** *"The Architecture of Economic State"* (Twitchell) — link will be added upon publication.
 
 ---

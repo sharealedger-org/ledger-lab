@@ -205,14 +205,15 @@ object contraCreation {
         //─────────────────────────────────────────────────────────────────────
         // (4) Sort the contra SJE file on the full balance key
         //─────────────────────────────────────────────────────────────────────
-        val contraSortedFile = dataPath + "SortedJE_CONTRA" + yearStr + ".csv"
+        val shortYear = yearStr.takeRight(2)
+        val contraSortedFile = dataPath + s"SortedJEFY${shortYear}_CONTRA.csv"
         sortSJEFile(contraFile, contraSortedFile)
 
         //─────────────────────────────────────────────────────────────────────
         // (5) Post contra SJEs through the standard posting engine
         //─────────────────────────────────────────────────────────────────────
         println(s"  Posting contra SJEs via standard post engine...")
-        post(dataPath, dataPath)
+        post(dataPath, dataPath, journalNameContains = "_CONTRA")
         println(s"  Post complete.")
 
         //─────────────────────────────────────────────────────────────────────
@@ -303,22 +304,14 @@ object contraCreation {
   //   currencyCodeTargetID(20), currencyTypeCodeTargetID(21), fiscalPeriod(22)
   //───────────────────────────────────────────────────────────────────────────
   private def sortSJEFile(inputFile: String, outputFile: String): Unit = {
-    val lines = Source.fromFile(inputFile).getLines().toList
-    if (lines.size <= 1) {
-      val out = new PrintWriter(new File(outputFile))
-      lines.foreach(out.println)
-      out.close()
-      return
-    }
-    val header = lines.head
-    val sorted = lines.tail.filter(_.trim.nonEmpty).sortWith { (a, b) =>
+    val lines = Source.fromFile(inputFile).getLines().drop(1).filter(_.trim.nonEmpty).toList
+    val sorted = lines.sortWith { (a, b) =>
       val ea = a.split(",", -1)
       val eb = b.split(",", -1)
       def key(e: Array[String]) = (9 to 22).map(i => if (i < e.length) e(i) else "").mkString
       key(ea) < key(eb)
     }
     val out = new PrintWriter(new File(outputFile))
-    out.println(header)
     sorted.foreach(out.println)
     out.close()
     println(s"  Contra SJE file sorted: ${sorted.size} records → $outputFile")

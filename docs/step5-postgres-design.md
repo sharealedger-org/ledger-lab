@@ -1,7 +1,7 @@
 # Step 5 — Data Aggregation: Postgres Query Engine Design
 
-**Status:** Design complete. Implementation deferred — open questions to be resolved in next session.  
-**Replaces:** Current [`dataAggregation.scala`](../02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/ledger/dataAggregation.scala) multi-pass in-memory design.
+**Status:** Design proposal. Implementation deferred pending decisions in the open-questions section.
+**Proposed replacement for:** Current [`dataAggregation.scala`](../02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/ledger/dataAggregation.scala) in-memory prototype. The PostgreSQL path is not implemented.
 **Technology Invariant:** Postgres is infrastructure (like `SortEngine`). All financial logic — CAR join, permutation cost formula, `pivot_results.csv` write — remains in Scala. This does not violate the invariant.
 
 ---
@@ -14,7 +14,7 @@ The current `dataAggregation.scala` has two violations of the CKB single-pass in
 
 2. **Multi-pass iteration** — the `allRows` buffer is iterated once per enabled ViewSpec view. For 9 views that is 9 full passes. For Round 3 of Experiment 2 (8+ views) across 14 LDGR files, this is O(views × years × LDGR_rows).
 
-Both violations were accepted as prototype limitations (Session 21). They must be resolved before C3/C4 runs on the full 14-year dataset.
+Both violations were accepted as prototype limitations. They must be resolved before running the full historical workload at scale.
 
 ---
 
@@ -153,13 +153,13 @@ The map size is bounded by distinct (instID × nominal account) combinations —
 
 ### 5. Pivot Results Log
 
-`ldgr_rows` (Curve A) comes from a single Postgres query:
+The canonical ledger row count comes from a single Postgres query:
 
 ```sql
 SELECT COUNT(*) FROM ldgr_{year}
 ```
 
-This replaces the current in-memory `allRows.size` count. Everything else in `pivot_results.csv` — `key_embedded_equivalent_balances`, `rebuild_cost_ratio`, `recon_obligations_*` — is computed in Scala from the same permutation formula, unchanged.
+This replaces the current in-memory `allRows.size` count. Other fields in `pivot_results.csv` — `key_embedded_equivalent_balances`, `rebuild_cost_ratio`, `recon_obligations_*` — remain modeled calculations in Scala; they are not measurements of a separately executed key-embedded system.
 
 ---
 
@@ -179,10 +179,10 @@ This replaces the current in-memory `allRows.size` count. Everything else in `pi
 
 ## Open Questions (to resolve before implementation)
 
-These were deferred from the design session. Each needs a decision recorded in `BOB_WORK_LOG.md` before code is written.
+These decisions remain open and must be resolved and recorded here before implementation begins.
 
 **Q1 — Postgres as a required dependency**  
-Is Postgres already in the stack for the target environment, or does this introduce it as a new required dependency for Step 5? If new: does it belong in `QUICKSTART.md` prerequisites as optional (required for C2+ runs, not C1)? Or should the design support a fallback to the current CSV-only engine for C1 smoke tests?
+Is Postgres already in the target environment, or would it be a new service dependency for the attribute-derived reporting workload? If new, should it be required for that workload only, while compilation and ledger posting remain database-free? Should a CSV-only aggregation fallback remain supported?
 
 **Q2 — LDGR table lifetime**  
 Should `ldgr_{year}` tables persist across sessions (Step 3 loads, Step 5 queries, tables remain for re-runs), or should Step 5 always reload from CSV on each run? Persistent tables save reload time on re-runs but introduce a CSV-vs-table sync question if LDGR files are regenerated. Reload-always keeps Postgres stateless.
@@ -190,8 +190,8 @@ Should `ldgr_{year}` tables persist across sessions (Step 3 loads, Step 5 querie
 **Q3 — Single table vs. per-year tables**  
 For the 14-year cumulative Curve A measurement, a single `ldgr` table partitioned by `fiscal_year` is cleaner (one `COUNT(*)` across all years). But it couples Step 3's output write to a shared table rather than isolated year files. Per-year tables (`ldgr_2003`, `ldgr_2004`, …) keep the year-file isolation of the current design. Preference?
 
-**Q4 — JDBC driver**  
-`lib/postgresql-42.2.5.jar` was deleted in Session 23 (cleanup of binary libs). It needs to return as a proper `build.sbt` dependency if this design proceeds. Current `build.sbt` has no JDBC dependency. The latest stable PostgreSQL JDBC driver should be added (`org.postgresql:postgresql:42.7.4` as of this writing — verify before adding).
+**Q4 — JDBC driver and runtime configuration**
+The VA subproject currently declares `org.postgresql:postgresql:42.7.4` in `build.sbt`. The earlier note that the driver is absent is stale. No current aggregation code uses the driver. Before implementation, verify the supported server/runtime versions and define how connection settings are supplied without embedding credentials.
 
 ---
 
@@ -203,7 +203,7 @@ For the 14-year cumulative Curve A measurement, a single `ldgr` table partitione
 | `02-foundation/va_pipeline/build.sbt` | Add PostgreSQL JDBC dependency |
 | `data/ViewSpec.csv` | No change — remains the declarative view spec |
 | `data/VendorMaster.csv` | No change — remains the flat-file CAR for the two-pointer join |
-| `QUICKSTART.md` | Add Postgres to prerequisites section |
+| `QUICKSTART.md` | Document PostgreSQL prerequisites only if the implementation makes the service required for a supported workload. |
 | `docs/universal-ledger-DESIGN.md` | Update Step 5 description |
 
 ---

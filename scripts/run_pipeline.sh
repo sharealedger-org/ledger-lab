@@ -35,6 +35,12 @@
 #                          (default: pipeline_results.log in outPath)
 #    -h, --help            Print this help and exit
 #
+#  STEP GUIDE (no external data or Spark required):
+#    Step 2 reads FY<YY>q<quarter>exp.txt plus VendorMaster.csv from --inPath
+#    and writes SortedJE*.csv to --outPath. Step 3 reads those SortedJE files
+#    from --outPath and writes LDGR<YYYY>.csv. For the checked-in fixture, run:
+#      bash scripts/run_repo_fixture_smoke_test.sh
+#
 #  EXAMPLES:
 #    # C1 baseline (fixture data):
 #    bash run_pipeline.sh --inPath ./data --outPath ./data/output \
@@ -123,8 +129,12 @@ SBT_PROJECT="$REPO_ROOT/02-foundation/va_pipeline"
 
 # The engine now lives below the repository root. Normalize relative data paths
 # before invoking sbt so callers can continue using --inPath data.
-[[ "$IN_PATH" = /* ]] || IN_PATH="$REPO_ROOT/$IN_PATH"
-[[ "$OUT_PATH" = /* ]] || OUT_PATH="$REPO_ROOT/$OUT_PATH"
+is_absolute_path() {
+  [[ "$1" = /* || "$1" =~ ^[A-Za-z]:[\\/] || "$1" = //* ]]
+}
+
+is_absolute_path "$IN_PATH" || IN_PATH="$REPO_ROOT/$IN_PATH"
+is_absolute_path "$OUT_PATH" || OUT_PATH="$REPO_ROOT/$OUT_PATH"
 
 # ── helpers ───────────────────────────────────────────────────────────────────
 log() {
@@ -137,13 +147,27 @@ run_step() {
   local step="$1" year="$2" quarter="${3:-01}"
   log "START  step=$step  year=$year  quarter=$quarter"
 
+  local vm_arg=""
+  if [[ "$step" == "2" ]]; then
+    local vm_candidate
+    for vm_candidate in \
+      "$IN_PATH/VendorMaster_full.csv" \
+      "$IN_PATH/VendorMaster_enriched.csv" \
+      "$IN_PATH/VendorMaster.csv"; do
+      if [[ -f "$vm_candidate" ]]; then
+        vm_arg=" --vendormaster $vm_candidate"
+        break
+      fi
+    done
+  fi
+
   local start_epoch
   start_epoch=$(date +%s)
 
   # Capture output while still streaming it to terminal
   local out
   out=$(cd "$SBT_PROJECT" && sbt -batch \
-    "run --step $step --inPath $IN_PATH --outPath $OUT_PATH --year $year --quarter $quarter" \
+    "run --step $step --inPath $IN_PATH --outPath $OUT_PATH --year $year --quarter $quarter$vm_arg" \
     2>&1 | tee /dev/stderr)
 
   local rc=$?

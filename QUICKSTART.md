@@ -1,40 +1,22 @@
-# ShareALedger Ledger Lab — Quick Start
+# Ledger Lab — Quick Start
 
-> This is the public Ledger Lab successor to the original Universal Ledger demonstration system.
-
-> **Purpose:** Get the pipeline running on your laptop in minutes, understand what each step does,
-> and run the two cost-surface experiments that ground the
-> [nine-paper monograph](https://github.com/KipTwitchell/universal_ledger).
+This guide orients a technical contributor to the repository's architecture, current
+implementation, and validation status. It distinguishes the target 01–05 design from the legacy
+Virginia executable path.
 
 ---
 
 ## What This Is
 
-A **runnable, ground-up implementation of how financial systems really work** — not a textbook
-example, not a black-box ERP, but every step of the process laid bare in readable Scala code,
-running on 13 years of real State of Virginia government financial data.
+Ledger Lab studies the cost and capability of representing financial events as instrument-anchored
+state and deriving reporting views from effective-dated attributes. The intended responsibilities
+are organized into 01 Transformation, 02 Foundation, 03 Instrument Ledger, 04 Engines, and 05
+Perspectives. They are logical boundaries, not a required sequence of physical passes.
 
-The pipeline implements the **ARE / AL / ALE** architecture described in the monograph:
-
-```
-Raw transactions
-    │
-    ▼  Step 2 — standardizeAndSort   (Accounting Rules Engine — ARE)
-Universal Journal entries (SJEs)  +  Vendor Master (Contract Attributes Record / CAR)
-    │
-    ▼  Step 3 — post               (Instrument Ledger — IL)
-Balance file (LDGR)
-    │
-    ├──▶  Step 5 — dataAggregation      (ViewSpec-driven pivot; Instrument Pivot Theorem)
-    ├──▶  Step 6 — financialAllocation  (prior-day divisor design; single-pass universality)
-    ├──▶  Step 7 — consolidation        (interagency elimination)
-    ├──▶  Step 8 — forecastingBudgeting (balance × growth factor; no A-partition needed)
-    ├──▶  Step 9 — arrangementReclass   (VendorMaster-driven reclass events; run before 4,5)
-    └──▶  Step 4 — contraCreation       (reconciliation proof; run LAST)
-```
-
-The algorithmic engine is **match-merge** (sorted-file join / Common Key Buffering) — the same
-approach used by GenevaERS on the mainframe, here made transparent in readable Scala.
+The current Virginia Scala application is a legacy research baseline whose code combines some of
+those responsibilities. It can provide useful fixture and control evidence, but its numbered
+options are not a faithful implementation map for 01–05. See [the layer status](README.md#architecture-and-status)
+and [the CKB execution model](docs/CKB_LAYER_EXECUTION_MODEL.md).
 
 ---
 
@@ -42,216 +24,178 @@ approach used by GenevaERS on the mainframe, here made transparent in readable S
 
 | Requirement | Version | Notes |
 |---|---|---|
-| JDK | 8 or 11 | `java -version` to check |
-| sbt | 1.x | [get sbt](https://www.scala-sbt.org/download.html) |
-| Scala | 2.11.8 | installed automatically by sbt |
+| JDK | 21 | Current locally validated toolchain; cross-platform validation is pending. |
+| sbt | 1.10.10 | Pinned in `02-foundation/va_pipeline/project/build.properties`. |
+| Scala | 2.12.18 | Configured by the VA subproject. |
+| PostgreSQL | Not required to compile | A JDBC dependency is present; the planned database-backed Step 5 is not implemented. |
 
-**That's it.** Steps 2–9 (the core pipeline) require no Spark, no database, no VM.
-The repo contains small fixture data files so you can run end-to-end immediately.
-
-> **Steps 1 and 11** use Apache Spark. They are not needed to run any of the nine Financial System
-> Patterns or either experiment.
+Spark-dependent sources are excluded from the default build. Do not infer that an excluded path has
+a Scala replacement simply because its source files are written in Scala.
 
 ---
 
-## 30-Second Run (fixture data, any laptop)
+## Build Check
 
 ```bash
-# 1. Clone and enter the project
-git clone https://github.com/KipTwitchell/universal_ledger.git
-cd universal_ledger/02-foundation/va_pipeline
-
-# 2. Set up output directory
-mkdir -p ../../data/output
-
-# 3. Run Step 2 — Standardize & Journalize
-#    Reads raw VA expenditure data → produces Universal Journal entries + Vendor Master
-sbt "run --step 2 --inPath ../../data/ --outPath ../../data/output/ --year 03 --quarter 01"
-
-# 4. Run Step 3 — Post
-#    Reads sorted journal entries → produces Balance (Ledger) file
-sbt "run --step 3 --inPath ../../data/output/ --outPath ../../data/output/ --year 03"
+cd 02-foundation/va_pipeline
+sbt -batch compile
+cd ../..
 ```
 
-After these two commands you will have:
-- `data/output/JE*.csv` — Universal Journal entries (one debit + one credit per transaction)
-- `data/output/SortedJE03.csv` — Journals sorted on the full balance key, ready for posting
-- `data/output/LDGR2003.csv` — The Balance file: one row per unique (vendor × nominal account × period)
+Run the checked-in fixture through the no-Spark runtime path:
+
+```bash
+bash scripts/run_repo_fixture_smoke_test.sh
+```
+
+This stages `data/FY03q1exp_small.txt` under the production filename, runs Steps 2 and 3, checks
+that sorted journal and ledger files are written, and verifies the ledger amount sum is balanced.
+It needs only JDK 21, sbt, Bash, and the files in this repository.
+
+### Inspect A Successful Run
+
+Ask the smoke test to print a small result sample. Temporary files are still cleaned up:
+
+```bash
+bash scripts/run_repo_fixture_smoke_test.sh --show-results
+```
+
+This displays selected journal and ledger fields in aligned columns, row counts, the balance sum,
+key pipeline log lines, and the compatibility cost record. It never prints the full input or output
+files. To retain the temporary files for further inspection, combine the options:
+
+```bash
+bash scripts/run_repo_fixture_smoke_test.sh --show-results --keep-output
+```
+
+Copy the actual directory from the `Fixture output retained at:` line. In Git Bash, verify it first:
+
+```bash
+output_dir="/the/actual/path/printed/by/the/script/output"
+ls -la "$output_dir"
+head -n 3 "$output_dir/SortedJEFY03q1exp.csv"
+head -n 3 "$output_dir/LDGR2003.csv"
+wc -l "$output_dir/SortedJEFY03q1exp.csv" "$output_dir/LDGR2003.csv"
+cat "$output_dir/pipeline_results.log"
+cat "$output_dir/cost_surface.csv"
+```
+
+The formatter is also available directly for a retained output directory:
+
+```bash
+bash scripts/show_repo_fixture_results.sh "$output_dir"
+```
+
+The sorted journal shows the generated debit and credit lines that Step 2 sends to posting. The
+ledger shows the accumulated balance rows produced by Step 3. The log records the selected curve,
+steps, elapsed time, and output location; `cost_surface.csv` is a compatibility summary, not the
+complete measurement contract. These commands inspect small prefixes and summaries rather than
+loading an entire history into an analysis engine.
 
 ---
 
 ## Understanding the Output
 
-### Universal Journal (`JE*.csv` / `SortedJE*.csv`)
-Every financial transaction becomes **two lines** — a debit and a credit. This is double-entry
-bookkeeping made explicit. The `transNominalAccountID` field is the key insight: it encodes
-the economic nature of the balance (`EXP202` = expense program 202, `REV101` = revenue source 101).
+The current VA path uses three important artifact families:
 
-### Balance File (`LDGR*.csv`)
-One row per unique combination of:
-`(Vendor ID × Legal Entity × Fund × Object × Nominal Account × Currency × Period)`
+- Sorted journal entries carry transaction-level attributes and amounts into posting.
+- `LDGR*.csv` holds balances at the VA implementation's current ledger grain.
+- `VendorMaster.csv` supplies vendor attributes used by the legacy aggregation and reclassification
+  code.
 
-The amount is the **accumulated sum of all journals for that key**. This is the Instrument Ledger:
-the most granular balance store possible. Any summary view (by agency, by fund, by account)
-can be derived from it in a single pass.
-
-### VendorMaster (`VendorMaster.csv`)
-The **Contract Attributes Record (CAR)**. One row per vendor (instrument). CAR attributes here —
-`instTypeID`, `instNIGPClass`, `instGeoRegion` — are the dimensions that Step 5 pivots on.
-Adding a column here unlocks all new reporting views at zero marginal storage cost in the LDGR.
-That is the Instrument Pivot Theorem.
+These files are relevant evidence for the Instrument Ledger and attribute-reporting questions, but
+their existence does not establish the full 03 contract, a generalized 05 engine, or zero marginal
+storage for every possible reporting dimension. See [99-interpretation](99-interpretation/README.md)
+for required controls and evidence status.
 
 ---
 
-## Running the Pipeline Script
+## Legacy VA Runner
 
-For automated or agentic execution, use `run_pipeline.sh`:
+The existing `scripts/run_pipeline.sh` accepts an input directory, output directory, fiscal years,
+and selected VA application options. The two useful no-Spark steps are:
 
-```bash
-cd universal_ledger   # repo root
-
-# C1 — Post only (baseline curve)
-bash scripts/run_pipeline.sh \
-  --inPath data --outPath data/output \
-  --years 03 --steps 2,3 --curve C1 --config post-only
-
-# C2 — Post + Analysis (adds reporting materialization)
-bash scripts/run_pipeline.sh \
-  --inPath data --outPath data/output \
-  --years 03 --steps 2,3,5 --curve C2 --config full-views
-
-# C4 — Full pipeline
-bash scripts/run_pipeline.sh \
-  --inPath data --outPath data/output \
-  --years 03 --steps 2,3,5,6,7,8,9,4 --curve C4 --config full
-```
-
-Each run appends one row to `data/output/cost_surface.csv`. Run C1, C2, C4 in sequence →
-three cost points. The convergence of C3 and C4 is the empirical proof of single-pass universality.
-
----
-
-## Interactive Mode (original menu)
-
-The interactive menu is preserved for human exploration:
-
-```bash
-cd 02-foundation/va_pipeline
-sbt run
-# Follow the prompts — all 9 steps are available
-```
-
----
-
-## The Two Experiments
-
-### Experiment 1 — The Four-Curve Cost Surface
-
-**What it measures:** How does total pipeline cost change as process configurations are added?
-
-| Curve | Steps | What it shows |
-|---|---|---|
-| C1 | `2,3` | Baseline: posting only |
-| C2 | `2,3,5` | Marginal cost of reporting materialization |
-| C3 | `2,3,5,8,9` | Cost of generated-transaction passes (forecast + reclass) |
-| C4 | `2,3,5,6,7,8,9,4` | Full pipeline. If C4 ≈ C3, single-pass universality is proved empirically |
-
-Each run writes one row to `data/output/cost_surface.csv`:
-- `total_compute_s` — elapsed time
-- `total_storage_bytes` — bytes written
-- `master_file_count` — enabled=Y rows in ViewSpec.csv (the AHI metric, Paper 1 §5.2)
-- `total_cost_proxy` — weighted sum of all three
-
-### Experiment 2 — The Output-Side Pivot Theorem (CAR Attribute Expansion)
-
-**What it measures:** As CAR attributes are added to VendorMaster one at a time, how many new
-audited reporting views become answerable — and what would the equivalent key-embedded cost be?
-
-Edit `data/ViewSpec.csv` to uncomment successive attribute rounds, then run Step 5:
-
-| Round | Attribute | Views unlocked |
-|---|---|---|
-| 0 | `instTypeID` | EXP vs. REV split |
-| 1 | `instNIGPClass` | Spend by commodity class × all existing dims |
-| 2 | `instGeoRegion` | Regional breakdowns × all above |
-| 3 | `instContractType` | Procurement channel × all above |
-
-Each run appends rows to `data/output/pivot_results.csv`. The `ratio` column
-(`key_embedded_equivalent_balances / views_answerable`) grows exponentially. That ratio IS
-the Instrument Pivot Theorem on public data.
-
----
-
-## Agentic Execution
-
-Both experiments can be driven by an AI agent. The agent interface is intentionally simple:
-
-1. **Edit** `data/ViewSpec.csv` — set `enabled=Y/N` flags or uncomment SAL rounds
-2. **Run** `bash scripts/run_pipeline.sh` from the repository root with chosen `--curve` and `--steps`
-3. **Read** `data/output/cost_surface.csv` and `data/output/pivot_results.csv`
-
-No Scala code involvement. Full API contract: **`scripts/AGENT_INTERFACE.md`**
-
----
-
-## Full VA Dataset
-
-The fixture files in `data/` are small samples. The full 13-year dataset (FY2003–FY2016)
-is available from the Virginia Department of Accounts open data portal:
-
-- **Expenditure files:** Quarterly, by fiscal year — `FY{YY}q{Q}exp.txt`
-- **PO files:** Annual — `VA_opendata_FY20{YY}.txt`
-- **Reference files:** Already in `data/` — Agency, Fund, Object, Program tables
-
-Expected data volume: ~780M records total, ~12M balance rows after posting.
-See Paper 4 §6 of the monograph for the benchmark: 2h38m on a MacBook Pro i7.
-
----
-
-## Pipeline Step Reference
-
-| Step | Scala object | Description | CKB partition inputs |
+| Step | Reads | Writes | Purpose |
 |---|---|---|---|
-| 2 | `standardizeAndSort` | Standardize raw VA data → SortedJE + VendorMaster | A |
-| 3 | `post` | Match-merge posting → LDGR balance file | A + B |
-| 4 | `contraCreation` | Reconciliation / contra entries — run **LAST** | B |
-| 5 | `dataAggregation` | ViewSpec-driven pivot → view files + pivot_results.csv | B + C |
-| 6 | `financialAllocation` | Overhead allocation via prior-day divisor | A + B + C |
-| 7 | `consolidation` | Agency consolidation + interagency elimination | B + C |
-| 8 | `forecastingBudgeting` | Actuals × growth factors → budget projection | B + C |
-| 9 | `arrangementReclass` | VendorMaster reclass → new balance events — run before 4,5 | B + C |
+| `2` | `FY<YY>q<quarter>exp.txt` or revenue input plus `VendorMaster.csv` | `SortedJEFY<YY>q<quarter>exp.csv` | Standardize source rows, create balanced journal lines, and externally sort them. |
+| `3` | `SortedJE*.csv` in `outPath` | `LDGR<YYYY>.csv` | Post sorted journal lines into the legacy instrument ledger. |
 
-**Partition legend:** A = transaction history (`SortedJE*.csv`), B = balance history (`LDGR*.csv`),
-C = attribute history (`VendorMaster.csv`). Steps 8 and 9 have no A input — they are
-*revaluation-class* processes that generate new transactions from B and C only.
+Steps 4–9 are legacy follow-on operations and require outputs or configuration from earlier steps.
+Steps 1, 10, and 11 require Spark and are excluded from the default build. The `--curve` field is
+retained for compatibility with existing logs; it is not the research taxonomy. Neither runner
+interface currently emits the complete canonical logging contract.
+
+Inspect the available options without starting a run:
+
+```bash
+bash scripts/run_pipeline.sh --help
+bash scripts/run_pipeline_orchestrator.sh --help
+```
+
+For the checked-in small data, use `scripts/run_repo_fixture_smoke_test.sh`; it performs the staging
+the production runner requires. Full historical runs use the external layout described in
+[RUNTIME_DATA_LAYOUT.md](docs/RUNTIME_DATA_LAYOUT.md).
 
 ---
 
-## Relationship to the Monograph
+## Current Research Questions
 
-| Pipeline | Monograph | Claim demonstrated |
+The repository's questions concern the relationship between economic events, canonical
+instrument-level state, generated events, and reporting capabilities:
+
+- Can the ledger state be reconstructed from balanced, traceable source events?
+- Which configured views can be derived from ledger state plus effective-dated attributes, and
+  what additional data is actually materialized?
+- Can calculation engines emit balanced, lineage-preserving SJE partitions that are applied back
+  to canonical state?
+- What compute, storage, sort, spill, and reconciliation costs accompany each capability?
+
+These are questions for experiments, not conclusions implied by successful compilation or a small
+fixture. See the [99 interpretation contract](99-interpretation/README.md) for evidence and status
+requirements.
+
+## Legacy VA Implementation Map
+
+This map helps navigate the current executable; it does not equate VA files with the target
+architecture.
+
+| Current code area | Existing behavior | Design status / caution |
 |---|---|---|
-| C1 cost curve | Paper 1 §§3.2, 3.2a | Interior minimum on the posting-only cost curve |
-| C1 vs C4 engine comparison | Paper 1 §3.2a | Engine-specific minimum — Scala vs. Spark |
-| C3 ≈ C4 equality | Paper 1 §3.2 | Single-pass universality across all nine FSPs |
-| Experiment 2 `ratio` | Paper 1 §3.4 | Instrument Pivot Theorem: O(v^m) views at O(1) balance cost |
-| `pivot_results.csv` | Paper 5 §§5.0a, 5.1 | Step-up join as operational mechanism |
-| All runs (public VA data) | Paper 3 §3.3 | Replicable controlled benchmark |
+| `standardizeAndSort.scala` and `post.scala` | Transform VA expenditure records, externally sort journal entries, and accumulate ledger balances. | A physical VA path that combines transformation and foundation responsibilities. |
+| `dataAggregation.scala` | Read ledger output and configured views, resolve vendor attributes, emit CSV summaries. | Existing in-memory implementation is a prototype; PostgreSQL selection and bounded cursor design is deferred in `docs/step5-postgres-design.md`. |
+| Allocation, consolidation, budget, reclassification, and contra modules | Legacy balance-driven financial operations and reconciliation. | These do not by themselves establish generalized 04 Engine contracts. Test both active and no-op cases. |
+| `04-engines/` and `05-perspectives/` | Target ownership boundaries and planned experiment scaffolds. | Generalized implementations are incomplete. |
 
----
+Browse the [Scala entry point](02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/ledger/LedgerApp.scala)
+and the relevant 01–05 layer README before changing a process.
 
-## Learning Path
+## Evidence and Measurements
 
-| If you want to... | Start here |
-|---|---|
-| Run the core pipeline in 2 commands | The **30-Second Run** section above |
-| Drive both experiments automatically | `scripts/AGENT_INTERFACE.md` |
-| Understand the posting algorithm | Read `post.scala` — the 3-case match-merge loop |
-| Understand the Pivot Theorem empirically | Run Experiment 2; watch the `ratio` column grow |
-| Understand the minimum cost curve | Run Experiments 1 (C1→C4); read `cost_surface.csv` |
-| Add a new Financial System Pattern | Read `docs/universal-ledger-DESIGN.md` §Adding a New Option |
-| Understand all design decisions | Read `PROJECT_BRIEF.md` |
+The schemas in [MEASUREMENT_AND_LOGGING.md](docs/MEASUREMENT_AND_LOGGING.md) define the intended
+run manifest, process metrics, sort events, partition catalog, engine metrics, perspective metrics,
+and reconciliation results. Current compatibility logs do not yet emit this full contract. A
+post-run report should separate active work, zero-work stages, failures, missing evidence, and
+architecture conclusions. Keep VA-source and synthetic-fixture results distinct.
 
----
+The `cost_surface.csv` and `pivot_results.csv` files are legacy summaries. A modeled permutation
+ratio is not a measured rebuild, and a successful view is not proof of all possible reporting
+capabilities. Cost claims need comparable runtime-data runs, explicit weights, resource metrics,
+controls, and replication.
 
-*Apache-2.0 License. Contributions welcome — see `README.md` for sign-off requirements.*
+## Runtime Data
+
+Small sanitized fixtures live in `data/`; full source and PO histories do not. Use the external
+directory contract and download instructions in [RUNTIME_DATA_LAYOUT.md](docs/RUNTIME_DATA_LAYOUT.md).
+Do not run a full historical workload with output directed into the Git repository.
+
+## Reading Order
+
+1. [Repository architecture and implementation status](README.md#architecture-and-status)
+2. The relevant [01–05 layer README](README.md#architecture-and-status)
+3. [CKB execution and physical pass model](docs/CKB_LAYER_EXECUTION_MODEL.md)
+4. [Measurement and logging contract](docs/MEASUREMENT_AND_LOGGING.md)
+5. [99 interpretation boundary](99-interpretation/README.md)
+
+`PROJECT_BRIEF.md` and `docs/universal-ledger-DESIGN.md` preserve historical design material.
+Use the current layer READMEs and the status statements above for the repository's present design
+and implementation state.
