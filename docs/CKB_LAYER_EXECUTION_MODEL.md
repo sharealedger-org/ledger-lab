@@ -82,12 +82,20 @@ This is not automatically a new layer pass. It is a conditional materialization 
 
 An allocation does not need to calculate a same-day global divisor by rescanning the current
 period. It may read the prior period's driver balances from a separate time partition B and apply
-that divisor to the current period's source pool in partition C. Both partitions enter the same
-ordered CKB flow; the allocation remains a bounded section rather than creating a second aggregation
-pass over the current period.
+the resulting divisor to the current period's source pool in partition C. The divisor is not at the
+full instrument key: it is keyed by an allocation group such as effective period, receiver agency,
+driver account, and rule version. The driver numerators or receiver weights still need to be
+available at the receiver/instrument grain when costs are allocated to instruments.
+
+Therefore B is an auxiliary side input to the allocation section, not automatically a primary CKB
+stream input. If the divisor and driver lookup tables fit the declared memory envelope, the section
+may load them as bounded maps keyed by allocation group and receiver. Otherwise, materialize and
+externally sort them by that group key, then perform a group-key merge/join with the instrument-level
+current source stream. Neither option requires a second scan of the current period, but the latter
+does create a real sort/materialization boundary that must be recorded.
 
 This is an intentional management approximation: the divisor is lagged by one period and must be
-recorded with its effective period, partition-B identity, rule identity, and rounding residual. The
+recorded with its effective period, partition-B identity, allocation-group key, rule identity, and rounding residual. The
 tradeoff is acceptable when the allocation policy permits prior-period drivers; it is not a license
 to substitute stale state where the business rule requires same-day weights. A same-day divisor is a
 new materialization requirement unless it can be produced from state already present in the current
@@ -96,7 +104,7 @@ ordered flow.
 The temporal handoff is explicit:
 
 ```text
-B_t (prior driver/divisor) + C_t (today's source pool)
+B_t (prior driver side input at receiver/group grain) + C_t (today's instrument source pool)
         -> D_t (today's generated allocation SJE output)
         -> C_(t+1) (tomorrow's source pool partition)
 ```

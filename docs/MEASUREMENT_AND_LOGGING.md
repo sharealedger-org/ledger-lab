@@ -86,6 +86,8 @@ generated_sje
 replacement_master
 perspective_extract
 pivot
+allocation_divisor
+allocation_driver
 reconciliation
 ```
 

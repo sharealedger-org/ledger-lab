@@ -26,7 +26,9 @@
 #   The driver balance (divisor) is read from yesterday's LDGR time partition B;
 #   the current allocation source pool is partition C.  Both are consumed in the
 #   same ordered CKB flow, so allocation is a single pass over B+C, same as any
-#   other FSP.  Using yesterday's divisor introduces immateriality of one day's change,
+#   other FSP. The aggregate divisor is keyed at the allocation-group grain; the
+#   receiver/instrument driver numerators remain available for the allocation join.
+#   Using yesterday's divisor introduces immateriality of one day's change,
 #   which is acceptable because allocation rules are management approximations.
 #   Today's generated allocation SJE output is partition D_t; when the process is
 #   active, that output is materialized as tomorrow's source pool C_(t+1).
