@@ -129,8 +129,12 @@ SBT_PROJECT="$REPO_ROOT/02-foundation/va_pipeline"
 
 # The engine now lives below the repository root. Normalize relative data paths
 # before invoking sbt so callers can continue using --inPath data.
-[[ "$IN_PATH" = /* ]] || IN_PATH="$REPO_ROOT/$IN_PATH"
-[[ "$OUT_PATH" = /* ]] || OUT_PATH="$REPO_ROOT/$OUT_PATH"
+is_absolute_path() {
+  [[ "$1" = /* || "$1" =~ ^[A-Za-z]:[\\/] || "$1" = //* ]]
+}
+
+is_absolute_path "$IN_PATH" || IN_PATH="$REPO_ROOT/$IN_PATH"
+is_absolute_path "$OUT_PATH" || OUT_PATH="$REPO_ROOT/$OUT_PATH"
 
 # ── helpers ───────────────────────────────────────────────────────────────────
 log() {

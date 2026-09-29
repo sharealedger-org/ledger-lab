@@ -51,10 +51,19 @@ mkdir -p "$INPUT_DIR" "$OUTPUT_DIR"
 cp "$REPO_ROOT/data/FY03q1exp_small.txt" "$INPUT_DIR/FY03q1exp.txt"
 cp "$REPO_ROOT/data/VendorMaster.csv" "$INPUT_DIR/VendorMaster.csv"
 
+# Git Bash may report /tmp paths that the Windows JVM resolves differently.
+# Use a drive-qualified path when cygpath is available.
+RUNNER_INPUT_DIR="$INPUT_DIR"
+RUNNER_OUTPUT_DIR="$OUTPUT_DIR"
+if command -v cygpath >/dev/null 2>&1; then
+  RUNNER_INPUT_DIR="$(cygpath -m "$INPUT_DIR")"
+  RUNNER_OUTPUT_DIR="$(cygpath -m "$OUTPUT_DIR")"
+fi
+
 echo "Running checked-in FY03 small fixture through Steps 2 and 3..."
 bash "$REPO_ROOT/scripts/run_pipeline.sh" \
-  --inPath "$INPUT_DIR" \
-  --outPath "$OUTPUT_DIR" \
+  --inPath "$RUNNER_INPUT_DIR" \
+  --outPath "$RUNNER_OUTPUT_DIR" \
   --years 03 \
   --steps 2,3 \
   --curve C1 \
