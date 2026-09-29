@@ -81,12 +81,13 @@ This is not automatically a new layer pass. It is a conditional materialization 
 ## Prior-State Divisors
 
 An allocation does not need to calculate a same-day global divisor by rescanning the current
-period. It may use the prior period's driver balances, which are already available in the ordered
-state input, and apply the current period's source pool against that divisor. The allocation then
-remains a bounded section of the existing CKB flow rather than creating a second aggregation pass.
+period. It may read the prior period's driver balances from a separate time partition B and apply
+that divisor to the current period's source pool in partition C. Both partitions enter the same
+ordered CKB flow; the allocation remains a bounded section rather than creating a second aggregation
+pass over the current period.
 
 This is an intentional management approximation: the divisor is lagged by one period and must be
-recorded with its effective period, source partition, rule identity, and rounding residual. The
+recorded with its effective period, partition-B identity, rule identity, and rounding residual. The
 tradeoff is acceptable when the allocation policy permits prior-period drivers; it is not a license
 to substitute stale state where the business rule requires same-day weights. A same-day divisor is a
 new materialization requirement unless it can be produced from state already present in the current

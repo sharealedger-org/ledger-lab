@@ -23,8 +23,9 @@
 #   Net financial position is unchanged — only distribution changes.
 #
 # PRIOR-DAY DIVISOR DESIGN (Paper 1 §3.2 — single-pass universality):
-#   The driver balance (divisor) is read from yesterday's LDGR — it already exists
-#   in partition B.  This means allocation is a single pass over B+C, same as any
+#   The driver balance (divisor) is read from yesterday's LDGR time partition B;
+#   the current allocation source pool is partition C.  Both are consumed in the
+#   same ordered CKB flow, so allocation is a single pass over B+C, same as any
 #   other FSP.  Using yesterday's divisor introduces immateriality of one day's change,
 #   which is acceptable because allocation rules are management approximations.
 #
