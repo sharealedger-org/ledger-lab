@@ -160,6 +160,10 @@ run_step() {
       fi
     done
   fi
+  local allocation_rules_arg=""
+  if [[ "$step" == "6" && -f "$IN_PATH/AllocationRules.csv" ]]; then
+    allocation_rules_arg=" --allocationRules $IN_PATH"
+  fi
 
   local start_epoch
   start_epoch=$(date +%s)
@@ -174,15 +178,15 @@ run_step() {
   fi
   if [[ "$time_mode" == "macos" ]]; then
     out=$(cd "$SBT_PROJECT" && /usr/bin/time -l sbt -batch \
-      "run --step $step --inPath $IN_PATH --outPath $OUT_PATH --year $year --quarter $quarter$vm_arg" \
+      "run --step $step --inPath $IN_PATH --outPath $OUT_PATH --year $year --quarter $quarter$vm_arg$allocation_rules_arg" \
       2>&1 | tee /dev/stderr)
   elif [[ "$time_mode" == "gnu" ]]; then
     out=$(cd "$SBT_PROJECT" && /usr/bin/time -v sbt -batch \
-      "run --step $step --inPath $IN_PATH --outPath $OUT_PATH --year $year --quarter $quarter$vm_arg" \
+      "run --step $step --inPath $IN_PATH --outPath $OUT_PATH --year $year --quarter $quarter$allocation_rules_arg" \
       2>&1 | tee /dev/stderr)
   else
     out=$(cd "$SBT_PROJECT" && sbt -batch \
-      "run --step $step --inPath $IN_PATH --outPath $OUT_PATH --year $year --quarter $quarter$vm_arg" \
+      "run --step $step --inPath $IN_PATH --outPath $OUT_PATH --year $year --quarter $quarter$vm_arg$allocation_rules_arg" \
       2>&1 | tee /dev/stderr)
   fi
 

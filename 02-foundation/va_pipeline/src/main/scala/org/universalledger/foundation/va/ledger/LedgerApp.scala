@@ -155,7 +155,7 @@ object LedgerApp {
       case "4"  => contraCreation(outPath)       // must run LAST — after all balance-updating processes
       case "5"  => dataAggregation(outPath, inPath + "ViewSpec.csv")
                                                  // LDGR in outPath; ViewSpec + VendorMaster in inPath
-      case "6"  => financialAllocation(outPath)  // allocates overhead to receivers; posts allocation SJEs
+      case "6"  => financialAllocation(outPath, params.getOrElse("allocationRules", inPath))  // allocates overhead to receivers; posts allocation SJEs
       case "7"  => consolidation(outPath)        // consolidates agencies; eliminates interagency transfers
       case "8"  => forecastingBudgeting(outPath) // projects actuals to budget; produces variance report
       case "9"  => arrangementReclass(outPath)   // reads/writes VendorMaster, VendorUpdate, LDGR files

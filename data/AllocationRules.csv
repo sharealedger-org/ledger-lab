@@ -40,9 +40,9 @@
 #   Vary these rules between runs to observe cost curve shifts.
 #
 # FIXTURE DATA — Virginia state government overhead allocation example:
-#   EXP999 = administrative overhead program (convention in VA coding)
+#   EXP6 = VA object code for salaries (real public classification)
 #   Agency 267 = Virginia Marine Resources Commission (smallest in FY03 fixture data)
 #   Driver = all EXP balances in the same agency (proportional share of total spend)
 #
 sourceNominalAccount,sourceAgency,driverNominalAccount,receiverAgency,divisorGrain,driverGrain
-EXP999,*,EXP,*,period+agency+driverAccount,instrument
+EXP6,*,EXP,*,period+agency+driverAccount,instrument

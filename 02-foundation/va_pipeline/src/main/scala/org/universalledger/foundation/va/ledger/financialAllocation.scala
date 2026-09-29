@@ -74,7 +74,7 @@ object financialAllocation {
     driverGrain:          String = "instrument"
   )
 
-  def apply(fileOutLocation: String): Unit = {
+  def apply(fileOutLocation: String, rulesLocation: String = ""): Unit = {
 
     println("*" * 100)
     println("                    Financial Allocation Module")
@@ -94,7 +94,10 @@ object financialAllocation {
     // Load allocation rules
     //─────────────────────────────────────────────────────────────────────────
     val rules = mutable.ArrayBuffer[AllocationRule]()
-    val rulesFile = new File(dataPath, "AllocationRules.csv").getPath
+    val rulesFile = new File(
+      if (rulesLocation.nonEmpty) rulesLocation else dataPath,
+      "AllocationRules.csv"
+    ).getPath
     try {
       val rLines = Source.fromFile(rulesFile).getLines()
       for (line <- rLines if line.trim.nonEmpty && !line.startsWith("#")) {
@@ -109,10 +112,9 @@ object financialAllocation {
       println(s"Allocation rules loaded: ${rules.size} rules from $rulesFile")
     } catch {
       case _: java.io.FileNotFoundException =>
-        // Default rule: any nominal account starting with "EXP" in project "999"
-        // is overhead; distribute across all EXP balances in the same agency
-        rules += AllocationRule("EXP999", "*", "EXP", "*", "period+agency+driverAccount", "instrument")
-        println(s"No AllocationRules.csv found — applying default rule: EXP999 → all EXP in same agency")
+        // Compatibility fallback: use the VA salary object as the source category.
+        rules += AllocationRule("EXP6", "*", "EXP", "*", "period+agency+driverAccount", "instrument")
+        println(s"No AllocationRules.csv found — applying default rule: EXP6 → all EXP in same agency")
     }
 
     var totalFilesProcessed = 0
@@ -156,7 +158,7 @@ object financialAllocation {
       //───────────────────────────────────────────────────────────────────────
       // Open ALLOC_SJE output
       //───────────────────────────────────────────────────────────────────────
-      val allocSJEFile = dataPath + "ALLOC_SJE" + yearStr + ".csv"
+      val allocSJEFile = new File(dataPath, "ALLOC_SJE" + yearStr + ".csv").getPath
       val allocOut     = new PrintWriter(new File(allocSJEFile))
       writeSJEHeader(allocOut)
       var fileAllocSJEs = 0
@@ -201,15 +203,27 @@ object financialAllocation {
                 writeSJE(allocOut, creditSJE)
 
                 // Debit SJEs: one per receiver, weighted
+                var allocatedTotal = BigDecimal(0)
                 for (rcvRow <- driverRows) {
                   val weight   = rcvRow.amount.abs / totalDriverAmt
                   val allocAmt = (srcAmt * weight).setScale(2, BigDecimal.RoundingMode.HALF_UP)
                   if (allocAmt != BigDecimal(0)) {
                     fileAllocSJEs += 1
+                    allocatedTotal += allocAmt
                     val debitSJE = buildAllocSJE(rcvRow.fields, rcvRow.nominalAccountID,
                       allocAmt, "DEBIT", fileAllocSJEs)
                     writeSJE(allocOut, debitSJE)
                   }
+                }
+
+                // Close cent-level rounding residual against the final receiver.
+                val roundingResidual = (srcAmt - allocatedTotal).setScale(2, BigDecimal.RoundingMode.HALF_UP)
+                if (roundingResidual != BigDecimal(0) && driverRows.nonEmpty) {
+                  fileAllocSJEs += 1
+                  val roundingSJE = buildAllocSJE(driverRows.last.fields,
+                    driverRows.last.nominalAccountID, roundingResidual, "ROUNDING", fileAllocSJEs)
+                  writeSJE(allocOut, roundingSJE)
+                  println(s"  Allocation rounding residual applied: $roundingResidual")
                 }
               }
             }
@@ -223,10 +237,11 @@ object financialAllocation {
 
       // Sort and post if any SJEs were generated
       if (fileAllocSJEs > 0) {
-        val sortedFile = dataPath + "SortedJE_ALLOC" + yearStr + ".csv"
+        val shortYear = yearStr.takeRight(2)
+        val sortedFile = new File(dataPath, "SortedJEFY" + shortYear + "_ALLOC.csv").getPath
         sortSJEFile(allocSJEFile, sortedFile)
         println(s"  Posting allocation SJEs...")
-        post(dataPath, dataPath)
+        post(dataPath, dataPath, journalNameContains = "_ALLOC")
         println(s"  Post complete.")
       }
     }
@@ -281,13 +296,12 @@ object financialAllocation {
 
   private def sortSJEFile(inputFile: String, outputFile: String): Unit = {
     val lines = Source.fromFile(inputFile).getLines().toList
-    if (lines.size <= 1) { val o = new PrintWriter(new File(outputFile)); lines.foreach(o.println); o.close(); return }
-    val header = lines.head
+    if (lines.size <= 1) { new PrintWriter(new File(outputFile)).close(); return }
     val sorted = lines.tail.filter(_.trim.nonEmpty).sortWith { (a, b) =>
       def key(e: Array[String]) = (9 to 22).map(i => if (i < e.length) e(i) else "").mkString
       key(a.split(",", -1)) < key(b.split(",", -1))
     }
-    val o = new PrintWriter(new File(outputFile)); o.println(header); sorted.foreach(o.println); o.close()
+    val o = new PrintWriter(new File(outputFile)); sorted.foreach(o.println); o.close()
   }
 
   private def writeSJEHeader(out: PrintWriter): Unit = out.write(

@@ -48,6 +48,17 @@ Run the checked-in fixture through the no-Spark runtime path:
 bash scripts/run_repo_fixture_smoke_test.sh
 ```
 
+Run the separate active allocation profile when you want generated allocation results:
+
+```bash
+bash scripts/run_repo_fixture_smoke_test.sh --with-allocation --show-results
+```
+
+This opt-in profile adds two synthetic VA `EXP6` salary source rows, loads
+`AllocationRules.csv` from the staged input directory, generates and applies allocation SJEs, and
+checks the rounding residual and final ledger balance. The default smoke test remains the clean
+public Step 2/3 baseline.
+
 This stages `data/FY03q1exp_small.txt` under the production filename, runs Steps 2 and 3, checks
 that sorted journal and ledger files are written, and verifies the ledger amount sum is balanced.
 It needs only JDK 21, sbt, Bash, and the files in this repository.

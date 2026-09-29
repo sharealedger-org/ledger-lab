@@ -10,6 +10,7 @@ REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 RUN_ROOT="$(mktemp -d)"
 KEEP_OUTPUT=0
 SHOW_RESULTS=0
+WITH_ALLOCATION=0
 
 cleanup() {
   if [[ "$KEEP_OUTPUT" -eq 0 ]]; then
@@ -30,9 +31,13 @@ while [[ $# -gt 0 ]]; do
       SHOW_RESULTS=1
       shift
       ;;
+    --with-allocation)
+      WITH_ALLOCATION=1
+      shift
+      ;;
     -h|--help)
       cat <<'EOF'
-Usage: bash scripts/run_repo_fixture_smoke_test.sh [--show-results] [--keep-output]
+Usage: bash scripts/run_repo_fixture_smoke_test.sh [--show-results] [--keep-output] [--with-allocation]
 
 Stages data/FY03q1exp_small.txt as FY03q1exp.txt, runs VA Steps 2 and 3,
 and verifies that sorted journal and ledger output are produced and balanced.
@@ -40,7 +45,8 @@ No external VA data, Spark, PostgreSQL, or AI engine is required.
 
 Use --show-results to print small journal, ledger, count, and summary results.
 Use --keep-output to retain generated files for later inspection. The options
-may be combined.
+may be combined. Use --with-allocation to add synthetic EXP6 salary source rows
+and run the active Step 6 allocation path.
 EOF
       exit 0
       ;;
@@ -59,6 +65,16 @@ cp "$REPO_ROOT/data/FY03q1exp_small.txt" "$INPUT_DIR/FY03q1exp.txt"
 cp "$REPO_ROOT/data/VendorMaster.csv" "$INPUT_DIR/VendorMaster.csv"
 cp "$REPO_ROOT/data/AllocationDivisors_FY02_fixture.csv" "$INPUT_DIR/AllocationDivisors_FY02_fixture.csv"
 cp "$REPO_ROOT/data/VAAccountingRules.csv" "$INPUT_DIR/VAAccountingRules.csv"
+cp "$REPO_ROOT/data/AllocationRules.csv" "$INPUT_DIR/AllocationRules.csv"
+
+STEPS="2,3"
+CONFIG="repo-fixture"
+if [[ "$WITH_ALLOCATION" -eq 1 ]]; then
+  printf '267\t1552\t6\t2701\tBLACKWELLS BOOK SERVICES\t1000.00\n' >> "$INPUT_DIR/FY03q1exp.txt"
+  printf '267\t1552\t6\t2703\tBLACKWELLS BOOK SERVICES\t500.00\n' >> "$INPUT_DIR/FY03q1exp.txt"
+  STEPS="2,3,6"
+  CONFIG="repo-fixture-allocation"
+fi
 
 # Git Bash may report /tmp paths that the Windows JVM resolves differently.
 # Use a drive-qualified path when cygpath is available.
@@ -74,15 +90,25 @@ bash "$REPO_ROOT/scripts/run_pipeline.sh" \
   --inPath "$RUNNER_INPUT_DIR" \
   --outPath "$RUNNER_OUTPUT_DIR" \
   --years 03 \
-  --steps 2,3 \
+  --steps "$STEPS" \
   --curve C1 \
-  --config repo-fixture
+  --config "$CONFIG"
 
 SORTED_FILE="$OUTPUT_DIR/SortedJEFY03q1exp.csv"
 LEDGER_FILE="$OUTPUT_DIR/LDGR2003.csv"
 
 [[ -s "$SORTED_FILE" ]] || { echo "Missing sorted journal: $SORTED_FILE" >&2; exit 1; }
 [[ -s "$LEDGER_FILE" ]] || { echo "Missing ledger output: $LEDGER_FILE" >&2; exit 1; }
+
+if [[ "$WITH_ALLOCATION" -eq 1 ]]; then
+  [[ -s "$OUTPUT_DIR/ALLOC_SJE2003.csv" ]] || { echo "Missing allocation SJE output" >&2; exit 1; }
+  [[ -s "$OUTPUT_DIR/SortedJEFY03_ALLOC.csv" ]] || { echo "Missing sorted allocation output" >&2; exit 1; }
+  allocation_rows=$(awk 'NR > 1 { count++ } END { print count + 0 }' "$OUTPUT_DIR/ALLOC_SJE2003.csv")
+  [[ "$allocation_rows" -gt 0 ]] || {
+    echo "Allocation produced no generated SJEs" >&2
+    exit 1
+  }
+fi
 
 awk -F, '
   NR > 1 { rows++; total += $20 }
