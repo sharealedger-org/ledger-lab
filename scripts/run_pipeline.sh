@@ -31,6 +31,8 @@
 #    -c, --curve    LABEL  Experiment curve label: C1, C2, C3, C4 (default: C1)
 #    -d, --config   DESC   Short config description written to cost_surface.csv
 #                          (e.g. "minimal-materialization" or "full-views")
+#        --profile  NAME   Named workload profile for evidence and interpretation
+#        --materialization NAME  Materialization policy (derive-report, persist-sjes, etc.)
 #    -l, --logFile  FILE   Append control-total output to this file
 #                          (default: pipeline_results.log in outPath)
 #    -h, --help            Print this help and exit
@@ -102,6 +104,8 @@ STEPS="2,3"
 LOG_FILE=""
 CURVE="C1"
 CONFIG_DESC="default"
+WORKLOAD_PROFILE="legacy"
+MATERIALIZATION_PROFILE="unspecified"
 
 # ── arg parsing ───────────────────────────────────────────────────────────────
 while [[ $# -gt 0 ]]; do
@@ -113,6 +117,8 @@ while [[ $# -gt 0 ]]; do
     -l|--logFile)  LOG_FILE="$2";    shift 2 ;;
     -c|--curve)    CURVE="$2";       shift 2 ;;
     -d|--config)   CONFIG_DESC="$2"; shift 2 ;;
+    --profile)     WORKLOAD_PROFILE="$2"; shift 2 ;;
+    --materialization) MATERIALIZATION_PROFILE="$2"; shift 2 ;;
     -h|--help)     grep '^#' "$0" | sed 's/^# \{0,2\}//'; exit 0 ;;
     *) echo "Unknown option: $1"; exit 1 ;;
   esac
@@ -283,6 +289,8 @@ log "======================================================================"
 log "Universal Ledger Pipeline Run  [$RUN_ID]"
 log "  curve   = $CURVE"
 log "  config  = $CONFIG_DESC"
+log "  profile = $WORKLOAD_PROFILE"
+log "  materialization = $MATERIALIZATION_PROFILE"
 log "  inPath  = $IN_PATH"
 log "  outPath = $OUT_PATH"
 log "  years   = $YEARS"
@@ -354,7 +362,9 @@ bash "$SCRIPT_DIR/write_canonical_evidence.sh" \
   --start-epoch "$RUN_START_EPOCH" \
   --end-epoch "$RUN_END_EPOCH" \
   --compute-seconds "$TOTAL_COMPUTE_S" \
-  --log-file "$LOG_FILE"
+  --log-file "$LOG_FILE" \
+  --workload-profile "$WORKLOAD_PROFILE" \
+  --materialization-profile "$MATERIALIZATION_PROFILE"
 
 bash "$SCRIPT_DIR/interpret_run.sh" \
   "${OUT_PATH%/}/metrics" \

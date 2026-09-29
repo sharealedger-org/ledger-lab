@@ -59,6 +59,10 @@ This opt-in profile adds two synthetic VA `EXP6` salary source rows, loads
 checks the rounding residual and final ledger balance. The default smoke test remains the clean
 public Step 2/3 baseline.
 
+Use `--profile` to name the workload and `--materialization` to record whether derived outputs are
+computed at report time or persisted as generated events. These controls do not replace `--steps`;
+they describe the workload and storage policy selected by those steps.
+
 The divisor side input is generated, not hand-maintained:
 
 ```bash

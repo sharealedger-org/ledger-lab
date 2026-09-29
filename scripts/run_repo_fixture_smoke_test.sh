@@ -68,11 +68,15 @@ cp "$REPO_ROOT/data/AllocationRules.csv" "$INPUT_DIR/AllocationRules.csv"
 
 STEPS="2,3"
 CONFIG="repo-fixture"
+PROFILE="repo-fixture"
+MATERIALIZATION="baseline"
 if [[ "$WITH_ALLOCATION" -eq 1 ]]; then
   printf '267\t1552\t6\t2701\tBLACKWELLS BOOK SERVICES\t1000.00\n' >> "$INPUT_DIR/FY03q1exp.txt"
   printf '267\t1552\t6\t2703\tBLACKWELLS BOOK SERVICES\t500.00\n' >> "$INPUT_DIR/FY03q1exp.txt"
   STEPS="2,3,6"
   CONFIG="repo-fixture-allocation"
+  PROFILE="allocation-active"
+  MATERIALIZATION="persist-ledger-derive-divisor"
 fi
 
 bash "$REPO_ROOT/scripts/generate_allocation_divisors.sh" \
@@ -98,7 +102,9 @@ bash "$REPO_ROOT/scripts/run_pipeline.sh" \
   --years 03 \
   --steps "$STEPS" \
   --curve C1 \
-  --config "$CONFIG"
+  --config "$CONFIG" \
+  --profile "$PROFILE" \
+  --materialization "$MATERIALIZATION"
 
 SORTED_FILE="$OUTPUT_DIR/SortedJEFY03q1exp.csv"
 LEDGER_FILE="$OUTPUT_DIR/LDGR2003.csv"
