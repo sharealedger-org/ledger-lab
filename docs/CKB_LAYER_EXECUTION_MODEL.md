@@ -134,16 +134,24 @@ the result changes accounting state or merely explains it:
 The elimination flow is therefore:
 
 ```text
-ledger + counterparty rules
-        -> elimination candidate analysis
-        -> candidate/reconciliation evidence
-        -> approved balanced elimination SJE
-        -> canonical ledger/consolidated perspective
+one-sided source event
+        -> ARE intercompany candidate with counterparty identity
+        -> pair with the other side's candidate
+        -> complete pair: elimination candidate and report adjustment
+        -> incomplete pair: reconciliation gap remains visible
+        -> approved pair only: balanced elimination SJE when materialization is required
 ```
 
+Each side must identify the other side using a stable counterparty or match-group key. The ARE may
+generate one candidate record per source event; it must not assume that a candidate is paired merely
+because its amount or account looks transfer-like. The report matcher pairs candidates by the
+declared counterparty, period, currency/converted amount, account rule, and match group. A missing
+counterparty side is a first-class reconciliation gap and must contribute to the report's
+uneliminated total.
+
 Candidate analysis may be persisted for audit and interpretation, but it must not silently become
-an accounting entry. Approval, rule identity, source lineage, and the zero-sum control are the
-boundary between analytical output and stored accounting state.
+an accounting entry. Approval, rule identity, source lineage, pair completeness, and the zero-sum
+control are the boundary between analytical output and stored accounting state.
 
 The default materialization policy is therefore:
 
