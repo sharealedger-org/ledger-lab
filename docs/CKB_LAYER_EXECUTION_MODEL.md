@@ -124,10 +124,10 @@ the result changes accounting state or merely explains it:
 | Source event | Yes | Authoritative input and replay lineage. |
 | ARE-generated SJE and offset | Yes | Accounting event required to reconstruct balances. |
 | Allocation-generated SJE | Yes | Changes instrument balances and becomes a future source partition. |
-| Currency conversion/revaluation SJE | Yes | Changes accounting state and needs rate/rule lineage. |
+| Currency conversion/revaluation SJE | Conditional | Store it when book-currency state or a close requires it; otherwise derive the presentation amount from the source event, retained rate history, and rule at report time. |
 | Prior divisor and driver side input | Yes, as a partition or snapshot | Required to reproduce the allocation decision and next-period handoff. |
 | Elimination candidate match | Evidence record, not ledger state | It is an analytical proposal until the accounting rule approves it. |
-| Approved elimination SJE | Yes | It changes consolidated accounting state and must be replayable. |
+| Approved elimination SJE | Conditional | Store it when an approved close or downstream ledger process applies it; otherwise generate the adjustment at consolidated-report time from retained pair evidence and rules. |
 | Consolidated financial statement | No canonical copy required | It is a perspective that can be regenerated from ledger plus approved events. |
 | Dashboard or reporting aggregate | No canonical copy required | It is analytical output; retain a cache only when operationally useful. |
 
@@ -144,6 +144,21 @@ ledger + counterparty rules
 Candidate analysis may be persisted for audit and interpretation, but it must not silently become
 an accounting entry. Approval, rule identity, source lineage, and the zero-sum control are the
 boundary between analytical output and stored accounting state.
+
+The default materialization policy is therefore:
+
+```text
+retain immutable source facts + effective rules/rates + match evidence
+        |
+        +--> derive at report time when output is presentation-only
+        |
+        `--> materialize a balanced SJE when state, close, replay, or a downstream engine requires it
+```
+
+Report-time generation is valid only when the retained facts are sufficient to reproduce the same
+result: source event identity, effective-dated rate or counterparty rule, rule version, grouping
+key, and rounding policy must all be available. A report-time adjustment is still an auditable
+calculation; it is simply not part of the canonical ledger state.
 
 ## Pipes and Spawned Records
 
