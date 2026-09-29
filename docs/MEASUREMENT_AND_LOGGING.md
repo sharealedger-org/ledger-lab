@@ -83,6 +83,7 @@ sje
 car
 ledger_master
 generated_sje
+elimination_candidate
 replacement_master
 perspective_extract
 pivot

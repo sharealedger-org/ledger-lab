@@ -114,6 +114,37 @@ balancing controls. Materializing it for tomorrow is a time-partition handoff, n
 today's `B_t + C_t` input. A new physical pass is required only if the next day's consumer needs a
 new sort order or another declared materialization contract.
 
+## Canonical State Versus Analytical Output
+
+Not every engine result belongs in the canonical ledger. The persistence decision follows whether
+the result changes accounting state or merely explains it:
+
+| Result | Store as canonical state? | Reason |
+|---|---|---|
+| Source event | Yes | Authoritative input and replay lineage. |
+| ARE-generated SJE and offset | Yes | Accounting event required to reconstruct balances. |
+| Allocation-generated SJE | Yes | Changes instrument balances and becomes a future source partition. |
+| Currency conversion/revaluation SJE | Yes | Changes accounting state and needs rate/rule lineage. |
+| Prior divisor and driver side input | Yes, as a partition or snapshot | Required to reproduce the allocation decision and next-period handoff. |
+| Elimination candidate match | Evidence record, not ledger state | It is an analytical proposal until the accounting rule approves it. |
+| Approved elimination SJE | Yes | It changes consolidated accounting state and must be replayable. |
+| Consolidated financial statement | No canonical copy required | It is a perspective that can be regenerated from ledger plus approved events. |
+| Dashboard or reporting aggregate | No canonical copy required | It is analytical output; retain a cache only when operationally useful. |
+
+The elimination flow is therefore:
+
+```text
+ledger + counterparty rules
+        -> elimination candidate analysis
+        -> candidate/reconciliation evidence
+        -> approved balanced elimination SJE
+        -> canonical ledger/consolidated perspective
+```
+
+Candidate analysis may be persisted for audit and interpretation, but it must not silently become
+an accounting entry. Approval, rule identity, source lineage, and the zero-sum control are the
+boundary between analytical output and stored accounting state.
+
 ## Pipes and Spawned Records
 
 A CKB section or compiled Scala process may emit records into a pipe for a later section. Bash
