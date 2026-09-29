@@ -129,6 +129,7 @@ append_process() {
   local process_id="${RUN_ID}-step${step}-fy${short_year}"
   local input_file="" output_file="" input_partition="" output_partition=""
   local input_rows="" output_rows="" input_bytes="" output_bytes=""
+  local divisor_file="" divisor_partition=""
   case "$step" in
     2)
       input_file="$IN_PATH/FY${short_year}q1exp.txt"
@@ -146,6 +147,16 @@ append_process() {
       input_rows="$(file_rows "$input_file")"
       output_rows="$(($(file_rows "$output_file") - 1))"
       ;;
+    6)
+      input_file="$OUT_PATH/LDGR20${short_year}.csv"
+      output_file="$OUT_PATH/ALLOC_SJE20${short_year}.csv"
+      input_partition="ledger_fy20${short_year}"
+      output_partition="generated_sje_alloc_fy${short_year}"
+      divisor_file="$IN_PATH/AllocationDivisors_FY02_fixture.csv"
+      divisor_partition="allocation_divisor_fy02"
+      input_rows="$(($(file_rows "$input_file") - 1))"
+      output_rows="$(($(file_rows "$output_file") - 1))"
+      ;;
     *) return 0 ;;
   esac
   input_bytes="$(file_bytes "$input_file")"
@@ -156,8 +167,16 @@ append_process() {
   peak_rss_bytes="$(grep -E "RESOURCE step=${step} year=${year} " "$LOG_FILE" | \
     sed -E 's/.*peak_rss_bytes=([0-9]+).*/\1/' | tail -1)"
   [[ "$peak_rss_bytes" =~ ^[0-9]+$ ]] || peak_rss_bytes=""
-  append_csv_row "$PROCESS_METRICS" "$RUN_ID" "$process_id" "" "02-foundation" \
-    "step-${step}" "legacy-va" "$input_partition" "$output_partition" "" "$step" \
+  process_layer="02-foundation"
+  process_name="step-${step}"
+  engine_name="legacy-va"
+  if [[ "$step" == "6" ]]; then
+    process_layer="04-engines"
+    process_name="allocation"
+    engine_name="legacy-va-allocation"
+  fi
+  append_csv_row "$PROCESS_METRICS" "$RUN_ID" "$process_id" "" "$process_layer" \
+    "$process_name" "$engine_name" "$input_partition" "$output_partition" "" "$step" \
     "$RUN_TIMESTAMP" "$RUN_END_TIMESTAMP" "$step_elapsed" "" "" "" "$peak_rss_bytes" "" "" "" \
     "" "" "" "" "$input_rows" "$input_bytes" "$output_rows" "$output_bytes" "" "complete"
   if [[ "$step" == "2" ]]; then
@@ -170,9 +189,27 @@ append_process() {
       "instrument,ledger,journal,book,agency,fund,object,product,nominal,alt,currency-source,currency-type-source,currency-target,currency-type-target,fiscal-period" \
       "$input_rows" "$output_rows" "$input_bytes" "$output_bytes" "200000" "" "" "" \
       "$step_elapsed" "complete"
-  else
+  elif [[ "$step" == "3" ]]; then
     append_partition "$output_partition" "ledger_master" "03-instrument-ledger" "$process_id" \
       "$input_partition" "$output_file" "$output_rows" "" ""
+  else
+    append_partition "$divisor_partition" "allocation_divisor" "04-engines" "$process_id" "" \
+      "$divisor_file" "$(($(file_rows "$divisor_file") - 1))" "" ""
+    append_partition "$output_partition" "generated_sje" "04-engines" "$process_id" \
+      "$input_partition;$divisor_partition" "$output_file" "$output_rows" "" ""
+    sorted_output="$OUT_PATH/SortedJEFY${short_year}_ALLOC.csv"
+    append_partition "sorted_sje_alloc_fy${short_year}" "generated_sje" "04-engines" "$process_id" \
+      "$output_partition" "$sorted_output" "$(file_rows "$sorted_output")" "Y" "SortedJE"
+    append_partition "ledger_fy20${short_year}_after_allocation" "ledger_master" "03-instrument-ledger" \
+      "$process_id" "$output_partition" "$OUT_PATH/LDGR20${short_year}.csv" \
+      "$(($(file_rows "$OUT_PATH/LDGR20${short_year}.csv") - 1))" "" ""
+    if [[ -f "$sorted_output" ]]; then
+      append_csv_row "$SORT_EVENTS" "$RUN_ID" "${RUN_ID}-sort-fy${short_year}-alloc" \
+        "$process_id" "1" "$output_partition" "sorted_sje_alloc_fy${short_year}" "SortedJE" "" \
+        "instrument,ledger,journal,book,agency,fund,object,product,nominal,alt,currency-source,currency-type-source,currency-target,currency-type-target,fiscal-period" \
+        "$output_rows" "$(file_rows "$sorted_output")" "$(file_bytes "$output_file")" "$(file_bytes "$sorted_output")" \
+        "200000" "" "" "" "$step_elapsed" "complete"
+    fi
   fi
 }
 
@@ -203,6 +240,18 @@ for year in "${YEAR_LIST[@]}"; do
     append_control "ledger_balance" "ledger_fy20${short_year}" "0" \
       "$(awk -F',' 'NR > 1 { total += $20 } END { printf "%.2f", total }' "$ledger_file")" \
       "$(($(file_rows "$ledger_file") - 1))"
+  fi
+  allocation_file="$OUT_PATH/ALLOC_SJE20${short_year}.csv"
+  if [[ -f "$allocation_file" ]]; then
+    append_control "allocation_sje_balance" "generated_sje_alloc_fy${short_year}" "0" \
+      "$(awk -F',' 'NR > 1 { total += $26 } END { printf "%.2f", total }' "$allocation_file")" \
+      "$(($(file_rows "$allocation_file") - 1))"
+  fi
+  next_divisor_file="$OUT_PATH/AllocationDivisors_FY03_after_allocation.csv"
+  if [[ -f "$next_divisor_file" ]]; then
+    append_partition "allocation_divisor_fy03_after_allocation" "allocation_divisor" "04-engines" \
+      "${RUN_ID}-step6-fy${short_year}" "generated_sje_alloc_fy${short_year}" "$next_divisor_file" \
+      "$(($(file_rows "$next_divisor_file") - 1))" "" ""
   fi
 done
 

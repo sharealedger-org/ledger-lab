@@ -114,13 +114,6 @@ if [[ "$WITH_ALLOCATION" -eq 1 ]]; then
     echo "Allocation produced no generated SJEs" >&2
     exit 1
   }
-  bash "$REPO_ROOT/scripts/generate_allocation_divisors.sh" \
-    --source-kind ledger \
-    --input "$LEDGER_FILE" \
-    --output "$OUTPUT_DIR/AllocationDivisors_FY03_after_allocation.csv" \
-    --divisor-period FY03Q1 \
-    --source-period FY04Q1 \
-    --source-partition-id LDGR2003_after_allocation
   next_divisor_rows=$(awk 'NR > 1 { count++ } END { print count + 0 }' \
     "$OUTPUT_DIR/AllocationDivisors_FY03_after_allocation.csv")
   [[ "$next_divisor_rows" -gt 0 ]] || { echo "Missing next-period divisor groups" >&2; exit 1; }

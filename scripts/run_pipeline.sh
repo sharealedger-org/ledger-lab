@@ -302,6 +302,24 @@ for year in "${YEAR_LIST[@]}"; do
   done
 done
 
+# Allocation output becomes the next period's divisor side input before evidence is flushed.
+if [[ ",$STEPS," == *,6,* ]]; then
+  for year in "${YEAR_LIST[@]}"; do
+    short_year="${year: -2}"
+    next_year=$(printf "%02d" $((10#$short_year + 1)))
+    ledger_after_allocation="$OUT_PATH/LDGR20${short_year}.csv"
+    if [[ -f "$ledger_after_allocation" ]]; then
+      bash "$SCRIPT_DIR/generate_allocation_divisors.sh" \
+        --source-kind ledger \
+        --input "$ledger_after_allocation" \
+        --output "$OUT_PATH/AllocationDivisors_FY${short_year}_after_allocation.csv" \
+        --divisor-period "FY${short_year}Q1" \
+        --source-period "FY${next_year}Q1" \
+        --source-partition-id "LDGR20${short_year}_after_allocation"
+    fi
+  done
+fi
+
 # ── post-run metrics ──────────────────────────────────────────────────────────
 FINAL_STORAGE_BYTES="?"
 if [[ -d "$OUT_PATH" ]]; then
