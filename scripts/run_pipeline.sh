@@ -35,6 +35,12 @@
 #                          (default: pipeline_results.log in outPath)
 #    -h, --help            Print this help and exit
 #
+#  STEP GUIDE (no external data or Spark required):
+#    Step 2 reads FY<YY>q<quarter>exp.txt plus VendorMaster.csv from --inPath
+#    and writes SortedJE*.csv to --outPath. Step 3 reads those SortedJE files
+#    from --outPath and writes LDGR<YYYY>.csv. For the checked-in fixture, run:
+#      bash scripts/run_repo_fixture_smoke_test.sh
+#
 #  EXAMPLES:
 #    # C1 baseline (fixture data):
 #    bash run_pipeline.sh --inPath ./data --outPath ./data/output \

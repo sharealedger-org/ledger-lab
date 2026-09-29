@@ -102,7 +102,7 @@ object post {
       // Temporary Output Ledger File--will be renamed to actual ledger file at end of this loop
       //-----------------------------------------------------------------------------------------
       val ledgerFileNameTemp = ledgerFilePrefix + "temp.csv"
-      val outLedger: PrintWriter = new PrintWriter(new File(VAOutDataPath + ledgerFileNameTemp ))
+      val outLedger: PrintWriter = new PrintWriter(new File(VAOutDataPath, ledgerFileNameTemp))
       var fileLdgrRowsWritten = 0
       ldgrHeader(outLedger) // write header record
 
@@ -320,8 +320,8 @@ object post {
       // On Windows, Java File.renameTo fails silently if the destination file already exists.
       // Use java.nio.file.Files.move with REPLACE_EXISTING for cross-platform atomicity.
       java.nio.file.Files.move(
-        java.nio.file.Paths.get(VAOutDataPath + ledgerFileNameTemp),
-        java.nio.file.Paths.get(VAOutDataPath + ledgerFileName),
+        java.nio.file.Paths.get(VAOutDataPath, ledgerFileNameTemp),
+        java.nio.file.Paths.get(VAOutDataPath, ledgerFileName),
         java.nio.file.StandardCopyOption.REPLACE_EXISTING
       )
 

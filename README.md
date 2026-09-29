@@ -97,10 +97,10 @@ The checked-in `data/` directory contains sanitized examples such as
 files are not in Git. Their external directory contract is documented in
 [RUNTIME_DATA_LAYOUT.md](docs/RUNTIME_DATA_LAYOUT.md).
 
-The legacy smoke-test script expects runtime files under `VARawFiles`; it is not the checked-in
-small-fixture test. A reproducible end-to-end fixture command is being validated separately before
-it is presented as a supported quick start. The build check above is not runtime or architecture
-validation.
+Run `bash scripts/run_repo_fixture_smoke_test.sh` for a repository-only Steps 2 and 3 runtime
+check. It stages the small fixture under the filenames expected by the legacy runner, writes to a
+temporary directory, and verifies a balanced ledger. The build and fixture checks are functional
+smoke tests, not scale or architecture validation.
 
 For the intended architecture and its current implementation status, start with
 [Architecture and Status](#architecture-and-status). For evidence requirements, see

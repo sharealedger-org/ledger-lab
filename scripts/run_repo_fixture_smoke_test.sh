@@ -1,0 +1,85 @@
+#!/usr/bin/env bash
+# Run the checked-in FY03 small fixture through the no-Spark VA path.
+# This intentionally uses a temporary staging directory so the repository data
+# and generated outputs are not modified.
+
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+RUN_ROOT="$(mktemp -d)"
+KEEP_OUTPUT=0
+
+cleanup() {
+  if [[ "$KEEP_OUTPUT" -eq 0 ]]; then
+    rm -rf "$RUN_ROOT"
+  else
+    echo "Fixture output retained at: $RUN_ROOT/output"
+  fi
+}
+trap cleanup EXIT
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --keep-output)
+      KEEP_OUTPUT=1
+      shift
+      ;;
+    -h|--help)
+      cat <<'EOF'
+Usage: bash scripts/run_repo_fixture_smoke_test.sh [--keep-output]
+
+Stages data/FY03q1exp_small.txt as FY03q1exp.txt, runs VA Steps 2 and 3,
+and verifies that sorted journal and ledger output are produced and balanced.
+No external VA data, Spark, PostgreSQL, or AI engine is required.
+
+Use --keep-output to retain the generated files for inspection.
+EOF
+      exit 0
+      ;;
+    *)
+      echo "Unknown option: $1" >&2
+      exit 1
+      ;;
+  esac
+done
+
+INPUT_DIR="$RUN_ROOT/input"
+OUTPUT_DIR="$RUN_ROOT/output"
+mkdir -p "$INPUT_DIR" "$OUTPUT_DIR"
+
+cp "$REPO_ROOT/data/FY03q1exp_small.txt" "$INPUT_DIR/FY03q1exp.txt"
+cp "$REPO_ROOT/data/VendorMaster.csv" "$INPUT_DIR/VendorMaster.csv"
+
+echo "Running checked-in FY03 small fixture through Steps 2 and 3..."
+bash "$REPO_ROOT/scripts/run_pipeline.sh" \
+  --inPath "$INPUT_DIR" \
+  --outPath "$OUTPUT_DIR" \
+  --years 03 \
+  --steps 2,3 \
+  --curve C1 \
+  --config repo-fixture
+
+SORTED_FILE="$OUTPUT_DIR/SortedJEFY03q1exp.csv"
+LEDGER_FILE="$OUTPUT_DIR/LDGR2003.csv"
+
+[[ -s "$SORTED_FILE" ]] || { echo "Missing sorted journal: $SORTED_FILE" >&2; exit 1; }
+[[ -s "$LEDGER_FILE" ]] || { echo "Missing ledger output: $LEDGER_FILE" >&2; exit 1; }
+
+awk -F, '
+  NR > 1 { rows++; total += $20 }
+  END {
+    if (rows == 0 || total < -0.01 || total > 0.01) exit 1
+    printf "Fixture check passed: %d ledger rows, amount sum %.2f\n", rows, total
+  }
+' "$LEDGER_FILE"
+
+if [[ "$KEEP_OUTPUT" -eq 1 ]]; then
+  echo
+  echo "Inspect the run with:"
+  echo "  head -n 3 \"$SORTED_FILE\""
+  echo "  head -n 3 \"$LEDGER_FILE\""
+  echo "  wc -l \"$SORTED_FILE\" \"$LEDGER_FILE\""
+  echo "  cat \"$OUTPUT_DIR/pipeline_results.log\""
+  echo "  cat \"$OUTPUT_DIR/cost_surface.csv\""
+fi

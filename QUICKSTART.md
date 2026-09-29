@@ -39,14 +39,45 @@ a Scala replacement simply because its source files are written in Scala.
 ```bash
 cd 02-foundation/va_pipeline
 sbt -batch compile
+cd ../..
 ```
 
-For runner options, return to the repository root and run `bash scripts/run_pipeline.sh --help`.
-Runtime processing requires data organized as described in
-[RUNTIME_DATA_LAYOUT.md](docs/RUNTIME_DATA_LAYOUT.md). The checked-in sample
-`data/FY03q1exp_small.txt` is not named or staged as the production runner expects; a reproducible
-small-fixture end-to-end command is being prepared and must be validated on Windows before it is
-advertised here.
+Run the checked-in fixture through the no-Spark runtime path:
+
+```bash
+bash scripts/run_repo_fixture_smoke_test.sh
+```
+
+This stages `data/FY03q1exp_small.txt` under the production filename, runs Steps 2 and 3, checks
+that sorted journal and ledger files are written, and verifies the ledger amount sum is balanced.
+It needs only JDK 21, sbt, Bash, and the files in this repository. Add `--keep-output` to retain
+the temporary output for inspection. The command prints `head`, `wc`, and `cat` commands for the
+retained files when that option is used.
+
+### Inspect A Successful Run
+
+Run the fixture with output retained:
+
+```bash
+bash scripts/run_repo_fixture_smoke_test.sh --keep-output
+```
+
+The printed output directory contains a sorted journal, a ledger, and two small run summaries.
+Use the printed commands, or inspect the artifacts directly:
+
+```bash
+head -n 3 /path/printed/output/SortedJEFY03q1exp.csv
+head -n 3 /path/printed/output/LDGR2003.csv
+wc -l /path/printed/output/SortedJEFY03q1exp.csv /path/printed/output/LDGR2003.csv
+cat /path/printed/output/pipeline_results.log
+cat /path/printed/output/cost_surface.csv
+```
+
+The sorted journal shows the generated debit and credit lines that Step 2 sends to posting. The
+ledger shows the accumulated balance rows produced by Step 3. The log records the selected curve,
+steps, elapsed time, and output location; `cost_surface.csv` is a compatibility summary, not the
+complete measurement contract. These commands inspect small prefixes and summaries rather than
+loading an entire history into an analysis engine.
 
 ---
 
@@ -69,9 +100,17 @@ for required controls and evidence status.
 ## Legacy VA Runner
 
 The existing `scripts/run_pipeline.sh` accepts an input directory, output directory, fiscal years,
-and selected VA application options. Its `--curve` field is retained for compatibility with
-existing logs; it is not the research taxonomy. The multi-year orchestrator has additional legacy
-selector values. Neither interface currently emits the complete canonical logging contract.
+and selected VA application options. The two useful no-Spark steps are:
+
+| Step | Reads | Writes | Purpose |
+|---|---|---|---|
+| `2` | `FY<YY>q<quarter>exp.txt` or revenue input plus `VendorMaster.csv` | `SortedJEFY<YY>q<quarter>exp.csv` | Standardize source rows, create balanced journal lines, and externally sort them. |
+| `3` | `SortedJE*.csv` in `outPath` | `LDGR<YYYY>.csv` | Post sorted journal lines into the legacy instrument ledger. |
+
+Steps 4–9 are legacy follow-on operations and require outputs or configuration from earlier steps.
+Steps 1, 10, and 11 require Spark and are excluded from the default build. The `--curve` field is
+retained for compatibility with existing logs; it is not the research taxonomy. Neither runner
+interface currently emits the complete canonical logging contract.
 
 Inspect the available options without starting a run:
 
@@ -80,10 +119,9 @@ bash scripts/run_pipeline.sh --help
 bash scripts/run_pipeline_orchestrator.sh --help
 ```
 
-Do not use the checked-in small fixture as though it were staged runtime data. The fixture has a
-`_small` filename and needs explicit setup; the production runners expect the layout described in
-[RUNTIME_DATA_LAYOUT.md](docs/RUNTIME_DATA_LAYOUT.md). The reproducible small-data end-to-end
-command is not yet part of this main-branch guide.
+For the checked-in small data, use `scripts/run_repo_fixture_smoke_test.sh`; it performs the staging
+the production runner requires. Full historical runs use the external layout described in
+[RUNTIME_DATA_LAYOUT.md](docs/RUNTIME_DATA_LAYOUT.md).
 
 ---
 
