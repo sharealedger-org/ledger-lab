@@ -59,6 +59,21 @@ This opt-in profile adds two synthetic VA `EXP6` salary source rows, loads
 checks the rounding residual and final ledger balance. The default smoke test remains the clean
 public Step 2/3 baseline.
 
+The divisor side input is generated, not hand-maintained:
+
+```bash
+bash scripts/generate_allocation_divisors.sh \
+  --input data/FY03q1exp_small.txt \
+  --output data/AllocationDivisors_FY02_fixture.csv \
+  --divisor-period FY02 \
+  --source-period FY03Q1 \
+  --source-partition-id LDGR_FY02_partition_B
+```
+
+The active allocation smoke test also regenerates a next-period divisor from the post-allocation
+ledger. This is the round-trip control that demonstrates the allocation output can become the next
+period's side input.
+
 This stages `data/FY03q1exp_small.txt` under the production filename, runs Steps 2 and 3, checks
 that sorted journal and ledger files are written, and verifies the ledger amount sum is balanced.
 It needs only JDK 21, sbt, Bash, and the files in this repository.

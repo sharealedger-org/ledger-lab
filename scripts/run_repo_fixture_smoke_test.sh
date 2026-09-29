@@ -63,7 +63,6 @@ mkdir -p "$INPUT_DIR" "$OUTPUT_DIR"
 
 cp "$REPO_ROOT/data/FY03q1exp_small.txt" "$INPUT_DIR/FY03q1exp.txt"
 cp "$REPO_ROOT/data/VendorMaster.csv" "$INPUT_DIR/VendorMaster.csv"
-cp "$REPO_ROOT/data/AllocationDivisors_FY02_fixture.csv" "$INPUT_DIR/AllocationDivisors_FY02_fixture.csv"
 cp "$REPO_ROOT/data/VAAccountingRules.csv" "$INPUT_DIR/VAAccountingRules.csv"
 cp "$REPO_ROOT/data/AllocationRules.csv" "$INPUT_DIR/AllocationRules.csv"
 
@@ -75,6 +74,13 @@ if [[ "$WITH_ALLOCATION" -eq 1 ]]; then
   STEPS="2,3,6"
   CONFIG="repo-fixture-allocation"
 fi
+
+bash "$REPO_ROOT/scripts/generate_allocation_divisors.sh" \
+  --input "$INPUT_DIR/FY03q1exp.txt" \
+  --output "$INPUT_DIR/AllocationDivisors_FY02_fixture.csv" \
+  --divisor-period FY02 \
+  --source-period FY03Q1 \
+  --source-partition-id LDGR_FY02_partition_B
 
 # Git Bash may report /tmp paths that the Windows JVM resolves differently.
 # Use a drive-qualified path when cygpath is available.
@@ -108,6 +114,16 @@ if [[ "$WITH_ALLOCATION" -eq 1 ]]; then
     echo "Allocation produced no generated SJEs" >&2
     exit 1
   }
+  bash "$REPO_ROOT/scripts/generate_allocation_divisors.sh" \
+    --source-kind ledger \
+    --input "$LEDGER_FILE" \
+    --output "$OUTPUT_DIR/AllocationDivisors_FY03_after_allocation.csv" \
+    --divisor-period FY03Q1 \
+    --source-period FY04Q1 \
+    --source-partition-id LDGR2003_after_allocation
+  next_divisor_rows=$(awk 'NR > 1 { count++ } END { print count + 0 }' \
+    "$OUTPUT_DIR/AllocationDivisors_FY03_after_allocation.csv")
+  [[ "$next_divisor_rows" -gt 0 ]] || { echo "Missing next-period divisor groups" >&2; exit 1; }
 fi
 
 awk -F, '
