@@ -13,6 +13,8 @@ The purpose is to measure the physical execution cost of the Scala engine topolo
 - Python may inspect, transform, or summarize logs after a run, but does not produce mainline financial results.
 - A logical layer is not a physical pass. Sort and required materialization boundaries must be recorded explicitly.
 - Every record is associated with one immutable `run_id`.
+- Report-time derivation and persisted generated events are separate cost categories.
+- A perspective or adjustment may be recomputed from retained facts; it is not automatically a canonical ledger row.
 
 ## Canonical Metrics Root
 
@@ -23,6 +25,18 @@ $UL_DATA_ROOT/metrics/
 ```
 
 The existing `cost_surface.csv`, `pipeline_log.csv`, and `pivot_results.csv` files remain compatibility outputs during migration. They should eventually be derived from the detailed ledgers below rather than serving as the only evidence.
+
+The cost surface should keep these components separately identifiable:
+
+```text
+source/posting compute
+report-time derivation compute
+retained canonical and side-input storage
+generated/materialized row volume
+sort, spill, and join cost
+reconciliation and approval obligations
+latency for updates and reports
+```
 
 ## Run Manifest
 

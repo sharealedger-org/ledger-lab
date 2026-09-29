@@ -76,7 +76,42 @@ This is the architectural fact the cost curve experiment must demonstrate empiri
 | **C3 — Post + Analysis + Reval-class** | 2, 3, 5, 8, 9 | + Forecasting + Reclass | Cost of generated-transaction processes. Hypothesis: flat vs. C2 — no new master files. |
 | **C4 — Full pipeline** | 2, 3, 5, 6, 7, 8, 9, 4 | + Allocation + Consolidation | With prior-day divisor design, C4 cost point should equal C3. That equality IS the proof of single-pass universality. |
 
-**The key result:** If C3 and C4 overlap on the cost surface, the prior-day divisor design is validated and single-pass universality holds empirically for all nine FSPs. If they diverge, that identifies exactly where a pre-scan becomes necessary — also a publishable finding.
+**The key result:** If C3 and C4 overlap on the declared workload and materialization profile, that
+supports the prior-day divisor design for that workload. It does not prove universal equality. If
+they diverge, the evidence must identify whether the cause is a required sort, materialized side
+input, generated SJE volume, report-time derivation, or reconciliation obligation. That divergence
+is itself a publishable finding.
+
+### The Materialization Frontier
+
+The cost experiment is not simply a staircase of adding financial functions. It compares where a
+design stores state and where it recomputes derived results:
+
+```text
+immutable events + rules/reference history
+  -> report-time replay and derivation
+
+immutable events + selected ledger/side-input state
+  -> fast common perspectives
+
+immutable events + broad precomputed balances/views
+  -> low query cost, high storage/update/reconciliation cost
+```
+
+The measured frontier must separate:
+
+- source transformation and posting compute;
+- report-time replay and aggregation compute;
+- retained ledger, CAR, divisor, driver, and rate storage;
+- generated SJE and other materialized-row volume;
+- external sort, spill, and side-input join cost;
+- reconciliation, approval, and master-file obligations;
+- update and report latency.
+
+Currency conversion and elimination are examples of conditional materialization. If they are
+presentation-only, retain the source facts, effective rates/rules, and candidate evidence and derive
+the result at report time. If they affect canonical state, an approved close, a future partition,
+or a downstream engine, materialize a balanced SJE and measure that cost separately.
 
 **Measurement per run:**
 - `C_compute` — elapsed time per step (`pipeline_results.log`)
