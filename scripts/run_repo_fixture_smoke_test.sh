@@ -9,6 +9,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 RUN_ROOT="$(mktemp -d)"
 KEEP_OUTPUT=0
+SHOW_RESULTS=0
 
 cleanup() {
   if [[ "$KEEP_OUTPUT" -eq 0 ]]; then
@@ -25,15 +26,21 @@ while [[ $# -gt 0 ]]; do
       KEEP_OUTPUT=1
       shift
       ;;
+    --show-results)
+      SHOW_RESULTS=1
+      shift
+      ;;
     -h|--help)
       cat <<'EOF'
-Usage: bash scripts/run_repo_fixture_smoke_test.sh [--keep-output]
+Usage: bash scripts/run_repo_fixture_smoke_test.sh [--show-results] [--keep-output]
 
 Stages data/FY03q1exp_small.txt as FY03q1exp.txt, runs VA Steps 2 and 3,
 and verifies that sorted journal and ledger output are produced and balanced.
 No external VA data, Spark, PostgreSQL, or AI engine is required.
 
-Use --keep-output to retain the generated files for inspection.
+Use --show-results to print small journal, ledger, count, and summary results.
+Use --keep-output to retain generated files for later inspection. The options
+may be combined.
 EOF
       exit 0
       ;;
@@ -83,7 +90,7 @@ awk -F, '
   }
 ' "$LEDGER_FILE"
 
-if [[ "$KEEP_OUTPUT" -eq 1 ]]; then
+if [[ "$SHOW_RESULTS" -eq 1 ]]; then
   echo
   echo "=== Sorted journal sample (first 3 rows) ==="
   head -n 3 "$SORTED_FILE"
@@ -99,6 +106,10 @@ if [[ "$KEEP_OUTPUT" -eq 1 ]]; then
   echo
   echo "=== Cost surface compatibility record ==="
   cat "$OUTPUT_DIR/cost_surface.csv"
+  echo
+fi
+
+if [[ "$KEEP_OUTPUT" -eq 1 ]]; then
   echo
   echo "Inspect the retained directory with:"
   echo "  ls -la \"$OUTPUT_DIR\""

@@ -50,21 +50,25 @@ bash scripts/run_repo_fixture_smoke_test.sh
 
 This stages `data/FY03q1exp_small.txt` under the production filename, runs Steps 2 and 3, checks
 that sorted journal and ledger files are written, and verifies the ledger amount sum is balanced.
-It needs only JDK 21, sbt, Bash, and the files in this repository. Add `--keep-output` to retain
-the temporary output and print a small journal/ledger sample, row counts, and both run summaries.
+It needs only JDK 21, sbt, Bash, and the files in this repository.
 
 ### Inspect A Successful Run
 
-Run the fixture with output retained:
+Ask the smoke test to print a small result sample. Temporary files are still cleaned up:
 
 ```bash
-bash scripts/run_repo_fixture_smoke_test.sh --keep-output
+bash scripts/run_repo_fixture_smoke_test.sh --show-results
 ```
 
-The printed output directory contains a sorted journal, a ledger, and two small run summaries. The
-script displays representative rows and summaries automatically. For further inspection, copy the
-actual directory from the `Fixture output retained at:` line. The `/path/printed/output` text below
-is only a placeholder; do not type it literally. In Git Bash, verify the directory first:
+This displays three sorted journal rows, the ledger header plus two rows, row counts, the pipeline
+log, and the compatibility cost record. It never prints the full input or output files. To retain
+the temporary files for further inspection, combine the options:
+
+```bash
+bash scripts/run_repo_fixture_smoke_test.sh --show-results --keep-output
+```
+
+Copy the actual directory from the `Fixture output retained at:` line. In Git Bash, verify it first:
 
 ```bash
 output_dir="/the/actual/path/printed/by/the/script/output"
