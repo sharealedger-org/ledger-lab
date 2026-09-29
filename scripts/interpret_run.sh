@@ -27,7 +27,7 @@ for evidence_file in "$MANIFEST" "$PROCESSES" "$PARTITIONS" "$CONTROLS"; do
 done
 
 optional_missing=""
-for optional_file in sort_events.csv sje_engine_metrics.csv perspective_metrics.csv; do
+for optional_file in sje_engine_metrics.csv perspective_metrics.csv; do
   if [[ ! -f "$METRICS_DIR/$optional_file" ]]; then
     [[ -z "$optional_missing" ]] || optional_missing+=","
     optional_missing+="$optional_file"

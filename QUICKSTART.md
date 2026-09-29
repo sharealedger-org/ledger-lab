@@ -73,6 +73,7 @@ Each run also writes structured evidence under `output/metrics/`:
 - `run_manifest.csv` identifies the run, code revision, host, timing, and status.
 - `process_metrics.csv` records the Step 2 and Step 3 process boundaries and row/byte counts.
 - `partition_catalog.csv` records the raw fixture, sorted journal, and ledger artifacts with checksums.
+- `sort_events.csv` records the Step 2 external sort boundary and sort contract.
 - `reconciliation_results.csv` records the journal and ledger balance controls.
 
 The run also writes `interpretation/interpretation.csv` and `interpretation/run_report.md`. The
