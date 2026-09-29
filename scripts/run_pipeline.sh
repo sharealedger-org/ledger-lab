@@ -247,6 +247,7 @@ init_cost_surface "$COST_SURFACE"
 
 RUN_ID="run_$(date '+%Y%m%d_%H%M%S')"
 RUN_TS=$(date '+%Y-%m-%d %H:%M:%S')
+RUN_START_EPOCH=$(date +%s)
 TOTAL_COMPUTE_S=0
 
 log "======================================================================"
@@ -292,3 +293,18 @@ record_cost_point "$COST_SURFACE" "$RUN_ID" "$RUN_TS" "$CURVE" "$CONFIG_DESC" \
   "$YEARS" "$STEPS" "$TOTAL_COMPUTE_S" "$FINAL_STORAGE_BYTES" "$MASTER_FILE_COUNT"
 
 log "Cost point recorded → $COST_SURFACE"
+
+RUN_END_EPOCH=$(date +%s)
+bash "$SCRIPT_DIR/write_canonical_evidence.sh" \
+  --run-id "$RUN_ID" \
+  --run-timestamp "$RUN_TS" \
+  --in-path "$IN_PATH" \
+  --out-path "$OUT_PATH" \
+  --years "$YEARS" \
+  --steps "$STEPS" \
+  --curve "$CURVE" \
+  --config "$CONFIG_DESC" \
+  --start-epoch "$RUN_START_EPOCH" \
+  --end-epoch "$RUN_END_EPOCH" \
+  --compute-seconds "$TOTAL_COMPUTE_S" \
+  --log-file "$LOG_FILE"

@@ -68,6 +68,16 @@ files. To retain the temporary files for further inspection, combine the options
 bash scripts/run_repo_fixture_smoke_test.sh --show-results --keep-output
 ```
 
+Each run also writes structured evidence under `output/metrics/`:
+
+- `run_manifest.csv` identifies the run, code revision, host, timing, and status.
+- `process_metrics.csv` records the Step 2 and Step 3 process boundaries and row/byte counts.
+- `partition_catalog.csv` records the raw fixture, sorted journal, and ledger artifacts with checksums.
+- `reconciliation_results.csv` records the journal and ledger balance controls.
+
+These are the first canonical evidence records. The compatibility log and cost surface remain
+available, but they are not the complete measurement contract.
+
 Copy the actual directory from the `Fixture output retained at:` line. In Git Bash, verify it first:
 
 ```bash
