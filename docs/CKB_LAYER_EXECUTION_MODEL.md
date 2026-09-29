@@ -78,6 +78,20 @@ ordered perspective extract
 
 This is not automatically a new layer pass. It is a conditional materialization and sort boundary determined by data volume, grouping cardinality, output order, and the scale-invariant memory contract.
 
+## Prior-State Divisors
+
+An allocation does not need to calculate a same-day global divisor by rescanning the current
+period. It may use the prior period's driver balances, which are already available in the ordered
+state input, and apply the current period's source pool against that divisor. The allocation then
+remains a bounded section of the existing CKB flow rather than creating a second aggregation pass.
+
+This is an intentional management approximation: the divisor is lagged by one period and must be
+recorded with its effective period, source partition, rule identity, and rounding residual. The
+tradeoff is acceptable when the allocation policy permits prior-period drivers; it is not a license
+to substitute stale state where the business rule requires same-day weights. A same-day divisor is a
+new materialization requirement unless it can be produced from state already present in the current
+ordered flow.
+
 ## Pipes and Spawned Records
 
 A CKB section or compiled Scala process may emit records into a pipe for a later section. Bash
