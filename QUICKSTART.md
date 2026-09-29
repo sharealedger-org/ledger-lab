@@ -77,6 +77,11 @@ Each run also writes structured evidence under `output/metrics/`:
 - `sort_events.csv` records the Step 2 external sort boundary and sort contract.
 - `reconciliation_results.csv` records the journal and ledger balance controls.
 
+The smoke fixture also stages `data/AllocationDivisors_FY02_fixture.csv` as a prior-period,
+group-grain side input. It is shown by `--show-results` but is not consumed by Steps 2/3 yet; it
+exists to make the divisor grain and B-to-C time handoff visible before the allocation engine is
+activated.
+
 The run also writes `interpretation/interpretation.csv` and `interpretation/run_report.md`. The
 report states what ran, which controls passed, and which future evidence types were not emitted.
 

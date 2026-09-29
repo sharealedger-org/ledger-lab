@@ -57,6 +57,7 @@ mkdir -p "$INPUT_DIR" "$OUTPUT_DIR"
 
 cp "$REPO_ROOT/data/FY03q1exp_small.txt" "$INPUT_DIR/FY03q1exp.txt"
 cp "$REPO_ROOT/data/VendorMaster.csv" "$INPUT_DIR/VendorMaster.csv"
+cp "$REPO_ROOT/data/AllocationDivisors_FY02_fixture.csv" "$INPUT_DIR/AllocationDivisors_FY02_fixture.csv"
 
 # Git Bash may report /tmp paths that the Windows JVM resolves differently.
 # Use a drive-qualified path when cygpath is available.
@@ -91,7 +92,8 @@ awk -F, '
 ' "$LEDGER_FILE"
 
 if [[ "$SHOW_RESULTS" -eq 1 ]]; then
-  bash "$SCRIPT_DIR/show_repo_fixture_results.sh" "$OUTPUT_DIR"
+  bash "$SCRIPT_DIR/show_repo_fixture_results.sh" "$OUTPUT_DIR" \
+    "$INPUT_DIR/AllocationDivisors_FY02_fixture.csv"
 fi
 
 if [[ "$KEEP_OUTPUT" -eq 1 ]]; then

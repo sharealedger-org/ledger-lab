@@ -3,8 +3,8 @@
 
 set -euo pipefail
 
-if [[ $# -ne 1 ]]; then
-  echo "Usage: bash scripts/show_repo_fixture_results.sh OUTPUT_DIR" >&2
+if [[ $# -lt 1 || $# -gt 2 ]]; then
+  echo "Usage: bash scripts/show_repo_fixture_results.sh OUTPUT_DIR [DIVISOR_FILE]" >&2
   exit 1
 fi
 
@@ -14,6 +14,7 @@ LEDGER_FILE="$OUTPUT_DIR/LDGR2003.csv"
 LOG_FILE="$OUTPUT_DIR/pipeline_results.log"
 COST_FILE="$OUTPUT_DIR/cost_surface.csv"
 REPORT_FILE="$OUTPUT_DIR/interpretation/run_report.md"
+DIVISOR_FILE="${2:-}"
 
 for required_file in "$SORTED_FILE" "$LEDGER_FILE" "$LOG_FILE" "$COST_FILE"; do
   if [[ ! -f "$required_file" ]]; then
@@ -28,6 +29,17 @@ printf '%-12s %-8s %-14s %-8s %-12s %12s\n' \
 awk -F',' 'NR <= 3 {
   printf "%-12s %-8s %-14s %-8s %-12s %12.2f\n", $4, $5, $13, $17, $1, $26
 }' "$SORTED_FILE"
+
+if [[ -n "$DIVISOR_FILE" && -f "$DIVISOR_FILE" ]]; then
+  echo
+  echo "=== Prior-period divisor sample ==="
+  printf '%-12s %-12s %-18s %14s\n' "period" "agency" "driver_account" "divisor"
+  awk -F',' 'NR > 4 && NR <= 7 {
+    printf "%-12s %-12s %-18s %14.2f\n", $2, $4, $5, $6
+  }' "$DIVISOR_FILE"
+  printf 'divisor groups: '
+  awk -F',' 'NR > 4 { count++ } END { print count + 0 }' "$DIVISOR_FILE"
+fi
 
 echo
 echo "=== Ledger sample ==="
