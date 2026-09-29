@@ -308,3 +308,7 @@ bash "$SCRIPT_DIR/write_canonical_evidence.sh" \
   --end-epoch "$RUN_END_EPOCH" \
   --compute-seconds "$TOTAL_COMPUTE_S" \
   --log-file "$LOG_FILE"
+
+bash "$SCRIPT_DIR/interpret_run.sh" \
+  "${OUT_PATH%/}/metrics" \
+  "${OUT_PATH%/}/interpretation"

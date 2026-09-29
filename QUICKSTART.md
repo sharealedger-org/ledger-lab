@@ -75,6 +75,9 @@ Each run also writes structured evidence under `output/metrics/`:
 - `partition_catalog.csv` records the raw fixture, sorted journal, and ledger artifacts with checksums.
 - `reconciliation_results.csv` records the journal and ledger balance controls.
 
+The run also writes `interpretation/interpretation.csv` and `interpretation/run_report.md`. The
+report states what ran, which controls passed, and which future evidence types were not emitted.
+
 These are the first canonical evidence records. The compatibility log and cost surface remain
 available, but they are not the complete measurement contract.
 

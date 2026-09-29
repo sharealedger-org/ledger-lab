@@ -13,6 +13,7 @@ SORTED_FILE="$OUTPUT_DIR/SortedJEFY03q1exp.csv"
 LEDGER_FILE="$OUTPUT_DIR/LDGR2003.csv"
 LOG_FILE="$OUTPUT_DIR/pipeline_results.log"
 COST_FILE="$OUTPUT_DIR/cost_surface.csv"
+REPORT_FILE="$OUTPUT_DIR/interpretation/run_report.md"
 
 for required_file in "$SORTED_FILE" "$LEDGER_FILE" "$LOG_FILE" "$COST_FILE"; do
   if [[ ! -f "$required_file" ]]; then
@@ -52,3 +53,9 @@ grep -E 'START  step=|RESULT step=|Pipeline complete|total_compute_s|master_file
 echo
 echo "=== Cost record ==="
 tail -n 1 "$COST_FILE"
+
+if [[ -f "$REPORT_FILE" ]]; then
+  echo
+  echo "=== Interpretation ==="
+  cat "$REPORT_FILE"
+fi
