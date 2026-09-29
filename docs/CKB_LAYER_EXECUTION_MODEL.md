@@ -93,6 +93,19 @@ to substitute stale state where the business rule requires same-day weights. A s
 new materialization requirement unless it can be produced from state already present in the current
 ordered flow.
 
+The temporal handoff is explicit:
+
+```text
+B_t (prior driver/divisor) + C_t (today's source pool)
+        -> D_t (today's generated allocation SJE output)
+        -> C_(t+1) (tomorrow's source pool partition)
+```
+
+`D_t` is a first-class generated partition with lineage, rule identity, effective date, and
+balancing controls. Materializing it for tomorrow is a time-partition handoff, not a second scan of
+today's `B_t + C_t` input. A new physical pass is required only if the next day's consumer needs a
+new sort order or another declared materialization contract.
+
 ## Pipes and Spawned Records
 
 A CKB section or compiled Scala process may emit records into a pipe for a later section. Bash

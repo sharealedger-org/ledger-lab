@@ -28,6 +28,8 @@
 #   same ordered CKB flow, so allocation is a single pass over B+C, same as any
 #   other FSP.  Using yesterday's divisor introduces immateriality of one day's change,
 #   which is acceptable because allocation rules are management approximations.
+#   Today's generated allocation SJE output is partition D_t; when the process is
+#   active, that output is materialized as tomorrow's source pool C_(t+1).
 #
 # EXPERIMENT NOTES:
 #   This file is part of the C4 (full pipeline) configuration.
