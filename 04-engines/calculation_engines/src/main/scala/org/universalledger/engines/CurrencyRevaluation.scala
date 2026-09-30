@@ -143,6 +143,7 @@ object CurrencyRevaluation {
 
   private def readEffectiveRates(path: String, rules: Seq[Rule]): Map[Rule, (Rate, Rate)] = {
     val selectedRates = Array.fill(rules.size)(SelectedRates())
+    val rateDatesByPair = scala.collection.mutable.Map.empty[(String, String), scala.collection.mutable.Set[String]]
     val ruleIndexesByPair = rules.zipWithIndex.groupBy {
       case (rule, _) => (rule.sourceCurrency, rule.targetCurrency)
     }
@@ -154,8 +155,15 @@ object CurrencyRevaluation {
       lines.filter(_.trim.nonEmpty).foreach { line =>
         val f = line.split(",", -1).map(_.trim)
         if (f.length != 6) throw new IllegalArgumentException(s"Invalid booked FX rate row: $line")
-        val rate = Rate(f(0), BigDecimal(f(3)))
-        ruleIndexesByPair.get((f(1), f(2))).foreach(_.foreach { case (rule, index) =>
+        val pair = (f(1), f(2))
+        val rateDate = f(0)
+        val seenDates = rateDatesByPair.getOrElseUpdate(pair, scala.collection.mutable.Set.empty[String])
+        if (seenDates.contains(rateDate)) {
+          throw new IllegalArgumentException(s"Duplicate rate for ${pair._1}/${pair._2} on $rateDate")
+        }
+        seenDates += rateDate
+        val rate = Rate(rateDate, BigDecimal(f(3)))
+        ruleIndexesByPair.get(pair).foreach(_.foreach { case (rule, index) =>
           if (rate.rateDate <= rule.priorRateDate &&
               selectedRates(index).prior.forall(_.rateDate < rate.rateDate))
             selectedRates(index).prior = Some(rate)

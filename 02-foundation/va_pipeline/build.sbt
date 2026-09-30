@@ -28,6 +28,7 @@ lazy val root = (project in file("."))
     // ),
 
     libraryDependencies += "org.postgresql" % "postgresql" % "42.7.4",
+    libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.19" % Test,
 
     // sbt-assembly merge strategy (updated syntax for sbt-assembly 2.x)
     assembly / assemblyMergeStrategy := {
