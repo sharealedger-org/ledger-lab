@@ -99,15 +99,29 @@ object financialAllocation {
       "AllocationRules.csv"
     ).getPath
     try {
-      val rLines = Source.fromFile(rulesFile).getLines()
-      for (line <- rLines if line.trim.nonEmpty && !line.startsWith("#")) {
-        val e = line.split(fileDelimiter, -1).map(_.trim)
-        if (e.length >= 4 && e(0) != "sourceNominalAccount")
+      val source = Source.fromFile(rulesFile)
+      try {
+        val rLines = source.getLines().filter(line => line.trim.nonEmpty && !line.startsWith("#"))
+        val expectedHeader = Seq(
+          "sourceNominalAccount", "sourceAgency", "driverNominalAccount",
+          "receiverAgency", "divisorGrain", "driverGrain"
+        )
+        if (!rLines.hasNext) throw new IllegalArgumentException(s"Empty allocation rules file: $rulesFile")
+        val header = rLines.next().split(fileDelimiter, -1).map(_.trim).toSeq
+        if (header != expectedHeader)
+          throw new IllegalArgumentException(s"Unexpected allocation rules header in $rulesFile")
+        for (line <- rLines) {
+          val e = line.split(fileDelimiter, -1).map(_.trim)
+          if (e.length != expectedHeader.length)
+            throw new IllegalArgumentException(s"Invalid allocation rule row: $line")
           rules += AllocationRule(
             e(0), e(1), e(2), e(3),
-            if (e.length >= 5 && e(4).nonEmpty) e(4) else "period+agency+driverAccount",
-            if (e.length >= 6 && e(5).nonEmpty) e(5) else "instrument"
+            if (e(4).nonEmpty) e(4) else "period+agency+driverAccount",
+            if (e(5).nonEmpty) e(5) else "instrument"
           )
+        }
+      } finally {
+        source.close()
       }
       println(s"Allocation rules loaded: ${rules.size} rules from $rulesFile")
     } catch {

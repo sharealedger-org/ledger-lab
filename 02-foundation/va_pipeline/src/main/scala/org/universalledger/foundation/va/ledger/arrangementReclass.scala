@@ -7,8 +7,11 @@ package org.universalledger.foundation.va.ledger
  */
 
 import java.io.{File, FileNotFoundException, PrintWriter}
+import java.io.{File, FileNotFoundException, PrintWriter}
+import java.nio.charset.StandardCharsets
 import java.util.Calendar
 
+import org.apache.commons.csv.{CSVFormat, CSVParser}
 import org.universalledger.foundation.va.datatypes._
 
 import scala.collection.mutable
@@ -121,16 +124,32 @@ object arrangementReclass {
     val vendorUpdates = mutable.Map[String, VendorUpdate]()
 
     try {
-      val lines = Source.fromFile(vendorUpdateFile).getLines().drop(1) // drop header
-      for (line <- lines if line.trim.nonEmpty) {
-        val e = line.split(fileDelimiter, -1).map(_.trim)
-        val vu = VendorUpdate(
-          instID         = e(0),
-          instTypeID     = e(1),
-          instEffectDate = e(2)
+      val parser = CSVParser.parse(new File(vendorUpdateFile), StandardCharsets.UTF_8, CSVFormat.DEFAULT)
+      try {
+        val records = parser.iterator()
+        val expectedHeader = Seq(
+          "instID", "instTypeID", "instEffectDate", "change_type", "old_val",
+          "new_val", "instNIGPClass", "instGeoRegion", "fiscal_year"
         )
-        vendorUpdates(vu.instID) = vu
-        vendorUpdatesRead += 1
+        if (!records.hasNext) throw new IllegalArgumentException(s"Empty vendor-status input: $vendorUpdateFile")
+        val headerRecord = records.next()
+        val header = (0 until headerRecord.size()).map(index => headerRecord.get(index).trim)
+        if (header != expectedHeader)
+          throw new IllegalArgumentException(s"Unexpected vendor-status header in $vendorUpdateFile")
+        while (records.hasNext) {
+          val record = records.next()
+          if (record.size() != expectedHeader.length)
+            throw new IllegalArgumentException(s"Invalid vendor-status row: $record")
+          val vu = VendorUpdate(
+            instID         = record.get(0).trim,
+            instTypeID     = record.get(1).trim,
+            instEffectDate = record.get(2).trim
+          )
+          vendorUpdates(vu.instID) = vu
+          vendorUpdatesRead += 1
+        }
+      } finally {
+        parser.close()
       }
     } catch {
       case _: FileNotFoundException =>

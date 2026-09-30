@@ -7,7 +7,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
-TEMP_ROOT="${TMPDIR:-/tmp}"
+TEMP_ROOT="${TMPDIR:-$REPO_ROOT/session-run.tmp}"
 mkdir -p "$TEMP_ROOT"
 RUN_ROOT="$(mktemp -d "${TEMP_ROOT%/}/ledger-lab-fixture.XXXXXX")"
 KEEP_OUTPUT=0
@@ -73,6 +73,9 @@ CONFIG="repo-fixture"
 PROFILE="repo-fixture"
 MATERIALIZATION="baseline"
 if [[ "$WITH_ALLOCATION" -eq 1 ]]; then
+  if [[ -n "$(tail -c 1 "$INPUT_DIR/FY03q1exp.txt")" ]]; then
+    printf '\n' >> "$INPUT_DIR/FY03q1exp.txt"
+  fi
   printf '267\t1552\t6\t2701\tBLACKWELLS BOOK SERVICES\t1000.00\n' >> "$INPUT_DIR/FY03q1exp.txt"
   printf '267\t1552\t6\t2703\tBLACKWELLS BOOK SERVICES\t500.00\n' >> "$INPUT_DIR/FY03q1exp.txt"
   STEPS="2,3,6"

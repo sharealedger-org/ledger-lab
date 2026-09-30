@@ -85,6 +85,14 @@ Use [REFERENCE_ARCHITECTURE_MAP.md](REFERENCE_ARCHITECTURE_MAP.md) to connect th
 - The whole ordered CKB process is the restart unit. Do not infer restartability from checkpoints between engines or views; failed-attempt terminal outputs must be isolated, removed or uncataloged, and ineligible as next-run inputs.
 - A retry must use a new attempt identity and replay from the same immutable input generations. Preserve failure logs and metrics while cleaning only outputs created by that attempt.
 
+### File schemas and internal state
+
+- Validate user-supplied transaction, vendor-status, and rule files against their declared schemas at ingestion. Headered formats validate and consume the header as metadata; fixed-width or headerless formats validate their declared record layout.
+- Do not serialize schema headers as SJE transactions. Canonical SJE streams are headerless and use their declared record contract.
+- CAR masters and ledgers are system-managed state. Their producer/consumer contract defines their records; they are not user inputs that require a user-provided header.
+- An absent or empty opening ledger represents zero opening rows. Engines must process that state as empty rather than requiring a fabricated header row or diagnosing it as a missing-file incident.
+- Keep schema validation at file adapters. Once parsed, processing code should consume typed records rather than repeatedly interpreting CSV headers.
+
 ### Engine and perspective boundaries
 
 - 01 transforms source records into valid balanced SJE structures.

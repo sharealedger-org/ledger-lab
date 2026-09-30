@@ -80,11 +80,22 @@ object forecastingBudgeting {
     val budgetRules = mutable.Map[String, BigDecimal]()
     val rulesFile   = dataPath + "BudgetRules.csv"
     try {
-      val rLines = Source.fromFile(rulesFile).getLines()
-      for (line <- rLines if line.trim.nonEmpty && !line.startsWith("#")) {
-        val e = line.split(fileDelimiter, -1).map(_.trim)
-        if (e.length >= 2 && e(0) != "nominalAccountPrefix")
+      val source = Source.fromFile(rulesFile)
+      try {
+        val rLines = source.getLines().filter(line => line.trim.nonEmpty && !line.startsWith("#"))
+        val expectedHeader = Seq("nominalAccountPrefix", "growthFactor")
+        if (!rLines.hasNext) throw new IllegalArgumentException(s"Empty budget rules file: $rulesFile")
+        val header = rLines.next().split(fileDelimiter, -1).map(_.trim).toSeq
+        if (header != expectedHeader)
+          throw new IllegalArgumentException(s"Unexpected budget rules header in $rulesFile")
+        for (line <- rLines) {
+          val e = line.split(fileDelimiter, -1).map(_.trim)
+          if (e.length != expectedHeader.length)
+            throw new IllegalArgumentException(s"Invalid budget rule row: $line")
           budgetRules(e(0)) = BigDecimal(e(1))
+        }
+      } finally {
+        source.close()
       }
       println(s"Budget rules loaded: ${budgetRules.size} rules from $rulesFile")
       budgetRules.foreach { case (prefix, factor) =>

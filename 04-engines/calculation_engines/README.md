@@ -17,8 +17,11 @@ Initial classes:
 ## Booked Currency Revaluation
 
 The initial booked-revaluation slice is implemented in `CurrencyRevaluation.scala`. It reads a
-declared opening ledger partition, effective-dated prior/current rates, and versioned rules. For
-eligible foreign-source/book-currency balances, it applies the VA layout contract:
+opening ledger partition, effective-dated prior/current rates, and versioned rules. The opening
+ledger is system-managed state: an absent or empty opening partition is a valid zero-row state,
+and its records do not require a header row. Rates and rules are externally maintained control
+inputs and their declared schemas are validated. For eligible foreign-source/book-currency
+balances, it applies the VA layout contract:
 
 ```text
 revaluation amount = booked balance × (current rate − prior rate)
@@ -28,6 +31,9 @@ It rounds at the declared book scale, emits a balanced SJE group to the affected
 configured offset account, externally sorts the records with the existing posting key, and leaves
 the output for the existing Step 3 poster to apply. The synthetic one-period fixture reproduces the
 VA spec's 559.47 × 0.02 = 11.19 example. Domestic balances are not revalued.
+
+Generated SJE partitions are headerless. An empty opening partition therefore produces an empty
+SJE partition and no adjustment groups; it does not require a pre-created header-only file.
 
 The fixture demonstrates a booked SJE and downstream posting on the legacy VA substrate. It does
 not establish generalized GenevaERS CKB placement, rate governance, missing-rate operations,

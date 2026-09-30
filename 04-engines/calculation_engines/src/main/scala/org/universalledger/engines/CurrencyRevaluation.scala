@@ -52,26 +52,31 @@ object CurrencyRevaluation {
     Files.createDirectories(outputParent.toPath)
     val unsorted = new File(outputParent, output.getName + ".unsorted")
     val writer = new PrintWriter(unsorted, "UTF-8")
-    val ledger = Source.fromFile(ledgerPath, "UTF-8")
+    val ledgerFile = new File(ledgerPath)
+    if (ledgerFile.exists() && !ledgerFile.isFile)
+      throw new IllegalArgumentException(s"Opening ledger is not a file: $ledgerPath")
+    val ledger = if (ledgerFile.isFile && ledgerFile.length() > 0)
+      Source.fromFile(ledgerFile, "UTF-8")
+    else null
     var rowsRead = 0L
     var generatedGroups = 0L
     var adjustmentTotal = BigDecimal(0)
 
     try {
-      val lines = ledger.getLines()
-      if (!lines.hasNext || lines.next() != LedgerHeader)
-        throw new IllegalArgumentException(s"Unexpected ledger header in $ledgerPath")
+      if (ledger != null) {
+        val lines = ledger.getLines().buffered
+        if (lines.hasNext && lines.head == LedgerHeader) lines.next()
 
-      lines.zipWithIndex.foreach { case (line, index) =>
+        lines.zipWithIndex.foreach { case (line, index) =>
         if (line.trim.nonEmpty) {
           rowsRead += 1
           val fields = line.split(",", -1)
           if (fields.length < 30)
-            throw new IllegalArgumentException(s"Ledger row ${index + 2} has ${fields.length} fields; expected at least 30")
+            throw new IllegalArgumentException(s"Ledger row ${index + 1} has ${fields.length} fields; expected at least 30")
 
           val sourceCurrency = fields(14).trim
           val targetCurrency = fields(16).trim
-            if (rules.exists(_.ledgerPeriod == fields(18).trim) &&
+          if (rules.exists(_.ledgerPeriod == fields(18).trim) &&
               sourceCurrency.nonEmpty && targetCurrency.nonEmpty && sourceCurrency != targetCurrency) {
             val matchingRules = rulesByPair.getOrElse(
               (fields(8).trim, sourceCurrency, targetCurrency),
@@ -82,8 +87,7 @@ object CurrencyRevaluation {
             val rule = matchingRules.find(r =>
               r.ledgerPeriod == fields(18).trim &&
               r.effectiveStart <= r.currentRateDate && r.currentRateDate <= r.effectiveEnd
-            )
-              .getOrElse(throw new IllegalArgumentException(
+            ).getOrElse(throw new IllegalArgumentException(
                 s"No effective booked FX rule for entity=${fields(8)} currency=$sourceCurrency/$targetCurrency"
               ))
 
@@ -101,9 +105,10 @@ object CurrencyRevaluation {
             }
           }
         }
+        }
       }
     } finally {
-      ledger.close()
+      if (ledger != null) ledger.close()
       writer.close()
     }
 

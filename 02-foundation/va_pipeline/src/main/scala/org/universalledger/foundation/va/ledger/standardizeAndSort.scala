@@ -1,7 +1,12 @@
 package org.universalledger.foundation.va.ledger
 
 import java.io.{File, PrintWriter, BufferedWriter, FileWriter}
+import java.io.{File, PrintWriter, BufferedWriter, FileWriter}
+import java.nio.charset.StandardCharsets
 import java.util.Calendar
+
+import org.apache.commons.csv.{CSVFormat, CSVParser}
+
 import scala.collection.mutable
 import scala.io.Source
 
@@ -190,7 +195,7 @@ object standardizeAndSort {
     println(s"  VendorMaster : $resolvedVmPath  (${vendorMap.size} entries)")
 
     // ── Chunk → spill loop ──────────────────────────────────────────────────
-    val tmpDir    = System.getProperty("java.io.tmpdir") + "/sortedJE_spill_" + System.currentTimeMillis()
+    val tmpDir    = new File(outPath, ".sortedJE_spill_" + System.currentTimeMillis()).getPath
     new File(tmpDir).mkdirs()
     val spills    = mutable.ArrayBuffer[String]()
     val chunk     = mutable.ArrayBuffer[String]()
@@ -209,6 +214,22 @@ object standardizeAndSort {
       }
     }
 
+    def processRow(cols: Array[String], rowNumber: Int): Unit = {
+      validateSourceRow(cols, recFormat, rowNumber)
+      val pairs = buildJEPairs(cols, recFormat, recType, vendorMap,
+                               accountingRule, year, acctDate, jrnlID + 1)
+      if (pairs.nonEmpty) {
+        jrnlID += 1
+        for ((rowStr, matched, amt) <- pairs) {
+          chunk += rowStr
+          totalRows += 1
+          if (matched) matchedRows += 1
+          totalAmt += amt
+          if (chunk.size >= chunkSize) flushChunk()
+        }
+      }
+    }
+
     val inF = new File(inFile)
     if (!inF.exists()) {
       System.err.println(s"ERROR: Input file not found: $inFile")
@@ -217,32 +238,37 @@ object standardizeAndSort {
 
     val delimiter = if (recFormat == "A" || recFormat == "B" || recFormat == "RA") "\t" else ","
 
-    implicit val codec = scala.io.Codec.UTF8.onMalformedInput(java.nio.charset.CodingErrorAction.REPLACE).onUnmappableCharacter(java.nio.charset.CodingErrorAction.REPLACE)
-    val src = Source.fromFile(inFile)(codec)
-    try {
-      val lines = src.getLines()
-      lines.next()  // skip header
-
-      for (line <- lines) {
-        val raw = line.trim
-        if (raw.nonEmpty) {
-          val cols = splitAndStrip(raw, delimiter)
-          val pairs = buildJEPairs(cols, recFormat, recType, vendorMap,
-                                   accountingRule, year, acctDate, jrnlID + 1)
-          if (pairs.nonEmpty) {
-            jrnlID += 1
-            for ((rowStr, matched, amt) <- pairs) {
-              chunk += rowStr
-              totalRows += 1
-              if (matched) matchedRows += 1
-              totalAmt += amt
-              if (chunk.size >= chunkSize) flushChunk()
-            }
-          }
+    if (delimiter == ",") {
+      val parser = CSVParser.parse(inF, StandardCharsets.UTF_8, CSVFormat.DEFAULT)
+      try {
+        val records = parser.iterator()
+        if (!records.hasNext) throw new IllegalArgumentException(s"Missing source header in $inFile")
+        val header = records.next()
+        validateSourceHeader((0 until header.size()).map(header.get).toArray, recFormat)
+        var rowNumber = 2
+        while (records.hasNext) {
+          val record = records.next()
+          val cols = (0 until record.size()).map(record.get).toArray
+          if (cols.exists(_.trim.nonEmpty)) processRow(cols, rowNumber)
+          rowNumber += 1
         }
+      } finally {
+        parser.close()
       }
-    } finally {
-      src.close()
+    } else {
+      implicit val codec = scala.io.Codec.UTF8.onMalformedInput(java.nio.charset.CodingErrorAction.REPLACE).onUnmappableCharacter(java.nio.charset.CodingErrorAction.REPLACE)
+      val src = Source.fromFile(inFile)(codec)
+      try {
+        val lines = src.getLines()
+        if (!lines.hasNext) throw new IllegalArgumentException(s"Missing source header in $inFile")
+        validateSourceHeader(splitAndStrip(lines.next(), delimiter), recFormat)
+        for ((line, rowIndex) <- lines.zipWithIndex) {
+          val raw = line.trim
+          if (raw.nonEmpty) processRow(splitAndStrip(raw, delimiter), rowIndex + 2)
+        }
+      } finally {
+        src.close()
+      }
     }
 
     flushChunk()  // final partial chunk
@@ -300,6 +326,51 @@ object standardizeAndSort {
     line.split(delim, -1).map(_.trim.stripPrefix("\"").stripSuffix("\""))
   }
 
+  private def validateSourceHeader(rawHeader: Array[String], recFormat: String): Unit = {
+    val header = rawHeader.map(_.stripPrefix("\uFEFF").trim.toUpperCase).toSeq
+    val expenseBase = Seq(
+      "AGY_AGENCY_KEY", "FNDDTL_FUND_DETAIL_KEY", "OBJ_OBJECT_KEY",
+      "SPRG_SUB_PROGRAM_KEY", "VENDOR_NAME", "AMOUNT"
+    )
+    val valid = recFormat match {
+      case "A" => header == expenseBase
+      case "B" => header.length == 7 && header.take(6) == expenseBase && header(6).contains("DATE")
+      case "C" => header.length == 7 && header.take(6) == Seq(
+        "AGY_AGENCY_KEY", "AMOUNT", "FNDDTL_FUND_DETAIL_KEY", "OBJ_OBJECT_KEY",
+        "SPRG_SUB_PROGRAM_KEY", "VENDOR_NAME"
+      ) && header(6).contains("DATE")
+      case "RA" => header == Seq(
+        "AGY_AGENCY_KEY", "FNDDTL_FUND_DETAIL_KEY", "SRC_SOURCE_KEY", "AMOUNT"
+      )
+      case "RC" => header.length == 5 && header.take(4) == Seq(
+        "AGY_AGENCY_KEY", "AMOUNT", "FNDDTL_FUND_DETAIL_KEY", "SRC_SOURCE_KEY"
+      ) && header(4).contains("DATE")
+      case _ => false
+    }
+    if (!valid)
+      throw new IllegalArgumentException(s"Unexpected $recFormat source header: ${header.mkString(",")}")
+  }
+
+  private def validateSourceRow(cols: Array[String], recFormat: String, rowNumber: Int): Unit = {
+    val (expectedColumns, amountIndex) = recFormat match {
+      case "A" => (6, 5)
+      case "B" => (7, 5)
+      case "C" => (7, 1)
+      case "RA" => (4, 3)
+      case "RC" => (5, 1)
+      case _ => throw new IllegalArgumentException(s"Unsupported source format: $recFormat")
+    }
+    if (cols.length != expectedColumns)
+      throw new IllegalArgumentException(
+        s"Source row $rowNumber has ${cols.length} fields; expected $expectedColumns for $recFormat"
+      )
+    try BigDecimal(cols(amountIndex).replace(",", ""))
+    catch {
+      case _: NumberFormatException =>
+        throw new IllegalArgumentException(s"Invalid amount in source row $rowNumber: ${cols(amountIndex)}")
+    }
+  }
+
   // ── VendorMaster loading (name → instID) ──────────────────────────────────
   private def resolveSpecPath(requested: String): String = {
     val candidates = if (requested.nonEmpty)
@@ -322,10 +393,22 @@ object standardizeAndSort {
     path.flatMap { rulePath =>
       val source = Source.fromFile(rulePath)
       try {
-        source.getLines()
-          .filter(line => line.trim.nonEmpty && !line.trim.startsWith("#"))
-          .drop(1)
-          .map(_.split(",", -1).map(_.trim))
+        val lines = source.getLines().filter(line => line.trim.nonEmpty && !line.trim.startsWith("#"))
+        val expectedHeader = Seq(
+          "recordType", "ruleSetId", "ruleVersion", "ruleId", "businessEventCode",
+          "debitAccountExpression", "creditAccountExpression", "debitProjectExpression",
+          "creditProjectExpression", "offsetDescription", "effectiveStart", "effectiveEnd"
+        )
+        if (!lines.hasNext) throw new IllegalArgumentException(s"Empty accounting rules file: $rulePath")
+        val header = lines.next().stripPrefix("\uFEFF").split(",", -1).map(_.trim).toSeq
+        if (header != expectedHeader)
+          throw new IllegalArgumentException(s"Unexpected accounting rules header in $rulePath")
+        lines.map { line =>
+          val fields = line.split(",", -1).map(_.trim)
+          if (fields.length != expectedHeader.length)
+            throw new IllegalArgumentException(s"Invalid accounting rule row in $rulePath: $line")
+          fields
+        }
           .find(fields => fields.length >= 10 && fields(0).equalsIgnoreCase(recType))
           .map(fields => AccountingRule(
             fields(0), fields(1), fields(2), fields(3), fields(4), fields(5),
@@ -424,12 +507,8 @@ object standardizeAndSort {
       year: String, acctDate: String, seqNo: Int
     ): Seq[(String, Boolean, BigDecimal)] = {
 
-    try {
-      if (recType == "E") buildExpensePairs(cols, recFormat, vendorMap, accountingRule, year, acctDate, seqNo)
-      else                buildRevenuePairs(cols, recFormat, vendorMap, accountingRule, year, acctDate, seqNo)
-    } catch {
-      case _: Exception => Seq.empty
-    }
+    if (recType == "E") buildExpensePairs(cols, recFormat, vendorMap, accountingRule, year, acctDate, seqNo)
+    else                buildRevenuePairs(cols, recFormat, vendorMap, accountingRule, year, acctDate, seqNo)
   }
 
   private def buildExpensePairs(

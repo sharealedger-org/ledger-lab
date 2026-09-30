@@ -126,13 +126,33 @@ while [[ $# -gt 0 ]]; do
 done
 
 # ── derived values ────────────────────────────────────────────────────────────
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+SBT_PROJECT="$REPO_ROOT/02-foundation/va_pipeline"
+
+COMMITTED_OUT_PATH="$OUT_PATH"
+RUN_ID="run_$(date '+%Y%m%d_%H%M%S')"
+ATTEMPT_ROOT="${COMMITTED_OUT_PATH%/}/.attempts"
+ATTEMPT_OUT_PATH="${ATTEMPT_ROOT%/}/${RUN_ID}"
+OUT_PATH="$ATTEMPT_OUT_PATH"
 [[ -z "$LOG_FILE" ]] && LOG_FILE="${OUT_PATH%/}/pipeline_results.log"
 COST_SURFACE="${OUT_PATH%/}/cost_surface.csv"
 VIEWSPEC="${IN_PATH%/}/ViewSpec.csv"
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
-SBT_PROJECT="$REPO_ROOT/02-foundation/va_pipeline"
+cleanup_failed_attempt() {
+  if [[ -n "${ATTEMPT_OUT_PATH:-}" && -d "$ATTEMPT_OUT_PATH" ]]; then
+    rm -rf "$ATTEMPT_OUT_PATH"
+    echo "Failed attempt cleaned: $ATTEMPT_OUT_PATH" >&2
+  fi
+}
+
+commit_attempt() {
+  local final_dir="$1"
+  local attempt_dir="$2"
+  mkdir -p "$final_dir"
+  find "$final_dir" -mindepth 1 -maxdepth 1 ! -name '.attempts' -exec rm -rf {} +
+  cp -R "$attempt_dir"/. "$final_dir/"
+}
 
 # The engine now lives below the repository root. Normalize relative data paths
 # before invoking sbt so callers can continue using --inPath data.
@@ -362,13 +382,14 @@ record_cost_point() {
 }
 
 # ── main loop ─────────────────────────────────────────────────────────────────
+mkdir -p "$ATTEMPT_ROOT"
+rm -rf "$ATTEMPT_OUT_PATH"
 mkdir -p "$OUT_PATH"
 init_cost_surface "$COST_SURFACE"
-
-RUN_ID="run_$(date '+%Y%m%d_%H%M%S')"
 RUN_TS=$(date '+%Y-%m-%d %H:%M:%S')
 RUN_START_EPOCH=$(date +%s)
 TOTAL_COMPUTE_S=0
+trap 'rc=$?; if [[ $rc -eq 0 ]]; then commit_attempt "$COMMITTED_OUT_PATH" "$ATTEMPT_OUT_PATH"; else cleanup_failed_attempt; fi' EXIT
 
 log "======================================================================"
 log "Universal Ledger Pipeline Run  [$RUN_ID]"

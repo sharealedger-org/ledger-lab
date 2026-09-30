@@ -19,6 +19,12 @@ raw product/source records
 - Assign business-event, journal-line, source, rule, and provenance identifiers.
 - Emit balanced SJE partitions for Foundation sorting and CKB processing.
 
+## Input Schema Boundary
+
+- Validate source transaction records and user-maintained rule inputs against their declared schemas before processing. Validate a header when the source format declares one; fixed-width or headerless formats must validate their declared record layout instead.
+- Treat a validated header as schema metadata, not a transaction. Remove it before creating canonical event and SJE records; generated SJE partitions are headerless.
+- Vendor status records supplied to CAR processing are external inputs and follow the same validation rule. The CAR master is system-managed state, not a user-maintained source file; its producer and consumers share an internal record contract.
+
 The ARE is documented in [are/README.md](are/README.md). The current VA implementation combines much of this layer with external sorting in `02-foundation/va_pipeline`; the conceptual boundary is established before implementation is split.
 
 ## Non-Responsibilities
