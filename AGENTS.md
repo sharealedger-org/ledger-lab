@@ -58,6 +58,7 @@ Python must not read source transactions and perform accounting, posting, CKB, s
 - Prefer bounded Scala process piping or declared partition materialization over loading unbounded history into one JVM.
 - Do not compare runs that use different mainline implementation languages as though they measured the same engine.
 - Preserve the distinction between logical layers and physical passes. A layer does not imply a scan; an external sort or required materialization may create a pass boundary.
+- The minimum-cost experiment excludes Spark, Vagrant, Play, and Derby. PostgreSQL may be used only as an optional landing/access layer outside the measured CKB path; it is not a financial-engine substrate for the cost curves.
 
 ## Architecture Layers
 
@@ -76,6 +77,10 @@ Engines read and generate SJE partitions. Perspectives aggregate only; they do n
 ## Before Editing
 
 - Read the relevant layer README and nearby implementation before changing code.
+- Read [AGENTIC_ARCHITECTURE_GATES.md](docs/AGENTIC_ARCHITECTURE_GATES.md) and declare the workload, record contracts, CKB placement, materialization profile, controls, and evidence before implementing a new engine or perspective.
+- For verification work, follow [VERIFICATION_SESSION_PROTOCOL.md](docs/VERIFICATION_SESSION_PROTOCOL.md): reconstruct actual producers and consumers, state one falsifiable claim, and run the cheapest falsifier before editing.
+- Maintain [VERIFICATION_AUDIT_REGISTER.md](docs/VERIFICATION_AUDIT_REGISTER.md) as the running evidence ledger; do not promote `unknown`, `legacy`, or `partially_verified` behavior to implemented by narrative alone.
+- Record missing GenevaERS runtime capabilities in [GENEVAERS_CAPABILITY_GAP_REGISTER.md](docs/GENEVAERS_CAPABILITY_GAP_REGISTER.md); do not bypass a target-engine gap with a Scala helper and call the workload measured.
 - Preserve the Scala/Bash/Python boundary above.
 - Prefer existing sort, CKB, SJE, CAR, and control-total contracts over new abstractions.
 - Keep public paths and agent interfaces stable unless the task explicitly changes them.
@@ -90,3 +95,5 @@ Before accepting a change, verify:
 3. SJE lineage, balancing, rule identity, and effective dates remain explicit.
 4. Sort boundaries and memory/materialization assumptions are documented.
 5. The change preserves comparable engine measurements across cost-curve runs.
+6. Generated output is consumed by the declared downstream process; same-process execution alone is not evidence of CKB placement.
+7. The unchanged baseline fixture and a named new workload both pass the required architecture gates.

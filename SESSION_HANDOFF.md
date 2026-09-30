@@ -1,12 +1,13 @@
 # Ledger Lab Handoff
 
-Updated 2026-09-28. This file is a concise state snapshot; use the linked design contracts for details.
+Updated 2026-09-29. This file is a concise state snapshot; use the linked design contracts for details.
 
 ## Architecture Source of Truth
 
 - `01-transformation/` through `05-perspectives/` define logical ownership, not a fixed sequence of processes or physical passes.
 - `99-interpretation/` defines the terminal post-run interpretation contract. A first interpreter and automatic run hook now exist for the emitted evidence bundle; richer currency/elimination interpretation remains deferred.
 - The current Virginia Scala application is a legacy physical baseline with mixed responsibilities. Its numbered options are not a one-to-one implementation of layers 01-05.
+- The original [Universal Ledger prototype](https://github.com/KipTwitchell/universal_ledger) is the domain lineage bridge: raw VA transaction assignment, Universal Journal generation, CKB-style balance updates, and multiple outputs from one pass. It is a POC, not the generalized GenevaERS engine.
 - Start with [README.md](README.md), the five layer READMEs, [CKB_LAYER_EXECUTION_MODEL.md](docs/CKB_LAYER_EXECUTION_MODEL.md), and [MEASUREMENT_AND_LOGGING.md](docs/MEASUREMENT_AND_LOGGING.md).
 
 ## Current Implementation and Build
@@ -23,6 +24,7 @@ Updated 2026-09-28. This file is a concise state snapshot; use the linked design
 - `data/` contains small sanitized samples and configuration fixtures. Full VA and PO histories remain external; see [RUNTIME_DATA_LAYOUT.md](docs/RUNTIME_DATA_LAYOUT.md).
 - The PostgreSQL JDBC dependency is present in the build, but the database-backed Perspective aggregation design is not implemented. Decisions are tracked in [step5-postgres-design.md](docs/step5-postgres-design.md).
 - PostgreSQL is intentionally deferred. The current user-facing smoke path is the compact `--show-data` output and the file-based interpretation report.
+- Spark, Vagrant, Play, and Derby are excluded from the cost-curve experiment. PostgreSQL is optional only as a later landing/access layer for event and view copies, not as part of the measured CKB path.
 
 ## Validation Status
 
@@ -32,15 +34,16 @@ Updated 2026-09-28. This file is a concise state snapshot; use the linked design
 - The canonical run, process, sort, partition, and reconciliation evidence is emitted for the baseline and active allocation smoke profiles. Engine/perspective evidence is still partial.
 - The active allocation profile generates 45 balanced allocation SJEs, records an explicit rounding residual, applies them, and regenerates 27 next-period divisor groups.
 - The first 99 interpreter and automatic end-of-run hook are implemented for current evidence; it reports active/partial status and missing future evidence rather than overstating coverage.
+- The agentic architecture gates in [AGENTIC_ARCHITECTURE_GATES.md](docs/AGENTIC_ARCHITECTURE_GATES.md) are now mandatory after a rejected engine attempt exposed raw-event input, non-SJE output, orphaned materialization, and false CKB placement.
 
 ## Next Work
 
 1. Validate the current fixture and active allocation profile on Windows using the agreed Bash environment.
-2. Implement currency translation and intercompany candidate views as inline CKB/report sections; keep their synthetic inputs separate from VA data.
-3. Extend evidence for those views, including unmatched-counterparty gaps and effective-dated FX controls.
-4. Build the richer 99 report only after those process records exist.
-5. Defer PostgreSQL until the file-based perspective/report contracts and materialization profiles are stable.
-6. Define named research workloads and only then run comparable, replicated runtime studies.
+2. Audit and repair the measurement substrate: process rows, artifact bytes, sort/pass records, controls, and replication identity.
+3. Build named minimum-cost workloads and materialization profiles without turning the Scala prototype into a generalized engine.
+4. Use GenevaERS Workbench, Run-Control Apps, Performance Engine, and CKB extensions as the future execution target when a workload is ready for cross-engine validation.
+5. Keep Sharealedger as the future metadata/configuration home for the open ERP model; keep Ledger Lab focused on research fixtures, controls, and cost evidence.
+6. Defer PostgreSQL until the file-based perspective/report contracts and materialization profiles are stable.
 
 ## Current Session Boundary
 
@@ -54,9 +57,39 @@ The project now has a coherent pre-99 foundation:
 - Named workload and materialization controls.
 - Synthetic, clearly labeled inputs for intercompany candidates and USD/EUR/BTC currency views.
 
-The next process work is report-time currency and intercompany candidate views inside the CKB flow.
-Do not treat the synthetic fixtures as public Virginia evidence, and do not expand the 99 narrative
-until those view and gap records are emitted.
+The next work is minimum-cost measurement and architecture verification, not generalized engine
+implementation. Do not treat the synthetic fixtures as public Virginia evidence, and do not
+expand the 99 narrative until the relevant process and evidence contracts are verified.
+
+## Rejected Engine Attempt
+
+The 2026-09-29 attempt was discarded. It passed a synthetic balance check but violated the architecture: it read raw fixture CSVs from an engine package, emitted a custom non-SJE file, ran after the post merge loop, never applied generated rows to ledger state, eagerly loaded inputs, and ignored materialization behavior. A same-process call is not a CKB engine section. The replacement must pass [AGENTIC_ARCHITECTURE_GATES.md](docs/AGENTIC_ARCHITECTURE_GATES.md) before any currency/elimination result is interpreted as evidence.
+
+## First Adversarial Audit: Steps 2 and 3
+
+Audit role: `Adversarial Reviewer`
+Claim: Step 2 produces a valid sorted SJE partition that Step 3 can post into conserved instrument-level ledger state.
+Command: `bash scripts/run_pipeline.sh --inPath "$RUN_ROOT/input" --outPath "$RUN_ROOT/output" --years 03 --steps 2,3 --curve audit --config step2-step3 --profile audit-baseline --materialization baseline`
+Evidence root: `/tmp/ledger-lab-audit.styOkT`
+
+Verified for the staged FY03 fixture:
+
+- 1,520 SJE rows;
+- 39 fields on every SJE row;
+- 0 unbalanced journal groups;
+- 0 sort-key monotonicity violations;
+- 59 ledger rows;
+- ledger amount total `0.00`.
+
+Audit classifications:
+
+- Step 2 transformation: `partially_verified`; the basic schema and balance invariant pass, but record-format coverage, vendor misses, lineage semantics, and scale remain unverified.
+- Step 2 sort: `partially_verified`; the fixture key check passes, but adversarial multi-spill, numeric/order, and memory tests remain.
+- Step 3 posting: `partially_verified`; the fixture reconstructs a conserved ledger, but prior-state replay, duplicate keys, multi-period behavior, and full lineage remain unverified.
+- Process metrics: `contradicted` on macOS; the log reports Step 3 `records_read=0` despite 1,520 journals, storage is `?`, and Step 2 canonical input rows include the header (`761` reported versus `760` data rows).
+
+This audit does not establish production scale, GenevaERS compatibility, generalized 04/05 maturity,
+or a cost-curve result. The next audit should repair metric production before measuring workloads.
 
 # Windows machine test
 

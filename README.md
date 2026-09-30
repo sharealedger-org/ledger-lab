@@ -20,6 +20,30 @@ These are hypotheses to evaluate with comparable workloads, explicit controls, a
 measurements. See [99-interpretation](99-interpretation/README.md) for how results should be
 interpreted and what the evidence must contain.
 
+## Strategic Boundary
+
+Ledger Lab is the minimum-cost-curve research and measurement repository. It is not the
+generalized GenevaERS execution engine and must not grow into a replacement for that project.
+The Scala VA implementation is a domain prototype and historical baseline used to test financial
+contracts, materialization choices, controls, and cost hypotheses.
+
+The GenevaERS organization owns the generalized execution substrate: Workbench metadata authoring,
+Run-Control Apps, the Java/Performance Engine, CKB read/lookup/write extensions, DevOps, demos, and
+documentation. Future Ledger Lab workloads may be translated into GenevaERS metadata and run
+through those repositories, but engine implementation belongs there.
+
+Sharealedger is the intended future home for open ERP financial metadata and configuration: event
+definitions, ARE rules, instrument/CAR structures, effective-dated references, calculation-engine
+definitions, perspectives, and workload manifests. Ledger Lab supplies measured research fixtures
+and evidence for those configurations; it does not become the ERP runtime.
+
+The cost-curve experiment does not use Spark, Vagrant, Play, or Derby. Spark does not provide the
+required CKB contract for multiple structured files co-located by common key, nor does it inherit
+pre-sorted-file order without repartitioning and resorting. Vagrant, Play, and Derby are historical
+prototype infrastructure, not experiment substrates. PostgreSQL may serve as an optional landing
+and access layer for retained event copies or view outputs, but it is not an integral part of the
+measured CKB cost path.
+
 ---
 
 ## Architecture and Status
