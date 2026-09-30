@@ -51,6 +51,8 @@ Updated 2026-09-30. This file is a concise state snapshot; use the linked design
 - The canonical run, process, sort, partition, and reconciliation evidence is emitted for the baseline and active allocation smoke profiles. Engine/perspective evidence is still partial.
 - The active allocation profile generates 45 balanced allocation SJEs, records an explicit rounding residual, applies them, and regenerates 27 next-period divisor groups.
 - The first 99 interpreter and automatic end-of-run hook report active/partial status and missing future evidence rather than overstating coverage. The booked FX smoke emits engine metrics, reconciliation controls, and a run report with fixture-level `supports` evidence.
+- The populated booked FX orchestrator smoke now stages its opening ledger, generates 4 balanced SJEs, posts them with 3 opening rows into 5 ledger rows, and passes conservation controls. Prior committed ledger state is staged per attempt; a failed run after Step 3 output leaves the published generation unchanged, removes the failed attempt, and retains its log.
+- Successful runs publish a complete generation behind the output path. Older generations remain on disk for readers and are not counted in the active output's cost record. First-time migration of an existing directory to a symlink has a brief non-atomic interval; concurrent-reader behavior, retention costs, input-generation identity, and whole-process replay remain unverified.
 - The agentic architecture gates in [AGENTIC_ARCHITECTURE_GATES.md](docs/AGENTIC_ARCHITECTURE_GATES.md) are now mandatory after a rejected engine attempt exposed raw-event input, non-SJE output, orphaned materialization, and false CKB placement.
 
 ## Next Work

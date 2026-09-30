@@ -131,16 +131,16 @@ REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 SBT_PROJECT="$REPO_ROOT/02-foundation/va_pipeline"
 
 COMMITTED_OUT_PATH="$OUT_PATH"
-RUN_ID="run_$(date '+%Y%m%d_%H%M%S')"
-ATTEMPT_ROOT="${COMMITTED_OUT_PATH%/}/.attempts"
+RUN_ID="run_$(date '+%Y%m%d_%H%M%S')_$$"
+ATTEMPT_ROOT="${COMMITTED_OUT_PATH%/}.generations"
 ATTEMPT_OUT_PATH="${ATTEMPT_ROOT%/}/${RUN_ID}"
 OUT_PATH="$ATTEMPT_OUT_PATH"
-[[ -z "$LOG_FILE" ]] && LOG_FILE="${OUT_PATH%/}/pipeline_results.log"
-COST_SURFACE="${OUT_PATH%/}/cost_surface.csv"
-VIEWSPEC="${IN_PATH%/}/ViewSpec.csv"
 
 cleanup_failed_attempt() {
   if [[ -n "${ATTEMPT_OUT_PATH:-}" && -d "$ATTEMPT_OUT_PATH" ]]; then
+    if [[ -f "$LOG_FILE" ]]; then
+      cp "$LOG_FILE" "$ATTEMPT_ROOT/${RUN_ID}.failed.log"
+    fi
     rm -rf "$ATTEMPT_OUT_PATH"
     echo "Failed attempt cleaned: $ATTEMPT_OUT_PATH" >&2
   fi
@@ -149,9 +149,24 @@ cleanup_failed_attempt() {
 commit_attempt() {
   local final_dir="$1"
   local attempt_dir="$2"
-  mkdir -p "$final_dir"
-  find "$final_dir" -mindepth 1 -maxdepth 1 ! -name '.attempts' -exec rm -rf {} +
-  cp -R "$attempt_dir"/. "$final_dir/"
+  if [[ -d "$final_dir" && ! -L "$final_dir" ]]; then
+    local legacy_dir
+    legacy_dir="$(mktemp -d "$ATTEMPT_ROOT/legacy.XXXXXX")"
+    rmdir "$legacy_dir"
+    mv "$final_dir" "$legacy_dir"
+    ln -s "$legacy_dir" "$final_dir" || { mv "$legacy_dir" "$final_dir"; return 1; }
+  fi
+  local next_link="${final_dir}.next.$$"
+  ln -s "$attempt_dir" "$next_link"
+  if [[ -L "$final_dir" ]]; then
+    if [[ "$(uname -s)" == "Darwin" ]]; then
+      mv -fh "$next_link" "$final_dir"
+    else
+      mv -fT "$next_link" "$final_dir"
+    fi
+  else
+    mv "$next_link" "$final_dir"
+  fi
 }
 
 # The engine now lives below the repository root. Normalize relative data paths
@@ -161,9 +176,16 @@ is_absolute_path() {
 }
 
 is_absolute_path "$IN_PATH" || IN_PATH="$REPO_ROOT/$IN_PATH"
+is_absolute_path "$COMMITTED_OUT_PATH" || COMMITTED_OUT_PATH="$REPO_ROOT/$COMMITTED_OUT_PATH"
 is_absolute_path "$OUT_PATH" || OUT_PATH="$REPO_ROOT/$OUT_PATH"
+ATTEMPT_ROOT="${COMMITTED_OUT_PATH%/}.generations"
+ATTEMPT_OUT_PATH="${ATTEMPT_ROOT%/}/${RUN_ID}"
+OUT_PATH="$ATTEMPT_OUT_PATH"
 IN_PATH="${IN_PATH%/}/"
 OUT_PATH="${OUT_PATH%/}/"
+[[ -z "$LOG_FILE" ]] && LOG_FILE="${OUT_PATH%/}/pipeline_results.log"
+COST_SURFACE="${OUT_PATH%/}/cost_surface.csv"
+VIEWSPEC="${IN_PATH%/}/ViewSpec.csv"
 
 # ── helpers ───────────────────────────────────────────────────────────────────
 log() {
@@ -382,14 +404,25 @@ record_cost_point() {
 }
 
 # ── main loop ─────────────────────────────────────────────────────────────────
-mkdir -p "$ATTEMPT_ROOT"
-rm -rf "$ATTEMPT_OUT_PATH"
-mkdir -p "$OUT_PATH"
+trap 'rc=$?; if [[ $rc -eq 0 ]]; then commit_attempt "$COMMITTED_OUT_PATH" "$ATTEMPT_OUT_PATH" || { cleanup_failed_attempt; exit 1; }; else cleanup_failed_attempt; fi' EXIT
+mkdir -p "$ATTEMPT_ROOT" "$OUT_PATH"
+for year in ${YEARS//,/ }; do
+  if [[ -f "$COMMITTED_OUT_PATH/LDGR20${year}.csv" ]]; then
+    cp "$COMMITTED_OUT_PATH/LDGR20${year}.csv" "$OUT_PATH/LDGR20${year}.csv"
+  fi
+  if [[ -f "$IN_PATH/LDGR20${year}_OPENING.csv" ]]; then
+    cp "$IN_PATH/LDGR20${year}_OPENING.csv" "$OUT_PATH/LDGR20${year}_OPENING.csv"
+    if [[ ! -f "$OUT_PATH/LDGR20${year}.csv" ]]; then
+      cp "$OUT_PATH/LDGR20${year}_OPENING.csv" "$OUT_PATH/LDGR20${year}.csv"
+    fi
+  elif [[ ",$STEPS," == *,12,* && -f "$OUT_PATH/LDGR20${year}.csv" ]]; then
+    cp "$OUT_PATH/LDGR20${year}.csv" "$OUT_PATH/LDGR20${year}_OPENING.csv"
+  fi
+done
 init_cost_surface "$COST_SURFACE"
 RUN_TS=$(date '+%Y-%m-%d %H:%M:%S')
 RUN_START_EPOCH=$(date +%s)
 TOTAL_COMPUTE_S=0
-trap 'rc=$?; if [[ $rc -eq 0 ]]; then commit_attempt "$COMMITTED_OUT_PATH" "$ATTEMPT_OUT_PATH"; else cleanup_failed_attempt; fi' EXIT
 
 log "======================================================================"
 log "Universal Ledger Pipeline Run  [$RUN_ID]"

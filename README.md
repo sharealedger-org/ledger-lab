@@ -59,7 +59,7 @@ process that resembles a target layer does not mean that layer's generalized imp
 | [03 Instrument Ledger](03-instrument-ledger/README.md) | Preserve canonical journal history and instrument-level state. | Represented by the current VA journal and LDGR files; not a separate processing application. |
 | [04 Engines](04-engines/calculation_engines/README.md) | Read SJE structures and emit balanced, traceable SJE structures. | Target boundary is documented; generalized engine implementation is not complete. |
 | [05 Perspectives](05-perspectives/README.md) | Aggregate selected ledger and engine outputs into domain views. | Legacy VA aggregation exists; the generalized perspective engine is a design scaffold. |
-| [99 Interpretation](99-interpretation/README.md) | Interpret completed or partial run evidence for researchers. | Contract documented; canonical log producers and report generator remain to be built. |
+| [99 Interpretation](99-interpretation/README.md) | Interpret completed or partial run evidence for researchers. | First canonical evidence producers and automatic report hook exist for fixture workloads; generalized reporting remains planned. |
 
 For execution topology, sort boundaries, and process memory contracts, see
 [CKB_LAYER_EXECUTION_MODEL.md](docs/CKB_LAYER_EXECUTION_MODEL.md). The planned evidence records are
@@ -73,7 +73,7 @@ by the current runners.
 - `data/`: small sanitized fixtures and rule/view configuration; full historical inputs are external.
 - `scripts/`: Bash orchestration plus Python data preparation and post-run utilities.
 - `docs/`: architecture decisions, data contracts, measurement design, and historical specifications.
-- `99-interpretation/`: documented target for terminal post-run interpretation; automatic hook not implemented.
+- `99-interpretation/`: first terminal post-run interpretation and automatic report hook for emitted evidence bundles.
 
 ---
 
