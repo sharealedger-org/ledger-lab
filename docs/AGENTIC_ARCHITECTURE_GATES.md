@@ -26,7 +26,7 @@ An engine change is not accepted unless all of these are true:
 1. **SJE in:** the engine consumes parsed SJE/Universal Journal or canonical ledger structures. It does not read ad hoc raw event CSVs directly from an engine package.
 2. **SJE out:** generated records use the existing `Transaction`/SJE contract or a versioned schema with an explicit adapter. They can be parsed by the downstream consumer without a special test-only reader.
 3. **Balanced groups:** every generated journal group balances independently, not only in a file-wide total.
-4. **Lineage:** every generated row retains source event/instrument identity, rule set/version, effective date, and supersession/reversal relationship where applicable.
+4. **Lineage:** every generated row retains source event or GL-row identity at its declared grain, Instrument ID when present, rule set/version, effective date, and supersession/reversal relationship where applicable. Do not invent an Instrument ID for GL-grain input.
 5. **Apply or declared view:** generated SJEs are applied through the CKB path or the output is explicitly classified as report-time analytical evidence. A file that is written but never consumed is an orphan, not a completed engine.
 6. **CKB placement:** the engine runs at the declared ordered-stream/buffer boundary. Calling code from the same JVM after the CKB loop does not establish CKB execution.
 7. **Memory contract:** input and intermediate state obey the declared bounded-memory or external-sort contract. `toList`, whole-file maps, and eager history loads require explicit approval and measurement.

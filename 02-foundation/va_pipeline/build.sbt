@@ -4,6 +4,7 @@ lazy val root = (project in file("."))
   .settings(
     name := "va_pipeline",
     scalaVersion := "2.12.18",
+    Compile / unmanagedSourceDirectories += baseDirectory.value / "../../04-engines/calculation_engines/src/main/scala",
     Compile / packageBin / mainClass := Some("org.universalledger.foundation.va.ledger.LedgerApp"),
 
     exportJars := true,

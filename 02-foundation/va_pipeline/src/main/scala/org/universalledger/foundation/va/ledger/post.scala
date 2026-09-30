@@ -255,6 +255,11 @@ object post {
             while ((jrnlEOF == "N" || ldgrEOF == "N") &&
               !(jrnlEOF == "Y" && ldgrEOF == "Y")) {
 
+          if (swapBal == "Y" && testJrnlFullKey != testLdgrFullKey) {
+            writeBal()
+            useSaveBal()
+          }
+
           if (testJrnlFullKey == testLdgrFullKey) {
             // if (debugPrint == "Y") {println("==: tran: " + testJrnlFullKey + " Bal: " + testLdgrFullKey + " remaining rec: " )}
             // {println("==: tran: " + testJrnlFullKey + " Bal: " + testLdgrFullKey + " remaining rec: " )}
@@ -273,8 +278,11 @@ object post {
             if (testJrnlFullKey < testLdgrFullKey) {
               // if (debugPrint == "Y") {println("<<: tran: " + testJrnlFullKey + " inst: " + testLdgrFullKey + " Max ID: " + maxBalID.toString)}
               // testJrnlFullKey < testLdgrFullKey: Journal has a record for an account not yet in ledger
-              writeBal() // flush whatever balance was currently accumulating (e.g. from prior key)
-              formatBalwTran() // init new balance from jrnl
+              saveLdgrFullKey = testLdgrFullKey
+              saveLdgrFullRecord = ldgrRec.copy()
+              saveBalAmtAccum = ldgrAmtAccum
+              swapBal = "Y"
+              formatBalwTran() // accumulate the journal-only key while preserving the future ledger row
               ldgrAmtAccum = jrnlRec.transTransAmount
               if (jrnlEOF == "N") {
                 if (jrnlLine.hasNext) readJrnl()

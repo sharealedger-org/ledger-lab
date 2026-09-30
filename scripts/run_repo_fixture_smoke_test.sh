@@ -7,7 +7,9 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
-RUN_ROOT="$(mktemp -d)"
+TEMP_ROOT="${TMPDIR:-/tmp}"
+mkdir -p "$TEMP_ROOT"
+RUN_ROOT="$(mktemp -d "${TEMP_ROOT%/}/ledger-lab-fixture.XXXXXX")"
 KEEP_OUTPUT=0
 SHOW_RESULTS=0
 WITH_ALLOCATION=0
@@ -132,6 +134,63 @@ awk -F, '
     printf "Fixture check passed: %d ledger rows, amount sum %.2f\n", rows, total
   }
 ' "$LEDGER_FILE"
+
+python3 - "$OUTPUT_DIR" <<'PY'
+import csv
+import re
+import sys
+from pathlib import Path
+
+output = Path(sys.argv[1])
+metrics = output / "metrics"
+
+def rows(path):
+    with path.open(newline="", encoding="utf-8") as source:
+        return list(csv.DictReader(source))
+
+manifest = rows(metrics / "run_manifest.csv")[0]
+assert manifest["status"] == "complete"
+assert manifest["wall_seconds"].isdigit()
+assert manifest["git_revision"]
+
+processes = rows(metrics / "process_metrics.csv")
+allocation_enabled = manifest["workload_profile"] == "allocation-active"
+assert len(processes) == (3 if allocation_enabled else 2)
+assert all(None not in process and all(value is not None for value in process.values()) for process in processes)
+with (metrics / "process_metrics.csv").open(newline="", encoding="utf-8") as source:
+  process_header = next(csv.reader(source))
+assert len(processes[0]) == len(process_header)
+step_two = next(process for process in processes if process["process_name"] == "step-2")
+step_three = next(process for process in processes if process["process_name"] == "step-3")
+assert step_three["input_rows"] == step_two["output_rows"]
+if allocation_enabled:
+  assert int(step_two["output_rows"]) > 1520
+else:
+  assert step_two["output_rows"] == "1520"
+  assert step_three["output_rows"] == "59"
+assert all(int(process[field]) > 0 for process in processes for field in ("input_bytes", "output_bytes"))
+if allocation_enabled:
+  step_six = next(process for process in processes if process["process_name"] == "allocation")
+  assert step_six["input_rows"] == step_three["output_rows"]
+  assert step_six["output_rows"] == "45"
+
+cost = rows(output / "cost_surface.csv")[0]
+assert cost["total_storage_bytes"].isdigit() and int(cost["total_storage_bytes"]) > 0
+
+interpretation = rows(output / "interpretation" / "interpretation.csv")[0]
+assert interpretation["run_activity"] == "active"
+assert interpretation["git_revision"] == manifest["git_revision"]
+report = (output / "interpretation" / "run_report.md").read_text(encoding="utf-8")
+assert f"- Wall seconds: {manifest['wall_seconds']}" in report
+
+log = (output / "pipeline_results.log").read_text(encoding="utf-8")
+step_three_result = next(line for line in log.splitlines() if "RESULT step=3 " in line)
+assert re.search(
+  rf"records_read={step_three['input_rows']} records_written={step_three['output_rows']} input_bytes=\d+ output_bytes=\d+ outPath_bytes=\d+",
+  step_three_result,
+)
+print("Metric checks passed: process rows, byte counts, manifest interpretation")
+PY
 
 if [[ "$SHOW_RESULTS" -eq 1 ]]; then
   bash "$SCRIPT_DIR/show_repo_fixture_results.sh" "$OUTPUT_DIR" \

@@ -5,7 +5,7 @@ Updated 2026-09-29. This file is a concise state snapshot; use the linked design
 ## Architecture Source of Truth
 
 - `01-transformation/` through `05-perspectives/` define logical ownership, not a fixed sequence of processes or physical passes.
-- `99-interpretation/` defines the terminal post-run interpretation contract. A first interpreter and automatic run hook now exist for the emitted evidence bundle; richer currency/elimination interpretation remains deferred.
+- `99-interpretation/` defines the terminal post-run interpretation contract. A first interpreter and automatic run hook now exist for emitted evidence bundles, including the booked currency-revaluation fixture.
 - The current Virginia Scala application is a legacy physical baseline with mixed responsibilities. Its numbered options are not a one-to-one implementation of layers 01-05.
 - The original [Universal Ledger prototype](https://github.com/KipTwitchell/universal_ledger) is the domain lineage bridge: raw VA transaction assignment, Universal Journal generation, CKB-style balance updates, and multiple outputs from one pass. It is a POC, not the generalized GenevaERS engine.
 - Start with [README.md](README.md), the five layer READMEs, [CKB_LAYER_EXECUTION_MODEL.md](docs/CKB_LAYER_EXECUTION_MODEL.md), and [MEASUREMENT_AND_LOGGING.md](docs/MEASUREMENT_AND_LOGGING.md).
@@ -33,7 +33,7 @@ Updated 2026-09-29. This file is a concise state snapshot; use the linked design
 - A separate Windows handoff branch contains fixes from that run and a fixture runner check. Windows validation remains pending.
 - The canonical run, process, sort, partition, and reconciliation evidence is emitted for the baseline and active allocation smoke profiles. Engine/perspective evidence is still partial.
 - The active allocation profile generates 45 balanced allocation SJEs, records an explicit rounding residual, applies them, and regenerates 27 next-period divisor groups.
-- The first 99 interpreter and automatic end-of-run hook are implemented for current evidence; it reports active/partial status and missing future evidence rather than overstating coverage.
+- The first 99 interpreter and automatic end-of-run hook report active/partial status and missing future evidence rather than overstating coverage. The booked FX smoke emits engine metrics, reconciliation controls, and a run report with fixture-level `supports` evidence.
 - The agentic architecture gates in [AGENTIC_ARCHITECTURE_GATES.md](docs/AGENTIC_ARCHITECTURE_GATES.md) are now mandatory after a rejected engine attempt exposed raw-event input, non-SJE output, orphaned materialization, and false CKB placement.
 
 ## Next Work
@@ -55,11 +55,12 @@ The project now has a coherent pre-99 foundation:
 - Active allocation smoke profile with generated SJEs, rounding control, and next-period divisor handoff.
 - Canonical evidence and first interpretation report.
 - Named workload and materialization controls.
-- Synthetic, clearly labeled inputs for intercompany candidates and USD/EUR/BTC currency views.
+- Synthetic, clearly labeled inputs for intercompany candidates, USD/EUR/BTC currency views, and booked currency revaluation.
+- A booked currency-revaluation engine slice that generates balanced SJE, applies it through the existing poster, and passes fixture controls; baseline and allocation regressions pass after the streaming merge fix.
 
-The next work is minimum-cost measurement and architecture verification, not generalized engine
-implementation. Do not treat the synthetic fixtures as public Virginia evidence, and do not
-expand the 99 narrative until the relevant process and evidence contracts are verified.
+The next work is validation of booked-revaluation rate/period edge cases, walk-forward behavior, and
+target CKB placement, followed by the scoped elimination design. Do not treat the synthetic fixtures
+as public Virginia evidence or the legacy poster path as generalized GenevaERS CKB evidence.
 
 ## Rejected Engine Attempt
 

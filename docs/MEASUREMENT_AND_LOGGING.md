@@ -51,6 +51,12 @@ wall_seconds,status,replicate_number
 
 The manifest makes every result reproducible. Configuration files, rules, ViewSpec, and input snapshots must be copied or content-addressed by the recorded hashes.
 
+`run_id` identifies one whole CKB process attempt. A full-process retry receives a new `run_id` and
+references the same immutable input snapshot and input partition IDs; it does not resume an earlier
+attempt's intermediate state. Keep failed-attempt status and resource/log evidence, but do not expose
+its partial ledger or perspective outputs as valid partitions or next-run inputs. Record the
+relationship between retry attempts in run-level metadata so retry cost and cleanup are measurable.
+
 ## Process Metrics
 
 `process_metrics.csv` contains one row per compiled Scala process or orchestration process:
@@ -198,13 +204,13 @@ The raw dimensions remain available. A cost proxy must record its weights and mu
 
 ## Run Tracking
 
-A planned experiment point and an executed run are different records:
+A planned experiment point and an executed attempt are different records:
 
 ```text
-planned point -> point_id -> one or more replicated run_id values
+planned point -> point_id -> replicate -> one or more whole-process run_id attempts
 ```
 
-Replicates are required to distinguish architecture cost from JVM warmup, filesystem cache, laptop load, and memory pressure.
+Replicates are required to distinguish architecture cost from JVM warmup, filesystem cache, laptop load, and memory pressure. Full-process retries are not replicates: record their elapsed time, cleanup volume, and resource usage separately so the cost of recomputation is visible.
 
 ## Migration From Existing Logs
 

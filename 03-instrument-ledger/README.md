@@ -22,13 +22,19 @@ The Instrument Ledger is not a domain perspective and does not aggregate Finance
 Risk, or Liquidity outputs. It preserves the canonical instrument-level economic state from
 which those perspectives can be derived.
 
+Ledger processing may also carry GL-grain balance partitions from sources whose costs are not
+attributed to instruments. These records preserve their legal-entity/account grain and source
+lineage without a synthetic Instrument ID. Instrument-grain and GL-grain partitions use the same
+CKB execution path; their declared grain controls applicable views and keys.
+
 Instrument Ledger state and perspective pivots may be emitted as views inside a CKB process. A
 new physical pass is required only when the next operation needs a different sort order or its
 working state exceeds the available memory contract.
 
 ## Responsibilities
 
-- Maintain the Instrument ID anchor and balance-bucket grain.
+- Maintain Instrument ID and balance-bucket grain where instrument attribution exists; preserve
+  GL-level grain for non-instrument sources.
 - Preserve Universal Journal/SJE history and lineage.
 - Represent replacement master files produced by CKB processing.
 - Keep CAR/effective-dated attributes joinable to ledger state.

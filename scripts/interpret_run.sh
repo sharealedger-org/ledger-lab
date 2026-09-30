@@ -16,6 +16,7 @@ MANIFEST="$METRICS_DIR/run_manifest.csv"
 PROCESSES="$METRICS_DIR/process_metrics.csv"
 PARTITIONS="$METRICS_DIR/partition_catalog.csv"
 CONTROLS="$METRICS_DIR/reconciliation_results.csv"
+SJE_ENGINE_METRICS="$METRICS_DIR/sje_engine_metrics.csv"
 
 missing_evidence=""
 for evidence_file in "$MANIFEST" "$PROCESSES" "$PARTITIONS" "$CONTROLS"; do
@@ -34,13 +35,6 @@ for optional_file in sje_engine_metrics.csv perspective_metrics.csv; do
   fi
 done
 
-strip_quotes() {
-  local value="$1"
-  value="${value#\"}"
-  value="${value%\"}"
-  printf '%s' "$value"
-}
-
 run_id="unknown"
 run_status="partial"
 curve=""
@@ -50,16 +44,20 @@ end_time=""
 wall_seconds=""
 git_revision=""
 if [[ -f "$MANIFEST" ]]; then
-  manifest_row="$(sed -n '2p' "$MANIFEST")"
-  IFS=',' read -r run_id _ _ point_id curve _ _ _ _ git_revision _ _ _ _ _ start_time end_time wall_seconds run_status _ <<< "$manifest_row"
-  run_id="$(strip_quotes "$run_id")"
-  point_id="$(strip_quotes "${point_id:-}")"
-  curve="$(strip_quotes "${curve:-}")"
-  git_revision="$(strip_quotes "${git_revision:-}")"
-  start_time="$(strip_quotes "${start_time:-}")"
-  end_time="$(strip_quotes "${end_time:-}")"
-  wall_seconds="$(strip_quotes "${wall_seconds:-}")"
-  run_status="$(strip_quotes "${run_status:-partial}")"
+  manifest_values="$(python3 - "$MANIFEST" <<'PY'
+import csv
+import sys
+
+with open(sys.argv[1], newline="", encoding="utf-8") as manifest:
+    row = next(csv.DictReader(manifest), {})
+
+fields = ("run_id", "point_id", "curve", "git_revision", "start_time", "end_time", "wall_seconds", "status")
+print("\t".join(row.get(field, "") for field in fields))
+PY
+)"
+  IFS=$'\t' read -r run_id point_id curve git_revision start_time end_time wall_seconds run_status <<< "$manifest_values"
+  [[ -n "$run_id" ]] || run_id="unknown"
+  [[ -n "$run_status" ]] || run_status="partial"
   config="${point_id#*-}"
 fi
 
@@ -71,6 +69,7 @@ count_rows() {
 process_count="$(count_rows "$PROCESSES")"
 partition_count="$(count_rows "$PARTITIONS")"
 control_count="$(count_rows "$CONTROLS")"
+engine_count="$(count_rows "$SJE_ENGINE_METRICS")"
 failed_controls="0"
 passed_controls="0"
 if [[ -f "$CONTROLS" ]]; then
@@ -94,8 +93,8 @@ fi
 
 interpretation_csv="$REPORT_DIR/interpretation.csv"
 cat > "$interpretation_csv" <<EOF
-run_id,implementation_maturity,run_activity,evidence_assessment,process_count,partition_count,reconciliation_count,reconciliation_failures,missing_evidence,git_revision
-"$run_id","partial","$run_activity","$evidence_assessment","$process_count","$partition_count","$control_count","$failed_controls","$missing_evidence","$git_revision"
+run_id,implementation_maturity,run_activity,evidence_assessment,process_count,partition_count,engine_count,reconciliation_count,reconciliation_failures,missing_evidence,git_revision
+"$run_id","partial","$run_activity","$evidence_assessment","$process_count","$partition_count","$engine_count","$control_count","$failed_controls","$missing_evidence","$git_revision"
 EOF
 
 report_file="$REPORT_DIR/run_report.md"
@@ -113,9 +112,10 @@ cat > "$report_file" <<EOF
 
 ## Actual execution
 
-The evidence bundle records $process_count process rows and $partition_count partition rows.
-The financial path is the legacy VA implementation; this report does not infer generalized 04
-Engine or 05 Perspective maturity from similarly named legacy steps.
+The evidence bundle records $process_count process rows, $partition_count partition rows, and
+$engine_count SJE-engine invocations. Engine metrics describe the booked-currency-revaluation
+process actually run. This workload uses the legacy VA posting substrate and does not establish
+generalized GenevaERS CKB or 05 Perspective maturity.
 
 ## Controls
 

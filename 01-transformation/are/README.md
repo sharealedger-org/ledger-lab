@@ -55,6 +55,7 @@ The ARE owns accounting meaning:
 - source-system and business-event mapping;
 - Instrument ID assignment or validation;
 - legal-entity and chartfield assignment;
+- intra-unit elimination entry generation when the source transaction identifies an eligible counterparty;
 - nominal-account derivation;
 - debit/credit perspective shift;
 - offset and clearing-leg generation;
@@ -64,6 +65,18 @@ The ARE owns accounting meaning:
 - journal-level balancing and accounting rejects.
 
 The ARE must emit balanced journal groups. A source event may produce two or more SJE lines, but the group must carry a stable business-event/journal ID and sum to zero where the accounting contract requires it.
+
+## Intra-Unit Eliminations
+
+For an intra-unit elimination, ARE applies the rule as soon as the source transaction identifies
+an eligible counterparty. It generates the balanced elimination SJE during translation; it does not
+wait for a matching transaction. The generated entry retains the source event, counterparty, rule,
+and journal lineage required by the SJE contract.
+
+This ARE-triggered operation applies to source transaction streams where counterparty data is
+available. Aggregated GL-grain balances are not forced through ARE. The later inter-unit elimination
+view uses the shared CKB/view code for either instrument-grain or GL-grain records, selected by
+source configuration, without inventing an Instrument ID.
 
 ## What Does Not Belong in the ARE
 

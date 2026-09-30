@@ -35,24 +35,36 @@ sort required to establish the CKB key
         v
 02 Foundation / CKB
   read sorted partitions A, B, C
-  update balances and attributes
-  emit views and generated records through pipes
+        update in-flight balances and attributes
+        pipe generated records and view inputs downstream
         |
         +--> 03 Instrument Ledger views/state
         |
         +--> 04 Engine: read SJE structure
-        |       generate SJE partition in the pipe
+        |       emit generated SJE records into the pipe
         |          |
         |          +--> select and apply in the current CKB flow
         |
-        +--> 05 Perspective: aggregate selected records
-                |
-                +--> emit perspective output
-                |
-                +--> sort only if the next operation requires
+        +--> 05 Perspective / terminal output stage
+                select generated SJE and updated ledger balances
+                aggregate requested views
+                write required view and next-run ledger outputs
 ```
 
 This is a logical flow, not a fixed sequence of physical files or independent scans.
+
+## Record Grains and Shared CKB Code
+
+The CKB path supports both instrument-grain and GL-grain records. Instrument-grain records carry an
+Instrument ID and preserve vendor or other instrument-level attribution. GL-grain records are
+aggregated balances from systems whose costs are not tracked to an instrument or whose value does
+not justify that detail; they may have no Instrument ID.
+
+These are two record grains in the same CKB process, not separate engines or a new execution model.
+The same CKB and elimination-view code handles both. Source configuration selects which partitions
+and views apply, and records retain their actual identity and grain rather than receiving synthetic
+Instrument IDs. Memory and ordering constraints remain declared and measured for the selected
+workload; a different grain does not by itself justify forking the code.
 
 ## Revised 02-05 Flow
 
@@ -65,19 +77,19 @@ B_t: prior Instrument Ledger state -------+|
 C_t: CAR, rates, rules, divisors --------+||
                                           vvv
                               02 Foundation / CKB
-                              ordered stream + bounded views
+                              ordered stream + bounded in-flight state
                                           |
                  +------------------------+-------------------------+
                  |                        |                         |
                  v                        v                         v
        03 Instrument Ledger       04 Engine/view sections       05 Perspectives
-       apply/reconstruct state    allocation, FX,                select, join CAR,
-       preserve SJE lineage       revaluation, candidates        pair, translate,
+       update in-flight state     allocation, FX,                select generated SJE
+       preserve SJE lineage       revaluation, candidates        and updated balances,
                                   and generated SJEs              summarize, report
                  |                        |                         |
-                 +------------ canonical or view contracts --------+
+                 +---------- all records/state remain in CKB flow --+
                                           |
-                 streamed result, persisted partition, or report output
+                         terminal outputs written in required order
 ```
 
 The ownership boundaries are semantic inside this flow:
@@ -85,12 +97,81 @@ The ownership boundaries are semantic inside this flow:
 | Concern | Owner | Output choice |
 |---|---|---|
 | Sort, buffer, spill, partition order | `02-foundation` | Stream or substantiated next-pass partition |
-| Canonical balances and SJE replay | `03-instrument-ledger` | Persistent state and lineage |
-| History/rule-dependent generated events or candidate views | `04-engines` | Generated SJE, side view, or candidate partition |
-| Reporting scope, CAR pivots, translation, pairing, summarization | `05-perspectives` | Report-time view or materialized perspective |
+| Canonical balances and SJE replay | `03-instrument-ledger` | In-flight state; persisted by the terminal stage |
+| History/rule-dependent generated events or candidate views | `04-engines` | In-flow SJE or candidate records |
+| Reporting scope, CAR pivots, presentation-only translation, inter-unit elimination sums, summarization | `05-perspectives` | Selects in-flow records and writes requested outputs at the terminal stage |
 
-An output may cross a logical boundary through the CKB buffer without creating a physical pass. The
-run only gets a new pass when its order, memory, or restart contract requires materialization.
+### Terminal Output Boundary
+
+After the initial CKB inputs are established, engine sections do not write generated-SJE output
+files and the Instrument Ledger is not written as an intermediate result. Engine-generated SJE,
+in-flight Instrument Ledger balance updates, CAR/rule data, and view inputs are piped through the
+ordered flow to its final perspective/output stage.
+
+That final stage receives generated SJE and updated in-flight ledger balances as ordered streams.
+Each requested view selects the records it needs and performs its declared joins and aggregation.
+As ordered output records become ready, the stage writes them sequentially to the required
+perspective outputs and updated Instrument Ledger files or partitions for the next run; it does not
+accumulate the complete output in memory first. Every persisted output follows the order required by
+its declared next consumer. "Updated" ledger state before this boundary means in-flight state;
+durable ledger files are produced only at the terminal stage.
+
+Thus an engine-generated SJE can be selected by downstream views in the same CKB flow without an
+intermediate file or a new scan. A declared scratch spill or sort may still be needed to satisfy a
+bounded-memory or ordering contract, but it is not an intermediate durable result. A new physical
+pass is required only when a required output order, memory bound, or restart contract cannot be
+satisfied by the current flow.
+
+## Run Attempt and Restart Contract
+
+The CKB recovery unit is the whole ordered CKB process, not an engine section, instrument range,
+or completed prefix of the stream. Each attempt starts from the same declared, durable input
+partitions: today's ARE SJE, prior Instrument Ledger state, and the required CAR/rate/rule/side-input
+generations. CKB does not persist intermediate state for restart. Instrument-break buffers and sort
+or overflow spills are working state only, not checkpoints.
+
+The attempt writes terminal-stage outputs sequentially as records become ready, but those outputs
+belong exclusively to that attempt until the full process completes and its controls pass. The
+orchestrator then makes the new ledger and perspective generations eligible as inputs to a later
+run. If the process fails, the attempt's new output generations are deleted or uncataloged; the
+previous committed generations and immutable inputs remain untouched. A retry gets a new attempt
+identity and replays the whole CKB flow from the same input generations. It must not resume from
+partial terminal files or silently skip completed engine/view sections.
+
+Failure logs and resource evidence survive cleanup and identify the failed attempt. Scratch spill
+files are cleaned separately and are never promoted to durable run inputs. On a GDG-backed runtime,
+cleanup is scoped to generations allocated by that attempt; on other runtimes, the execution adapter
+must provide equivalent attempt isolation. In either case, no partial output may resolve as the
+current Instrument Ledger or as a valid perspective result.
+
+## Instrument Ledger Detail and Daily Movement Profiles
+
+Instrument Ledger storage grain is a workload choice. A low-volume industry, such as insurance or
+annual-renewal payments, may preserve individual business events in the Instrument Ledger. A
+high-volume industry may instead summarize a day's activity into movements at the declared
+instrument/balance grain, while retaining source events and SJE lineage for event-level traceability.
+
+For the high-volume profile, CKB updates in-flight Instrument Ledger state at each Instrument ID
+break:
+
+1. The ordered input must make each Instrument ID and its declared balance keys contiguous.
+2. While processing one instrument, retain only that instrument's existing ledger state and
+   per-balance-key daily movement accumulators. Consume SJE/movement records incrementally; do not
+   hold other instruments or the day's full transaction set in memory.
+3. At the instrument break, apply the collapsed daily movement to that instrument's in-flight ledger
+   state and emit one updated row per resulting balance key, replacing prior rows rather than
+   appending duplicate balances for each source transaction.
+4. Pipe those updated rows onward with the generated/source SJE stream. The terminal perspective
+   stage selects either event records or updated balances and writes each ordered output sequentially
+   as it becomes ready.
+5. Release the instrument-local state before the next Instrument ID; do not retain prior instruments or the complete output in memory.
+
+The break key, balance grain, buffer bound, collapse rule, and lineage from each summarized movement
+to its contributing events must be explicit. Memory is bounded by the current instrument's required
+ledger state and balance-key accumulators, not by total input volume. If one instrument's working
+set exceeds the bound, a declared scratch spill must preserve the same replacement semantics and be
+measured. The event-preserving profile does not apply this daily collapse; both profiles retain the
+same terminal durable-write boundary.
 
 ## Sort Boundaries
 
@@ -106,7 +187,7 @@ view work.
 
 ### Conditional Later Sort
 
-A later sort is required only when a downstream operation needs an order that the current CKB stream does not provide and the required working state cannot be retained within the available memory contract.
+A later sort is required only when a downstream operation needs an order that the current CKB stream does not provide and the required working state cannot be retained within the available memory contract. Required next-run output order is part of the terminal output contract; intermediate CKB sections do not persist results to establish it.
 
 For example:
 
@@ -129,10 +210,10 @@ key, normally applying a sum or another associative metric:
 ```text
 sorted CKB stream
         -> bounded key -> aggregate buffer
-        -> emit final groups when the stream completes
+        -> final perspective/output stage emits groups when the stream completes
 
 buffer overflow
-        -> flush partial aggregates, not raw input rows
+        -> flush partial aggregates to declared scratch spill, not raw input rows
         -> continue the stream with the bounded buffer
         -> sort/reduce only the much smaller partial-aggregate file
 ```
@@ -184,8 +265,9 @@ B_t (prior driver side input at receiver/group grain) + C_t (today's instrument 
         -> C_(t+1) (tomorrow's source pool partition)
 ```
 
-`D_t` is a first-class generated partition with lineage, rule identity, effective date, and
-balancing controls. Materializing it for tomorrow is a time-partition handoff, not a second scan of
+`D_t` is a first-class generated record set with lineage, rule identity, effective date, and
+balancing controls. It remains in the current CKB flow until the terminal output stage, which
+materializes it for tomorrow only when required. This time-partition handoff is not a second scan of
 today's `B_t + C_t` input. A new physical pass is required only if the next day's consumer needs a
 new sort order or another declared materialization contract.
 
@@ -201,37 +283,36 @@ the result changes accounting state or merely explains it:
 | Allocation-generated SJE | Yes | Changes instrument balances and becomes a future source partition. |
 | Currency conversion/revaluation SJE | Conditional | Store it when book-currency state or a close requires it; otherwise derive the presentation amount from the source event, retained rate history, and rule at report time. |
 | Prior divisor and driver side input | Yes, as a partition or snapshot | Required to reproduce the allocation decision and next-period handoff. |
-| Elimination candidate match | Evidence record, not ledger state | It is an analytical proposal until the accounting rule approves it. |
-| Approved elimination SJE | Conditional | Store it when an approved close or downstream ledger process applies it; otherwise generate the adjustment at consolidated-report time from retained pair evidence and rules. |
+| Intra-unit ARE elimination SJE | Yes when required by the accounting rule | Generated when the source transaction identifies the eligible counterparty; no opposite-side transaction match is required. |
+| Inter-unit elimination view | No | A source-selected, report-scope sum that reports residual uneliminated activity. |
 | Consolidated financial statement | No canonical copy required | It is a perspective that can be regenerated from ledger plus approved events. |
 | Dashboard or reporting aggregate | No canonical copy required | It is analytical output; retain a cache only when operationally useful. |
 
-The elimination flow is therefore:
+Elimination has two distinct business processes, while retaining the same CKB execution and view
+code across instrument-grain and GL-grain sources:
 
 ```text
-one-sided source event
-        -> ARE intercompany candidate with counterparty identity
-        -> pair with the other side's candidate
-        -> complete pair: elimination candidate and report adjustment
-        -> incomplete pair: reconciliation gap remains visible
-        -> approved pair only: balanced elimination SJE when materialization is required
+intra-unit source event + identified counterparty
+        -> ARE generates balanced elimination SJE during translation
+        -> SJE enters the common sorted CKB flow
+
+inter-unit source records + requested reporting scope
+        -> source-selected elimination view
+        -> sum activity for that scope and report uneliminated residuals
 ```
 
-Each side must identify the other side using a stable counterparty or match-group key. The ARE may
-generate one candidate record per source event; it must not assume that a candidate is paired merely
-because its amount or account looks transfer-like. The report matcher pairs candidates by the
-declared counterparty, period, currency/converted amount, account rule, and match group. A missing
-counterparty side is a first-class reconciliation gap and must contribute to the report's
-uneliminated total.
+Record grain and elimination scope are independent. The same view code may process instrument-grain
+or GL-grain records, and source configuration may enable the view only for applicable partitions.
+No one-to-one transaction pair is a prerequisite for the inter-unit report-time sum.
 
-Candidate analysis may be persisted for audit and interpretation, but it must not silently become
-an accounting entry. Approval, rule identity, source lineage, pair completeness, and the zero-sum
-control are the boundary between analytical output and stored accounting state.
+The legacy VA Step 7 module is a separate historical implementation: it matches posted balances
+using `InteragencyTransfers.csv` or a same-amount heuristic, then generates and posts reversal SJEs.
+That behavior documents the VA workload; it does not define the target CKB contract.
 
 The default materialization policy is therefore:
 
 ```text
-retain immutable source facts + effective rules/rates + match evidence
+retain immutable source facts + effective rules/rates + elimination rules + source-grain metadata
         |
         +--> derive at report time when output is presentation-only
         |
@@ -245,9 +326,10 @@ calculation; it is simply not part of the canonical ledger state.
 
 ## Pipes and Spawned Records
 
-A CKB section or compiled Scala process may emit records into a pipe for a later section. Bash
+A CKB section or compiled Scala process emits records into a pipe for a later section. Bash
 connects the processes and enforces their declared order; the processes do not exchange unbounded
-in-memory collections. The emitted record can be:
+in-memory collections. These are in-flight records, not intermediate durable outputs. The emitted
+record can be:
 
 - a generated SJE for FTP, reserve, revaluation, allocation, consolidation, or elimination;
 - a divisor or trigger record for a later allocation section;
@@ -256,9 +338,11 @@ in-memory collections. The emitted record can be:
 - an audit or reconciliation record.
 
 The generated record remains a first-class record with source lineage, rule identity, effective
-date, and balancing information. It does not become a new physical pass merely because it was
-generated by a different logical layer or process. A new pass is still required when a new sort
-order or required materialization boundary occurs.
+date, and balancing information. It continues through CKB so the terminal perspective stage can
+select it alongside updated in-flight Instrument Ledger balances. Only that terminal stage writes
+required perspective outputs and next-run ledger partitions/files. Generation by another logical
+layer or process does not create a physical pass; a new pass is still required when a new sort order
+or required materialization boundary occurs.
 
 ## CKB Views for Allocation, Currency, and Elimination
 
@@ -267,19 +351,24 @@ separate pipeline passes. They can be sections of the same ordered CKB process, 
 current record plus its declared side inputs and writing a view or generated record into the CKB
 buffer:
 
-| CKB section/view | Inputs | Immediate output |
+| CKB section/view | Inputs | In-flow output to terminal stage |
 |---|---|---|
 | Allocation | current source pool, prior driver/divisor partition, allocation rules | receiver allocations and generated allocation SJEs |
 | Currency translation | source amount/currency, effective rate table, report date | translated report view rows |
-| Intercompany candidate | one-sided event, counterparty identity, matching rules | candidate pair records or gap evidence |
-| Approved elimination | complete candidate pair, scope, approval/rule state | generated elimination SJE when state materialization is required |
+| Intra-unit elimination | source event, identified counterparty, ARE rules | balanced elimination SJE in the common CKB flow |
+| Inter-unit elimination view | configured source partition at either grain, requested reporting scope | sum-based report of eliminated activity and remaining residuals |
 
-These sections may execute in one CKB flow and write different output contracts. A report-time view
-can remain in the buffer or be materialized as a partition according to the workload profile; that
-choice does not create a new pass. A new physical pass is introduced only by a required sort,
-unbounded materialization, or a different input-order contract.
+These sections may execute in one CKB flow and pipe different output contracts downstream. They do
+not require a separate engine for each record grain. They do not persist intermediate results. The
+final perspective/output stage selects generated SJE and updated ledger balances, then writes the
+requested view and next-run ledger outputs in their declared order. A new physical pass is introduced
+only by a required sort, unbounded materialization, or a different input-order contract.
 
 ## Materialization as a View Contract
+
+Durable view outputs and updated ledger files/partitions are written only by the terminal
+perspective/output stage. Earlier sort or overflow files, when required, are declared scratch
+artifacts and are not intermediate next-run outputs.
 
 Every materialization is an additional named view of the CKB flow, whether it is retained as a file,
 kept as a next-pass partition, or streamed through a pipe. Examples include:
@@ -302,7 +391,9 @@ Each compiled Scala process must declare:
 - input partition contract;
 - output stream or partition contract;
 - sort order, if any;
+- Instrument Ledger output grain and instrument-break key, when daily movement summarization is used;
 - maximum in-memory grouping/buffer state;
+- maximum rows or bytes retained for the current instrument break;
 - spill behavior and spill directory;
 - expected row and byte counters;
 - process-level resource metrics.
@@ -339,6 +430,8 @@ The agentic cost experiments must measure both logical work and physical boundar
 - records spawned and piped in memory;
 - maximum grouping state or spill volume;
 - generated SJE volume by engine;
+- Instrument Ledger input/output rows and event-to-movement reduction by storage profile;
+- peak per-instrument break buffer rows/bytes;
 - perspective output volume;
 - replacement master and pivot storage;
 - elapsed time and memory pressure.

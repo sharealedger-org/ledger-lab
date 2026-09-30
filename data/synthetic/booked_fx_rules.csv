@@ -1,0 +1,3 @@
+rule_set_id,rule_version,legal_entity_id,source_currency,target_currency,offset_account,effective_start,effective_end,book_scale,prior_rate_date,current_rate_date,ledger_period
+BOOKED-FX-REVAL,1,101,CAD,USD,FXREV,2025-01-01,2025-12-31,2,2025-01-15,2025-01-16,202501
+BOOKED-FX-REVAL,1,101,EUR,USD,FXREV,2025-01-01,2025-12-31,2,2025-01-15,2025-01-16,202501

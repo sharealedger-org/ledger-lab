@@ -1,0 +1,5 @@
+rate_date,currency_from,currency_to,rate,rate_source,rate_status
+2025-01-15,CAD,USD,1.1000,synthetic-control,official
+2025-01-16,CAD,USD,1.1200,synthetic-control,official
+2025-01-15,EUR,USD,1.0800,synthetic-control,official
+2025-01-16,EUR,USD,1.0750,synthetic-control,official

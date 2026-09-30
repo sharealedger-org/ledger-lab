@@ -159,6 +159,15 @@ object LedgerApp {
       case "7"  => consolidation(outPath)        // consolidates agencies; eliminates interagency transfers
       case "8"  => forecastingBudgeting(outPath) // projects actuals to budget; produces variance report
       case "9"  => arrangementReclass(outPath)   // reads/writes VendorMaster, VendorUpdate, LDGR files
+      case "12" =>
+        org.universalledger.engines.CurrencyRevaluation.run(
+          new java.io.File(outPath, s"LDGR20${year}_OPENING.csv").getPath,
+          params.getOrElse("fxRates", new java.io.File(inPath, "booked_fx_rates.csv").getPath),
+          params.getOrElse("fxRules", new java.io.File(inPath, "booked_fx_rules.csv").getPath),
+          new java.io.File(outPath, s"SortedJEFY${year}_FXR.csv").getPath,
+          year,
+          params.getOrElse("sortSpec", "../sort_specs/SortedJE.sortspec")
+        )
       // Steps 1, 10, 11 (poToPayMatch, initFiles, DPBSpark) require Spark and are excluded from
       // the default build. To enable: add Spark dependency to build.sbt and move sources back to
       // src/main/scala/org/universalledger/foundation/va/ledger/ from
@@ -174,7 +183,7 @@ object LedgerApp {
     println("  sbt \"run --step <N> [--inPath <path>] [--outPath <path>] [--vendormaster <path>] [--year <YYYY>] [--quarter <Q>] [--type <E|R>]\"")
     println("")
     println("  --step         N     Required. 2=standardizeAndSort, 3=post, 4=contraCreation, 5=dataAggregation,")
-    println("                                 6=financialAllocation, 7=consolidation, 8=forecastingBudgeting, 9=arrangementReclass")
+    println("                                 6=financialAllocation, 7=consolidation, 8=forecastingBudgeting, 9=arrangementReclass, 12=currencyRevaluation")
     println(s"  --inPath       path  Optional. Raw file directory.  Default: $DefaultInPath")
     println(s"  --outPath      path  Optional. Output directory.    Default: $DefaultOutPath")
     println( "  --vendormaster path  Optional. VendorMaster CSV.    Default: data/VendorMaster_full.csv")

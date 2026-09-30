@@ -1,0 +1,4 @@
+ldgrIPID,ldgrContractID,ldgrCommitmentID,ldgrLdgrlID,ldgrSourceSystemID,ldgrLedgerID,ldgrJrnlType,ldgrBookCodeID,ldgrLegalEntityID,ldgrCenterID,ldgrProjectID,ldgrProductID,ldgrNominalAccountID,ldgrAltAccountID,ldgrCurrencyCodeSourceID,ldgrCurrencyTypeCodeSourceID,ldgrCurrencyCodeTargetID,ldgrCurrencyTypeCodeTargetID,ldgrLedgerPeriod,ldgrTransAmount,ldgrUnitOfMeasure,ldgrStatisticAmount,ldgrDirVsOffsetFlg,ldgrReconcileFlg,ldgrAdjustFlg,ldgrExtensionIDAuditTrail,ldgrExtensionIDSource,ldgrExtensionIDClass,ldgrExtensionIDDates,ldgrExtensionIDCustom
+INST-1001,CON-1001,,1,ERP-ALPHA,ACTUALS,FIN,SHRD-3RD-PARTY,101,000,000,0,EXP265,0,CAD,TXN,USD,BASE-LE,202501,559.47,,0,D,N,N,,,,,
+INST-1002,CON-1002,,2,ERP-ALPHA,ACTUALS,FIN,SHRD-3RD-PARTY,101,000,000,0,EXP265,0,EUR,TXN,USD,BASE-LE,202501,559.47,,0,D,N,N,,,,,
+INST-1003,CON-1003,,3,ERP-ALPHA,ACTUALS,FIN,SHRD-3RD-PARTY,101,000,000,0,EXP6,0,USD,BASE-LE,USD,BASE-LE,202501,300.00,,0,D,N,N,,,,,
