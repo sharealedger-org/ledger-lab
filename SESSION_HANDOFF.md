@@ -1,6 +1,23 @@
 # Ledger Lab Handoff
 
-Updated 2026-09-29. This file is a concise state snapshot; use the linked design contracts for details.
+Updated 2026-09-30. This file is a concise state snapshot; use the linked design contracts for details.
+
+## 2026-09-30 Conceptual Model and 99 Handoff
+
+- Current branch: `work/99-reporting`, based on the pushed pre-99 evidence commit. The current 99 work is planning/documentation, not an implemented query service.
+- A public [Sharealedger Conceptual Model repo](https://github.com/sharealedger-org/sharealedger-conceptual-model) now holds the conceptual model discussion, authorized April 2020 lecture slides, and a GenevaERS ERP discussion starter.
+- The new [CKB view-query prototype plan](99-interpretation/CKB_VIEW_QUERY_PROTOTYPE.md) scopes 99 as a request/evidence interaction layer and treats scans as separately identified execution work.
+- `docs/VA Data Samples and Specs.xlsx` exposes a VA-to-Universal-Journal mapping not implemented in the current Scala transform: intended Project=Program and Account=Object/Source; current code maps Project=Object, derives EXP/REV accounts, and drops Program. The workbook's wide Universal Balance also sketches Contract/Commitment/Balance IDs and 12 period amount slots; these are not yet settled as keys versus measures.
+- The workbook-based reference cardinalities and dense bounds in the prototype plan are provisional domain ceilings, not observed FDS sizes or implementation evidence. The checked-in VendorMaster and VA data are fixture-scale.
+- No UL accounting code changed for this model review. Do not upgrade audit states or claim the generalized CKB/query behavior until balance identity, account namespace, period representation, source mapping, and a falsifiable producer/consumer workload are agreed and tested.
+
+### Next Model Decisions
+
+1. Define the VA universal balance grain and the role of Contract, Commitment, Balance ID, and Instrument/Involved Party IDs.
+2. Decide whether Account is a shared numeric namespace or type-qualified Object/Source domain, and define the crosswalk.
+3. Decide whether the canonical balance is long-form by period or the workbook's wide period-slot representation; treat report pivots as a separate materialization choice.
+4. Reconcile workbook mapping rows against source and reference data, including the program reference miss, before implementing the transformation change.
+5. Select one named chartfield cut and prove its source, grouping, reconciliation, update/replay, and measured storage behavior before connecting it to 99.
 
 ## Architecture Source of Truth
 

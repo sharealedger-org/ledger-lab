@@ -115,3 +115,10 @@ post-run process rather than adding it to measured financial compute.
 
 The checked-in VA fixtures are for functional and control-flow evidence. They do not establish
 production-scale cost behavior or complete implementation of every 01-05 responsibility.
+
+## Proposed CKB View-Query Prototype
+
+The short-term research plan for an AI-facing, CKB-backed view-request prototype is in
+[CKB_VIEW_QUERY_PROTOTYPE.md](CKB_VIEW_QUERY_PROTOTYPE.md). It is a proposal, not an implemented
+99 capability. The prototype keeps 99 as the user interaction and evidence layer; any record scan
+or aggregation must run as an explicit, measured CKB/view process rather than as a hidden 99 pass.
