@@ -20,6 +20,14 @@ These are hypotheses to evaluate with comparable workloads, explicit controls, a
 measurements. See [99-interpretation](99-interpretation/README.md) for how results should be
 interpreted and what the evidence must contain.
 
+The current VA source-model replacement contract is documented in
+[docs/VA_DATA_MODEL_CONTRACT.md](docs/VA_DATA_MODEL_CONTRACT.md). It is derived from the VA
+source workbook preserved in the Sharealedger conceptual-model repository and is intended to
+replace the older Universal Ledger fixture assumptions incrementally.
+
+Start implementation from the concise [Sharealedger Model Handoff](docs/SHAREALEDGER_MODEL_HANDOFF.md),
+then use the detailed VA contract for field, lineage, control, and evidence requirements.
+
 ## Strategic Boundary
 
 Ledger Lab is the minimum-cost-curve research and measurement repository. It is not the
