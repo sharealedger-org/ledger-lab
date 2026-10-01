@@ -53,11 +53,11 @@ class SharealedgerModelSpec extends AnyFunSuite {
     payment.ujBusEventCD = "Payment"
     payment.ujIPID = "IP-UNMATCHED-001"
     payment.ujInstrumentID = "UNMATCHED-INSTRUMENT-001"
-    payment.ujOriginalDocID = "UNMATCHED_SOURCE"
+    payment.ujExtensionIDCustom = "UNMATCHED_SOURCE"
     payment.ujepyVendorName = "SANITIZED_PARTY"
     payment.ujepyAmount = BigDecimal("25.00")
 
-    assert(payment.ujOriginalDocID == "UNMATCHED_SOURCE")
+    assert(payment.ujExtensionIDCustom == "UNMATCHED_SOURCE")
     assert(payment.ujInstrumentID.nonEmpty)
     assert(payment.ujepyAmount == BigDecimal("25.00"))
   }

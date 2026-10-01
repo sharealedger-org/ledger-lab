@@ -59,12 +59,12 @@ class UnviJournalAllEntity (
                                     var ujStatisticAmount: BigDecimal,
                                     ujRuleSetID: String = " ",
                                     ujRuleID: String = " ",
-                                    ujExtensionIDSource: String,
-                                    ujExtnesionSourceType: String,
+                                    var ujExtensionIDSource: String,
+                                    var ujExtnesionSourceType: String,
                                     ujExtensionIDAuditTrail: String = " ",
                                     ujExtensionIDClass: String = " ",
                                     ujExtensionIDDates: String = " ",
-                                    ujExtensionIDCustom: String = " ",
+                                    var ujExtensionIDCustom: String = " ",
 
                                     //Universal Header
                                     var uhIPID: String,
