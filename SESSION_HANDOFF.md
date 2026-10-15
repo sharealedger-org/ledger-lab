@@ -63,6 +63,7 @@ Updated 2026-09-30. This file is a concise state snapshot; use the linked design
 4. Use GenevaERS Workbench, Run-Control Apps, Performance Engine, and CKB extensions as the future execution target when a workload is ready for cross-engine validation.
 5. Keep Sharealedger as the future metadata/configuration home for the open ERP model; keep Ledger Lab focused on research fixtures, controls, and cost evidence.
 6. Defer PostgreSQL until the file-based perspective/report contracts and materialization profiles are stable.
+7. Evaluate using the VA fixture data as a test case for generating a GenevaERS business-data model from scratch — i.e., deriving chartfields, account structure, and processing rules bottom-up from observed transaction data rather than from a pre-specified schema. This would exercise the open ERP model derivation path and could inform how Sharealedger's conceptual model handles onboarding from raw financial history.
 
 ## Current Session Boundary
 
