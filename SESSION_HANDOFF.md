@@ -1,6 +1,45 @@
 # Ledger Lab Handoff
 
-Updated 2026-09-30. This file is a concise state snapshot; use the linked design contracts for details.
+Updated 2026-10-28. This file is a concise state snapshot; use the linked design contracts for details.
+
+---
+
+## 2026-10-28 Contributor Onboarding Session
+
+**Context.** This session addressed the question of how to hand the repository off to a broader
+technical community — likely students working under a professor's direction if the papers are
+judged worthwhile. The developer (Kip) is stepping back from being the primary implementer.
+
+**What was done.**
+
+- Wrote and committed [`CONTRIBUTOR_ONBOARDING.md`](CONTRIBUTOR_ONBOARDING.md) (commit `3883d4e`).
+  This document explains the two research claims, the CKB architecture pattern, honest
+  implementation status (including the known `records_read=0` metric breakage), the cost-curve
+  agent goal and what it needs to be true, the priority work items, and what AI assistants will
+  get wrong about the repository.
+- Linked it from the `README.md` Contributing section.
+
+**Key framing established for incoming contributors.**
+
+> The architecture is sound and partially verified at fixture scale. The measurement substrate
+> needed to produce comparable cost points is not yet reliable. The next milestone is not a new
+> financial feature — it is making the existing pipeline emit trustworthy evidence that an agent
+> can read and interpret without human intervention.
+
+**Priority work items for the next contributor (unchanged from previous session).**
+
+1. Fix Step 3 process metrics emission — `records_read=0` on macOS renders the cost surface
+   untrustworthy. This is the blocker for all cost-curve work.
+2. Validate evidence schemas on failed/partial/no-op runs.
+3. Define machine-readable workload manifests (input snapshot hash, steps, materialization
+   profile, code revision) so two runs are verifiably comparable.
+4. Define the C1 named workload and run three replicates to establish measurement stability.
+5. Define and run C2 (add Step 5). The C1→C2 delta is the measured marginal cost of reporting
+   materialization.
+
+**What was not changed.** No financial code was modified. The audit register states are unchanged.
+The architectural gate documents remain in force.
+
 
 ---
 
