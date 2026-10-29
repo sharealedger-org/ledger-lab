@@ -1,6 +1,6 @@
 # CKB View-Query Prototype Plan
 
-**Status:** Proposed research plan on `work/99-reporting`; not implemented or verified.
+**Status:** Proposed research plan; not implemented or verified.
 
 ## Aim
 

@@ -1,8 +1,5 @@
 # Ledger Lab
 
-> **Active development branch: [`work/99-reporting`](https://github.com/sharealedger-org/ledger-lab/tree/work/99-reporting)**
-> `main` reflects the stable architecture baseline. All current work — including the reviewer status note and latest session handoff — is on `work/99-reporting`. If you are arriving here from the Sharealedger reports page or from a reviewer referral, switch to that branch or read [`SESSION_HANDOFF.md`](https://github.com/sharealedger-org/ledger-lab/blob/work/99-reporting/SESSION_HANDOFF.md) there for current state.
-
 Ledger Lab is the public research successor to the Universal Ledger proof of concept. It is an
 Apache-2.0 research prototype for examining how financial events, instrument-level state,
 calculation engines, and reporting perspectives fit together.

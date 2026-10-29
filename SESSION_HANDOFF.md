@@ -18,7 +18,7 @@ This repo is the empirical laboratory for the nine-paper monograph *The Architec
 
 ## 2026-09-30 Conceptual Model and 99 Handoff
 
-- Current branch: `work/99-reporting`, based on the pushed pre-99 evidence commit. The current 99 work is planning/documentation, not an implemented query service.
+- Branch history: this work was developed on `work/99-reporting`, now merged to `main`. The current 99 work is planning/documentation, not an implemented query service.
 - A public [Sharealedger Conceptual Model repo](https://github.com/sharealedger-org/sharealedger-conceptual-model) now holds the conceptual model discussion, authorized April 2020 lecture slides, and a GenevaERS ERP discussion starter.
 - The new [CKB view-query prototype plan](99-interpretation/CKB_VIEW_QUERY_PROTOTYPE.md) scopes 99 as a request/evidence interaction layer and treats scans as separately identified execution work.
 - `docs/VA Data Samples and Specs.xlsx` exposes a VA-to-Universal-Journal mapping not implemented in the current Scala transform: intended Project=Program and Account=Object/Source; current code maps Project=Object, derives EXP/REV accounts, and drops Program. The workbook's wide Universal Balance also sketches Contract/Commitment/Balance IDs and 12 period amount slots; these are not yet settled as keys versus measures.
