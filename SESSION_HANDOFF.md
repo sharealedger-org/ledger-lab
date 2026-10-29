@@ -2,6 +2,20 @@
 
 Updated 2026-09-30. This file is a concise state snapshot; use the linked design contracts for details.
 
+---
+
+## Status for External Reviewers (added for first Sharealedger member circulation, June 2026)
+
+This repo is the empirical laboratory for the nine-paper monograph *The Architecture of Economic State* (Twitchell). It is **active research infrastructure, not a finished demonstration**. What it is and is not at this point:
+
+**What works.** The Scala pipeline runs on the public Virginia state vendor payment dataset (FY2003). Steps 2 (standardize + sort) and 3 (post to instrument-level ledger) have been adversarially audited at fixture scale — 1,520 SJE rows, zero unbalanced journals, 59 ledger rows, ledger total $0.00. Active cost allocation, booked FX revaluation, and an interpretation/reporting layer are implemented. The architecture correctly separates the Accounting Rules Engine (ARE), the Instrument Ledger (IL), and the reporting layer — which is the core claim Paper 1 makes about the minimum cost architecture.
+
+**What is not yet done.** Full-scale performance measurement (the cost curve experiments Papers 1 and 2 reference) has not been run. Several model decisions are open — balance grain, account namespace, period representation — documented in the Next Model Decisions section below. Windows validation is pending. The GenevaERS cross-engine validation step is future work.
+
+**What a reviewer can usefully do.** Read `README.md` and the five layer READMEs (`01-transformation/` through `05-perspectives/`) to understand the architecture. Run the fixture smoke test (`bash scripts/run_repo_fixture_smoke_test.sh --show-data`) to see the pipeline execute. Treat the current implementation as a working architectural proof-of-concept at fixture scale, not a completed empirical result.
+
+---
+
 ## 2026-09-30 Conceptual Model and 99 Handoff
 
 - Current branch: `work/99-reporting`, based on the pushed pre-99 evidence commit. The current 99 work is planning/documentation, not an implemented query service.
