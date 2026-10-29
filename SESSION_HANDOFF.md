@@ -126,23 +126,17 @@ Audit classifications:
 This audit does not establish production scale, GenevaERS compatibility, generalized 04/05 maturity,
 or a cost-curve result. The next audit should repair metric production before measuring workloads.
 
-# Windows machine test
+## Windows Validation (pending)
 
-Here is the test from the smoke test command.
+An earlier Windows attempt pasted placeholder paths from the smoke-test output as literal commands, so every `head`/`wc`/`cat` failed with "No such file or directory". That was a usage error, not a pipeline result. Run the smoke test itself and copy the actual retained path only when using `--keep-output`:
 
-head -n 3 /path/printed/output/SortedJEFY03q1exp.csv
-head -n 3 /path/printed/output/LDGR2003.csv
-wc -l /path/printed/output/SortedJEFY03q1exp.csv /path/printed/output/LDGR2003.csv
-cat /path/printed/output/pipeline_results.log
-cat /path/printed/output/cost_surface.csv
+```bash
+bash scripts/run_repo_fixture_smoke_test.sh --show-data
+```
 
-The paths above are illustrative placeholders, not literal commands. The current Windows test
-should use `bash scripts/run_repo_fixture_smoke_test.sh --show-data` and copy the actual retained
-path only when running with `--keep-output`.
-head: cannot open '/path/printed/output/SortedJEFY03q1exp.csv' for reading: No such file or directory
-head: cannot open '/path/printed/output/LDGR2003.csv' for reading: No such file or directory
-wc: /path/printed/output/SortedJEFY03q1exp.csv: No such file or directory
-wc: /path/printed/output/LDGR2003.csv: No such file or directory
-0 total
-cat: /path/printed/output/pipeline_results.log: No such file or directory
-cat: /path/printed/output/cost_surface.csv: No such file or directory
+## Starting Points for a New Collaborator
+
+1. Read [AGENTS.md](AGENTS.md) (language boundaries, review gate) and [README.md](README.md).
+2. Read the five layer READMEs, then [CKB_LAYER_EXECUTION_MODEL.md](docs/CKB_LAYER_EXECUTION_MODEL.md) and [MEASUREMENT_AND_LOGGING.md](docs/MEASUREMENT_AND_LOGGING.md).
+3. Run the fixture smoke test above, then see "Next Model Decisions" and "Next Work" in this file for open items.
+4. Before any engine or perspective work, follow [AGENTIC_ARCHITECTURE_GATES.md](docs/AGENTIC_ARCHITECTURE_GATES.md) and [VERIFICATION_SESSION_PROTOCOL.md](docs/VERIFICATION_SESSION_PROTOCOL.md).
