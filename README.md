@@ -184,6 +184,9 @@ Contributions welcome. Start with the [01–05 layer READMEs](#architecture-and-
 Universal Ledger design documents describe historical implementation proposals and should not be
 treated as current implementation status.
 
+New contributors should start with [CONTRIBUTOR_ONBOARDING.md](CONTRIBUTOR_ONBOARDING.md), which
+explains what exists, what does not, and what the first work items are.
+
 Key invariants:
 1. All mainline Steps 2–9 must remain Scala
 2. All sort operations must use `SortEngine` with a `.sortspec` file — no hardcoded sort keys
