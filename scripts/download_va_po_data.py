@@ -8,8 +8,8 @@ and records a manifest of every attempt.
 Coverage by source:
   FY2003–FY2015  Not publicly accessible via the Virginia Open Data Portal.
                  These files are Virginia public-domain government records archived
-                 on Zenodo: https://doi.org/10.5281/zenodo.PLACEHOLDER
-                 (DOI pending upload — see docs/RUNTIME_DATA_LAYOUT.md)
+                 on Zenodo: https://doi.org/10.5281/zenodo.23846362
+                 (see docs/RUNTIME_DATA_LAYOUT.md)
                  Download the archive, extract into data/VAPOData/, then re-run.
                  This script will record a manifest entry for each missing year.
 
@@ -139,7 +139,7 @@ def download_year(year: int, dest_dir: str, dry_run: bool) -> dict:
         msg = (
             "Not available on data.virginia.gov. "
             "FY2003-FY2015 files are archived on Zenodo (public domain): "
-            "https://doi.org/10.5281/zenodo.PLACEHOLDER — "
+            "https://doi.org/10.5281/zenodo.23846362 — "
             "see docs/RUNTIME_DATA_LAYOUT.md for instructions."
         )
         print(f"  FY{year}: SKIPPED — {msg}")

@@ -9,7 +9,7 @@ Downloads and extracts:
 
 All years FY2003-FY2016 are currently available on datapoint.apa.virginia.gov.
 As a permanent backup, the full dataset is also archived on Zenodo (public domain):
-  https://doi.org/10.5281/zenodo.PLACEHOLDER  (DOI pending — see docs/RUNTIME_DATA_LAYOUT.md)
+  https://doi.org/10.5281/zenodo.23846362  (see docs/RUNTIME_DATA_LAYOUT.md)
 
 Usage:
   python scripts/download_va_data.py --dest data/VARawFiles --years 2003,2004 --types exp,rev

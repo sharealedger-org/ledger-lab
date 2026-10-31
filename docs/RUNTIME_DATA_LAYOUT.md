@@ -34,8 +34,7 @@ checks both extensions for Step 2 input files.
 All Virginia source data used by this project is archived on Zenodo as Virginia
 public-domain government records:
 
-> **Zenodo archive:** https://doi.org/10.5281/zenodo.PLACEHOLDER
-> *(DOI pending upload — will be updated when archive is published)*
+> **Zenodo archive:** https://doi.org/10.5281/zenodo.23846362
 
 The archive contains two datasets in a single Zenodo record:
 
