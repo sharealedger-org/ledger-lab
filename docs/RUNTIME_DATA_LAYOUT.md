@@ -29,10 +29,40 @@ Set `UL_DATA_ROOT` or pass `--data-root` to a pipeline runner. The root should c
 The source files may use `.csv` rather than `.txt` for later fiscal years. The orchestrator
 checks both extensions for Step 2 input files.
 
-## Downloading expenditure data
+## Zenodo archive (Virginia APA + eVA data, FY2003–FY2016)
 
-The downloader writes to the repository-relative `data/VARawFiles` by default. Point it at the
-external root instead:
+All Virginia source data used by this project is archived on Zenodo as Virginia
+public-domain government records:
+
+> **Zenodo archive:** https://doi.org/10.5281/zenodo.PLACEHOLDER
+> *(DOI pending upload — will be updated when archive is published)*
+
+The archive contains two datasets in a single Zenodo record:
+
+| Directory | Source | Years | Status on original site |
+|-----------|--------|-------|--------------------------|
+| `VARawFiles/` | Virginia APA `datapoint.apa.virginia.gov` | FY2003–FY2016 | Available (may be removed) |
+| `VAPOData/` | Virginia eVA `data.virginia.gov` | FY2001–FY2018 | FY2003–FY2015 already removed |
+
+To use the archive:
+
+```bash
+# Download the zip from the Zenodo record, extract, then point the pipeline at it:
+export UL_DATA_ROOT=/path/to/extracted/virginia-apa-eva-data
+bash scripts/run_pipeline_orchestrator.sh --years 2003-2016 --curve C2
+```
+
+**License note:** Virginia state government records are public domain (no copyright).
+The archive contains vendor business contact information as published in Virginia's
+eVA system. NIGP commodity code *descriptions* are not redistributed separately —
+only the codes and descriptions embedded in transaction rows.
+
+Do not commit extracted files; `VARawFiles/` and `VAPOData/` are covered by `.gitignore`.
+
+## Downloading expenditure data directly
+
+FY2003–FY2016 expenditure, revenue, and budget files are still available on
+`datapoint.apa.virginia.gov`. To download fresh copies instead of using the Zenodo archive:
 
 ```bash
 python3 scripts/download_va_data.py \
@@ -41,7 +71,9 @@ python3 scripts/download_va_data.py \
   --types exp,rev
 ```
 
-Purchase-order data uses the same pattern:
+## Downloading PO data
+
+FY2016+ eVA procurement files are still on `data.virginia.gov`:
 
 ```bash
 python3 scripts/download_va_po_data.py \
@@ -49,31 +81,7 @@ python3 scripts/download_va_po_data.py \
   --years 2016
 ```
 
-## Virginia eVA PO data: FY2003–FY2015
-
-FY2003–FY2015 eVA procurement files are **no longer available** on data.virginia.gov. They
-are archived on Zenodo as Virginia public-domain government records:
-
-> **Zenodo archive:** https://doi.org/10.5281/zenodo.PLACEHOLDER
-> *(DOI pending upload — will be updated when archive is published)*
-
-To obtain the files:
-
-```bash
-# Manual: download the zip from the Zenodo record above, extract into VAPOData/
-# The archive contains VA_opendata_FY2003.txt … VA_opendata_FY2015.txt
-# plus the data-dictionary.xlsx and Combined.xlsx files.
-
-# Verify the layout matches what download_va_po_data.py expects:
-python3 scripts/download_va_po_data.py --dry-run --years 2003-2015
-```
-
-**License note:** Virginia state government procurement records are public domain (no
-copyright). The archive contains vendor business contact information as published in
-Virginia's eVA system. NIGP commodity code *descriptions* are not redistributed
-separately — only the codes and descriptions embedded in transaction rows.
-
-Do not commit the extracted files; they are covered by `.gitignore` (`VAPOData/`).
+FY2003–FY2015 PO files are no longer on the portal — use the Zenodo archive above.
 
 ## Running with external data
 
