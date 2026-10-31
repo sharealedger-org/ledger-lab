@@ -43,13 +43,60 @@ remains the next milestone.
    - Known gaps: FY2005 and FY2009 eVA files are zero-row stubs (documented in scripts and RUNTIME_DATA_LAYOUT.md).
    - DOI reference committed to `RUNTIME_DATA_LAYOUT.md`, `download_va_data.py`, `download_va_po_data.py`.
 
-**Next steps.**
+**Papers reviewed this session (both read in full).**
 
-1. Set up PyTorch environment on this Windows machine (Python 3.14 is installed; check PyTorch compatibility).
-2. Build `scripts/pytorch_tests.py` (or two separate scripts) for Test 2 (Vendor Substitution Predictor)
-   and Test 3 (Budget Deviation Predictor) as proofs of Theorem 1 (Posting Non-Injectivity).
-3. Execute C1 replicates on this Windows machine to establish the hardware cost-surface baseline.
-4. Build `VendorMaster_enriched.csv` from the PO attributes + existing `VendorMaster.csv` so
+- [`org-members/research/01-minimum-cost-curve.md`](../org-members/research/01-minimum-cost-curve.md) — Paper 1
+- [`org-members/research/02-pre-hierarchy-event-repositories.md`](../org-members/research/02-pre-hierarchy-event-repositories.md) — Paper 2
+- [`org-members/research/PAPER_02_NOTES.md`](../org-members/research/PAPER_02_NOTES.md) — Paper 2 working notes with VA test design
+
+**What ledger-lab must produce for Paper 1 (Minimum Cost Curve).**
+
+Paper 1's VA empirical contribution is the **Instrument Pivot Theorem demonstration** (§3.5):
+- Vendor ID = Instrument ID; LDGR = balance store $\mathcal{L}$; VendorMaster.csv = CAR.
+- Run C1 (Steps 2,3 — post only) → cost_surface.csv row: compute_s, storage_bytes, master_file_count=1.
+- Run C2 (Steps 2,3,5 — post + views) → cost_surface.csv row with additional master files.
+- Show C1→C2 delta = measured marginal cost of one reporting view.
+- Add a CAR attribute to VendorMaster (e.g. instNIGPClass from vendor_po_attributes_by_year.csv),
+  re-run C2 → zero new balance records, zero reconciliation cost. That ratio vs. key-embedded
+  alternative ($(1+v)^m - 1$ formula) is the empirical proof of the theorem.
+- Paper 1 conclusion explicitly calls for an agentic cost-curve sweep: agent changes ViewSpec,
+  re-runs pipeline, observes costs. `run_cost_curve_sweep.sh` and `cost_surface.csv` are designed
+  for exactly this.
+- **Three C1 replicates** are needed to establish measurement stability before C2.
+
+**What ledger-lab must produce for Paper 2 (Pre-Hierarchy Event Repositories).**
+
+Paper 2 proposes a two-corpus structure: insurance (proprietary, 25.5B records) + VA (public,
+reproducible). The VA corpus carries the scientific reproducibility and direct falsifiability weight.
+Four tests, all against VA FY2003–FY2016:
+
+| Test | What it proves | Method |
+|------|---------------|--------|
+| **Test 1** | Direct empirical count of Theorem 1 non-injectivity | Python: for every PO line, construct its posted image (Agency+Object+Amount); count how many distinct PO patterns map to the same key. Produce the distribution. No ML. |
+| **Test 2** | Vendor substitution undetectable from posting (RQ4) | ML: given commitment event (Agency, NIGP, original vendor, price, date), predict whether a *different* vendor fulfilled the order. Balance-trained model literally cannot form this prediction — the feature does not exist. |
+| **Test 3** | PO modification rate → budget deviation year N+1 (RQ2/RQ3) | ML: Layer 2 = aggregate expenditure ratios; Layer 3 = PO modification sequence + timing. If Layer 3 wins, clean empirical RQ2/RQ3 proof. |
+| **Test 4** | 14-year longitudinal robustness (RQ3) | Train on years 1–7, predict year 8. Repeat for all 7 windows FY03–FY16. 7 independent replications. |
+
+**Critical open question before Tests 2–4 can be built:**
+
+The PO–expenditure **join key is unverified**. Expenditure files use `Agency/Fund/Object/SubProgram`
+coded keys, not PO numbers. The PO files have `PONUMBER`. Whether a `PONUMBER → expenditure record`
+linkage exists in the full-year data must be confirmed before Tests 2–4 can be scoped.
+See PAPER_02_NOTES.md open question #2.
+
+**Next steps — in order.**
+
+1. **Confirm Windows pipeline compiles**: run `bash scripts/run_repo_fixture_smoke_test.sh --show-data`
+   on this machine. sbt 1.x and Java 21 are confirmed available.
+2. **Run 3× C1 replicates** against full FY03 data in `data/VARawFiles/` to establish measurement
+   stability and generate Paper 1 cost-surface baseline rows.
+3. **Run C2** (add Step 5) against same FY03 data → measure C1→C2 marginal cost.
+4. **Build and run Paper 2 Test 1** (Python counting script, no ML) → produces the non-injectivity
+   distribution table for Paper 2 §5.1b, and simultaneously checks if the PO→expenditure join key
+   exists in practice.
+5. **Install PyTorch** (2.15.0 available for Python 3.14 on Windows — confirmed) and build
+   Tests 2–4 once the join key question is resolved.
+6. **Build VendorMaster_enriched.csv** from PO attributes + existing VendorMaster.csv so
    `car_detect_changes.py` has a real instTypeID baseline (currently defaults all vendors to EXP).
 
 ## 2026-10-31 Measurement Correction and Downstream PyTorch ML Strategy
