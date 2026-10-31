@@ -13,6 +13,7 @@ RUN_ROOT="$(mktemp -d "${TEMP_ROOT%/}/ledger-lab-fixture.XXXXXX")"
 KEEP_OUTPUT=0
 SHOW_RESULTS=0
 WITH_ALLOCATION=0
+WITH_PO_FIXTURE=0
 
 cleanup() {
   if [[ "$KEEP_OUTPUT" -eq 0 ]]; then
@@ -37,9 +38,13 @@ while [[ $# -gt 0 ]]; do
       WITH_ALLOCATION=1
       shift
       ;;
+    --with-po-fixture)
+      WITH_PO_FIXTURE=1
+      shift
+      ;;
     -h|--help)
       cat <<'EOF'
-Usage: bash scripts/run_repo_fixture_smoke_test.sh [--show-data] [--keep-output] [--with-allocation]
+Usage: bash scripts/run_repo_fixture_smoke_test.sh [--show-data] [--keep-output] [--with-allocation] [--with-po-fixture]
 
 Stages data/FY03q1exp_small.txt as FY03q1exp.txt, runs VA Steps 2 and 3,
 and verifies that sorted journal and ledger output are produced and balanced.
@@ -49,6 +54,8 @@ Use --show-data (alias: --show-results) to print small journal, ledger, count, a
 Use --keep-output to retain generated files for later inspection. The options
 may be combined. Use --with-allocation to add synthetic EXP6 salary source rows
 and run the active Step 6 allocation path.
+Use --with-po-fixture to stage the committed synthetic PO fixture into poData/ so
+the pipeline can exercise the PO path (transStandardize PO branch).
 EOF
       exit 0
       ;;
@@ -62,6 +69,12 @@ done
 INPUT_DIR="$RUN_ROOT/input"
 OUTPUT_DIR="$RUN_ROOT/output"
 mkdir -p "$INPUT_DIR" "$OUTPUT_DIR"
+
+if [[ "$WITH_PO_FIXTURE" -eq 1 ]]; then
+  mkdir -p "$INPUT_DIR/poData"
+  cp "$REPO_ROOT/data/VAPOData_fixture/VA_opendata_FY2003_small.txt" \
+     "$INPUT_DIR/poData/VA_opendata_FY2003.txt"
+fi
 
 cp "$REPO_ROOT/data/FY03q1exp_small.txt" "$INPUT_DIR/FY03q1exp.txt"
 cp "$REPO_ROOT/data/VendorMaster.csv" "$INPUT_DIR/VendorMaster.csv"
