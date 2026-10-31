@@ -162,7 +162,7 @@ append_process() {
       output_file="$OUT_PATH/SortedJEFY${short_year}q1exp.csv"
       input_partition="raw_fy${short_year}q1exp"
       output_partition="sje_fy${short_year}q1exp"
-      input_rows="$(file_rows "$input_file")"
+      input_rows="$(file_data_rows "$input_file")"
       output_rows="$(file_rows "$output_file")"
       ;;
     3)

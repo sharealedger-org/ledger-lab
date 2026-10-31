@@ -248,7 +248,7 @@ run_step() {
     2)
       input_file="$IN_PATH/FY${year}q${quarter_number}exp.txt"
       output_file="$OUT_PATH/SortedJEFY${year}q${quarter_number}exp.csv"
-      records_read=$(count_file_rows "$input_file")
+      records_read=$(count_data_rows "$input_file")
       ;;
     3)
       input_file="$OUT_PATH/SortedJEFY${year}q${quarter_number}exp.csv"
@@ -319,12 +319,27 @@ run_step() {
   case "$step" in
     2)
       records_written=$(count_file_rows "$output_file")
+      if [[ "$records_read" == "0" || "$records_read" == "?" ]]; then
+        records_read=$(echo "$out" | grep -i "Records Read:" | tail -1 | grep -oE '[0-9]+' | tail -1 || echo "?")
+      fi
+      if [[ "$records_written" == "0" || "$records_written" == "?" ]]; then
+        records_written=$(echo "$out" | grep -i "Journal lines produced:" | tail -1 | grep -oE '[0-9]+' | tail -1 || echo "?")
+      fi
       ;;
     3)
       records_written=$(count_data_rows "$output_file")
+      if [[ "$records_read" == "0" || "$records_read" == "?" ]]; then
+        records_read=$(echo "$out" | grep -i "Journal Records Read:" | tail -1 | grep -oE '[0-9]+' | tail -1 || echo "?")
+      fi
+      if [[ "$records_written" == "0" || "$records_written" == "?" ]]; then
+        records_written=$(echo "$out" | grep -i "Ledger Records Written:" | tail -1 | grep -oE '[0-9]+' | tail -1 || echo "?")
+      fi
       ;;
     6)
       records_written=$(count_data_rows "$output_file")
+      if [[ "$records_written" == "0" || "$records_written" == "?" ]]; then
+        records_written=$(echo "$out" | grep -i "Allocation SJEs written:" | tail -1 | grep -oE '[0-9]+' | tail -1 || echo "?")
+      fi
       ;;
     12)
       records_written=$(count_file_rows "$output_file")

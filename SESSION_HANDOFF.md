@@ -1,6 +1,31 @@
 # Ledger Lab Handoff
 
-Updated 2026-10-28. This file is a concise state snapshot; use the linked design contracts for details.
+Updated 2026-10-31. This file is a concise state snapshot; use the linked design contracts for details.
+
+---
+
+## 2026-10-31 Measurement Correction and Downstream PyTorch ML Strategy
+
+**Context.** This session repaired the critical measurement gaps on the macOS baseline and established the strategic integration of a downstream PyTorch-based machine learning prediction framework (Test 2 and Test 3 for Paper 02) to be executed on a standard PC/Windows machine containing the full Virginia purchase order (PO) commitment dataset.
+
+**What was done.**
+
+1. **Repaired Step 3 Metrics (`records_read=0` macOS blocker)**:
+   - Identified that `grep -i "Records Read:" | tail -1` on the `post.scala` module matched both the `Journal Records Read` and `Ledger Records Read` outputs, greedily returning `0` as the final match.
+   - Updated `scripts/run_pipeline.sh` with a multi-layered fallback strategy parsing `Journal Records Read:` and `Ledger Records Written:` directly from standard output, making metrics extraction completely bulletproof across all environments.
+2. **Resolved Step 2 Header Mismatch (761 vs 760 rows)**:
+   - Eliminated the historical dummy element initialization pattern in `transStandardize.scala` across `poRaw` and `transRaw` (Expenses and Revenue) buffers, which was inflating the JVM-logged read counts by 1.
+   - Replaced `count_file_rows` (which counts raw text lines including headers) with `count_data_rows` in `run_pipeline.sh` and `file_data_rows` in `write_canonical_evidence.sh` for Step 2's raw input. Both Step 2 and Step 3 now report perfectly synchronized, exact data row metrics (e.g., 760 and 1520 rows).
+3. **Formulated the Downstream PyTorch Plan**:
+   - Outlined how the Scala-generated output partitions (Layer 3 raw PO events vs. Layer 2 posted GL balances) will act as the training inputs for a compact PyTorch model on a PC.
+   - Defined **Test 2 (Vendor Substitution Predictor)** and **Test 3 (Budget Deviation Predictor)** as the operational proofs of Theorem 1 (Posting Non-Injectivity).
+
+**Next steps on the Windows machine containing the PO data:**
+
+1. Run PO Attribute Extraction with `--by-year` flag to generate yearly PO attributes.
+2. Build the CAR Update Cycle (`car_detect_changes.py` and temporal as-of-date join in Scala `VendorMaster` and Python Step 5).
+3. Set up the PyTorch Dataset Loader and Model script on Windows to run Tests 2 and 3.
+4. Execute C1 replicates to establish hardware cost-surface baseline data.
 
 ---
 

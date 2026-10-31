@@ -142,7 +142,7 @@ object transStandardize {
                           poVendorPartNumber: String,
                           poManPartNumber: String,
                                             )
-        val poRaw = ArrayBuffer(poCLS("", "", "", "", "", 0, 0, "", "", "","","","","","","","","","",""))
+        val poRaw = ArrayBuffer[poCLS]()
 
         // Read input records
         val lineIn: Seq[String] = Source.fromFile(VAInDataPath + FileName).getLines.toList.drop(1)
@@ -236,7 +236,7 @@ object transStandardize {
             // Expense type record structure
             case class transECLS(tranAgency: String, tranFund: String, tranObj: String, tranProg: String,
                                  tranVendorName: String, tranDate: String, tranAmt: BigDecimal)
-            val transRaw = ArrayBuffer(transECLS("", "", "", "", "", "", 0))
+            val transRaw = ArrayBuffer[transECLS]()
 
             // Read input records
             val lineIn = Source.fromFile(VAInDataPath + payFile).getLines.toList.drop(1)
@@ -288,7 +288,7 @@ object transStandardize {
               sortBy(_._1.tranProg).
               sortBy(_._1.tranObj).
               sortBy(_._1.tranFund).
-              sortBy(_._1.tranAgency).drop(1)
+              sortBy(_._1.tranAgency)
 
             //Format output records
             var jrnlID = 0
@@ -363,7 +363,7 @@ object transStandardize {
             // Revenue type record structure
             case class transRCLS(tranAgency: String, tranFund: String, tranSrc: String, tranDate: String, tranAmt: BigDecimal)
 
-            val transRaw = ArrayBuffer(transRCLS("", "", "", "", 0))
+            val transRaw = ArrayBuffer[transRCLS]()
             //          var transRaw: Array[transECLS.type] = Array(transECLS)
 
             // Read input records
@@ -412,7 +412,7 @@ object transStandardize {
               sortBy(_._1.tranDate).
               sortBy(_._1.tranSrc).
               sortBy(_._1.tranFund).
-              sortBy(_._1.tranAgency).drop(1)
+              sortBy(_._1.tranAgency)
 
             //Format output records
             var jrnlID = 0
