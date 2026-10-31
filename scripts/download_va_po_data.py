@@ -13,6 +13,11 @@ Coverage by source:
                  Download the archive, extract into data/VAPOData/, then re-run.
                  This script will record a manifest entry for each missing year.
 
+                 Known data gaps in the eVA source (no procurement data published):
+                   FY2005 — "2005 Combined Empty File.csv" (zero rows)
+                   FY2009 — "2009 Combined no VA Data.csv" (zero rows)
+                 extract_po_attributes.py skips these automatically (< 0.5 MB).
+
   FY2016         Available on data.virginia.gov (CKAN slug: eva-procurement-data-2016).
                  Schema matches the FY2003-FY2015 dictionary fields.
 

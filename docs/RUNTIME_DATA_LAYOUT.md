@@ -42,7 +42,7 @@ The archive contains two datasets in a single Zenodo record:
 | Directory | Source | Years | Status on original site |
 |-----------|--------|-------|--------------------------|
 | `VARawFiles/` | Virginia APA `datapoint.apa.virginia.gov` | FY2003–FY2016 | Available (may be removed) |
-| `VAPOData/` | Virginia eVA `data.virginia.gov` | FY2001–FY2018 | FY2003–FY2015 already removed |
+| `VAPOData/` | Virginia eVA `data.virginia.gov` | FY2001–FY2018 (gaps: FY2005, FY2009) | FY2003–FY2015 already removed |
 
 To use the archive:
 
