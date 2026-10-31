@@ -113,6 +113,18 @@ def process_files(po_dir: str, dry_run: bool, verbose: bool):
                 if not vendor_id:
                     continue
 
+                # Reject rows where VENDORSTATE is not a valid 2-letter state code —
+                # these are column-shifted rows where city/zip/UOM values landed in
+                # the state field.
+                if state and (len(state) != 2 or not state.isalpha()):
+                    state = ""
+
+                # Reject NIGPCODE values whose first 3 characters are not digits —
+                # column-shifted rows carry UOMCode abbreviations (e.g. "eac", "lot").
+                # Valid codes are 5 digits; we extract the 3-digit class prefix below.
+                if nigp_raw and not nigp_raw[:3].isdigit():
+                    nigp_raw = ""
+
                 file_records += 1
                 vendor_names[vendor_id][vendor_name] += 1
 
@@ -195,6 +207,12 @@ def process_files_by_year(po_dir: str):
 
                 if not vendor_id:
                     continue
+
+                # Reject column-shifted values (same rules as the all-years path above)
+                if state and (len(state) != 2 or not state.isalpha()):
+                    state = ""
+                if nigp_raw and not nigp_raw[:3].isdigit():
+                    nigp_raw = ""
 
                 file_records += 1
                 vendor_names[vendor_id][vendor_name] += 1

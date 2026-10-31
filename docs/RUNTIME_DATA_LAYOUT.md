@@ -49,8 +49,31 @@ python3 scripts/download_va_po_data.py \
   --years 2016
 ```
 
-Older PO years that are not available from the portal must be supplied separately from the
-original source archive. Do not commit that archive or the extracted files.
+## Virginia eVA PO data: FY2003–FY2015
+
+FY2003–FY2015 eVA procurement files are **no longer available** on data.virginia.gov. They
+are archived on Zenodo as Virginia public-domain government records:
+
+> **Zenodo archive:** https://doi.org/10.5281/zenodo.PLACEHOLDER
+> *(DOI pending upload — will be updated when archive is published)*
+
+To obtain the files:
+
+```bash
+# Manual: download the zip from the Zenodo record above, extract into VAPOData/
+# The archive contains VA_opendata_FY2003.txt … VA_opendata_FY2015.txt
+# plus the data-dictionary.xlsx and Combined.xlsx files.
+
+# Verify the layout matches what download_va_po_data.py expects:
+python3 scripts/download_va_po_data.py --dry-run --years 2003-2015
+```
+
+**License note:** Virginia state government procurement records are public domain (no
+copyright). The archive contains vendor business contact information as published in
+Virginia's eVA system. NIGP commodity code *descriptions* are not redistributed
+separately — only the codes and descriptions embedded in transaction rows.
+
+Do not commit the extracted files; they are covered by `.gitignore` (`VAPOData/`).
 
 ## Running with external data
 

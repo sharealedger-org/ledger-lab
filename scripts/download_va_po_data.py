@@ -7,10 +7,11 @@ and records a manifest of every attempt.
 
 Coverage by source:
   FY2003–FY2015  Not publicly accessible via the Virginia Open Data Portal.
-                 These files are already included in the repository under
-                 data/VAPOData/ (2003 Combined.xlsx … 2015 Combined.xlsx and
-                 VA_opendata_FY200x.txt).  This script will record a manifest
-                 entry for each missing year explaining why it is skipped.
+                 These files are Virginia public-domain government records archived
+                 on Zenodo: https://doi.org/10.5281/zenodo.PLACEHOLDER
+                 (DOI pending upload — see docs/RUNTIME_DATA_LAYOUT.md)
+                 Download the archive, extract into data/VAPOData/, then re-run.
+                 This script will record a manifest entry for each missing year.
 
   FY2016         Available on data.virginia.gov (CKAN slug: eva-procurement-data-2016).
                  Schema matches the FY2003-FY2015 dictionary fields.
@@ -132,8 +133,9 @@ def download_year(year: int, dest_dir: str, dry_run: bool) -> dict:
     if slug is None:
         msg = (
             "Not available on data.virginia.gov. "
-            "Files for FY2003-FY2015 are pre-bundled in data/VAPOData/ "
-            "(Combined.xlsx and VA_opendata_FYxxxx.txt)."
+            "FY2003-FY2015 files are archived on Zenodo (public domain): "
+            "https://doi.org/10.5281/zenodo.PLACEHOLDER — "
+            "see docs/RUNTIME_DATA_LAYOUT.md for instructions."
         )
         print(f"  FY{year}: SKIPPED — {msg}")
         return {
