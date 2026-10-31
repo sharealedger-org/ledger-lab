@@ -4,6 +4,54 @@ Updated 2026-10-31. This file is a concise state snapshot; use the linked design
 
 ---
 
+## 2026-10-31 Windows Validation, PO Data Pipeline, and Zenodo Archive
+
+**Context.** This session ran on the Windows machine holding the full Virginia PO dataset.
+It completed the PO attribute extraction pipeline, established the Zenodo data archive,
+and cleaned the PO attribute extraction logic. The downstream PyTorch ML work (Tests 2 and 3)
+remains the next milestone.
+
+**What was done.**
+
+1. **Pulled and synced main** — picked up 55 commits including the macOS measurement fixes
+   (Step 3 `records_read=0` repair, Step 2 header mismatch fix) from the prior session.
+
+2. **Committed synthetic FY03 PO fixture** (`data/VAPOData_fixture/VA_opendata_FY2003_small.txt`):
+   - 10 synthetic rows matching the FY03 expense fixture vendor/agency (VCU, BLACKWELLS BOOK SERVICES).
+   - Added `--with-po-fixture` flag to `run_repo_fixture_smoke_test.sh` so any machine can exercise
+     the transStandardize PO branch without the real external data.
+
+3. **Ran PO attribute extraction** (`extract_po_attributes.py --by-year`) over the full
+   15.6M-record VA eVA dataset (FY2002–FY2016, 13 years):
+   - Output: `data/VAPOData/vendor_po_attributes_by_year.csv` (210,496 vendor-year rows, git-ignored).
+   - Fixed a validation bug: the original `len(nigp_raw)==3` check fired on the full 5-digit NIGP
+     code before the `[:3]` class-prefix slice, zeroing all NIGP coverage. Fixed to `nigp_raw[:3].isdigit()`.
+   - Added column-shift cleaning: `VENDORSTATE` values that are not 2-letter alpha codes (address
+     strings, UOM values) are nulled. Result: 99% NIGP coverage, 94% geo coverage on vendor-year rows.
+
+4. **Ran CAR change detection** (`car_detect_changes.py`) → `data/VendorUpdate.csv` (committed):
+   - 64,850 date-effective attribute changes: 63,238 ATTR_NIGP, 1,612 ATTR_GEO.
+   - Geo change count dropped from 6,115 (dirty) to 1,612 (clean) after the column-shift fix.
+
+5. **Downloaded full Virginia APA expenditure/revenue/budget data** to `data/VARawFiles/`
+   (git-ignored): 350 files, 20.3 GB, FY2003–FY2016, all still live on datapoint.apa.virginia.gov.
+
+6. **Established Zenodo archive** for long-term reproducibility:
+   - DOI: `10.5281/zenodo.23846362` (upload in progress as of session end)
+   - Contains: `VARawFiles/` (APA exp/rev/budget FY2003–FY2016) + `VAPOData/` (eVA PO FY2001–FY2018)
+   - Virginia state government records are public domain; NIGP descriptions not redistributed separately.
+   - Known gaps: FY2005 and FY2009 eVA files are zero-row stubs (documented in scripts and RUNTIME_DATA_LAYOUT.md).
+   - DOI reference committed to `RUNTIME_DATA_LAYOUT.md`, `download_va_data.py`, `download_va_po_data.py`.
+
+**Next steps.**
+
+1. Set up PyTorch environment on this Windows machine (Python 3.14 is installed; check PyTorch compatibility).
+2. Build `scripts/pytorch_tests.py` (or two separate scripts) for Test 2 (Vendor Substitution Predictor)
+   and Test 3 (Budget Deviation Predictor) as proofs of Theorem 1 (Posting Non-Injectivity).
+3. Execute C1 replicates on this Windows machine to establish the hardware cost-surface baseline.
+4. Build `VendorMaster_enriched.csv` from the PO attributes + existing `VendorMaster.csv` so
+   `car_detect_changes.py` has a real instTypeID baseline (currently defaults all vendors to EXP).
+
 ## 2026-10-31 Measurement Correction and Downstream PyTorch ML Strategy
 
 **Context.** This session repaired the critical measurement gaps on the macOS baseline and established the strategic integration of a downstream PyTorch-based machine learning prediction framework (Test 2 and Test 3 for Paper 02) to be executed on a standard PC/Windows machine containing the full Virginia purchase order (PO) commitment dataset.
