@@ -1,6 +1,61 @@
 # Ledger Lab Handoff
 
-Updated 2026-10-31. This file is a concise state snapshot; use the linked design contracts for details.
+Updated 2026-11-01. This file is a concise state snapshot; use the linked design contracts for details.
+
+---
+
+## 2026-11-01 Vendor Analysis, Doc Corrections, Zenodo Upload Script (Bob)
+
+**What was done.**
+
+1. **Finished analyzing Codex vendor data.** Verified all Codex-produced artifacts against live sources:
+   - `audit_supplier_snapshot.py` passes: 230,128 observations, 230,126 nonblank IDs, `data_integrity_verified=true`.
+   - `PUBLIC_VENDOR_BRIDGE_CANDIDATES_2026-10-31.csv`: 22 rows, 21 distinct legacy IDs, all `observed_singleton_vlin_candidate`. No multi-VLIN conflicts.
+   - Both evidence JSON files carry a UTF-8 BOM; load with `utf-8-sig`.
+   - 20 of 22 historical candidates confirmed in current supplier directory; 2 (`DB5013044`, `DB5017422`) not found (alphanumeric IDs, likely inactive).
+   - En-dash display glitch in one supplier name was a console encoding artifact, not file corruption.
+
+2. **Resolved parser count discrepancy.** The three FY2016 row counts (1,713,138 / 1,817,217 / 1,714,830) are consistent: `csv.reader` skips blank lines from multiline record reassembly; the Scala profiler uses a quote-aware byte-level parser and yields accepted+quarantined. Updated `SESSION_HANDOFF.md` with the explanation.
+
+3. **Corrected DUNS/TIN wording.** "Not a tax ID" was already in the handoff; narrowed "no crosswalk obtained" to "no validated public historical crosswalk — no actual historical extract rows obtained." Updated `TEST_DESIGN_PAPERS_1_2.md`: VENDORID namespace row and VLIN bridge row added to Test 0 table; Test 2 outcome softened to "deferred rather than weakened."
+
+4. **Resolved all Zenodo owner decisions.**
+   - License: `other-pd` ("Released government data, public domain").
+   - Vendor email: keep as published.
+   - Zero-byte placeholders: not uploaded; documented in manifest.
+   - Scheme: new version of existing record `23846362` for metadata fixes; four new linked records for APA files (84 files each); one new record for supplier snapshot.
+
+5. **Wrote and committed `scripts/zenodo_upload.py`.** Standard-library + `requests`. Handles:
+   - New version of `23846362`: corrected license, title (FY2001–FY2018), description (removes false "agency code"/"sub-program" claim, corrects FY2005/FY2009 gap, notes derived file defects).
+   - Four new APA records: expenditure FY2003–FY2009 (8.4 GB), FY2010–FY2016 (10.6 GB), revenue FY2003–FY2009 (1.2 GB), FY2010–FY2016 (1.6 GB).
+   - New supplier snapshot record: `suppliers.csv`, `audit.json`, `manifest.json`, source export, reconciliation, VLIN verification (7 files, ~100 MB).
+   - Cross-links all 6 records via `related_identifiers` before publishing.
+   - Progress saved to `zenodo_upload_progress.json` (git-ignored) after every committed file; fully resumable.
+
+6. **Partial upload executed; blocked by IBM network.** Zenodo token stored in `~/.bashrc` as `ZENODO_TOKEN`. Draft records created on Zenodo: corrected eVA/PO record draft `23850746`, APA expenditure early draft `23851758` (1 file committed: `Expenditures Aug 2002.csv`, 109 MB). IBM TLS inspection drops sustained outbound connections beyond ~25 MB; `requests`, `http.client`, and `urllib` all fail at the same network layer. Upload must be completed from a non-corporate network.
+
+**Files committed this session (commits `28a5404`, `a9af98c`, `c2552d9`):**
+- `scripts/zenodo_upload.py` (new)
+- `scripts/investigate_vendor_identifiers.py`, `probe_public_vendor_bridge.py`, `assemble_supplier_snapshot.py`, `audit_supplier_snapshot.py`, `collect_eva_supplier_directory.py`, `export_eva_supplier_directory.py`, `reconcile_supplier_export.py`, `test_collect_eva_supplier_directory.py`, `verify_supplier_directory_vlin.py` (all new, Codex-produced)
+- `docs/VENDOR_IDENTITY_INVESTIGATION.md`, `SUPPLIER_DIRECTORY_SNAPSHOT.md`, `TEST_DESIGN_PAPERS_1_2.md`, `PUBLIC_VENDOR_BRIDGE_CANDIDATES_2026-10-31.csv`, `PUBLIC_VENDOR_BRIDGE_EVIDENCE_2026-10-31.json`, `VENDOR_IDENTIFIER_EVIDENCE_2026-10-31.json` (all new)
+- `docs/ZENODO_ARCHIVE_PLAN.md` (rewritten: decisions resolved, record plan, checklist)
+- `SESSION_HANDOFF.md` (updated: DUNS/TIN, crosswalk wording, parser count explanation)
+- `.gitignore` (added `zenodo_upload_progress.json`, `data/POTest/`)
+
+**Next steps.**
+
+1. **Complete Zenodo upload from a non-corporate network (home wifi or hotspot):**
+   ```bash
+   cd ~/Workspace/Sharealedger/ledger-lab
+   py -3 scripts/zenodo_upload.py
+   ```
+   The progress file is at `zenodo_upload_progress.json`; the script resumes automatically. Expect 6–8 hours for 338 files (~21.8 GB). After completion, verify each record via the API and update DOI references in `RUNTIME_DATA_LAYOUT.md`, `download_va_data.py`, `download_va_po_data.py`, and `VERIFICATION_AUDIT_REGISTER.md`.
+
+2. **Continue Paper 2 test work** per `docs/TEST_DESIGN_PAPERS_1_2.md` Part D order: M1–M4 log validator, M8 extractor regression tests, then Test 0 join feasibility. Test 2 (vendor substitution) remains conditional on finding an independent payment-side vendor identifier — defer rather than remove.
+
+3. **Continue vendor investigation** (Codex): extend PO-side namespace bridge across more agencies/years; locate a payment-side extract with VLIN or remit vendor ID and voucher/PO references.
+
+No financial code was changed. No outreach was sent. No Parquet work.
 
 ---
 
