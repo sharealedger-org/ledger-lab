@@ -220,6 +220,66 @@ a statistically significant Q4 (Apr–Jun, Virginia fiscal year-end) spike.
 **Failure case to report:** If ordering is uniform across the fiscal year, the budget-flush
 hypothesis is not supported by this corpus — which is itself informative for procurement policy.
 
+---
+
+### Test 2d: agency entity resolution — supervised string matching on institutional names
+
+**Claim:** A model using character-level similarity, token overlap, and institutional abbreviation
+patterns resolves cross-file agency name variants with calibrated confidence, and — critically —
+produces *low* confidence on the cases that reflect genuine organizational ambiguity rather than
+spelling variation. Low model confidence is the correct signal, not a failure.
+
+**Why this is an AI test, not a data-cleaning prerequisite:**
+The posted expenditure record, the PO file, and the budget file each emit whatever agency name
+string their source system used. A balance-only architecture collapses all three to the same
+account code and discards the name variation permanently. A pre-hierarchy architecture preserves
+the original strings — and an AI model operating on those strings can demonstrate that name
+variation itself carries information: high-confidence resolution = same entity, different spelling;
+low-confidence resolution = possibly different legal scope, reorganization, or fund boundary. That
+distinction is invisible in any posted balance.
+
+**Data:** `data/corpus_profile/agency_alias_candidates.csv` from the prior profiling pass:
+- 99.1% of APA file rows match the reference agency table exactly (~350 files × ~80 agencies)
+- 13 agency names (20,512 rows) have no match in the reference table
+- 3 agency names (131,809 rows) are ambiguous between two reference keys
+- The exact-match pairs are the labeled training set; the 16 unresolved names are the test set
+
+**Features:** Character n-gram similarity, token Jaccard overlap, common government abbreviation
+expansions (Inst→Institute, Univ→University, Va→Virginia, Dept→Department, etc.), token order
+invariance (Virginia Tech vs. Tech Virginia), suffix stripping (Inc, LLC, Authority, Commission).
+
+**Method:**
+1. Treat the 99.1% exact-match pairs as positive examples; generate hard negatives by pairing
+   near-miss strings (same first token, different institution) from the same file.
+2. Train a binary similarity classifier (logistic regression or lightweight transformer on
+   character sequences — keep it small given ~350 × 80 labeled pairs).
+3. Apply to the 16 unresolved names; report predicted match, confidence score, and the
+   top candidate from the reference table.
+4. For the 3 ambiguous cases, report whether the model's confidence is genuinely split between
+   the two candidates — if so, that is evidence the name variation reflects a real organizational
+   boundary, not just a spelling difference.
+
+**Acceptance criteria:**
+- Precision ≥ 0.99 on held-out exact-match pairs (a near-certain bar — the model should not
+  introduce errors where the answer is already known).
+- For the 16 unresolved cases: report confidence distribution. Cases with confidence < 0.7 are
+  flagged as "genuine ambiguity" and documented with the two candidate agencies and the row count
+  affected; do not force-resolve them.
+
+**What to report regardless of outcome:**
+- The 16 unresolved names, their row counts (20,512 + 131,809 = 152,321 rows affected), and the
+  model's confidence on each — publishable as a characterization of institutional naming
+  instability in public procurement records
+- Whether any low-confidence case corresponds to a known agency reorganization or merger in the
+  FY2003–FY2016 period — if so, the confidence score is a data-driven event detector
+
+**Relationship to Tests 2a and 3:** Once Test 2d produces a reconciliation table with confidence
+scores, the high-confidence resolutions unblock Tests 2a and 3. The low-confidence cases are
+excluded from cross-file joins and documented as scope limitations rather than silently dropped.
+Agency reconciliation becomes an output of the AI test, not a prerequisite before it.
+
+---
+
 ### Test 3: modification rate and next-year budget deviation
 - Feature (Layer 3): per agency-year count of `-Vn` revised PO lines, share of POs revised, and median order-to-revision gap. Layer 2 baseline: posted expenditure ratios by agency-year.
 - Target: next-year deviation from budget. `BudgetRules.csv` and the FY budget files in `data/VARawFiles/` are the candidate source; confirm that agency names reconcile across PO, expenditure, and budget files first, since all three spell agencies differently.
@@ -235,21 +295,23 @@ hypothesis is not supported by this corpus — which is itself informative for p
 
 ## Part D: Order of work (updated 2026-11-01)
 
-Test 0 is closed. Test 2 is replaced by Tests 2a–2c. Order of work updated accordingly.
+Test 0 is closed. Test 2 is replaced by Tests 2a–2d. Order of work updated accordingly.
+Note: Test 2d (agency entity resolution) *produces* the agency reconciliation table rather than
+consuming it — it moves from prerequisite to test output.
 
 | # | Item | Cost | Blocks |
 |---|---|---|---|
 | 1 | M1-M4 log validator, run on existing log | hours | M5 |
 | 2 | M8 extractor regression tests | hours | nothing, protects CAR work |
 | 3 | Test 1a (PO-side non-injectivity) and fixture oracle | 1 day | none |
-| 4 | Fix acceptance thresholds for Tests 2a–2c and record in this file | hours | Tests 2a–2c runs |
+| 4 | Fix acceptance thresholds for Tests 2a–2d and record in this file | hours | Tests 2a–2d runs |
 | 5 | Test 2c seasonality (cheapest; PO dates only, no reference join) | 1 day | none |
-| 6 | Agency name reconciliation across PO/expenditure/budget | 1 day | Tests 2a, 3 |
-| 7 | Test 2a commodity forecasting (needs agency reconciliation) | 2 days | — |
+| 6 | Test 2d agency entity resolution (produces reconciliation table) | 1 day | Tests 2a, 3 |
+| 7 | Test 2a commodity forecasting (needs Test 2d output) | 2 days | — |
 | 8 | Test 2b vendor survival model | 2 days | — |
 | 9 | M5 three C1 replicates (needs Windows validation first), then M6 | machine time | M7 |
 | 10 | M7 CAR attribute run (needs VendorMaster_enriched.csv) | 1 day | Paper 1 claim |
-| 11 | Tests 3, 4 (modification rate / rolling window) | weeks | agency reconciliation |
+| 11 | Tests 3, 4 (modification rate / rolling window) | weeks | Test 2d output |
 
-Not decided here: acceptance thresholds for Tests 2a–2c, Test 3 model size and regularization
+Not decided here: acceptance thresholds for Tests 2a–2d, Test 3 model size and regularization
 strength, CV threshold in M5. Fix and commit all thresholds before the first run.
