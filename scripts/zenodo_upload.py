@@ -204,26 +204,45 @@ def get_token():
     return token
 
 
-def api(method, path, token, data=None, is_file=False, filepath=None,
-        filename=None, content_type=None):
+def _upload_file(url, token, filepath):
+    """Upload a file using requests with a persistent session.
+    Returns (status_code, response_bytes)."""
+    import requests
+    from requests.adapters import HTTPAdapter
+    from urllib3.util.retry import Retry
+
+    session = requests.Session()
+    retries = Retry(total=5, backoff_factor=2,
+                    status_forcelist=[500, 502, 503, 504],
+                    allowed_methods=["PUT"])
+    session.mount("https://", HTTPAdapter(max_retries=retries))
+
+    headers = {
+        "Authorization": f"Bearer {token}",
+        "Content-Type": "application/octet-stream",
+    }
+    with open(filepath, "rb") as fh:
+        resp = session.put(url, data=fh, headers=headers, timeout=1800)
+    return resp.status_code, resp.content
+
+
+def api(method, path, token, data=None, filepath=None, content_type=None):
     """Make a Zenodo REST API call. Returns (status_code, parsed_json_or_None)."""
-    url = ZENODO_BASE + path
     headers = {"Authorization": f"Bearer {token}"}
+    url = ZENODO_BASE + path
 
     if filepath is not None:
-        # File upload — stream from disk
-        size = os.path.getsize(filepath)
-        headers["Content-Type"] = content_type or "application/octet-stream"
-        headers["Content-Length"] = str(size)
-        with open(filepath, "rb") as fh:
-            req = urllib.request.Request(url, data=fh, headers=headers, method=method)
+        # Stream the file in chunks via http.client with up to 3 retries on connection errors.
+        last_exc = None
+        for attempt in range(3):
             try:
-                with urllib.request.urlopen(req, timeout=600) as resp:
-                    body = resp.read()
-                    return resp.status, json.loads(body) if body else None
-            except urllib.error.HTTPError as e:
-                body = e.read()
-                return e.code, json.loads(body) if body else None
+                status, body = _upload_file(url, token, filepath)
+                return status, json.loads(body) if body else None
+            except (ConnectionAbortedError, ConnectionResetError, OSError) as exc:
+                last_exc = exc
+                print(f"\n  [retry {attempt+1}/3 after {exc}]", end="", flush=True)
+                time.sleep(5 * (attempt + 1))
+        raise last_exc
     else:
         # JSON request
         body = json.dumps(data).encode() if data is not None else b""
@@ -442,17 +461,37 @@ def create_apa_record(label, title, description, rows, token, prog, dry_run,
             save_progress(prog)
             continue
 
-        status, resp = api("PUT",
-                           f"/api/records/{rec_id}/draft/files/{filename}/content",
-                           token, filepath=str(local_path))
+        # Step 1: register the filename slot (idempotent — skip if already registered)
+        status0, reg = api("POST", f"/api/records/{rec_id}/draft/files",
+                           token, data=[{"key": filename}])
+        if status0 == 400 and "already exists" in str(reg):
+            # Slot exists from a prior interrupted run — fetch its links directly
+            status0, reg = api("GET", f"/api/records/{rec_id}/draft/files", token)
+            if status0 != 200:
+                print(f"\n  ERROR fetching file list: {status0} {reg}", file=sys.stderr)
+                sys.exit(1)
+            matches = [e for e in reg.get("entries", []) if e["key"] == filename]
+            if not matches:
+                print(f"\n  ERROR: {filename} not found in existing file list", file=sys.stderr)
+                sys.exit(1)
+            entry = matches[0]
+        elif status0 not in (200, 201):
+            print(f"\n  ERROR registering {filename}: {status0} {reg}", file=sys.stderr)
+            sys.exit(1)
+        else:
+            entry = reg["entries"][0]
+
+        content_path = entry["links"]["content"].replace(ZENODO_BASE, "")
+        commit_path  = entry["links"]["commit"].replace(ZENODO_BASE, "")
+
+        # Step 2: upload content
+        status, resp = api("PUT", content_path, token, filepath=str(local_path))
         if status not in (200, 201):
             print(f"\n  ERROR uploading {filename}: {status} {resp}", file=sys.stderr)
             sys.exit(1)
 
-        # Commit the file
-        status2, _ = api("POST",
-                         f"/api/records/{rec_id}/draft/files/{filename}/commit",
-                         token)
+        # Step 3: commit
+        status2, _ = api("POST", commit_path, token)
         if status2 not in (200, 201):
             print(f"\n  ERROR committing {filename}: {status2}", file=sys.stderr)
             sys.exit(1)
@@ -529,15 +568,36 @@ def create_supplier_record(token, prog, dry_run):
             save_progress(prog)
             continue
 
-        status, resp = api("PUT",
-                           f"/api/records/{rec_id}/draft/files/{filename}/content",
-                           token, filepath=str(local_path))
+        # Step 1: register slot (idempotent)
+        status0, reg = api("POST", f"/api/records/{rec_id}/draft/files",
+                           token, data=[{"key": filename}])
+        if status0 == 400 and "already exists" in str(reg):
+            status0, reg = api("GET", f"/api/records/{rec_id}/draft/files", token)
+            if status0 != 200:
+                print(f"\n  ERROR fetching file list: {status0} {reg}", file=sys.stderr)
+                sys.exit(1)
+            matches = [e for e in reg.get("entries", []) if e["key"] == filename]
+            if not matches:
+                print(f"\n  ERROR: {filename} not found in file list", file=sys.stderr)
+                sys.exit(1)
+            entry = matches[0]
+        elif status0 not in (200, 201):
+            print(f"\n  ERROR registering {filename}: {status0} {reg}", file=sys.stderr)
+            sys.exit(1)
+        else:
+            entry = reg["entries"][0]
+
+        content_path = entry["links"]["content"].replace(ZENODO_BASE, "")
+        commit_path  = entry["links"]["commit"].replace(ZENODO_BASE, "")
+
+        # Step 2: upload content
+        status, resp = api("PUT", content_path, token, filepath=str(local_path))
         if status not in (200, 201):
             print(f"\n  ERROR uploading {filename}: {status} {resp}", file=sys.stderr)
             sys.exit(1)
-        status2, _ = api("POST",
-                         f"/api/records/{rec_id}/draft/files/{filename}/commit",
-                         token)
+
+        # Step 3: commit
+        status2, _ = api("POST", commit_path, token)
         if status2 not in (200, 201):
             print(f"\n  ERROR committing {filename}: {status2}", file=sys.stderr)
             sys.exit(1)
