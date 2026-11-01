@@ -1,0 +1,1338 @@
+﻿{
+  "historical_filename_check": {
+    "EV01-ALL-PO-LESS-THAN-9000.csv": {
+      "amount_ge9000": 433,
+      "maximum_amount": "5079800.000",
+      "nigp_class_lt900": 42175,
+      "rows": 42175,
+      "sha256": "e7fcfe7532de300fa5dac1e32201edf05ab2cf1132e8f93688f899e8352d912c"
+    },
+    "EV02-MATCHED-PO-LESS-THAN-9000.csv": {
+      "amount_ge9000": 32,
+      "maximum_amount": "146700",
+      "nigp_class_lt900": 583,
+      "rows": 583,
+      "sha256": "4cabf3a6166819901adb2f4e4a78788c868226e832e780f7a711210cad6cdd63"
+    },
+    "EV03-MATCHED-PAYMENT-GREATER-THAN-9000.csv": {
+      "amount_ge9000": 922,
+      "maximum_amount": "5148293",
+      "rows": 5520,
+      "sha256": "c5a1f9506088a3eac4efdfa49df123cef76dda91a3e3e95b9e4b85817d2e1b38"
+    },
+    "EV06-MATCHED-PAYMETS-LESS-THAN-9000.csv": {
+      "amount_ge9000": 34,
+      "maximum_amount": "146700",
+      "rows": 248,
+      "sha256": "eac7c595417bfaea1a9b79a2e954d9098dbad1f3e4da150f49844acf89f1682f"
+    }
+  },
+  "match_rule": "Exact full PO number (no revision stripping), whitespace/case-normalized agency, NIGP identifier, Decimal quantity and unit price. Vendor name is a separate concordance check, not a matching prerequisite.",
+  "retrieved_at_utc": "2026-11-01T00:15:50.540762+00:00",
+  "scope": "Observed PO-to-PO namespace bridge; not a payment join or population coverage estimate",
+  "selection": "First well-formed row for each distinct nonblank legacy vendor ID in file order, including placeholder as a negative control",
+  "spcc_schema": {
+    "bytes": 17022718,
+    "member_headers": {
+      "Statewide Credit Card Purchases FY16 April.csv": "AGENCY_NAME,VENDOR_NAME,POST_DATE,FISCAL_YEAR,AMOUNT",
+      "Statewide Credit Card Purchases FY16 August.csv": "AGENCY_NAME,VENDOR_NAME,POST_DATE,FISCAL_YEAR,AMOUNT",
+      "Statewide Credit Card Purchases FY16 December.csv": "AGENCY_NAME,VENDOR_NAME,POST_DATE,FISCAL_YEAR,AMOUNT",
+      "Statewide Credit Card Purchases FY16 February.csv": "AGENCY_NAME,VENDOR_NAME,POST_DATE,FISCAL_YEAR,AMOUNT",
+      "Statewide Credit Card Purchases FY16 January.csv": "AGENCY_NAME,VENDOR_NAME,POST_DATE,FISCAL_YEAR,AMOUNT",
+      "Statewide Credit Card Purchases FY16 July.csv": "AGENCY_NAME,VENDOR_NAME,POST_DATE,FISCAL_YEAR,AMOUNT",
+      "Statewide Credit Card Purchases FY16 June.csv": "AGENCY_NAME,VENDOR_NAME,POST_DATE,FISCAL_YEAR,AMOUNT",
+      "Statewide Credit Card Purchases FY16 March.csv": "AGENCY_NAME,VENDOR_NAME,POST_DATE,FISCAL_YEAR,AMOUNT",
+      "Statewide Credit Card Purchases FY16 May.csv": "AGENCY_NAME,VENDOR_NAME,POST_DATE,FISCAL_YEAR,AMOUNT",
+      "Statewide Credit Card Purchases FY16 November.csv": "AGENCY_NAME,VENDOR_NAME,POST_DATE,FISCAL_YEAR,AMOUNT",
+      "Statewide Credit Card Purchases FY16 October.csv": "AGENCY_NAME,VENDOR_NAME,POST_DATE,FISCAL_YEAR,AMOUNT",
+      "Statewide Credit Card Purchases FY16 September.csv": "AGENCY_NAME,VENDOR_NAME,POST_DATE,FISCAL_YEAR,AMOUNT"
+    },
+    "scope": "Headers only; no transaction linkage tested; no source archive saved",
+    "sha256": "9235096521eee9de11d587f0e0481cf0f7a9792b2047dc87d16ee8d3f4f2e103",
+    "url": "https://www.datapoint.apa.virginia.gov/historicaldata/FY%202016%20SPCC.zip"
+  },
+  "years": {
+    "2016": {
+      "fields": [
+        {
+          "id": "_id",
+          "type": "int"
+        },
+        {
+          "id": "Entity Code",
+          "info": {
+            "label": "Entity Code",
+            "notes": "Entity responsible for the purchase",
+            "type_override": "text"
+          },
+          "type": "text"
+        },
+        {
+          "id": "Entity Description",
+          "info": {
+            "label": "Entity Description",
+            "notes": "Description of entity",
+            "type_override": "text"
+          },
+          "type": "text"
+        },
+        {
+          "id": "NIGP #",
+          "info": {
+            "label": "NIGP #",
+            "notes": "5 digit commodity code",
+            "type_override": "text"
+          },
+          "type": "text"
+        },
+        {
+          "id": "NIGP Description",
+          "info": {
+            "label": "NIGP Description",
+            "notes": "Commodity code description",
+            "type_override": "text"
+          },
+          "type": "text"
+        },
+        {
+          "id": "Item Description",
+          "info": {
+            "label": "Item Description",
+            "notes": "Supplier description of the item",
+            "type_override": "text"
+          },
+          "type": "text"
+        },
+        {
+          "id": "Order #",
+          "info": {
+            "label": "Order #",
+            "notes": "eVA Purchase Order number",
+            "type_override": "text"
+          },
+          "type": "text"
+        },
+        {
+          "id": "Order Line Number",
+          "info": {
+            "label": "Order Line Number",
+            "notes": "Order Line Number",
+            "type_override": "numeric"
+          },
+          "type": "numeric"
+        },
+        {
+          "id": "Quantity Ordered",
+          "info": {
+            "label": "Quantity Ordered",
+            "notes": "Quantity of the product/service ordered",
+            "type_override": "numeric"
+          },
+          "type": "numeric"
+        },
+        {
+          "id": "Unit Price",
+          "info": {
+            "label": "Unit Price",
+            "notes": "Price of the product/service",
+            "type_override": "numeric"
+          },
+          "type": "numeric"
+        },
+        {
+          "id": "Unit of Measure",
+          "info": {
+            "label": "Unit of Measure",
+            "notes": "Unit of Measure",
+            "type_override": "text"
+          },
+          "type": "text"
+        },
+        {
+          "id": "Line Total",
+          "info": {
+            "label": "Line Total",
+            "notes": "Total of the line",
+            "type_override": "numeric"
+          },
+          "type": "numeric"
+        },
+        {
+          "id": "Line Total Change",
+          "info": {
+            "label": "Line Total Change",
+            "notes": "Net change from the pervious version",
+            "type_override": "numeric"
+          },
+          "type": "numeric"
+        },
+        {
+          "id": "Manufacturer Part #",
+          "info": {
+            "label": "Manufacturer Part #",
+            "notes": "Manufacturer Part #",
+            "type_override": "text"
+          },
+          "type": "text"
+        },
+        {
+          "id": "Order Status",
+          "info": {
+            "label": "Order Status",
+            "notes": "(eg. Ordered, Receiving, Received, Canceled)",
+            "type_override": "text"
+          },
+          "type": "text"
+        },
+        {
+          "id": "Shipping Name",
+          "info": {
+            "label": "Shipping Name",
+            "notes": "Delivery address as shown on the order",
+            "type_override": "text"
+          },
+          "type": "text"
+        },
+        {
+          "id": "Shipping Lines",
+          "info": {
+            "label": "Shipping Lines",
+            "notes": "Ship to lines",
+            "type_override": "text"
+          },
+          "type": "text"
+        },
+        {
+          "id": "Shipping City",
+          "info": {
+            "label": "Shipping City",
+            "notes": "Ship to city",
+            "type_override": "text"
+          },
+          "type": "text"
+        },
+        {
+          "id": "Shipping State",
+          "info": {
+            "label": "Shipping State",
+            "notes": "Ship to state",
+            "type_override": "text"
+          },
+          "type": "text"
+        },
+        {
+          "id": "Shipping Postal",
+          "info": {
+            "label": "Shipping Postal",
+            "notes": "Ship to postal / zip code",
+            "type_override": "text"
+          },
+          "type": "text"
+        },
+        {
+          "id": "Requisition Submitted Date",
+          "info": {
+            "label": "Requisition Submitted Date",
+            "notes": "Date requisition was submitted for approval",
+            "type_override": "timestamp"
+          },
+          "type": "timestamp"
+        },
+        {
+          "id": "Requisition Approved Date",
+          "info": {
+            "label": "Requisition Approved Date",
+            "notes": "Date requisition was approved",
+            "type_override": "timestamp"
+          },
+          "type": "timestamp"
+        },
+        {
+          "id": "Ordered Date",
+          "info": {
+            "label": "Ordered Date",
+            "notes": "Purchase order date",
+            "type_override": "timestamp"
+          },
+          "type": "timestamp"
+        },
+        {
+          "id": "Most Recent Receiving Date",
+          "info": {
+            "label": "Most Recent Receiving Date",
+            "notes": "Most recent receiving date",
+            "type_override": "text"
+          },
+          "type": "text"
+        },
+        {
+          "id": "SWAM Minority",
+          "info": {
+            "label": "SWAM Minority",
+            "notes": "SBSD Minority certification (Boolean 1=Yes / 0 = No)",
+            "type_override": "numeric"
+          },
+          "type": "numeric"
+        },
+        {
+          "id": "SWAM Woman",
+          "info": {
+            "label": "SWAM Woman",
+            "notes": "SBSD Woman certification (Boolean 1=Yes / 0 = No)",
+            "type_override": "numeric"
+          },
+          "type": "numeric"
+        },
+        {
+          "id": "SWAM Small",
+          "info": {
+            "label": "SWAM Small",
+            "notes": "SBSD Small certification (Boolean 1=Yes / 0 = No)",
+            "type_override": "numeric"
+          },
+          "type": "numeric"
+        },
+        {
+          "id": "SWAM Micro Business",
+          "info": {
+            "label": "SWAM Micro Business",
+            "notes": "SBSD Micro certification (Boolean 1=Yes / 0 = No)",
+            "type_override": "numeric"
+          },
+          "type": "numeric"
+        },
+        {
+          "id": "PO Category Description",
+          "info": {
+            "label": "PO Category Description",
+            "notes": "(eg. Routine, Emergency, Technology - Routine)",
+            "type_override": "text"
+          },
+          "type": "text"
+        },
+        {
+          "id": "PO Category",
+          "info": {
+            "label": "PO Category",
+            "notes": "(eg. R01, E01, VR1)",
+            "type_override": "text"
+          },
+          "type": "text"
+        },
+        {
+          "id": "Procurement Transaction Type",
+          "info": {
+            "label": "Procurement Transaction Type",
+            "notes": "(eg. 20, 40, 50)",
+            "type_override": "text"
+          },
+          "type": "text"
+        },
+        {
+          "id": "Procurement Transaction Desc",
+          "info": {
+            "label": "Procurement Transaction Desc",
+            "notes": "(eg. Supplies - Non-Technology, Professional Services, Construction) ",
+            "type_override": "text"
+          },
+          "type": "text"
+        },
+        {
+          "id": "Order Type",
+          "info": {
+            "label": "Order Type",
+            "notes": "(eg. EP, EXT, DO, PCO)",
+            "type_override": "text"
+          },
+          "type": "text"
+        },
+        {
+          "id": "Contract Number",
+          "info": {
+            "label": "Contract Number",
+            "notes": "Contract number",
+            "type_override": "text"
+          },
+          "type": "text"
+        },
+        {
+          "id": "Contract Type",
+          "info": {
+            "label": "Contract Type",
+            "notes": "(eg. 2-Mandatory Contract, 5-Optional Statewide Contract)",
+            "type_override": "text"
+          },
+          "type": "text"
+        },
+        {
+          "id": "Registration Type",
+          "info": {
+            "label": "Registration Type",
+            "notes": "(eg. Self-Registered, State-Entered)",
+            "type_override": "text"
+          },
+          "type": "text"
+        },
+        {
+          "id": "VLIN ID",
+          "info": {
+            "label": "VLIN ID",
+            "notes": "Virginia location identification number (unique per location)",
+            "type_override": "text"
+          },
+          "type": "text"
+        },
+        {
+          "id": "eVA ID",
+          "info": {
+            "label": "eVA ID",
+            "notes": "eVA Customer Number",
+            "type_override": "text"
+          },
+          "type": "text"
+        },
+        {
+          "id": "Vendor Name",
+          "info": {
+            "label": "Vendor Name",
+            "notes": "Vendor name on the order",
+            "type_override": "text"
+          },
+          "type": "text"
+        },
+        {
+          "id": "Vendor Location Name",
+          "info": {
+            "label": "Vendor Location Name",
+            "notes": "Vendor location name",
+            "type_override": "text"
+          },
+          "type": "text"
+        },
+        {
+          "id": "Vendor Address Lines",
+          "info": {
+            "label": "Vendor Address Lines",
+            "notes": "Vendor address lines",
+            "type_override": "text"
+          },
+          "type": "text"
+        },
+        {
+          "id": "Vendor Address City",
+          "info": {
+            "label": "Vendor Address City",
+            "notes": "Vendor address city",
+            "type_override": "text"
+          },
+          "type": "text"
+        },
+        {
+          "id": "Vendor Address State",
+          "info": {
+            "label": "Vendor Address State",
+            "notes": "Vendor address state",
+            "type_override": "text"
+          },
+          "type": "text"
+        },
+        {
+          "id": "Vendor Address Postal",
+          "info": {
+            "label": "Vendor Address Postal",
+            "notes": "Vendor address postal / zip code",
+            "type_override": "text"
+          },
+          "type": "text"
+        },
+        {
+          "id": "Vendor Address Geolocation",
+          "info": {
+            "label": "Vendor Address Geolocation",
+            "notes": "Vendor address as a geolocated point. Not available for P.O. Box addresses.",
+            "type_override": "text"
+          },
+          "type": "text"
+        },
+        {
+          "id": "Virginia City/County Boundaries",
+          "info": {
+            "label": "Virginia City/County Boundaries",
+            "notes": "This column was automatically created in order to record in what polygon from the dataset 'Virginia City/County Boundaries' (47e2-c398) the point in column 'vendor_address_geolocation' is located.  This enables the creation of region maps (choropleths) in the visualization canvas and data lens.",
+            "type_override": "numeric"
+          },
+          "type": "numeric"
+        }
+      ],
+      "local_file_bytes": 563226258,
+      "local_path": "data\\VAPOData\\VA_opendata_FY2016.txt",
+      "probes": [
+        {
+          "bridge_identifier_pairs": [
+            [
+              "VA00080260",
+              "VS0000142896"
+            ]
+          ],
+          "legacy_id_shape": "nine_digits",
+          "legacy_vendor_id": "799849187",
+          "matching_line_rows": 1,
+          "po_number": "PCO1825381",
+          "query_url": "https://data.virginia.gov/api/3/action/datastore_search?resource_id=4f72e337-db1a-4dfc-b4b9-1096a56cc7b2&filters=%7B%22Order+%23%22%3A+%22PCO1825381%22%7D&limit=250",
+          "remote_po_rows": 6,
+          "response_sha256": "5f1962d1ad4af5e71165b1f1ebda09fa1ee74a53efcaa9fc102bbaeec974ecde",
+          "source_record_ordinal": 1,
+          "status": "observed_singleton_vlin_candidate",
+          "vendor_name_concordant_rows": 1
+        },
+        {
+          "bridge_identifier_pairs": [
+            [
+              "",
+              ""
+            ]
+          ],
+          "legacy_id_shape": "placeholder_12_nines",
+          "legacy_vendor_id": "999999999999",
+          "matching_line_rows": 1,
+          "po_number": "EP2341760",
+          "query_url": "https://data.virginia.gov/api/3/action/datastore_search?resource_id=4f72e337-db1a-4dfc-b4b9-1096a56cc7b2&filters=%7B%22Order+%23%22%3A+%22EP2341760%22%7D&limit=250",
+          "remote_po_rows": 1,
+          "response_sha256": "a4c3fc9068ee721e651f6518a782d3263116ef69eea24a1b95d171c0cfe16068",
+          "source_record_ordinal": 2,
+          "status": "matched_line_missing_vlin",
+          "vendor_name_concordant_rows": 1
+        },
+        {
+          "bridge_identifier_pairs": [
+            [
+              "VA10050123",
+              "C16503"
+            ]
+          ],
+          "legacy_id_shape": "nine_digits",
+          "legacy_vendor_id": "195583778",
+          "matching_line_rows": 1,
+          "po_number": "PCO1825380",
+          "query_url": "https://data.virginia.gov/api/3/action/datastore_search?resource_id=4f72e337-db1a-4dfc-b4b9-1096a56cc7b2&filters=%7B%22Order+%23%22%3A+%22PCO1825380%22%7D&limit=250",
+          "remote_po_rows": 6,
+          "response_sha256": "179b7e9371e0e86bb9856b7621a4430c8c6307949a98eb194d6c06dc98c62b89",
+          "source_record_ordinal": 3,
+          "status": "observed_singleton_vlin_candidate",
+          "vendor_name_concordant_rows": 1
+        },
+        {
+          "bridge_identifier_pairs": [
+            [
+              "VA10022265",
+              "C11704"
+            ]
+          ],
+          "legacy_id_shape": "nine_digits",
+          "legacy_vendor_id": "023899719",
+          "matching_line_rows": 1,
+          "po_number": "PCO1825351",
+          "query_url": "https://data.virginia.gov/api/3/action/datastore_search?resource_id=4f72e337-db1a-4dfc-b4b9-1096a56cc7b2&filters=%7B%22Order+%23%22%3A+%22PCO1825351%22%7D&limit=250",
+          "remote_po_rows": 1,
+          "response_sha256": "8f81736863c0e2e91b41e5458b0524401df231e147e68152e043a385b24157d7",
+          "source_record_ordinal": 12,
+          "status": "observed_singleton_vlin_candidate",
+          "vendor_name_concordant_rows": 1
+        },
+        {
+          "bridge_identifier_pairs": [
+            [
+              "VA00001467",
+              "VS0000065114"
+            ]
+          ],
+          "legacy_id_shape": "nine_digits",
+          "legacy_vendor_id": "962680281",
+          "matching_line_rows": 1,
+          "po_number": "PCO1825355",
+          "query_url": "https://data.virginia.gov/api/3/action/datastore_search?resource_id=4f72e337-db1a-4dfc-b4b9-1096a56cc7b2&filters=%7B%22Order+%23%22%3A+%22PCO1825355%22%7D&limit=250",
+          "remote_po_rows": 1,
+          "response_sha256": "c1ed7cf62e3031e36036a77021e9f88290c0bd99f6709b0a884b2fc4eafca40f",
+          "source_record_ordinal": 15,
+          "status": "observed_singleton_vlin_candidate",
+          "vendor_name_concordant_rows": 1
+        },
+        {
+          "bridge_identifier_pairs": [
+            [
+              "VA10077586",
+              "VC0000161739"
+            ]
+          ],
+          "legacy_id_shape": "two_letters_seven_digits",
+          "legacy_vendor_id": "DB5013044",
+          "matching_line_rows": 1,
+          "po_number": "EP2341729",
+          "query_url": "https://data.virginia.gov/api/3/action/datastore_search?resource_id=4f72e337-db1a-4dfc-b4b9-1096a56cc7b2&filters=%7B%22Order+%23%22%3A+%22EP2341729%22%7D&limit=250",
+          "remote_po_rows": 1,
+          "response_sha256": "63872720299b862dbcc33edcb953c661667b8ad458430dd83391465a40ad4bff",
+          "source_record_ordinal": 19,
+          "status": "observed_singleton_vlin_candidate",
+          "vendor_name_concordant_rows": 1
+        },
+        {
+          "bridge_identifier_pairs": [
+            [
+              "VA10061951",
+              "E19886"
+            ]
+          ],
+          "legacy_id_shape": "nine_digits",
+          "legacy_vendor_id": "132284261",
+          "matching_line_rows": 1,
+          "po_number": "PCO1825324",
+          "query_url": "https://data.virginia.gov/api/3/action/datastore_search?resource_id=4f72e337-db1a-4dfc-b4b9-1096a56cc7b2&filters=%7B%22Order+%23%22%3A+%22PCO1825324%22%7D&limit=250",
+          "remote_po_rows": 1,
+          "response_sha256": "3531b5544b1709ff0e82e16a15a479669aa1a4186e1ab7789ed407be9edcb0d5",
+          "source_record_ordinal": 24,
+          "status": "observed_singleton_vlin_candidate",
+          "vendor_name_concordant_rows": 1
+        },
+        {
+          "bridge_identifier_pairs": [
+            [
+              "VA10072326",
+              "VC0000156468"
+            ]
+          ],
+          "legacy_id_shape": "two_letters_seven_digits",
+          "legacy_vendor_id": "DB5007784",
+          "matching_line_rows": 1,
+          "po_number": "EP2341723",
+          "query_url": "https://data.virginia.gov/api/3/action/datastore_search?resource_id=4f72e337-db1a-4dfc-b4b9-1096a56cc7b2&filters=%7B%22Order+%23%22%3A+%22EP2341723%22%7D&limit=250",
+          "remote_po_rows": 1,
+          "response_sha256": "0c0e860463b941400425e6dc8d92f65f1f178aa7f2b6009c1df070095b3ea913",
+          "source_record_ordinal": 25,
+          "status": "observed_singleton_vlin_candidate",
+          "vendor_name_concordant_rows": 1
+        },
+        {
+          "bridge_identifier_pairs": [
+            [
+              "VA10054072",
+              "E2272"
+            ]
+          ],
+          "legacy_id_shape": "nine_digits",
+          "legacy_vendor_id": "052358686",
+          "matching_line_rows": 1,
+          "po_number": "PCO1825333",
+          "query_url": "https://data.virginia.gov/api/3/action/datastore_search?resource_id=4f72e337-db1a-4dfc-b4b9-1096a56cc7b2&filters=%7B%22Order+%23%22%3A+%22PCO1825333%22%7D&limit=250",
+          "remote_po_rows": 2,
+          "response_sha256": "8805052fe4ae4c5169018b45a47e22cbcab70c358fd42abe344a7da207f90698",
+          "source_record_ordinal": 26,
+          "status": "observed_singleton_vlin_candidate",
+          "vendor_name_concordant_rows": 1
+        },
+        {
+          "bridge_identifier_pairs": [
+            [
+              "VA10022780",
+              "C21574"
+            ]
+          ],
+          "legacy_id_shape": "nine_digits",
+          "legacy_vendor_id": "096694591",
+          "matching_line_rows": 2,
+          "po_number": "PCO1825334",
+          "query_url": "https://data.virginia.gov/api/3/action/datastore_search?resource_id=4f72e337-db1a-4dfc-b4b9-1096a56cc7b2&filters=%7B%22Order+%23%22%3A+%22PCO1825334%22%7D&limit=250",
+          "remote_po_rows": 5,
+          "response_sha256": "478aa3e1df03ae72823994f4778a06fd254b357498c376ab48a6a4fb0ca113af",
+          "source_record_ordinal": 27,
+          "status": "observed_singleton_vlin_candidate",
+          "vendor_name_concordant_rows": 2
+        },
+        {
+          "bridge_identifier_pairs": [
+            [
+              "VA00000517",
+              "VS0000064176"
+            ]
+          ],
+          "legacy_id_shape": "nine_digits",
+          "legacy_vendor_id": "803608397",
+          "matching_line_rows": 1,
+          "po_number": "EP2340708",
+          "query_url": "https://data.virginia.gov/api/3/action/datastore_search?resource_id=4f72e337-db1a-4dfc-b4b9-1096a56cc7b2&filters=%7B%22Order+%23%22%3A+%22EP2340708%22%7D&limit=250",
+          "remote_po_rows": 18,
+          "response_sha256": "a9bc4850bb5c6c0d112b750f1073f2fdbfc8850c50649c5824b9cebbaa5c12a9",
+          "source_record_ordinal": 34,
+          "status": "observed_singleton_vlin_candidate",
+          "vendor_name_concordant_rows": 1
+        },
+        {
+          "bridge_identifier_pairs": [
+            [
+              "VA10003246",
+              "E3083"
+            ]
+          ],
+          "legacy_id_shape": "nine_digits",
+          "legacy_vendor_id": "081752362",
+          "matching_line_rows": 1,
+          "po_number": "PCO1824522",
+          "query_url": "https://data.virginia.gov/api/3/action/datastore_search?resource_id=4f72e337-db1a-4dfc-b4b9-1096a56cc7b2&filters=%7B%22Order+%23%22%3A+%22PCO1824522%22%7D&limit=250",
+          "remote_po_rows": 2,
+          "response_sha256": "463af4b5386e52050bf8964c8bfa74bd437bcdf6e1dc8238cd3a90b6cf016425",
+          "source_record_ordinal": 37,
+          "status": "observed_singleton_vlin_candidate",
+          "vendor_name_concordant_rows": 1
+        }
+      ],
+      "remote_total_reported": 1882100,
+      "resource_id": "4f72e337-db1a-4dfc-b4b9-1096a56cc7b2",
+      "schema_response_sha256": "6eaabcda45076c7766053cc9bb8b6b3b0125d2f6bcf2d781d105884e49749af7",
+      "schema_url": "https://data.virginia.gov/api/3/action/datastore_search?resource_id=4f72e337-db1a-4dfc-b4b9-1096a56cc7b2&limit=0",
+      "status_counts": {
+        "matched_line_missing_vlin": 1,
+        "observed_singleton_vlin_candidate": 11
+      }
+    },
+    "2018": {
+      "fields": [
+        {
+          "id": "_id",
+          "type": "int"
+        },
+        {
+          "id": "Entity Code",
+          "info": {
+            "label": "Entity Code",
+            "notes": "Entity responsible for the purchase",
+            "type_override": "text"
+          },
+          "type": "text"
+        },
+        {
+          "id": "Entity Description",
+          "info": {
+            "label": "Entity Description",
+            "notes": "Description of entity",
+            "type_override": "text"
+          },
+          "type": "text"
+        },
+        {
+          "id": "NIGP #",
+          "info": {
+            "label": "NIGP #",
+            "notes": "5 digit commodity code",
+            "type_override": "text"
+          },
+          "type": "text"
+        },
+        {
+          "id": "NIGP Description",
+          "info": {
+            "label": "NIGP Description",
+            "notes": "Commodity code description",
+            "type_override": "text"
+          },
+          "type": "text"
+        },
+        {
+          "id": "Item Description",
+          "info": {
+            "label": "Item Description",
+            "notes": "Supplier description of the item",
+            "type_override": "text"
+          },
+          "type": "text"
+        },
+        {
+          "id": "Order #",
+          "info": {
+            "label": "Order #",
+            "notes": "eVA Purchase Order number",
+            "type_override": "text"
+          },
+          "type": "text"
+        },
+        {
+          "id": "Order Line Number",
+          "info": {
+            "label": "Order Line Number",
+            "notes": "Order Line Number",
+            "type_override": "numeric"
+          },
+          "type": "numeric"
+        },
+        {
+          "id": "Quantity Ordered",
+          "info": {
+            "label": "Quantity Ordered",
+            "notes": "Quantity of the product/service ordered",
+            "type_override": "numeric"
+          },
+          "type": "numeric"
+        },
+        {
+          "id": "Unit Price",
+          "info": {
+            "label": "Unit Price",
+            "notes": "Price of the product/service",
+            "type_override": "numeric"
+          },
+          "type": "numeric"
+        },
+        {
+          "id": "Unit of Measure",
+          "info": {
+            "label": "Unit of Measure",
+            "notes": "Unit of Measure",
+            "type_override": "text"
+          },
+          "type": "text"
+        },
+        {
+          "id": "Line Total",
+          "info": {
+            "label": "Line Total",
+            "notes": "Total of the line",
+            "type_override": "numeric"
+          },
+          "type": "numeric"
+        },
+        {
+          "id": "Line Total Change",
+          "info": {
+            "label": "Line Total Change",
+            "notes": "Net change from the pervious version",
+            "type_override": "numeric"
+          },
+          "type": "numeric"
+        },
+        {
+          "id": "Manufacturer Part #",
+          "info": {
+            "label": "Manufacturer Part #",
+            "notes": "Manufacturer Part #",
+            "type_override": "text"
+          },
+          "type": "text"
+        },
+        {
+          "id": "Order Status",
+          "info": {
+            "label": "Order Status",
+            "notes": "(eg. Ordered, Receiving, Received, Canceled)",
+            "type_override": "text"
+          },
+          "type": "text"
+        },
+        {
+          "id": "Shipping Name",
+          "info": {
+            "label": "Shipping Name",
+            "notes": "Delivery address as shown on the order",
+            "type_override": "text"
+          },
+          "type": "text"
+        },
+        {
+          "id": "Shipping Lines",
+          "info": {
+            "label": "Shipping Lines",
+            "notes": "Ship to lines",
+            "type_override": "text"
+          },
+          "type": "text"
+        },
+        {
+          "id": "Shipping City",
+          "info": {
+            "label": "Shipping City",
+            "notes": "Ship to city",
+            "type_override": "text"
+          },
+          "type": "text"
+        },
+        {
+          "id": "Shipping State",
+          "info": {
+            "label": "Shipping State",
+            "notes": "Ship to state",
+            "type_override": "text"
+          },
+          "type": "text"
+        },
+        {
+          "id": "Shipping Postal",
+          "info": {
+            "label": "Shipping Postal",
+            "notes": "Ship to postal / zip code",
+            "type_override": "text"
+          },
+          "type": "text"
+        },
+        {
+          "id": "Requisition Submitted Date",
+          "info": {
+            "label": "Requisition Submitted Date",
+            "notes": "Date requisition was submitted for approval",
+            "type_override": "timestamp"
+          },
+          "type": "timestamp"
+        },
+        {
+          "id": "Requisition Approved Date",
+          "info": {
+            "label": "Requisition Approved Date",
+            "notes": "Date requisition was approved",
+            "type_override": "timestamp"
+          },
+          "type": "timestamp"
+        },
+        {
+          "id": "Ordered Date",
+          "info": {
+            "label": "Ordered Date",
+            "notes": "Purchase order date",
+            "type_override": "timestamp"
+          },
+          "type": "timestamp"
+        },
+        {
+          "id": "Most Recent Receiving Date",
+          "info": {
+            "label": "Most Recent Receiving Date",
+            "notes": "Most recent receiving date",
+            "type_override": "text"
+          },
+          "type": "text"
+        },
+        {
+          "id": "SWAM Minority",
+          "info": {
+            "label": "SWAM Minority",
+            "notes": "SBSD Minority certification (Boolean 1=Yes / 0 = No)",
+            "type_override": "numeric"
+          },
+          "type": "numeric"
+        },
+        {
+          "id": "SWAM Woman",
+          "info": {
+            "label": "SWAM Woman",
+            "notes": "SBSD Woman certification (Boolean 1=Yes / 0 = No)",
+            "type_override": "numeric"
+          },
+          "type": "numeric"
+        },
+        {
+          "id": "SWAM Small",
+          "info": {
+            "label": "SWAM Small",
+            "notes": "SBSD Small certification (Boolean 1=Yes / 0 = No)",
+            "type_override": "numeric"
+          },
+          "type": "numeric"
+        },
+        {
+          "id": "SWAM Micro Business",
+          "info": {
+            "label": "SWAM Micro Business",
+            "notes": "SBSD Micro certification (Boolean 1=Yes / 0 = No)",
+            "type_override": "numeric"
+          },
+          "type": "numeric"
+        },
+        {
+          "id": "PO Category Description",
+          "info": {
+            "label": "PO Category Description",
+            "notes": "(eg. Routine, Emergency, Technology - Routine)",
+            "type_override": "text"
+          },
+          "type": "text"
+        },
+        {
+          "id": "PO Category",
+          "info": {
+            "label": "PO Category",
+            "notes": "(eg. R01, E01, VR1)",
+            "type_override": "text"
+          },
+          "type": "text"
+        },
+        {
+          "id": "Procurement Transaction Type",
+          "info": {
+            "label": "Procurement Transaction Type",
+            "notes": "(eg. 20, 40, 50)",
+            "type_override": "numeric"
+          },
+          "type": "numeric"
+        },
+        {
+          "id": "Procurement Transaction Desc",
+          "info": {
+            "label": "Procurement Transaction Desc",
+            "notes": "(eg. Supplies - Non-Technology, Professional Services, Construction) ",
+            "type_override": "text"
+          },
+          "type": "text"
+        },
+        {
+          "id": "Order Type",
+          "info": {
+            "label": "Order Type",
+            "notes": "(eg. EP, EXT, DO, PCO)",
+            "type_override": "text"
+          },
+          "type": "text"
+        },
+        {
+          "id": "Contract Number",
+          "info": {
+            "label": "Contract Number",
+            "notes": "Contract number",
+            "type_override": "text"
+          },
+          "type": "text"
+        },
+        {
+          "id": "Contract Type",
+          "info": {
+            "label": "Contract Type",
+            "notes": "(eg. 2-Mandatory Contract, 5-Optional Statewide Contract)",
+            "type_override": "text"
+          },
+          "type": "text"
+        },
+        {
+          "id": "Registration Type",
+          "info": {
+            "label": "Registration Type",
+            "notes": "(eg. Self-Registered, State-Entered)",
+            "type_override": "text"
+          },
+          "type": "text"
+        },
+        {
+          "id": "VLIN ID",
+          "info": {
+            "label": "VLIN ID",
+            "notes": "Virginia location identification number (unique per location)",
+            "type_override": "text"
+          },
+          "type": "text"
+        },
+        {
+          "id": "eVA ID",
+          "info": {
+            "label": "eVA ID",
+            "notes": "eVA Customer Number",
+            "type_override": "text"
+          },
+          "type": "text"
+        },
+        {
+          "id": "Vendor Name",
+          "info": {
+            "label": "Vendor Name",
+            "notes": "Vendor name on the order",
+            "type_override": "text"
+          },
+          "type": "text"
+        },
+        {
+          "id": "Vendor Location Name",
+          "info": {
+            "label": "Vendor Location Name",
+            "notes": "Vendor location name",
+            "type_override": "text"
+          },
+          "type": "text"
+        },
+        {
+          "id": "Vendor Address Lines",
+          "info": {
+            "label": "Vendor Address Lines",
+            "notes": "Vendor address lines",
+            "type_override": "text"
+          },
+          "type": "text"
+        },
+        {
+          "id": "Vendor Address City",
+          "info": {
+            "label": "Vendor Address City",
+            "notes": "Vendor address city",
+            "type_override": "text"
+          },
+          "type": "text"
+        },
+        {
+          "id": "Vendor Address State",
+          "info": {
+            "label": "Vendor Address State",
+            "notes": "Vendor address state",
+            "type_override": "text"
+          },
+          "type": "text"
+        },
+        {
+          "id": "Vendor Address Postal",
+          "info": {
+            "label": "Vendor Address Postal",
+            "notes": "Vendor address postal / zip code",
+            "type_override": "text"
+          },
+          "type": "text"
+        },
+        {
+          "id": "Vendor Address Geolocation",
+          "info": {
+            "label": "Vendor Address Geolocation",
+            "notes": "Vendor address as a geolocated point.  Not available for P.O. Box addresses.",
+            "type_override": "text"
+          },
+          "type": "text"
+        },
+        {
+          "id": "Virginia City/County Boundaries",
+          "info": {
+            "label": "Virginia City/County Boundaries",
+            "notes": "This column was automatically created in order to record in what polygon from the dataset 'Virginia City/County Boundaries' (47e2-c398) the point in column 'vendor_address_geolocation' is located.  This enables the creation of region maps (choropleths) in the visualization canvas and data lens.",
+            "type_override": "numeric"
+          },
+          "type": "numeric"
+        }
+      ],
+      "local_file_bytes": 295661591,
+      "local_path": "data\\VAPOData\\VA_opendata_FY2018.txt",
+      "probes": [
+        {
+          "bridge_identifier_pairs": [
+            [
+              "VA10028165",
+              "VS0000019715"
+            ]
+          ],
+          "legacy_id_shape": "nine_digits",
+          "legacy_vendor_id": "622051969",
+          "matching_line_rows": 1,
+          "po_number": "EP2590858-V2",
+          "query_url": "https://data.virginia.gov/api/3/action/datastore_search?resource_id=9b5b3b80-8edc-453b-960f-0a7203aa9353&filters=%7B%22Order+%23%22%3A+%22EP2590858-V2%22%7D&limit=250",
+          "remote_po_rows": 9,
+          "response_sha256": "0565605adcbdfcf1336ce9916e2c8e1dd6ceccaea170a7d1d32d8cca14661ebd",
+          "source_record_ordinal": 1,
+          "status": "observed_singleton_vlin_candidate",
+          "vendor_name_concordant_rows": 1
+        },
+        {
+          "bridge_identifier_pairs": [
+            [
+              "",
+              ""
+            ]
+          ],
+          "legacy_id_shape": "placeholder_12_nines",
+          "legacy_vendor_id": "999999999999",
+          "matching_line_rows": 1,
+          "po_number": "A207_1874652",
+          "query_url": "https://data.virginia.gov/api/3/action/datastore_search?resource_id=9b5b3b80-8edc-453b-960f-0a7203aa9353&filters=%7B%22Order+%23%22%3A+%22A207_1874652%22%7D&limit=250",
+          "remote_po_rows": 2,
+          "response_sha256": "ff66b5e374bba146c36ac16904c9466d7a814a7a69f7726acf6eb7f3afa405ca",
+          "source_record_ordinal": 2,
+          "status": "matched_line_missing_vlin",
+          "vendor_name_concordant_rows": 1
+        },
+        {
+          "bridge_identifier_pairs": [
+            [
+              "VA10040368",
+              "E37134"
+            ]
+          ],
+          "legacy_id_shape": "nine_digits",
+          "legacy_vendor_id": "066605403",
+          "matching_line_rows": 1,
+          "po_number": "A207_1874591",
+          "query_url": "https://data.virginia.gov/api/3/action/datastore_search?resource_id=9b5b3b80-8edc-453b-960f-0a7203aa9353&filters=%7B%22Order+%23%22%3A+%22A207_1874591%22%7D&limit=250",
+          "remote_po_rows": 1,
+          "response_sha256": "aea701b462742578005da329e960711b92940218b236305ce2bfdf596a59192a",
+          "source_record_ordinal": 3,
+          "status": "observed_singleton_vlin_candidate",
+          "vendor_name_concordant_rows": 1
+        },
+        {
+          "bridge_identifier_pairs": [
+            [
+              "VA10001477",
+              "VS0000006005"
+            ]
+          ],
+          "legacy_id_shape": "nine_digits",
+          "legacy_vendor_id": "023625098",
+          "matching_line_rows": 1,
+          "po_number": "A207_1874654",
+          "query_url": "https://data.virginia.gov/api/3/action/datastore_search?resource_id=9b5b3b80-8edc-453b-960f-0a7203aa9353&filters=%7B%22Order+%23%22%3A+%22A207_1874654%22%7D&limit=250",
+          "remote_po_rows": 1,
+          "response_sha256": "4403c8cb40afe27f65a885ac4a48c0cccf6e1144b7a7eb43545631b576835b04",
+          "source_record_ordinal": 4,
+          "status": "observed_singleton_vlin_candidate",
+          "vendor_name_concordant_rows": 1
+        },
+        {
+          "bridge_identifier_pairs": [
+            [
+              "VA10054387",
+              "E38395"
+            ]
+          ],
+          "legacy_id_shape": "nine_digits",
+          "legacy_vendor_id": "106947237",
+          "matching_line_rows": 1,
+          "po_number": "A207_1874595",
+          "query_url": "https://data.virginia.gov/api/3/action/datastore_search?resource_id=9b5b3b80-8edc-453b-960f-0a7203aa9353&filters=%7B%22Order+%23%22%3A+%22A207_1874595%22%7D&limit=250",
+          "remote_po_rows": 1,
+          "response_sha256": "ca2eb2bbf6babf030c0e13884d565d3cdc0b5e2412bff61172c42b84fcb0d0e7",
+          "source_record_ordinal": 5,
+          "status": "observed_singleton_vlin_candidate",
+          "vendor_name_concordant_rows": 1
+        },
+        {
+          "bridge_identifier_pairs": [
+            [
+              "VA10081964",
+              "VC0000166153"
+            ]
+          ],
+          "legacy_id_shape": "two_letters_seven_digits",
+          "legacy_vendor_id": "DB5017422",
+          "matching_line_rows": 1,
+          "po_number": "A207_1874659",
+          "query_url": "https://data.virginia.gov/api/3/action/datastore_search?resource_id=9b5b3b80-8edc-453b-960f-0a7203aa9353&filters=%7B%22Order+%23%22%3A+%22A207_1874659%22%7D&limit=250",
+          "remote_po_rows": 1,
+          "response_sha256": "bf72ed86765d533f34e460c3e5acbf4f053b82035135d75180130ae85692f147",
+          "source_record_ordinal": 6,
+          "status": "observed_singleton_vlin_candidate",
+          "vendor_name_concordant_rows": 1
+        },
+        {
+          "bridge_identifier_pairs": [
+            [
+              "VA10053691",
+              "C11270"
+            ]
+          ],
+          "legacy_id_shape": "nine_digits",
+          "legacy_vendor_id": "006870208",
+          "matching_line_rows": 1,
+          "po_number": "A207_1874662",
+          "query_url": "https://data.virginia.gov/api/3/action/datastore_search?resource_id=9b5b3b80-8edc-453b-960f-0a7203aa9353&filters=%7B%22Order+%23%22%3A+%22A207_1874662%22%7D&limit=250",
+          "remote_po_rows": 1,
+          "response_sha256": "0eaa5d046f1c3080d6aa8a6f434eb3914d858bb27f4386d034f2efd1473cd474",
+          "source_record_ordinal": 7,
+          "status": "observed_singleton_vlin_candidate",
+          "vendor_name_concordant_rows": 1
+        },
+        {
+          "bridge_identifier_pairs": [
+            [
+              "VA10050123",
+              "C16503"
+            ]
+          ],
+          "legacy_id_shape": "nine_digits",
+          "legacy_vendor_id": "195583778",
+          "matching_line_rows": 1,
+          "po_number": "A207_1874596",
+          "query_url": "https://data.virginia.gov/api/3/action/datastore_search?resource_id=9b5b3b80-8edc-453b-960f-0a7203aa9353&filters=%7B%22Order+%23%22%3A+%22A207_1874596%22%7D&limit=250",
+          "remote_po_rows": 8,
+          "response_sha256": "d0ea38f09983e5d40482eeccc3069b2f6c94d13c06ff9051f52145d722a76cdf",
+          "source_record_ordinal": 8,
+          "status": "observed_singleton_vlin_candidate",
+          "vendor_name_concordant_rows": 1
+        },
+        {
+          "bridge_identifier_pairs": [
+            [
+              "VA10062858",
+              "E11445"
+            ]
+          ],
+          "legacy_id_shape": "nine_digits",
+          "legacy_vendor_id": "004321519",
+          "matching_line_rows": 1,
+          "po_number": "A207_1874597",
+          "query_url": "https://data.virginia.gov/api/3/action/datastore_search?resource_id=9b5b3b80-8edc-453b-960f-0a7203aa9353&filters=%7B%22Order+%23%22%3A+%22A207_1874597%22%7D&limit=250",
+          "remote_po_rows": 1,
+          "response_sha256": "106fa4844003f9795f82c36fadaf3f74920a41de341bb6f8f457b96eefc8d23c",
+          "source_record_ordinal": 16,
+          "status": "observed_singleton_vlin_candidate",
+          "vendor_name_concordant_rows": 1
+        },
+        {
+          "bridge_identifier_pairs": [
+            [
+              "VA10036606",
+              "E351"
+            ]
+          ],
+          "legacy_id_shape": "nine_digits",
+          "legacy_vendor_id": "026157235",
+          "matching_line_rows": 1,
+          "po_number": "A207_1874599",
+          "query_url": "https://data.virginia.gov/api/3/action/datastore_search?resource_id=9b5b3b80-8edc-453b-960f-0a7203aa9353&filters=%7B%22Order+%23%22%3A+%22A207_1874599%22%7D&limit=250",
+          "remote_po_rows": 2,
+          "response_sha256": "3f46905bf73922c251f2a1f6cd316c4e99d0f0ebf2d6501fd3e3f4849e4c8f5a",
+          "source_record_ordinal": 17,
+          "status": "observed_singleton_vlin_candidate",
+          "vendor_name_concordant_rows": 1
+        },
+        {
+          "bridge_identifier_pairs": [
+            [
+              "VA10000299",
+              "VC0000039380"
+            ]
+          ],
+          "legacy_id_shape": "nine_digits",
+          "legacy_vendor_id": "159148746",
+          "matching_line_rows": 1,
+          "po_number": "A207_1874600",
+          "query_url": "https://data.virginia.gov/api/3/action/datastore_search?resource_id=9b5b3b80-8edc-453b-960f-0a7203aa9353&filters=%7B%22Order+%23%22%3A+%22A207_1874600%22%7D&limit=250",
+          "remote_po_rows": 1,
+          "response_sha256": "c080c07be62f57cd12fc283b03cfec8e37b4d8e3a9ae4a73578dcd95619eee0f",
+          "source_record_ordinal": 19,
+          "status": "observed_singleton_vlin_candidate",
+          "vendor_name_concordant_rows": 1
+        },
+        {
+          "bridge_identifier_pairs": [
+            [
+              "VA10053941",
+              "E3809"
+            ]
+          ],
+          "legacy_id_shape": "nine_digits",
+          "legacy_vendor_id": "023789274",
+          "matching_line_rows": 1,
+          "po_number": "A207_1874681",
+          "query_url": "https://data.virginia.gov/api/3/action/datastore_search?resource_id=9b5b3b80-8edc-453b-960f-0a7203aa9353&filters=%7B%22Order+%23%22%3A+%22A207_1874681%22%7D&limit=250",
+          "remote_po_rows": 1,
+          "response_sha256": "2e2c646c7845ce6f56f672927e5b52fb744574a4a61a45c80e2094d440b6225d",
+          "source_record_ordinal": 20,
+          "status": "observed_singleton_vlin_candidate",
+          "vendor_name_concordant_rows": 1
+        }
+      ],
+      "remote_total_reported": 1946652,
+      "resource_id": "9b5b3b80-8edc-453b-960f-0a7203aa9353",
+      "schema_response_sha256": "9fb2de4a951a8d30e420dd0254087e8a1282daf8ca160bc2f11383640d34e22a",
+      "schema_url": "https://data.virginia.gov/api/3/action/datastore_search?resource_id=9b5b3b80-8edc-453b-960f-0a7203aa9353&limit=0",
+      "status_counts": {
+        "matched_line_missing_vlin": 1,
+        "observed_singleton_vlin_candidate": 11
+      }
+    }
+  }
+}

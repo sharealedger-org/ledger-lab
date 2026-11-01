@@ -1,0 +1,921 @@
+﻿{
+  "dictionary": [
+    {
+      "cells": {
+        "A8": "VENDORID",
+        "B8": "VARCHAR2",
+        "C8": "15",
+        "E8": "Vendor DUNS #"
+      },
+      "sheet": "xl/worksheets/sheet1.xml"
+    }
+  ],
+  "files": {
+    "EV02-MATCHED-PO-LESS-THAN-9000.csv": {
+      "columns": [
+        "contract_id",
+        "ip_rec_id",
+        "ip_name",
+        "org_unit_cd",
+        "event_code",
+        "event_id",
+        "event_date",
+        "src_cd",
+        "poNumber",
+        "prod_desc",
+        "qunatity",
+        "uom",
+        "unit_price",
+        "poNIGPCode",
+        "nigp_desc",
+        "uom_desc",
+        "vendorPartNum",
+        "manPartNum",
+        "ipAddress",
+        "ipCity",
+        "ipState",
+        "ipCountry",
+        "ipExternalId",
+        "ip_postal_code",
+        "ip_email"
+      ],
+      "ip_rec_id_shapes": {
+        "nine_digits": 311,
+        "placeholder_12_nines": 2,
+        "two_letters_seven_digits": 270
+      },
+      "rows": 583,
+      "sha256": "4cabf3a6166819901adb2f4e4a78788c868226e832e780f7a711210cad6cdd63"
+    },
+    "EV06-MATCHED-PAYMETS-LESS-THAN-9000.csv": {
+      "columns": [
+        "src_cd",
+        "contract_id",
+        "org_unit_cd",
+        "event_cd",
+        "event_id",
+        "acct_dt",
+        "src_curr_cd",
+        "txn_amt",
+        "ip_rec_id",
+        "fundDtlKey",
+        "objectKey",
+        "objectCode",
+        "subPrgmKey",
+        "ip_name"
+      ],
+      "ip_rec_id_shapes": {
+        "nine_digits": 186,
+        "placeholder_12_nines": 2,
+        "two_letters_seven_digits": 60
+      },
+      "rows": 248,
+      "sha256": "eac7c595417bfaea1a9b79a2e954d9098dbad1f3e4da150f49844acf89f1682f"
+    },
+    "dictionary": {
+      "bytes": 10420,
+      "sha256": "d83393912a658926547d5986d792aaf1e972d5c90c5b141452831c7e4c0e94ba"
+    }
+  },
+  "historical_amount_probe": {
+    "ambiguous_hit_rows": 13,
+    "caveat": "Candidate equality is not a validated transaction link; no precision or recall established.",
+    "exact_candidate_hit_rows": 196,
+    "payment_rows": 248,
+    "placeholder_payment_rows": 2,
+    "po_groups": 248,
+    "po_parse_failures": 0
+  },
+  "historical_id_comparison_caveat": "Union of EV02 and EV06 IDs; includes one 12-nine placeholder. Subtract that placeholder from distinct overlap counts before interpreting identity coverage. Malformed PO rows are counted and flagged, not repaired; their field positions may be unreliable.",
+  "po_years": {
+    "2016": {
+      "bad_arity_rows": 26999,
+      "distinct_nonblank_ids": 30979,
+      "historical_distinct_ids_compared": 128,
+      "historical_ids_present": 128,
+      "id_shapes": {
+        "blank": 15155,
+        "nine_digits": 1499858,
+        "other": 11754,
+        "placeholder_12_nines": 114127,
+        "two_letters_seven_digits": 72244
+      },
+      "normalized_names_with_multiple_nonplaceholder_ids": 517,
+      "rows": 1713138,
+      "rows_with_historical_ids": 440823,
+      "sha256": "389fafdf222690b24494a151accb7a6e888ae9931785bfdb73b3e8a2d2a779b5"
+    },
+    "2018": {
+      "bad_arity_rows": 15354,
+      "distinct_nonblank_ids": 25100,
+      "historical_distinct_ids_compared": 128,
+      "historical_ids_present": 102,
+      "id_shapes": {
+        "blank": 9121,
+        "nine_digits": 750476,
+        "other": 6210,
+        "placeholder_12_nines": 43547,
+        "two_letters_seven_digits": 71465
+      },
+      "normalized_names_with_multiple_nonplaceholder_ids": 357,
+      "rows": 880819,
+      "rows_with_historical_ids": 183764,
+      "sha256": "ea519733d67cf4f4934bd4bc4b695e8ced99105536d4432ead187f7772aee9d8"
+    }
+  },
+  "public_layouts": {
+    "AP705-Payment-Recon-Extract-Agencies.xlsx": {
+      "bytes": 913255,
+      "findings": [
+        {
+          "cells": {
+            "A9": "BUSINESS_UNIT",
+            "B9": "Character",
+            "C9": "5",
+            "D9": "4",
+            "E9": "8",
+            "F9": "N",
+            "G9": "Y",
+            "H9": "CAP002",
+            "I9": "N/A",
+            "J9": "The business unit for the group of transactions",
+            "K9": "AP/GL Business Unit:  AP BU for vouchers, GL BU for expenses and cash advances."
+          },
+          "sheet": "xl/worksheets/sheet5.xml"
+        },
+        {
+          "cells": {
+            "A9": "PYMNT_ADVICE",
+            "B9": "BUSINESS_UNIT",
+            "C9": "Character",
+            "D9": "5",
+            "E9": "4",
+            "F9": "8",
+            "G9": "Y",
+            "H9": "Y",
+            "K9": "The business unit for the group of transactions",
+            "L9": "AP/GL Business Unit:  AP BU for vouchers (including petty cash for agencies), GL BU for expenses and cash advances.",
+            "M9": "Agency (78-80)"
+          },
+          "sheet": "xl/worksheets/sheet6.xml"
+        },
+        {
+          "cells": {
+            "A11": "PAYMENT_TBL",
+            "B11": "REMIT_VENDOR",
+            "C11": "Character",
+            "D11": "10",
+            "E11": "29",
+            "F11": "38",
+            "G11": "N",
+            "H11": "Y",
+            "K11": "This is the remit vendor ID specified on the voucher.",
+            "L11": "Remit Vendor ID"
+          },
+          "sheet": "xl/worksheets/sheet6.xml"
+        },
+        {
+          "cells": {
+            "A12": "PAYMENT_TBL",
+            "B12": "VNDR_LOC",
+            "C12": "Character",
+            "D12": "10",
+            "E12": "39",
+            "F12": "48",
+            "G12": "N",
+            "H12": "Y",
+            "K12": "This field is used to differentiate vendor locations if more than one is defined for the vendor.",
+            "L12": "The vendor location. An identifier (10 characters) for the location (e.g., MAIN).  For EDI locations when there is more than one location the second location forward would be EDI-XX where XX equals the CARS suffix."
+          },
+          "sheet": "xl/worksheets/sheet6.xml"
+        },
+        {
+          "cells": {
+            "A14": "PAYMENT_TBL",
+            "B14": "NAME1",
+            "C14": "Character",
+            "D14": "40",
+            "E14": "60",
+            "F14": "99",
+            "G14": "N",
+            "H14": "Y",
+            "K14": "This is the name of the vendor or employee that is referenced on payment vouchers",
+            "L14": "Vendor or Employee Name",
+            "M14": "Vendor Name (31-54)"
+          },
+          "sheet": "xl/worksheets/sheet6.xml"
+        },
+        {
+          "cells": {
+            "A17": "PAYMENT_TBL",
+            "B17": "ADDRESS3",
+            "C17": "Character",
+            "D17": "40",
+            "E17": "180",
+            "F17": "219",
+            "G17": "N",
+            "H17": "Y",
+            "K17": "NA",
+            "L17": "For voucher payments, this represents the VLIN.  This will be blank if this is an employee payment."
+          },
+          "sheet": "xl/worksheets/sheet6.xml"
+        },
+        {
+          "cells": {
+            "A9": "PYMNT_ADVICE",
+            "B9": "BUSINESS_UNIT",
+            "C9": "Character",
+            "D9": "5",
+            "E9": "4",
+            "F9": "8",
+            "G9": "Y",
+            "H9": "Y",
+            "I9": "CAP002",
+            "K9": "NA",
+            "L9": "This is the identifier used to differentiate which agency the payment voucher originated from.",
+            "M9": "Agency (78-80)"
+          },
+          "sheet": "xl/worksheets/sheet7.xml"
+        },
+        {
+          "cells": {
+            "A12": "PYMNT_ADVICE",
+            "B12": "PAY_DOC_ID",
+            "C12": "Character",
+            "D12": "20",
+            "E12": "33",
+            "F12": "52",
+            "G12": "Y",
+            "H12": "N",
+            "K12": "NA",
+            "L12": "The actual document ID number (voucher ID, report ID, or advance ID).  If multiple transactions (e.g., vouchers) are consolidated on a single payment, there will e a row in this file for each transaction.",
+            "M12": "Agency Voucher Number (318-325)"
+          },
+          "sheet": "xl/worksheets/sheet7.xml"
+        },
+        {
+          "cells": {
+            "A14": "PYMNT_ADVICE",
+            "B14": "INVOICE_ID",
+            "C14": "Character",
+            "D14": "30",
+            "E14": "81",
+            "F14": "110",
+            "G14": "N",
+            "H14": "Y",
+            "K14": "NA",
+            "L14": "This is the number used to identify the invoice for which the payment voucher was created.  This field will only be populated for voucher payments. For expense reports/cash advances, this field will only report expenses and cash advance transactions.",
+            "M14": "Vendor Invoice Number (416-427)"
+          },
+          "sheet": "xl/worksheets/sheet7.xml"
+        }
+      ],
+      "sha256": "8bef93ae6bfe01ff5835f7e756d5310fb57892ad30a767cdf450890c34263a5f",
+      "url": "https://www.cardinalproject.virginia.gov/sites/default/files/AgencyInterfaceLayouts/AP705-Payment-Recon-Extract-Agencies.xlsx"
+    },
+    "AP962-Vendor-Data-Extract-Agencies.xlsx": {
+      "bytes": 237643,
+      "findings": [
+        {
+          "cells": {
+            "A10": "VENDOR",
+            "B10": "VENDOR_ID",
+            "C10": "Character",
+            "D10": "10",
+            "E10": "9",
+            "F10": "18",
+            "G10": "Y",
+            "H10": "Y",
+            "I10": "CAP025",
+            "K10": "This is the identifier used to track vendors in Cardinal.",
+            "L10": "The vendor ID is a unique identifier used to locate specific vendor information in Cardinal."
+          },
+          "sheet": "xl/worksheets/sheet6.xml"
+        },
+        {
+          "cells": {
+            "A11": "VENDOR",
+            "B11": "NAME1",
+            "C11": "Character",
+            "D11": "40",
+            "E11": "19",
+            "F11": "58",
+            "G11": "N",
+            "H11": "Y",
+            "K11": "This is the name of the vendor that is maintained in Cardinal and referenced on payment vouchers.",
+            "L11": "The Vendor name in Cardinal. "
+          },
+          "sheet": "xl/worksheets/sheet6.xml"
+        },
+        {
+          "cells": {
+            "A24": "VENDOR",
+            "B24": "CORPORATE_VENDOR",
+            "C24": "Character",
+            "D24": "10",
+            "E24": "213",
+            "F24": "222",
+            "G24": "N",
+            "H24": "N",
+            "K24": "Will either the be the same value as the Vendor ID or a different value if the Vendor has a parent.",
+            "L24": "This field stores the parent / child vendor relationship (from eVA).  When a child vendor has a separate TIN and a separate Cardinal vendor ID, the parent Cardinal vendor ID is stored in this field."
+          },
+          "sheet": "xl/worksheets/sheet6.xml"
+        },
+        {
+          "cells": {
+            "A10": "V_AUDT_VNDR_TIN",
+            "B10": "VENDOR_ID",
+            "C10": "Character",
+            "D10": "10",
+            "E10": "9",
+            "F10": "18",
+            "G10": "Y",
+            "H10": "Y",
+            "I10": "CAP025",
+            "K10": "This is the identifier used to track vendors in Cardinal.",
+            "L10": "The vendor ID is a unique identifier used to locate specific vendor information in Cardinal. "
+          },
+          "sheet": "xl/worksheets/sheet7.xml"
+        },
+        {
+          "cells": {
+            "A9": "VENDOR_ADDR",
+            "B9": "VENDOR_ID",
+            "C9": "Character",
+            "D9": "10",
+            "E9": "9",
+            "F9": "18",
+            "G9": "Y",
+            "H9": "Y",
+            "I9": "CAP025",
+            "K9": " The vendor ID is a unique identifier used to locate specific vendor information in Cardinal.",
+            "L9": "This is the identifier used to track vendors in Cardinal."
+          },
+          "sheet": "xl/worksheets/sheet8.xml"
+        },
+        {
+          "cells": {
+            "A10": "VENDOR_ADDR",
+            "B10": "ADDRESS_SEQ_NUM",
+            "C10": "Number",
+            "D10": "5",
+            "E10": "19",
+            "F10": "23",
+            "G10": "Y",
+            "H10": "Y",
+            "K10": "Format as '1' and increment for each new address.\n A vendor can have multiple address sequence numbers.",
+            "L10": "This is the sequence of the address that is placed on voucher and documents. "
+          },
+          "sheet": "xl/worksheets/sheet8.xml"
+        },
+        {
+          "cells": {
+            "A13": "VENDOR_ADDR",
+            "B13": "NAME1",
+            "C13": "Character",
+            "D13": "40",
+            "E13": "35",
+            "F13": "74",
+            "G13": "N",
+            "H13": "N",
+            "K13": "NA",
+            "L13": "The name associated with the address.  This contains the alternate payee name 1.  If this field is populated this is what will be printed on a check."
+          },
+          "sheet": "xl/worksheets/sheet8.xml"
+        },
+        {
+          "cells": {
+            "A15": "VNDR_ADDR_SCROL",
+            "B15": "DESCR",
+            "C15": "Character",
+            "D15": "30",
+            "E15": "115",
+            "F15": "144",
+            "G15": "N",
+            "H15": "N",
+            "K15": "NA",
+            "L15": "This is a description of the address of vendor."
+          },
+          "sheet": "xl/worksheets/sheet8.xml"
+        },
+        {
+          "cells": {
+            "A21": "VENDOR_ADDR",
+            "B21": "ADDRESS3",
+            "C21": "Character",
+            "D21": "40",
+            "E21": "302",
+            "F21": "341",
+            "G21": "N",
+            "H21": "N",
+            "K21": "NA",
+            "L21": "The vendors address line 3. This contains the VLIN number."
+          },
+          "sheet": "xl/worksheets/sheet8.xml"
+        },
+        {
+          "cells": {
+            "A24": "VENDOR_ADDR",
+            "B24": "COUNTY",
+            "C24": "Character",
+            "D24": "30",
+            "E24": "412",
+            "F24": "441",
+            "G24": "N",
+            "H24": "N",
+            "K24": "NA",
+            "L24": "County. This is the DUNS number."
+          },
+          "sheet": "xl/worksheets/sheet8.xml"
+        },
+        {
+          "cells": {
+            "A10": "VENDOR_ADDR_PHN",
+            "B10": "VENDOR_ID",
+            "C10": "Character",
+            "D10": "10",
+            "E10": "9",
+            "F10": "18",
+            "G10": "Y",
+            "H10": "Y",
+            "I10": "CAP025",
+            "K10": "This is the identifier used to track vendors in Cardinal.",
+            "L10": "The vendor ID is a unique identifier used to locate specific vendor information in Cardinal. "
+          },
+          "sheet": "xl/worksheets/sheet9.xml"
+        },
+        {
+          "cells": {
+            "A11": "VENDOR_ADDR_PHN",
+            "B11": "ADDRESS_SEQ_NUM",
+            "C11": "Number",
+            "D11": "5",
+            "E11": "19",
+            "F11": "23",
+            "G11": "Y",
+            "H11": "Y",
+            "K11": "This is the address that is placed on a procurement document.  A vendor can have multiple address sequence numbers.",
+            "L11": "Address Sequence Number"
+          },
+          "sheet": "xl/worksheets/sheet9.xml"
+        },
+        {
+          "cells": {
+            "A10": "VENDOR_CNTCT",
+            "B10": "VENDOR_ID",
+            "C10": "Character",
+            "D10": "10",
+            "E10": "9",
+            "F10": "18",
+            "G10": "Y",
+            "H10": "Y",
+            "I10": "CAP025",
+            "K10": "This is the identifier used to track vendors in Cardinal.",
+            "L10": "The vendor ID is a unique identifier used to locate specific vendor information in Cardinal."
+          },
+          "sheet": "xl/worksheets/sheet10.xml"
+        },
+        {
+          "cells": {
+            "A13": "VENDOR_CNTCT",
+            "B13": "ADDRESS_SEQ_NUM",
+            "C13": "Number",
+            "D13": "5",
+            "E13": "34",
+            "F13": "38",
+            "G13": "N",
+            "H13": "N",
+            "K13": "Format as '1'",
+            "L13": "This is the sequence of the address for the contact.."
+          },
+          "sheet": "xl/worksheets/sheet10.xml"
+        },
+        {
+          "cells": {
+            "A19": "VNDR_CNTCT_SCR",
+            "B19": "DESCR",
+            "C19": "Character",
+            "D19": "30",
+            "E19": "196",
+            "F19": "225",
+            "G19": "N",
+            "H19": "N",
+            "K19": "The vendor contact description",
+            "L19": "Contact Description"
+          },
+          "sheet": "xl/worksheets/sheet10.xml"
+        },
+        {
+          "cells": {
+            "A9": "VNDR_CNTCT_PHN",
+            "B9": "VENDOR_ID",
+            "C9": "Character",
+            "D9": "10",
+            "E9": "9",
+            "F9": "18",
+            "G9": "Y",
+            "H9": "Y",
+            "I9": "CAP025",
+            "K9": " This is the identifier used to track vendors in Cardinal.",
+            "L9": "The vendor ID is a unique identifier used to locate specific vendor information in Cardinal."
+          },
+          "sheet": "xl/worksheets/sheet11.xml"
+        },
+        {
+          "cells": {
+            "A10": "VENDOR_LOC",
+            "B10": "VENDOR_ID",
+            "C10": "Character",
+            "D10": "10",
+            "E10": "9",
+            "F10": "18",
+            "G10": "Y",
+            "H10": "Y",
+            "I10": "CAP025",
+            "K10": "This is the identifier used to track vendors in Cardinal.",
+            "L10": "The vendor ID is a unique identifier used to locate specific vendor information in Cardinal. "
+          },
+          "sheet": "xl/worksheets/sheet12.xml"
+        },
+        {
+          "cells": {
+            "A11": "VENDOR_LOC",
+            "B11": "VNDR_LOC",
+            "C11": "Character",
+            "D11": "10",
+            "E11": "19",
+            "F11": "28",
+            "G11": "Y",
+            "H11": "Y",
+            "K11": "This field is used to differentiate vendor locations if more than one is defined for the vendor. Example values: MAIN, EPAY, EDI-XX (where XX is CARS suffix), and LEVY-XXX (where XXX is the agency number).",
+            "L11": "The vendor location. An identifier (10 characters) for the location (e.g., MAIN).  For EDI locations when there is more than one location the second location forward would be EDI-XX where XX equals the CARS suffix."
+          },
+          "sheet": "xl/worksheets/sheet12.xml"
+        },
+        {
+          "cells": {
+            "A12": "VNDR_LOC_SCROL",
+            "B12": "DESCR",
+            "C12": "Character",
+            "D12": "30",
+            "E12": "29",
+            "F12": "58",
+            "G12": "N",
+            "H12": "N",
+            "K12": "This field contains a short description of the vendor location",
+            "L12": "Vendor Location Description."
+          },
+          "sheet": "xl/worksheets/sheet12.xml"
+        },
+        {
+          "cells": {
+            "A15": "VENDOR_LOC",
+            "B15": "REMIT_VENDOR",
+            "C15": "Character",
+            "D15": "10",
+            "E15": "70",
+            "F15": "79",
+            "G15": "N",
+            "H15": "Y",
+            "K15": "This is the identifier used to track the vendors the payment is issued to in Cardinal.",
+            "L15": "The Cardinal Vendor number. "
+          },
+          "sheet": "xl/worksheets/sheet12.xml"
+        },
+        {
+          "cells": {
+            "A10": "VNDR_GOV_CERT",
+            "B10": "VENDOR_ID",
+            "C10": "Character",
+            "D10": "10",
+            "E10": "9",
+            "F10": "18",
+            "G10": "Y",
+            "H10": "Y",
+            "K10": "This is the identifier used to track vendors in Cardinal.",
+            "L10": "The vendor ID is a unique identifier used to locate specific vendor information in Cardinal. "
+          },
+          "sheet": "xl/worksheets/sheet14.xml"
+        },
+        {
+          "cells": {
+            "A9": "VENDOR_WTHD_JUR",
+            "B9": "VENDOR_ID",
+            "C9": "Character",
+            "D9": "10",
+            "E9": "9",
+            "F9": "18",
+            "G9": "Y",
+            "H9": "Y",
+            "I9": "CAP025",
+            "K9": "This is the identifier used to track vendors in Cardinal.",
+            "L9": "The vendor ID is a unique identifier used to locate specific vendor information in Cardinal. "
+          },
+          "sheet": "xl/worksheets/sheet15.xml"
+        },
+        {
+          "cells": {
+            "A10": "VENDOR_WTHD_JUR",
+            "B10": "VNDR_LOC",
+            "C10": "Character",
+            "D10": "10",
+            "E10": "19",
+            "F10": "28",
+            "G10": "Y",
+            "H10": "Y",
+            "K10": "This field is used to differentiate vendor locations if more than one is defined for the vendor. Example values: MAIN, EPAY, EDI-XX (where XX is CARS suffix), and LEVY-XXX (where XXX is the agency number).",
+            "L10": "The vendor location. An identifier (10 characters) for the location (e.g., MAIN).  For EDI locations when there is more than one location the second location forward would be EDI-XX where XX equals the CARS suffix."
+          },
+          "sheet": "xl/worksheets/sheet15.xml"
+        },
+        {
+          "cells": {
+            "A11": "VNDR_LOC_SCROL",
+            "B11": "DESCR",
+            "C11": "Character",
+            "D11": "30",
+            "E11": "29",
+            "F11": "58",
+            "G11": "N",
+            "H11": "N",
+            "K11": "This field contains a short description of the vendor location.",
+            "L11": "Vendor Location Description."
+          },
+          "sheet": "xl/worksheets/sheet15.xml"
+        },
+        {
+          "cells": {
+            "A14": "VENDOR_WTHD",
+            "B14": "ADDRESS_SEQ_NUM",
+            "C14": "Number",
+            "D14": "5",
+            "E14": "74",
+            "F14": "78",
+            "G14": "N",
+            "H14": "Y",
+            "K14": "Format as '1'",
+            "L14": "Designates the address seq number for withholding."
+          },
+          "sheet": "xl/worksheets/sheet15.xml"
+        }
+      ],
+      "sha256": "dd35f9141bbd250ce1ad3f4292156af6caeee1e3d0c21aff2fc4b2d35acb11bb",
+      "url": "https://www.cardinalproject.virginia.gov/sites/default/files/AgencyInterfaceLayouts/AP962-Vendor-Data-Extract-Agencies.xlsx"
+    },
+    "AP965-Voucher-Extract-Agencies-File-Layout.xlsx": {
+      "bytes": 479460,
+      "findings": [
+        {
+          "cells": {
+            "A9": "N/A",
+            "B9": "BUSINESS_UNIT",
+            "C9": "Character",
+            "D9": "5",
+            "E9": "4",
+            "F9": "8",
+            "G9": "Yes",
+            "H9": "Yes",
+            "I9": "CGL016",
+            "J9": "N/A",
+            "K9": "Submitting Agency Business Unit",
+            "L9": "AP Business Unit of the agency for which the extract will be created"
+          },
+          "sheet": "xl/worksheets/sheet5.xml"
+        },
+        {
+          "cells": {
+            "A9": "VOUCHER",
+            "B9": "BUSINESS_UNIT",
+            "C9": "Character",
+            "D9": "5",
+            "E9": "4",
+            "F9": "8",
+            "G9": "Y",
+            "H9": "Y",
+            "I9": "CAP002",
+            "J9": "N/A",
+            "K9": "This field contains the Agency Business Unit",
+            "L9": "Agency AP Business Unit",
+            "M9": "Agency Code (31-33)"
+          },
+          "sheet": "xl/worksheets/sheet6.xml"
+        },
+        {
+          "cells": {
+            "A10": "VOUCHER",
+            "B10": "VOUCHER_ID",
+            "C10": "Character",
+            "D10": "8",
+            "E10": "9",
+            "F10": "16",
+            "G10": "Y",
+            "H10": "Y",
+            "I10": "N/A",
+            "J10": "N/A",
+            "K10": "N/A",
+            "L10": "Voucher ID",
+            "M10": "Agency Voucher Number (212-219)"
+          },
+          "sheet": "xl/worksheets/sheet6.xml"
+        },
+        {
+          "cells": {
+            "A11": "VOUCHER",
+            "B11": "INVOICE_ID",
+            "C11": "Character",
+            "D11": "30",
+            "E11": "17",
+            "F11": "46",
+            "G11": "Y",
+            "H11": "Y",
+            "I11": "N/A",
+            "J11": "N/A",
+            "K11": "N/A",
+            "L11": "Invoice ID",
+            "M11": "Vendor Invoice (97-108)"
+          },
+          "sheet": "xl/worksheets/sheet6.xml"
+        },
+        {
+          "cells": {
+            "A15": "VOUCHER",
+            "B15": "VENDOR_ID",
+            "C15": "Character",
+            "D15": "10",
+            "E15": "77",
+            "F15": "86",
+            "G15": "Y",
+            "H15": "Y",
+            "I15": "CAP025",
+            "J15": "N/A",
+            "K15": "N/A",
+            "L15": "Cardinal Vendor ID"
+          },
+          "sheet": "xl/worksheets/sheet6.xml"
+        },
+        {
+          "cells": {
+            "A16": "VENDOR",
+            "B16": "NAME1",
+            "C16": "Character",
+            "D16": "40",
+            "E16": "87",
+            "F16": "126",
+            "G16": "N",
+            "H16": "Y",
+            "I16": "N/A",
+            "J16": "N/A",
+            "K16": "N/A",
+            "L16": "Vendor Name Field 1"
+          },
+          "sheet": "xl/worksheets/sheet6.xml"
+        },
+        {
+          "cells": {
+            "A17": "VOUCHER",
+            "B17": "VNDR_LOC",
+            "C17": "Character",
+            "D17": "10",
+            "E17": "127",
+            "F17": "136",
+            "G17": "Y",
+            "H17": "Y",
+            "I17": "N/A",
+            "J17": "N/A",
+            "K17": "N/A",
+            "L17": "Vendor Location to which payment will be issued (when voucher is paid)"
+          },
+          "sheet": "xl/worksheets/sheet6.xml"
+        },
+        {
+          "cells": {
+            "A18": "VOUCHER",
+            "B18": "ADDRESS_SEQ_NUM",
+            "C18": "Number",
+            "D18": "5",
+            "E18": "137",
+            "F18": "141",
+            "G18": "Y",
+            "H18": "Y",
+            "I18": "N/A",
+            "J18": "N/A",
+            "K18": "N/A",
+            "L18": "Address to which payment will be issued"
+          },
+          "sheet": "xl/worksheets/sheet6.xml"
+        },
+        {
+          "cells": {
+            "A19": "VENDOR_ADDR",
+            "B19": "ADDRESS3",
+            "C19": "Character",
+            "D19": "40",
+            "E19": "142",
+            "F19": "181",
+            "G19": "N",
+            "H19": "Y",
+            "I19": "N/A",
+            "J19": "N/A",
+            "K19": "This field will contain the eVA Vendor Location Identification Number (VLIN). VLIN to be obtained based on the remit vendor ID and remit address sequence number",
+            "L19": "Vendor Address Line 3 (VLIN)"
+          },
+          "sheet": "xl/worksheets/sheet6.xml"
+        },
+        {
+          "cells": {
+            "A9": "VOUCHER_LINE",
+            "B9": "BUSINESS_UNIT",
+            "C9": "Character",
+            "D9": "5",
+            "E9": "4",
+            "F9": "8",
+            "G9": "Y",
+            "H9": "Y",
+            "I9": "CAP002",
+            "J9": "N/A",
+            "K9": "Agency AP Business Unit",
+            "L9": "Agency AP Business Unit",
+            "M9": "Agency Code (31-33)"
+          },
+          "sheet": "xl/worksheets/sheet7.xml"
+        },
+        {
+          "cells": {
+            "A10": "VOUCHER_LINE",
+            "B10": "VOUCHER_ID",
+            "C10": "Character",
+            "D10": "8",
+            "E10": "9",
+            "F10": "16",
+            "G10": "Y",
+            "H10": "Y",
+            "I10": "N/A",
+            "J10": "N/A",
+            "K10": "Voucher ID",
+            "L10": "Voucher ID",
+            "M10": "Agency Voucher Number (212-219)"
+          },
+          "sheet": "xl/worksheets/sheet7.xml"
+        },
+        {
+          "cells": {
+            "A15": "VOUCHER_LINE",
+            "B15": "DESCR",
+            "C15": "Character",
+            "D15": "30",
+            "E15": "57",
+            "F15": "86",
+            "G15": "N",
+            "H15": "N",
+            "I15": "N/A",
+            "J15": "N/A",
+            "K15": "Description of goods or services or the associated PO ID. This data passes to the GL journal line reference field.",
+            "L15": "Voucher Line description",
+            "M15": "Invoice Description (109-130)"
+          },
+          "sheet": "xl/worksheets/sheet7.xml"
+        },
+        {
+          "cells": {
+            "A9": "DISTRIB_LINE",
+            "B9": "BUSINESS_UNIT",
+            "C9": "Character",
+            "D9": "5",
+            "E9": "4",
+            "F9": "8",
+            "G9": "Y",
+            "H9": "Y",
+            "I9": "CAP002",
+            "J9": "N/A",
+            "K9": "Agency AP Business Unit",
+            "L9": "Agency AP Business Unit",
+            "M9": "Agency Code (31-33)"
+          },
+          "sheet": "xl/worksheets/sheet8.xml"
+        },
+        {
+          "cells": {
+            "A10": "DISTRIB_LINE",
+            "B10": "VOUCHER_ID",
+            "C10": "Character",
+            "D10": "8",
+            "E10": "9",
+            "F10": "16",
+            "G10": "Y",
+            "H10": "Y",
+            "I10": "N/A",
+            "J10": "N/A",
+            "K10": "Voucher ID",
+            "L10": "Voucher ID",
+            "M10": "Agency Voucher Number (212-219)"
+          },
+          "sheet": "xl/worksheets/sheet8.xml"
+        }
+      ],
+      "sha256": "ec958d58576801505408d16bb7fe5aa19e25641798868a2fa8060b2d4c5e93e7",
+      "url": "https://www.cardinalproject.virginia.gov/sites/default/files/AgencyInterfaceLayouts/AP965-Voucher-Extract-Agencies-File-Layout.xlsx"
+    }
+  },
+  "scope": "Identifier semantics, namespace shapes, historical payment vendor overlap; not PO/payment linkage precision"
+}
