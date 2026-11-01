@@ -71,32 +71,38 @@ Both bugs fixed on 2026-10-31 have no test. Use `data/VAPOData_fixture/VA_openda
 
 ## Part C: Paper 2 VA tests
 
-### Test 0 (new, must precede Tests 1-4): join feasibility
-The handoff names the PO-to-expenditure join key as the blocking open question. A first probe
-on this machine (read-only, not committed, partial samples) gives this picture:
+### Test 0: join feasibility — **CLOSED 2026-11-01, finding recorded**
 
-| Fact | Value |
-|---|---|
-| Expenditure columns | `AGENCY_NAME, AMOUNT, FUND_NAME, LOCALITY, OBJECT_NAME, PROGRAM_NAME, VENDOR_NAME, VOUCHER_NUMBER, VOUCHER_DATE` |
-| PO columns | `PONUMBER, AGENCY, ORDEREDDATE, ... QUANTITYORDERED, PRICE, VENDORID, VENDORNAME, ... NIGPCODE ...` |
-| PO `VENDORID` namespace | Documented as Vendor DUNS # (local data-dictionary sheet1 row 8). Also includes alphanumeric `DBxxxxxxx` values and a 12-nines placeholder; do not treat as tax IDs. |
-| PO number appears in expenditure files? | No column. `VOUCHER_NUMBER` equals a FY2014 `PONUMBER` in 1 of 500,000 April-2014 rows. |
-| PO has Object / Fund code? | No. |
-| Natural-key match (agency name, vendor name, rounded amount) | 1,249 of 664,526 August-2013 expenditure rows hit a key from the first 300,000 FY2014 PO lines; 125 of those keys were ambiguous. |
-| `PONUMBER` shape | Mixed (`AAA9999999`, `AA9999999`, `A999_9999999`, ...). Suffix `-V2` marks revised versions of a PO. |
-| VLIN bridge (PO side) | Public CKAN FY2016/FY2018 data carries VLIN and eVA ID per PO line; 22/24 sampled legacy IDs matched singleton pairs. This is PO-side namespace evidence only; expenditure files still have no vendor ID. |
+**Finding:** No deterministic or independent PO-to-expenditure link exists in the public corpus.
+This test is closed. The decision table it was meant to produce is recorded here.
 
-Caveats: the natural-key probe used only a partial PO sample (about 18% of FY2014) and one expenditure
-month, and compared PO order date to a different posting window, so 1,249 is a floor, not a match rate.
-Treat these numbers as a reason to design Test 0, not as findings.
+**Evidence basis:**
 
-Test 0 claim: a deterministic or high-precision linkage from PO line to posted expenditure record exists.
-Candidates, in order of cost:
-1. Direct: `VOUCHER_NUMBER` or any expenditure field containing the PO number. Probe says unlikely.
-2. Natural key: (agency, vendor, amount) with a date window of PO `ORDEREDDATE` to `VOUCHER_DATE`. Needs agency and vendor name normalization (the two files spell them differently, e.g. fixture uses vendor name strings, full data uses `VENDOR_NAME`).
-3. Aggregate linkage only: (agency, vendor, fiscal year). Enough for Tests 3 and 4, not for Test 2.
-- Oracle: precision measured on the fixture pair (10 synthetic PO rows already match the FY03 expenditure fixture by vendor and amount: 271.93 and 289.74) plus a hand-labelled sample of about 200 real pairs.
-- Output: a decision table recording which of Tests 1-4 remain feasible. If only option 3 exists, Test 2 (vendor substitution) is conditional on finding an independent payment-side vendor identifier, and should be removed from Paper 2 or deferred rather than weakened.
+| Fact | Value | Source |
+|---|---|---|
+| Expenditure columns | `AGENCY_NAME, AMOUNT, FUND_NAME, LOCALITY, OBJECT_NAME, PROGRAM_NAME, VENDOR_NAME, VOUCHER_NUMBER, VOUCHER_DATE` | FY2014–2016 files inspected directly |
+| PO columns | `PONUMBER, AGENCY, ORDEREDDATE, QUANTITYORDERED, PRICE, VENDORID, VENDORNAME, NIGPCODE, ...` | FY2006–FY2018 files; no Object/Fund code |
+| Direct link (VOUCHER_NUMBER = PONUMBER) | 1 match in 500,000 April-2014 rows | Prior probe |
+| Natural-key match (agency, vendor name, amount) | Noisy; 2.9% of FY2016 POs matched expenditure vouchers; 2,857 ambiguous | Prior probe |
+| Payment-side vendor ID on public expenditure files | None. No VENDORID, VLIN, or PO reference on APA CSVs | Confirmed by header inspection |
+| The 2019/2020 EV matched dataset (data/POTest/VA_2016_New/) | **Constructed by a name+amount join** — `(agency_key, amount, vendor_name)` inner/left/right. `ip_rec_id` on payment rows was copied from the matched PO side, not sourced independently from a payment system. | `VA Preprocessing.xlsx` drawing1.xml flowchart, 2026-11-01 |
+| EV05 unmatched payments: ip_rec_id blank | 3.5M rows; blank because they never received a PO-side ID during assembly | Confirmed by column inspection |
+
+**Decision table (output of Test 0):**
+
+| Linkage option | Available? | Consequences |
+|---|---|---|
+| 1. Direct key (VOUCHER_NUMBER = PONUMBER) | No | — |
+| 2. Natural key (agency, vendor, amount, date window) | Yes, noisy only | Test 1b feasible with noise caveat; cannot support vendor-identity claims |
+| 3. Aggregate (agency, vendor, fiscal year) | Yes | Tests 3, 4 feasible |
+| 4. Independent payment-side vendor ID | No public source found | Test 2 (vendor substitution) **not buildable** from this corpus |
+
+**What this means for Test 2:** the EV dataset cannot show vendor substitution because it was *defined*
+by vendor-name equality — using name match as the join key then looking for name differences in the
+result is circular. An independent payment-side identifier (e.g. from a Cardinal AP705/AP965 extract
+with VLIN or voucher line reference) would be required. No such public extract has been located.
+Test 2 is replaced below with Tests 2a–2c, which demonstrate the same architectural claim on the
+data that actually exists.
 
 ### Test 1 redesign: non-injectivity count
 Problem found: the notes define the posted image as (Agency + Object code + Amount), but PO lines carry no Object code.
@@ -108,12 +114,111 @@ Two feasible definitions, both stated up front so the result cannot be tuned aft
 - Failure: if more than 99% of images have exactly one preimage, Theorem 1's non-injectivity is empirically negligible on this corpus, and the paper must say so.
 - Caveat to state in the paper: 1a measures a proxy, so its counts are sensitive to the choice of amount rounding and NIGP granularity; run it at both 3-digit and 5-digit NIGP.
 
-### Test 2: vendor substitution (conditional on Test 0)
-- Claim: a model with commitment features predicts "paid vendor differs from committed vendor" better than a model restricted to posted features.
-- Label construction is the weak point: substitution must be defined from matched pairs, so label noise equals linkage error. Report label precision from Test 0 and compute results on the high-confidence subset only.
-- Key design point from the notes: the posted-only model cannot see the committed vendor. Use a majority-class baseline and a posted-features model as controls, so a win is attributable to the missing feature and not to model size.
-- Split: by fiscal year, never random, to avoid leakage across revisions of the same PO.
-- Acceptance thresholds: unset by design (PAPER_02_NOTES open question 3); fix them with the domain expert before running.
+### Test 2: vendor substitution — **REPLACED. Not buildable from public corpus.**
+
+The original Test 2 required an independent payment-side vendor identifier. None exists in the
+public APA files. The 2019/2020 EV matched dataset was assembled by name+amount join and cannot
+provide it. See Test 0 finding above for the full evidence record.
+
+The architectural claim — that commitment-layer features carry signal not visible in posted-only
+records — is preserved and demonstrated in Tests 2a–2c below, using the data that actually exists.
+
+### Test 2a: commodity portfolio forecasting (Layer 3 vs Layer 2)
+
+**Claim:** Agency-level PO commodity mix (Layer 3, commitment view) improves prediction of
+next-year goods-category expenditure over a model using only prior-year expenditure patterns
+(Layer 2, posted view).
+
+**Why this demonstrates the same architecture point as the original Test 2:**
+The original claim was that commitment features carry signal not visible in posted records.
+Test 2a operationalizes this at the agency-year level rather than the transaction level —
+it does not require a PO-to-payment join because the unit of analysis is an agency, not a
+vendor-payment pair.
+
+**Inputs:**
+- Layer 2 features: per agency-year posted expenditure by `VENDOR_NAME` (proxy for spending
+  pattern). FY2014–FY2016 quarterly files are available locally with full 3-year coverage.
+- Layer 3 features: per agency-year PO commodity mix (NIGP 3-digit class share), revision rate
+  (`-Vn` suffix count / total POs), inventory vs. services split (NIGP class <900 vs ≥900 share),
+  median order size, vendor count. Derivable from `vendor_po_attributes_by_year.csv` and PO files
+  for FY2006–FY2016.
+- Target: next-year agency goods-category expenditure (sum of payments to vendors with modal NIGP
+  class <900 in the preceding year).
+
+**Data available:** ~80 agencies × 3 prediction years (FY2014→2015, FY2015→2016, FY2016→2017) =
+~240 labelled agency-year pairs for supervised evaluation. The 10-year PO panel (FY2006–FY2016)
+supports unsupervised pattern discovery before the supervised test.
+
+**Method:** Train two models on the same agency-year observations:
+- Model L2: prior-year posted expenditure features only.
+- Model L3: L2 features plus PO commodity mix and revision features.
+Report RMSE and R² for each; permutation test on the Layer 3 feature block. Report results per
+year separately; no pooled-only result.
+
+**Acceptance criteria (fix before running):** Layer 3 reduces RMSE by at least X% (propose 5%)
+and permutation p-value < 0.05. Fix X before the first run.
+
+**Failure case:** If Layer 3 features do not improve over Layer 2, this is a publishable finding —
+it means the posted record already captures the commodity mix information, contradicting the
+compression-loss argument for this particular signal at the agency-year grain.
+
+**Controls:** Shuffle Layer 3 features across agencies within a year; improvement must vanish.
+Agency name reconciliation across PO, expenditure, and budget files must be verified first (the
+three files spell agency names differently — see corpus task 5 in SESSION_HANDOFF.md).
+
+---
+
+### Test 2b: vendor population ecology — survival and churn (PO-only, no join)
+
+**Claim:** The structure of the vendor-year panel (entry, persistence, exit) is non-random and
+predictable from observable PO characteristics. This demonstrates that the pre-hierarchy event
+record carries party-lifecycle signal that the posted-only view (which has no vendor entry/exit
+concept) permanently discards.
+
+**Data:** 65,000 vendors × up to 12 years = `vendor_po_attributes_by_year.csv`.
+27,736 vendors appear in only one year; 7,553 appear in 8+ years.
+12 available fiscal years with known gap years (FY2004, FY2005, FY2009 absent).
+
+**Features (all from PO data, no join):**
+- Entry cohort year, first-year PO line count, first-year NIGP class, geographic region
+- Year-over-year change in commodity class (modal NIGP class shifted Y/N)
+- Annual PO line count trajectory
+- Agency concentration (how many distinct agencies does the vendor serve per year)
+
+**Target:** Survival to year N+1 (binary). Churn in year N+1 (binary).
+
+**Method:** Cox proportional hazards or discrete-time survival model on the panel.
+Hold out FY2015–2016 as test period; train on FY2006–2014.
+
+**Acceptance criteria:** C-statistic > 0.65 on held-out years with permutation p < 0.05.
+
+**Key finding to report regardless of outcome:** The single-year churn rate (43% of vendors appear
+in only one year) and its composition by commodity class, geography, and entry cohort is itself a
+corpus-level finding about public procurement dynamics with no posted-record equivalent.
+
+---
+
+### Test 2c: inventory ordering seasonality — fiscal-year-end acceleration (PO-only)
+
+**Claim:** Goods-category (NIGP class <900) PO ordering volume shows detectable within-year
+seasonality driven by fiscal-year-end budget dynamics. This is a commitment-layer-only signal:
+the posted expenditure record carries the payment date but the *commitment* (PO order date) is
+the leading indicator. A posted-only model cannot see it.
+
+**Data:** PO files FY2006–FY2016; use `ORDEREDDATE` field. Focus on top goods classes:
+- Class 615 (Office Supplies, 2.9M lines): best proxy for consumables ordering
+- Class 204/208 (Computer hardware/software, ~390K lines): capital procurement
+- Class 175 (Lab supplies, 1.5M lines): research institution inventory
+
+**Method:** For each agency-NIGP class combination, decompose monthly order volume into trend,
+seasonal, and residual components (STL decomposition). Test whether the seasonal component shows
+a statistically significant Q4 (Apr–Jun, Virginia fiscal year-end) spike.
+
+**Acceptance criteria:** At least 3 of the top 5 goods classes show significant Q4 seasonality
+(p < 0.05) in the majority of full-panel agencies (5+ years of data).
+
+**Failure case to report:** If ordering is uniform across the fiscal year, the budget-flush
+hypothesis is not supported by this corpus — which is itself informative for procurement policy.
 
 ### Test 3: modification rate and next-year budget deviation
 - Feature (Layer 3): per agency-year count of `-Vn` revised PO lines, share of POs revised, and median order-to-revision gap. Layer 2 baseline: posted expenditure ratios by agency-year.
@@ -128,17 +233,23 @@ Two feasible definitions, both stated up front so the result cannot be tuned aft
 
 ---
 
-## Part D: Order of work
+## Part D: Order of work (updated 2026-11-01)
+
+Test 0 is closed. Test 2 is replaced by Tests 2a–2c. Order of work updated accordingly.
 
 | # | Item | Cost | Blocks |
 |---|---|---|---|
-| 1 | M1-M4 log validator, run on the existing log | hours | M5 |
-| 2 | M8 extractor regression tests | hours | nothing, protects the CAR work |
-| 3 | Test 0 join feasibility with labelled sample | 1-2 days | Tests 1b, 2, 3, 4 |
-| 4 | Test 1a (PO-side) and fixture oracle | 1 day | none |
-| 5 | M5 three C1 replicates, then M6 C2 | machine time | M7 |
-| 6 | M7 CAR attribute run (needs VendorMaster_enriched.csv) | 1 day | Paper 1 claim |
-| 7 | Tests 2-4 after thresholds are agreed | weeks | Test 0 outcome |
+| 1 | M1-M4 log validator, run on existing log | hours | M5 |
+| 2 | M8 extractor regression tests | hours | nothing, protects CAR work |
+| 3 | Test 1a (PO-side non-injectivity) and fixture oracle | 1 day | none |
+| 4 | Fix acceptance thresholds for Tests 2a–2c and record in this file | hours | Tests 2a–2c runs |
+| 5 | Test 2c seasonality (cheapest; PO dates only, no reference join) | 1 day | none |
+| 6 | Agency name reconciliation across PO/expenditure/budget | 1 day | Tests 2a, 3 |
+| 7 | Test 2a commodity forecasting (needs agency reconciliation) | 2 days | — |
+| 8 | Test 2b vendor survival model | 2 days | — |
+| 9 | M5 three C1 replicates (needs Windows validation first), then M6 | machine time | M7 |
+| 10 | M7 CAR attribute run (needs VendorMaster_enriched.csv) | 1 day | Paper 1 claim |
+| 11 | Tests 3, 4 (modification rate / rolling window) | weeks | agency reconciliation |
 
-Not decided here: acceptance thresholds for Tests 2-4 and the CV threshold in M5. Both should be
-fixed and committed before the first run so they cannot be adjusted to the result.
+Not decided here: acceptance thresholds for Tests 2a–2c, Test 3 model size and regularization
+strength, CV threshold in M5. Fix and commit all thresholds before the first run.

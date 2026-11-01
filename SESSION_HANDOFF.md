@@ -4,6 +4,65 @@ Updated 2026-11-01. This file is a concise state snapshot; use the linked design
 
 ---
 
+## 2026-11-01 POTest Corpus Inspection, Test 0 Closure, Paper 2 Redesign (Bob)
+
+**What was done.**
+
+1. **Inspected `data/POTest/` directory** — confirmed the folder contains the 2019/2020 EV matched
+   dataset (`VA_2016_New/`, 8 CSV files dated Jan 2020) plus three design workbooks
+   (`VA Data Samples and Specs.xlsx`, `VA Preprocessing.xlsx`, `VA Purchase and PO 2003 Combined.xlsx`).
+   The directory is git-ignored; its presence means the matched dataset is now locally available.
+
+2. **Read the `VA Preprocessing.xlsx` drawing** — extracted shape text and connector topology from
+   `drawing1.xml` in the raw OOXML. The drawing is a full data-flow diagram of how the EV files
+   were assembled. **Key finding:** the join key was `(agency_key, amount, vendor_name)` — a
+   name+amount match. Four quarterly APA expenditure CSVs were unioned, then joined to the
+   filtered/aggregated PO file via inner, left, and right joins. The `ip_rec_id` values on
+   matched payment rows (EV06, EV03, EV04) were **copied from the PO side** — not retrieved
+   independently from a payment system.
+
+3. **Closed Test 0 (join feasibility).** The EV dataset cannot show vendor substitution because
+   vendor-name equality was the join criterion. No independent payment-side vendor ID exists in
+   any public APA file. Full evidence table recorded in `docs/TEST_DESIGN_PAPERS_1_2.md`.
+
+4. **Replaced Test 2 with Tests 2a/2b/2c** in `docs/TEST_DESIGN_PAPERS_1_2.md`:
+   - **2a** Commodity portfolio forecasting: does agency PO mix (Layer 3) predict next-year goods
+     expenditure better than the posted record (Layer 2) alone? ~240 agency-year labels available.
+   - **2b** Vendor population ecology: survival model on the 65K-vendor, 12-year PO panel.
+     43% single-year churn rate is already a findable corpus fact with no posted-record equivalent.
+   - **2c** Inventory ordering seasonality: do goods-category POs show fiscal-year-end (Q4) surge?
+     PO `ORDEREDDATE` is commitment-layer only; posted expenditure carries payment date not order date.
+   Updated Part D work order accordingly.
+
+5. **Surveyed Paper 2** in `TDS-AI-Models/03-argument/02-pre-hierarchy-event-repositories.md` and
+   the TDS repo structure. Wrote `TDS-AI-Models/01-evidence/universal-ledger-demo/va-corpus-ai-tests.md`
+   — a self-contained evidence + test-design document mapping the VA corpus to Paper 2 claims, with
+   corpus facts, the Test 0 closure finding, full test specs for 2a/2b/2c, and author notes.
+   Linked it from the `universal-ledger-demo/README.md`.
+
+**Files changed this session:**
+- `ledger-lab/docs/TEST_DESIGN_PAPERS_1_2.md` — Test 0 closed, Test 2 replaced with 2a/2b/2c, Part D updated
+- `TDS-AI-Models/01-evidence/universal-ledger-demo/va-corpus-ai-tests.md` — new
+- `TDS-AI-Models/01-evidence/universal-ledger-demo/README.md` — new file linked
+- `ledger-lab/SESSION_HANDOFF.md` — this entry
+
+**No financial code changed. No Scala/Bash changed. No Zenodo upload attempted.
+`data/POTest/` remains git-ignored. No outreach sent.**
+
+**Next steps.**
+
+1. **Fix acceptance thresholds for Tests 2a–2c** (record numbers in `TEST_DESIGN_PAPERS_1_2.md`
+   before any run — Test 2a RMSE improvement threshold, Test 2b C-statistic floor, Test 2c
+   seasonality p-value). Owner decision required.
+2. **Test 2c** (seasonality) is the cheapest next test: PO `ORDEREDDATE` field, STL decomposition,
+   no reference join or agency reconciliation required.
+3. **Agency name reconciliation** — prerequisite for Tests 2a and 3. `data/corpus_profile/agency_alias_candidates.csv`
+   has 13 unmatched and 3 ambiguous names from the prior profiling pass.
+4. **Complete Zenodo upload** from a non-corporate network (unchanged from prior session).
+5. **Windows validation** of Scala pipeline smoke test before C1 replicates.
+
+---
+
 ## 2026-11-01 Vendor Analysis, Doc Corrections, Zenodo Upload Script (Bob)
 
 **What was done.**
