@@ -25,3 +25,9 @@ data/VendorDownload/
 
 # Corpus profile: large per-record quarantine detail stays in the runtime root (regenerate with scripts/profile_corpus.sh)
 data/corpus_profile/quarantine.csv
+
+# Zenodo upload state (contains draft record IDs; regenerated on each upload run)
+zenodo_upload_progress.json
+
+# Local test data directories
+data/POTest/
