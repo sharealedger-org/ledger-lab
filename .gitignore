@@ -19,3 +19,9 @@ target/
 project/boot/
 *.tmp
 *.bak
+
+# eVA vendor-list screenshots (working evidence, not source data)
+data/VendorDownload/
+
+# Corpus profile: large per-record quarantine detail stays in the runtime root (regenerate with scripts/profile_corpus.sh)
+data/corpus_profile/quarantine.csv

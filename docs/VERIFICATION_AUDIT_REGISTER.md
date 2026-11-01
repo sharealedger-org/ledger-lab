@@ -43,3 +43,53 @@ The remaining private drafts add these checks to the audit scope:
 - verify manual adjustments are instrument-anchored or explicitly suspense-anchored, and that technical/accounting rejects are quarantined and recyclable;
 - verify shadow-ledger certification against legacy outputs before any master-file sunsetting claim;
 - distinguish shared inter-enterprise event state from private party accounting state if shared-ledger work is added.
+
+## 2026-10-31 Vendor identifier investigation (source-data scope)
+
+| Claim | State | Evidence | Remaining gap |
+|---|---|---|---|
+| PO VENDORID is documented as DUNS | partially_verified | Local dictionary sheet1 row 8 explicitly says Vendor DUNS #; hashed in VENDOR_IDENTIFIER_EVIDENCE_2026-10-31.json | Dictionary provenance/year applicability and actual identifier validity unknown; mixed and placeholder values exist. |
+| Official schema supports a DUNS/VLIN/Cardinal vendor bridge | partially_verified | AP962 VENDOR_ADDR COUNTY=DUNS, ADDRESS3=VLIN, VENDOR_ID and address sequence; reproduced by scripts/investigate_vendor_identifiers.py --specs | No actual public historical bridge rows obtained; effective-date coverage unknown. |
+| EV02/EV06 exact-amount candidate count is reproducible | partially_verified | 196/248 payment hits, 13 ambiguous hit rows, Decimal arithmetic | No independent pair validation, precision/recall, or provenance of historical payment IDs. |
+| Public historical PO/payment linkage is usable for substitution research | unknown | AP965 line description may carry PO ID; AP705/AP965 identify VLIN | Need actual public historical data and transaction linkage independent of vendor equality. |
+
+See [VENDOR_IDENTITY_INVESTIGATION.md](VENDOR_IDENTITY_INVESTIGATION.md). These checks do not upgrade any financial-engine audit state.
+## 2026-10-31 Follow-up: actual public PO-side namespace evidence
+
+| Claim | State | Evidence | Remaining gap |
+|---|---|---|---|
+| Legacy PO IDs can be linked to public VLIN/eVA IDs through the same PO lines | partially_verified | scripts/probe_public_vendor_bridge.py; PUBLIC_VENDOR_BRIDGE_EVIDENCE_2026-10-31.json: 22/24 convenience-sample observations have singleton nonblank pairs; two placeholder controls lack VLIN | No population coverage estimate, full snapshot reconciliation, or proof of global one-to-one identity. |
+| Historical EV01/EV02/EV06 cohorts are under $9,000 | contradicted | EV01 has 433 PO lines >=9000, EV02 has 32, EV06 has 34 payments; reproducible Decimal checks | Original selection algorithm not recovered; NIGP class <900 holds for every EV01/EV02 line. |
+| Official FY2016 purchase-card export provides an independent PO/vendor-ID link | contradicted | All 12 monthly headers contain only agency, vendor name, posting date, fiscal year, amount | Other payment sources remain unverified. |
+| Public historical PO/payment linkage supports vendor-substitution labels | unknown | PO-side bridge now observed; May 2016 CAPP manual documents relevant agency extracts | Actual payment-side IDs and independent PO reference linkage still missing. |
+
+This update strengthens PO-side evidence only; it does not upgrade engine states or validate the 2020 matched-payment pairs.
+
+## 2026-10-31 Corpus inventory, profile and access package (Bob)
+
+Scope: source-data inspection only. These checks do not upgrade any financial-engine audit state and are not part of any cost-curve measurement.
+
+| Claim | State | Evidence | Remaining gap |
+|---|---|---|---|
+| Every source file on this machine is cataloged with a SHA-256 and has a recorded disposition | partially_verified | `CorpusProfile` (`corpus-profile-1`): 385 files cataloged, 367 profiled, 16 cataloged only, 2 empty; 0 files fail physical-line reconciliation; 10 `CorpusProfileSpec` tests including byte-identical reruns on a fixture | Real-corpus rerun not compared byte for byte; `.xlsx` PO copies cataloged, not parsed. |
+| All parsed records are accounted for (accepted + quarantined) | partially_verified | 133,791,291 parsed = 133,464,935 accepted + 326,356 quarantined; APA declared `N rows selected.` equals parsed count in 263 of 263 files that carry one | FY2014-2016 APA and one FY2003 file have no declared total. PO files have none. Quarantine counts record fragments, not logical lines. |
+| Source completeness (any family/year) | not_verified | All 62 family-years `PRESENT_COMPLETENESS_UNKNOWN` except FY2009 PO (`MISSING`) | No independent source totals. Journals balancing proves nothing about completeness. |
+| Per-file provenance (URL, acquisition date) | not_verified | Fields deliberately blank in `source_catalog.csv` | Nothing in the repo proves per-file acquisition. |
+| Stable record locator re-finds the original record | partially_verified | All 2,037 single-line FY2002 PO quarantine records re-read by `start_byte_offset` and matched | Multi-line records and other files not checked. |
+| FY2005 and FY2009 eVA files are zero-row stubs | contradicted | FY2005 `.txt` has 1,037 parsed records; FY2009 has no `.txt` at all | Why FY2009 is absent from the source is unknown. |
+| PO file name is the fiscal year of `ORDEREDDATE` | contradicted | 43,318 PO rows have `ORDEREDDATE` outside the FY in the file name; in FY2005, 592 of 1,037 | The source's inclusion rule is undocumented. |
+| `vendor_po_attributes_by_year.csv` is source-quality | contradicted | 8,101 column-shifted rows; 20 non-US-state region values; 1,392 normalized names with more than one `VENDORID`; no provenance header | Not repaired here (vendor identity belongs to the Codex investigation). |
+| Zenodo `10.5281/zenodo.23846362` is a complete archive of the corpus | contradicted | Public API 2026-10-31: published, 47 files, all match local size and MD5; 336 monthly APA expenditure/revenue files not listed | Text says "public domain", license field says `cc-by-4.0`; record not modified. |
+| Reference tables are valid for a given fiscal year | unknown | `aRef*.txt` have no dates or version; 7 duplicate agency codes; 166 of 558 fund-detail codes have more than one name. Agency names across all 350 APA files (`scripts/build_agency_alias_table.py`, `agency-alias-1`): 307 of 328 distinct names match exactly (99.1% of 115,383,197 rows), 8 match only after punctuation normalization, 13 (20,512 rows) are not in the table; 3 reference names map to two keys each (131,809 rows unresolvable by name alone) | Alias candidates carry no validity periods (all `unknown`); the 13 unmatched agencies are unresolved; fund and object checked on 3 months only. |
+
+See [CORPUS_FINDINGS.md](CORPUS_FINDINGS.md), [CORPUS_SCHEMAS.md](CORPUS_SCHEMAS.md), [CORPUS_RECORD_IDENTITY.md](CORPUS_RECORD_IDENTITY.md) and [CORPUS_ACCESS.md](CORPUS_ACCESS.md).
+## 2026-10-31 Public supplier-directory reference acquisition
+
+| Claim | State | Evidence | Boundary |
+|---|---|---|---|
+| Every row in the saved public report CSV export is represented in the richer canonical snapshot | verified | 230,128 source/canonical rows; 230,127 exact known-field matches plus one targeted HTML lookup; source_export/reconciliation.json and audit.json under the ignored dated snapshot | Recorded current public report/search, not every Commonwealth payee or inactive-directory coverage. |
+| Canonical observations retain auditable source provenance and preserve missing IDs | verified | Full audit: 230,128 observation fingerprints; 230,126 nonblank IDs; 2 missing-ID flags; 2,912 retained HTML pages; no checksum/page-number failures | Acquisition interval, not atomic capture or historical effective dating. |
+| Raw CSV column Status denotes registration type | verified | Source values Self=159,258 and State=70,870; matched registration_type against all corresponding HTML observations; actual HTML status is Active=230,068, Pending Approval=60 | Do not use raw source header as vendor active status. |
+| Current directory proves historical identities or independent PO/payment relationships | unknown | Current reference and 20 agreeing / 2 unresolved historical-candidate VLIN observations | Requires historical identity evidence and an independent payment-side transaction reference. |
+
+See [SUPPLIER_DIRECTORY_SNAPSHOT.md](SUPPLIER_DIRECTORY_SNAPSHOT.md). This acquisition is outside financial-engine measurement; no engine audit states are upgraded.

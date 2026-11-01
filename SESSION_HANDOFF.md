@@ -4,6 +4,258 @@ Updated 2026-10-31. This file is a concise state snapshot; use the linked design
 
 ---
 
+## 2026-10-31 Bob Corpus Work: Status (tasks 1-8)
+
+Implemented and measured; nothing here changes the financial engine, Parquet was not used, and full data stays outside Git. Read [docs/CORPUS_FINDINGS.md](docs/CORPUS_FINDINGS.md) first.
+
+| Task | Result | Where |
+|---|---|---|
+| 1 Inventory/coverage | Done. 385 files cataloged with SHA-256; 367 profiled; coverage matrix by family x FY; FY2005 not a stub, FY2009 has no `.txt`; stale-claim table added to PROJECT_BRIEF.md | `data/corpus_profile/`, `scripts/profile_corpus.sh`, `CorpusProfile.scala` (10 tests) |
+| 2 Schemas/semantics | Done for the four header schemas on disk; no tab-delimited-FY2003-13 / reordered-FY2014-16 schemas exist here, contrary to DATA_ENHANCEMENT_PLAN.md | [docs/CORPUS_SCHEMAS.md](docs/CORPUS_SCHEMAS.md) |
+| 3 Quality/denominators | Done. 133.79M parsed = 133.46M accepted + 326,356 quarantined; 0 line-reconciliation failures; 99% vs 94% NIGP reconciled (per line vs per vendor-year row) | [docs/CORPUS_FINDINGS.md](docs/CORPUS_FINDINGS.md) |
+| 4 Identity | Specified; locator verified on 2,037 real records; per-record IDs deliberately not materialized | [docs/CORPUS_RECORD_IDENTITY.md](docs/CORPUS_RECORD_IDENTITY.md) |
+| 5 Reference data | Inventoried. Agency names across all 350 APA files related to the reference table (`scripts/build_agency_alias_table.py` -> `data/corpus_profile/agency_alias_candidates.csv`): 99.1% of rows match exactly, 13 names (20,512 rows) unmatched, 3 names ambiguous between two keys (131,809 rows); validity periods all `unknown`. Fund/object: 3-month spot check only, **no fund/object alias evidence yet** | [docs/CORPUS_SCHEMAS.md](docs/CORPUS_SCHEMAS.md) |
+| 6 Vendor observations | Documented only: by-year file has 8,101 column-shifted rows and 1,392 names with several IDs; `enrich_vendormaster.py` last-wins overwrite. **No code changed, no richer observation table built** | [docs/CORPUS_FINDINGS.md](docs/CORPUS_FINDINGS.md) |
+| 7 Access | Done: `scripts/corpus_inspect.py files/fields/fetch/sample` (deterministic sample, checksum-verified fetch) | [docs/CORPUS_ACCESS.md](docs/CORPUS_ACCESS.md) |
+| 8 Fixtures/release | Redistribution notes and Zenodo check done. **Research sample package not built**; the existing tiny fixture is unchanged | [docs/CORPUS_ACCESS.md](docs/CORPUS_ACCESS.md) |
+
+Findings the owner should see:
+
+- **Zenodo `10.5281/zenodo.23846362` is published but incomplete.** 47 files, all identical to local copies by MD5, but none of the 336 monthly APA expenditure/revenue files. Text says "public domain", license field says `cc-by-4.0`. Record not modified. With a 100-files-per-record limit (owner-reported, unchecked) the 385-file corpus needs about six records; the defect list, measured split and checklist are in [docs/ZENODO_ARCHIVE_PLAN.md](docs/ZENODO_ARCHIVE_PLAN.md). **Owner decisions pending:** license wording, vendor email addresses (13.35M populated PO rows), new-version versus new-records scheme. Nothing uploaded.
+- PO files are not strictly by order-date fiscal year: 43,318 rows fall outside their file's FY (592 of 1,037 in FY2005).
+- FY2017 PO extended price total (43.2B) is 71% six identical lines of 5,140,972,285.66 to health plans; meaning unknown. Do not quote PO dollar totals without checking extremes.
+- 326,356 PO/APA records are quarantined (325,843 PO, split by embedded line breaks). Counts are fragments, not logical lines.
+
+Not verified (see also the register): per-file source URL/acquisition date; completeness of any year; `.xlsx` PO copies vs `.txt`; whether APA expenditure/revenue overlap with transfers; reference-table validity by FY; real-corpus byte-for-byte rerun determinism; multi-line record re-read by offset.
+
+Known boundary issue left alone: `run_pipeline_orchestrator.sh` Step 5 still calls Python `scripts/data_aggregation.py`.
+
+Suggested next: resolve the 13 unmatched and 3 ambiguous agency names and add fund/object alias evidence; a vendor-observation table keyed by `source_record_id` (so name conflicts surface instead of being overwritten); the research sample package with a manifest; work the Zenodo checklist in docs/ZENODO_ARCHIVE_PLAN.md; M1-M4 log validator and M8 extractor regression tests.
+
+---
+## 2026-10-31 Public Supplier Snapshot Completed (Codex)
+
+A dated eVA public-main-directory reference is now available at `data/VendorDownload/supplier_snapshot_2026-10-31/suppliers.csv` (ignored by Git). It contains **230,128 supplier/location observations**, **230,126 nonblank eVA IDs**, and **2 missing IDs retained with flags**. HTML vendor statuses are 230,068 Active and 60 Pending Approval. Ten focused tests and the final full saved-artifact integrity audit passed.
+
+**Important source quirk:** the raw CSV export calls its Self/State registration-type column Status. The canonical CSV separates registration_type from actual status using HTML evidence. A full 230,128-row source export was reconciled on every available field: 230,127 rows matched the prefix capture directly; one non-ASCII supplier (SUP323218) was retrieved through an exact supplier-ID lookup. The export route made completion of redundant broad-query pagination unnecessary.
+
+Read [docs/SUPPLIER_DIRECTORY_SNAPSHOT.md](docs/SUPPLIER_DIRECTORY_SNAPSHOT.md) for field meanings, scope, files, controls, and refresh commands. The snapshot folder contains unchanged source CSV, 2,912 source HTML pages, checksums, acquisition/reconciliation manifests, and audit.json. No Parquet or financial-engine changes were made. Current public main-directory coverage is established against the saved export, not against the separate inactive directory or every Commonwealth payee, and not as historical FY2003-FY2016 master truth.
+
+The targeted historical-candidate VLIN check also produced `historical_candidate_details/historical_candidate_vlin_verification.csv`: 20 agreeing observations and 2 unresolved observations across 21 supplier IDs. This is not a full VLIN crosswalk or a payment join. Bob can consume the completed dated reference while continuing corpus profiling. Codex retains historical vendor identity and independent payment-link investigation. No outreach sent.
+
+---
+## 2026-10-31 Codex Follow-up: Public PO Vendor Bridge Observed
+
+Actual public FY2016/FY2018 CKAN PO records carry VLIN, eVA IDs, line numbers, status, line-total changes and other fields absent from the local legacy text extracts. A reproducible convenience sample matched 22/24 selected legacy lines to singleton nonblank VLIN/eVA pairs by exact full PO number plus agency/NIGP/quantity/price; the other two are all-nines placeholders with missing VLIN. This is observed PO-side namespace evidence, not a payment join or a coverage estimate. Local/public snapshot row counts differ. Script: `py -3 scripts/probe_public_vendor_bridge.py --spcc-schema`. Findings and saved JSON/CSV evidence are linked in [docs/VENDOR_IDENTITY_INVESTIGATION.md](docs/VENDOR_IDENTITY_INVESTIGATION.md).
+
+**Correction to earlier handoff:** EV01/EV02/EV06 are not under-$9,000 cohorts. EV02 contains 32 PO lines >=$9,000; EV06 contains 34 such payments. Every EV01/EV02 line has NIGP class <900, suggesting a commodity split; the original selection algorithm is not yet reconstructed. Do not carry the dollar-cutoff assumption into test design.
+
+Official FY2016 purchase-card headers have no PO/vendor IDs. A May 2016 CAPP manual independently documents DUNS/VLIN fields and relevant authenticated agency extracts; no actual public historical payment-side bridge extract has been obtained. Bob remains on corpus profiling; Codex retains vendor investigation. No outreach or financial-engine changes.
+
+---
+## 2026-10-31 Codex Vendor Investigation Results
+
+See [docs/VENDOR_IDENTITY_INVESTIGATION.md](docs/VENDOR_IDENTITY_INVESTIGATION.md) and the hashed aggregate evidence JSON linked there. Reproducible read-only probe: `py -3 scripts/investigate_vendor_identifiers.py --specs` from ledger-lab.
+
+Key correction: the local PO data dictionary explicitly describes VENDORID as Vendor DUNS #, not tax ID. Official AP962 vendor-address schema stores DUNS in COUNTY and VLIN in ADDRESS3 alongside Cardinal vendor ID/address sequence. AP705/AP965 also carry VLIN; AP965 line description can contain the PO ID. This establishes a schema bridge, not an obtained public historical crosswalk. Cardinal became the system of record in FY2017, so legacy applicability needs separate evidence.
+
+Independently reproduced 196/248 historical exact-amount candidate hits and 13 ambiguous hits. All 127 nonplaceholder EV06 identifiers occur in FY2016 public POs, but this does not prove the author obtained payment-side identifiers independently; they may have been assigned after matching. Parser counts differ slightly from prior temporary probes; Bob should reconcile those differences. Public historical transaction linkage, source precision/recall, and vendor-substitution labels remain unknown. No outreach sent; no financial code/source data changed; no Parquet work.
+
+---
+## 2026-10-31 Corpus Work Assignment to Bob; Vendor Investigation Retained by Codex
+
+**Owner direction.** Bob is to take the corpus usability work. Codex retains the vendor-identity and PO/payment-linkage investigation. This entry assigns work; it does not report implementation or validated findings. The owner is undecided about Parquet. **Do not convert the corpus to Parquet or make it a dependency.** Preserve the current text/CSV interfaces. Any later format proposal should explain a demonstrated need, interoperability, storage duplication, preparation cost, and effects on comparable measurements before adoption.
+
+### Bob: purpose and boundaries
+
+Make the Virginia data a reproducible, documented research corpus usable across the accounting model, Scala/CKB experiments, perspectives, and Paper 2 analysis. Start with the existing files and contracts; this is not a new financial engine or a wholesale data-model replacement.
+
+Read AGENTS.md, docs/RUNTIME_DATA_LAYOUT.md, docs/VA_DATA_MODEL_CONTRACT.md, docs/DATA_ENHANCEMENT_PLAN.md, docs/MEASUREMENT_AND_LOGGING.md, and the existing preparation scripts. Treat older enhancement-plan claims as proposals requiring evidence. Follow the architecture gates and verification protocol when applicable. Preparation/inspection may use Python; financial processing remains Scala and orchestration remains Bash. Keep full source and derived runtime files outside Git under the declared runtime root.
+
+### Bob: tasks to consider, in priority order
+
+1. **Inventory and coverage before transformation.** Produce a machine-readable catalog (CSV is sufficient) for every source file: relative path, source URL when known, acquisition date when known, checksum, bytes, source family, claimed fiscal year/period, schema identifier, and inspection status. Do not invent missing provenance. Distinguish missing, empty, partial, malformed, and completeness-unknown files. File size alone is not evidence of a stub: extract_po_attributes.py currently skips files below 0.5 MB. Inspect the small years before accepting that classification, and reconcile conflicting year-gap statements in existing documents.
+
+2. **Document schemas and semantics by source era.** Record headers, delimiters, encodings, blank-header behavior, field types, identifier namespaces, amount/sign conventions, date meanings, fiscal-year rules, and known schema transitions. Preserve leading zeros and identifiers as strings. Distinguish accounting date, order date, voucher date, fiscal year, extraction date, and actual revision timestamps where available. A -Vn suffix alone does not establish a complete revision history. Do not infer tax IDs from identifier shape.
+
+3. **Profile data quality with explicit denominators.** Per file/year, report physical/input records, parsed records, accepted records, rejected/quarantined records, blank IDs, placeholder IDs, duplicate candidates, date range, and available amount controls. State exclusions and rounding rules. Separate signed totals from absolute-dollar totals. Reconcile coverage claims: the saved extractor summary reports 99% NIGP coverage among counted lines but 94% among vendor-year rows; the handoff conflates these measures. Records skipped for blank vendor IDs must still appear in input/disposition counts. Preserve malformed originals and reason codes rather than silently dropping records or treating nulled fields as repaired rows.
+
+4. **Define source provenance and stable record identity.** Retain immutable raw files. Specify stable source-record IDs using a file checksum and an unambiguous record locator; distinguish parsed-record ordinals from physical lines for quoted multiline data. Keep raw and normalized values distinguishable, with parser/normalization version and quality flags. Preserve legitimate repeated transactions; do not deduplicate solely because business fields match. Derived outputs must identify their input snapshot and transformation version.
+
+5. **Make reference data historical and agency-aware.** Inventory existing agency/fund/object/program/source references and their coverage. Prepare versioned agency-name aliases and chartfield mappings with source evidence, validity periods when known, and explicit unknowns. DPB documents that historical fund-detail codes may differ by agency and expanded from four to five digits around 2016: do not join on fund code alone or apply current tables retroactively without validation. Preserve Program information and flag discrepancies with current Scala mapping rather than silently redefining financial contracts. Coordinate vendor crosswalk requirements with Codex; vendor matching itself remains Codex's investigation.
+
+6. **Retain richer vendor observations before summarizing.** Preserve observed vendor IDs/names, addresses, commodity codes, dates, and vendor-commodity counts; produce modal summaries as derived conveniences with dominant share and ambiguity. Commodity mix is an observation, not an intrinsic vendor classification. A change in annual modal commodity/state is not proof of an effective-dated master-data change; annual full-year summaries may leak future information into historical predictions. Separate vendor_state from derived geo_region and validate against a declared geographic vocabulary. In enrich_vendormaster.py, repeated normalized names overwrite earlier entries: surface conflicts and retain candidate identities instead of choosing by file order. Keep source enrichment distinct from synthetic attributes.
+
+7. **Deliver a usable, format-neutral access package.** Keep CSV/text as the initial interchange format. Document exact commands for selecting years, inspecting fields, reproducing profiles, and obtaining a stable sample. Preserve existing Scala/Bash input contracts. Keep preparation time/storage separate from measured engine costs. No database, Parquet conversion, or new query service is required to complete this work.
+
+8. **Provide representative fixtures and a release manifest.** Retain the tiny teaching fixture and specify a reproducible research sample covering available schema eras, missingness, ambiguous identities, revisions, negative amounts, and malformed records. Clearly label synthetic rows. Package dictionaries, catalog, quality reports, reference versions, preparation commands, and checksums with the release. Verify archive availability/completion rather than assuming a DOI proves all files are uploaded. Record redistribution terms by source; do not assume all state records or external code descriptions have identical permissions.
+
+### Suggested first deliverable and acceptance evidence
+
+Start with an inventory, year/source coverage matrix, and short schema/quality report before broad cleanup. Then implement the smallest reproducible preparation package justified by those findings. CSV manifests and Markdown documentation are sufficient initially.
+
+A usable first release lets another contributor identify the exact input snapshot, understand every field used, reproduce row dispositions and available source totals, trace sampled derived records back to originals, see unresolved mappings, and run existing fixture consumers. Checks should exercise actual malformed/ambiguous cases and deterministic reruns. Do not claim full source completeness merely because generated journals balance. Keep an explicit list of unverified properties and update the audit register where required.
+
+### Codex: retained investigation, separate from Bob's corpus work
+
+- Investigate the documented eVA-to-Cardinal relationship through VLIN (Vendor Location Identification Number), Cardinal vendor IDs, and historical PO VENDORID namespaces. A documented system relationship is not a verified public historical crosswalk.
+- Inspect public specifications for AP962 vendor extracts, AP965 voucher extracts, and AP705 payment reconciliation extracts. Determine available fields, historical applicability, public access, and whether a narrowly scoped data request could help. No request or outreach has been sent or authorized by this handoff.
+- Investigate historical agency-to-agency supplier/customer crosswalks for interagency identification and future consolidation fixtures.
+- Profile APA purchase-card exports as a potential additional payment source; establish fields and overlap before proposing any union with expenditures.
+- Continue independent PO/payment linkage feasibility work with reproducible scripts, candidate evidence, ambiguity, and precision checks. Vendor identity links and transaction links must remain separate; matching on vendor equality would exclude substitutions that Test 2 seeks to observe.
+- Return findings as evidenced mappings/specifications and unresolved questions that Bob can incorporate without blocking the general corpus package.
+
+### Official investigation leads found this session
+
+- Vendor maintenance manual: https://doa.virginia.gov/reference/CAPP/CAPP_Topics_Cardinal/21105.pdf (April 2018; describes procurement-vendor integration and VLIN on Cardinal vendor addresses).
+- Cardinal extract layouts: https://www.cardinalproject.virginia.gov/index.php/resources/agency-interface-layouts (AP962, AP965, AP705 and chartfield/ledger/budget layouts listed; spreadsheet contents were not retrieved in this session).
+- Agency crosswalk listing: https://www.cardinalproject.virginia.gov/job-aids (Agency to Agency Transactions Information Sheet; current listing includes Customer and Supplier IDs, not a validated historical mapping).
+- DPB chartfield reports: https://dpb.virginia.gov/budget/budget.cfm?page=COA
+- Fund semantics and agency scope: https://reports.dpb.virginia.gov/coa40
+- Budget/expenditure report field explanations: https://reports.dpb.virginia.gov/be122
+- APA legacy financial and purchase-card downloads: https://www.datapoint.apa.virginia.gov/legacyindex.php (purchase-card exports listed from FY2014; not profiled yet).
+
+---
+## 2026-10-31 (later) PO-to-Payment Join Investigation, Second-Opinion Brief
+
+**Purpose of this entry.** The open question from the entry below is whether a public key links a
+Virginia PO line (eVA) to a posted expenditure record. Tests 1b, 2 and 3 for Paper 2 depend on it.
+This entry records what one session (Bob) found, how, and what an independent reviewer (Codex)
+should try to confirm or break. **Nothing here is a validated result.** All figures come from ad hoc
+read-only Python probes whose scripts were written to `%TEMP%` and not kept. Reproduce from the
+method descriptions, do not trust the numbers.
+
+Files added this session (uncommitted): `docs/TEST_DESIGN_PAPERS_1_2.md` (test design, Parts A-D) and
+`data/VendorDownload/*.pdf` (10 eVA vendor-list screenshots, about 2.2 MB, not git-ignored; do not
+commit unless wanted). No code was changed.
+
+### Bob's conclusion (to be tested, not accepted)
+
+1. No public vendor-number crosswalk between the PO side and the expenditure side was found.
+2. The only workable public join is by **names**, and it covers a small fraction of POs and dollars.
+3. Therefore Test 2 (vendor substitution) is not buildable on public data, and Tests 1b/3 would run on
+   a small, biased sample unless a better key is found. Test 1a (PO-side proxy) and an aggregate
+   (agency-year) Test 3 do not need the join.
+
+### Evidence, with method
+
+**A. Field inventory (checked directly).**
+- APA expenditure files (`data/VARawFiles/`, legacy `historicaldata/FY nnnn Expenditures.zip`, FY2003-FY2016):
+  columns `AGENCY_NAME, AMOUNT, FUND_NAME, LOCALITY, OBJECT_NAME, PROGRAM_NAME, VENDOR_NAME,
+  VOUCHER_NUMBER, VOUCHER_DATE`. No vendor ID, no PO number. Headers read for FY2003, FY2013, FY2014, FY2016 only.
+- eVA PO files (`data/VAPOData/VA_opendata_FYnnnn.txt`, tab-delimited, blank first line):
+  `PONUMBER, AGENCY, ORDEREDDATE, ... QUANTITYORDERED, PRICE, VENDORID, VENDORNAME, ... NIGPCODE ...`.
+  No Object/Fund code.
+- FY2016 PO `VENDORID` shapes (1,713,126 lines): 9 digits 87.6%, `999999999999` placeholder 6.7%,
+  two letters + 7 digits 4.2%, blank 0.9%. FY2018: 85.2% / 4.9% placeholder / 8.1% / 1.0%.
+  Treating the 9-digit form as a tax ID is a guess from its shape only.
+
+**B. Direct PO-number link: not found (sample only).** FY2014 April expenditure file, first 500,000 rows:
+`VOUCHER_NUMBER == PONUMBER` (exact string, trimmed) in 1 row. `PONUMBER` shapes are mixed
+(`AAA9999999`, `AA9999999`, `A999_9999999`, suffix `-V2`); voucher shapes are different
+(`A9999999`, `99999999`, `AA999999`, ...). Containment, prefix/suffix stripping and per-agency
+conventions were **not** tested. This is the weakest part of the negative result.
+
+**C. Name/amount join at full FY2016 scale.**
+- Key: (normalized agency name, normalized vendor name, amount rounded to 2 dp). Normalize = uppercase,
+  drop non-alphanumerics. PO side: sum of `QUANTITYORDERED * PRICE` per `PONUMBER`. Payment side: sum of
+  `AMOUNT` per (agency, vendor, `VOUCHER_NUMBER`).
+- Result: 1,686,234 parseable PO lines, 635,196 POs; 7,202,800 expenditure rows, 3,752,550 vouchers;
+  19,106 voucher-level hits, 2,857 of them ambiguous (more than one PO shares the key); 18,623 distinct
+  POs matched (2.9%). Row-level (single expenditure row vs PO total) hits: 20,518.
+- **Not measured:** false-positive rate, and recall. Known recall limits of this run: only FY2016 POs were
+  matched to FY2016 expenditures (POs ordered in FY2015 and paid in FY2016, or ordered late FY2016 and paid
+  in FY2017, are missed); partial and installment payments are missed by the exact-amount rule; freight/tax
+  differences are missed. The 2.9% is therefore a floor for this key, not a ceiling for any join.
+
+**D. Name-coverage ceiling, FY2016 expenditures (7.2M rows).** Rows classified by `VENDOR_NAME`.
+The "pseudo-vendor" regex (`PAYROLL|JOURNAL|TRANSACTION|LABOR COST|CIPPS|INTERAGENCY|CONFIDENTIAL|REFUND|TRAVEL|ADJUST|TREASURER|RETIREMENT|BENEFIT`) is crude.
+
+| Class | Rows | Share of absolute dollars |
+|---|---|---|
+| Name appears in the FY2016 PO file | 1,222,259 (17.0%) | 17.8% |
+| Name not in PO file | 3,293,291 (45.7%) | 21.8% |
+| Pseudo-vendor | 2,687,250 (37.3%) | 60.4% |
+
+In the PO files 2,811 vendor names (FY2016) map to more than one `VENDORID`.
+
+**E. The 2020 matched dataset** (`C:\Users\0D8297897\Box\CommonKeyBufferingData\VA_2016_New\`, files dated
+Dec 2019 - Jan 2020, author unavailable, method undocumented). Event files EV00-EV07 with one running
+`event_id` sequence. EV01 = 42,175 PO lines under $9,000 (20,309 POs, ordered 2013-07 to 2016-06);
+EV02 = 583 lines / 248 POs (all in EV01); EV06 = 248 payments under $9,000 (`contract_id` literally `"VA"`);
+EV03 = 5,520 and EV04 = 5,706 matched payments; EV05 = 3,548,091 unmatched payments (`contract_id` blank,
+vendor blank in the first 500,000 rows); EV07 = tax receipts. Payment rows carry `fundDtlKey, objectKey,
+objectCode, subPrgmKey`, `org_unit_cd` and a vendor ID (`ip_rec_id`) in the same formats as the PO `VENDORID`.
+- Reverse-engineered key: (`ip_rec_id`, `org_unit_cd`, payment amount == sum of `qunatity*unit_price`
+  over the PO's lines). 196 of 248 EV06 payments match an EV02 PO exactly; 13 of those keys are ambiguous;
+  the other 52 do not match (near misses such as 33.92 vs 23.92; no 2-3 PO sum explains them).
+  Payment date minus order date: median 259 days, minimum -36, maximum 488.
+- Inconsistencies, unexplained: EV04 (5,706) is not EV03 + EV06 (5,768) and shares no `event_id`;
+  EV03 is named "greater than 9000" but only 919 of 5,520 rows exceed 9,000; EV05 sums to $42.15B net.
+- Implication: the author had a payment-side vendor ID that the public APA files lack. Source unknown.
+
+**F. eVA Transparency Reports vendor list** (`logi.cgieva.com/External/rdPage.aspx?rdReport=Public.Reports.Report9001_Data`).
+Public Logi report. Fields: status, HQ flag, eVA vendor ID (`SUP######`, `VS#######`, `E#####`, `VC...`),
+name, address, SWaM type, card/e-order flags; detail page adds VLIN and NIGP codes. No tax ID/FEIN/DUNS.
+Display cap 1,000 vendors per query (10 pages of about 100); the 10 PDFs hold one such query (alphabetical
+from `# 1 OrderAnything` to `4Front...`). Searching 8 IDs from the PDFs (`SUP365210, SUP354912, VS0000033394,
+SUP306409, SUP317717, VS0000340540, E52135, E28599`) in the FY2016 and FY2018 PO files gave 0 hits (plain-text
+search). Counted properly: 0 of 1,713,126 FY2016 and 0 of 880,813 FY2018 PO lines have a `VENDORID` starting
+with `SUP`, `VS0` or `VC0`. Four vendor names from PDF page 1 gave 0 hits in FY2018 (FY2016 not checked).
+So the eVA ID namespace is different from PO `VENDORID`. **Correction:** my earlier "search for TSRC / 799849187"
+probes against this site returned the default first page every time, so GET search parameters are ignored
+(probably a form POST with a CSRF key). Those probes showed nothing either way.
+
+**G. Public portals checked (shallow).** data.virginia.gov CKAN API (`package_search`): eVA datasets exist for
+2016-2027 (the FY2016 CSV resource reports size 0); queries for expenditures, vendor payments, checkbook, Cardinal,
+Auditor of Public Accounts found no state vendor-payment dataset with vendor IDs. datapoint.apa.virginia.gov:
+legacy zips FY2003-FY2016 and a new extract path pattern `data/extracts/{fiscalYear}/All {Expenditures|Revenue|Budget} for Fiscal Year {fiscalYear}.zip`
+(my direct URL guess for that path returned 404; the repo's FY2014-FY2016 folders have that naming).
+`legacydatapoint.apa.virginia.gov` timed out once. Only a handful of search terms were tried.
+
+### What Codex should do to confirm or refute (suggested, in priority order)
+
+Run these independently and write your own scripts; do not reuse numbers above. Report agreement or
+disagreement per item, and say what you could not check.
+
+1. **Look harder for a direct key (could overturn the conclusion).** For several fiscal years and several
+   agencies, test whether `VOUCHER_NUMBER` contains or embeds `PONUMBER` (strip `-Vn`, leading letters,
+   underscores, zero padding; try substring and suffix/prefix). Compare per agency, since universities and
+   executive agencies may use different conventions. Also test whether `VOUCHER_DATE` clusters shortly after
+   `ORDEREDDATE` for candidate pairs.
+2. **Find the payment-side vendor ID.** Search for any public Virginia source of vendor payments keyed by
+   vendor ID/FEIN or including PO number: Cardinal/DOA vendor-payment or "checkbook" files, FOIA responses,
+   Wayback Machine copies of old `datapoint.apa.virginia.gov` or `data.virginia.gov` extracts, eVA reports
+   other than Report9001 (the Logi site has numbered public reports, e.g. 9004 NIGP lookup, 9016 SBSD list,
+   9020 inactive vendors), DOA "Commonwealth Data Point", any dataset with a PO number field on payments.
+   Also look in the rest of the Box folder `CommonKeyBufferingData\` (only `VA_2016_New` was opened) for the
+   2020 author's source extracts, SQL or scripts.
+3. **Reproduce and stress the name-join.** Recompute C for FY2016. Then (a) add a placebo (shuffle vendor
+   names or shift the date window by one year) to estimate the false-positive floor; (b) allow POs from the
+   prior fiscal year to match; (c) allow installments (several vouchers summing to the PO total) and small
+   tolerance for freight/tax; (d) report match rate, ambiguity and implied precision per year FY2006-FY2016
+   (FY2004 has 227 and FY2005 has 1,037 parsed PO records, so they are small, not missing; FY2009 has no `.txt` -- see docs/CORPUS_FINDINGS.md). Say whether the rate is stable across years.
+4. **Check the 2020 key and its sample selection.** Confirm 196/248 on EV02 vs EV06, then test the same
+   (vendor ID, agency, amount) rule on the full public FY2016 data. Explain the EV03/EV04/EV05 inconsistencies
+   if you can. Check whether the under-$9,000 cut and exact-amount rule bias the sample toward single-payment POs.
+5. **Challenge the ceiling.** Check the pseudo-vendor regex and the 17.8% / 21.8% / 60.4% dollar split with a
+   better vendor-name classifier. Say what share of non-pseudo dollars is name-matchable after fuzzy matching
+   (suffix stripping such as INC/LLC, punctuation, DBA names), and the false-merge risk it adds.
+6. **Check the claim that Test 2 cannot be built.** Argue for or against: is there any public way to observe
+   "paid vendor differs from ordered vendor" without a vendor ID on the payment side?
+7. **Review `docs/TEST_DESIGN_PAPERS_1_2.md`** for errors, especially Part C (Test 0, Test 1a/1b, Tests 3-4)
+   and the Part A reading of `data/pipeline_log.csv`.
+
+### Decisions still open for the project owner
+
+- Whether to scrape or request bulk eVA vendor data (site terms not reviewed).
+- Acceptance thresholds for Tests 2-4 and the C1 replicate stability threshold (unchanged from `docs/TEST_DESIGN_PAPERS_1_2.md`).
+- Whether Test 2 is dropped from Paper 2 if no payment-side vendor ID is found.
+- Whether to keep `data/VendorDownload/` and git-ignore it.
+
+---
+
+
 ## 2026-10-31 Windows Validation, PO Data Pipeline, and Zenodo Archive
 
 **Context.** This session ran on the Windows machine holding the full Virginia PO dataset.
@@ -22,7 +274,7 @@ remains the next milestone.
      the transStandardize PO branch without the real external data.
 
 3. **Ran PO attribute extraction** (`extract_po_attributes.py --by-year`) over the full
-   15.6M-record VA eVA dataset (FY2002–FY2016, 13 years):
+   15.6M-record VA eVA dataset (FY2002–FY2016, "13 years" as reported then; CORRECTED 2026-10-31: by the 0.5 MB cutoff the extractor skipped FY2001/FY2004/FY2005, and the by-year output covers 12 fiscal years -- 2002, 2003, 2006-2008, 2010-2016):
    - Output: `data/VAPOData/vendor_po_attributes_by_year.csv` (210,496 vendor-year rows, git-ignored).
    - Fixed a validation bug: the original `len(nigp_raw)==3` check fired on the full 5-digit NIGP
      code before the `[:3]` class-prefix slice, zeroing all NIGP coverage. Fixed to `nigp_raw[:3].isdigit()`.
@@ -40,7 +292,7 @@ remains the next milestone.
    - DOI: `10.5281/zenodo.23846362` (upload in progress as of session end)
    - Contains: `VARawFiles/` (APA exp/rev/budget FY2003–FY2016) + `VAPOData/` (eVA PO FY2001–FY2018)
    - Virginia state government records are public domain; NIGP descriptions not redistributed separately.
-   - Known gaps: FY2005 and FY2009 eVA files are zero-row stubs (documented in scripts and RUNTIME_DATA_LAYOUT.md).
+   - Known gaps (CORRECTED 2026-10-31): the FY2005 `.txt` is not a stub (1,037 records); FY2009 has no `.txt`. The record lists 47 files and omits the 336 monthly APA expenditure/revenue files (see docs/CORPUS_ACCESS.md).
    - DOI reference committed to `RUNTIME_DATA_LAYOUT.md`, `download_va_data.py`, `download_va_po_data.py`.
 
 **Papers reviewed this session (both read in full).**

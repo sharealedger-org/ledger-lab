@@ -7,6 +7,24 @@
 
 ---
 
+## Superseded or Unverified Items (checked 2026-10-31)
+
+This brief is kept for its experiment design. The items below were checked against the repository on 2026-10-31 and no longer match it. Where this brief and the layer READMEs, [AGENTS.md](AGENTS.md), or [VERIFICATION_AUDIT_REGISTER.md](docs/VERIFICATION_AUDIT_REGISTER.md) disagree, those documents win.
+
+| Brief statement | What the repository shows |
+|---|---|
+| Step 2 external sort is `standardize_and_sort.py` (Python, Session 17). | `run_pipeline.sh` and `run_pipeline_orchestrator.sh` invoke Step 2 as Scala (`sbt run --step 2`, `transStandardize`). `scripts/standardize_and_sort.py` is not called by either runner. Treat it as a legacy preparation script, not the measured path. |
+| Step 5 is pending a Postgres rewrite; `data_aggregation.py` is replaced. | `run_pipeline_orchestrator.sh` still calls `scripts/data_aggregation.py` (Python) for C2/C3/C4. `run_pipeline.sh` dispatches `--step N` to Scala. README.md and the audit register say the database-backed Step 5 is not implemented and 05-perspectives is `not_implemented`. This is an open boundary issue with AGENTS.md, so a C2 measured through the orchestrator may include a Python Step 5. |
+| Spark (`DPBSpark.scala`, Step 11) is the engine-dependency baseline; Vagrant verification is planned. | README.md excludes Spark, Vagrant, Play and Derby from the cost-curve experiment. Treat the engine-dependency test in Paper 1 §3.2a as unscheduled. |
+| `run_all_years.ps1` admission scheduler exists (Session 18). | No `.ps1` file exists in the repository. AGENTS.md forbids PowerShell for orchestration. |
+| `BOB_WORK_LOG.md` and `scripts/AGENT_INTERFACE.md` hold session history and the agent contract. | Neither file exists in the repository. Use `SESSION_HANDOFF.md` and `docs/MEASUREMENT_AND_LOGGING.md`. |
+| "Phase 0 (data foundation) is the current blocker"; "FY2003 C1/C2 baseline complete (Session 18)". | Per `SESSION_HANDOFF.md` (2026-10-31), the by-year PO extraction and `car_detect_changes.py` have run and `data/VendorUpdate.csv` is committed. The only log in the repo is one legacy run with `None` row counts, and the audit register marks cost curves `not_verified`. No replicated C1/C2 point exists yet. |
+| C3 ≈ C4 "IS the proof" of single-pass universality. | A hypothesis for the declared workload and profile only (see the sentence that follows it in the brief). |
+| SAL rounds 1-4 are NIGP class, size tier, geo region, contract type. | `docs/DATA_ENHANCEMENT_PLAN.md` numbers the rounds differently (Round 1 = NIGP + geo, 2 = size, 3 = contract + payment channel, 4 = risk proxies). Name the attribute, not the round number, when citing results. |
+| PO data covers FY2003-FY2016 with gaps FY2005 and FY2009 only. | See "PO coverage" in [docs/RUNTIME_DATA_LAYOUT.md](docs/RUNTIME_DATA_LAYOUT.md). Several other years are partial, and file size alone has been used to classify them. |
+
+---
+
 ## ⚠ TECHNOLOGY INVARIANT — NON-NEGOTIABLE
 
 **This project proves a theorem about computational architecture. The proof is only valid if the pipeline is built with the correct architecture.**

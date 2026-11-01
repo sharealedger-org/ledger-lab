@@ -1,0 +1,12 @@
+profiler_version=corpus-profile-1
+files_cataloged=385
+files_profiled=367
+bytes_total=27843834731
+data_records_parsed=133791291
+accepted=133464935
+quarantined=326356
+files_failing_line_reconciliation=0
+status.CATALOGED_ONLY=16
+status.EMPTY_FILE=2
+status.PROFILED_CLEAN=88
+status.PROFILED_WITH_QUARANTINE=279

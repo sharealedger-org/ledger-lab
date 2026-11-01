@@ -1,0 +1,13 @@
+script_version=agency-alias-1
+input_files=350
+source_catalog_sha256=4ba51f4e7e00add351f6d0f3f371ee75d9e74f320f1d62f83adbd227caf663f7
+agency_reference_rows=326
+rows_observed=115383197
+distinct_names=328
+EXACT_REF_NAME.names=307
+EXACT_REF_NAME.rows=114328166
+NORMALIZED_REF_NAME.names=8
+NORMALIZED_REF_NAME.rows=1034519
+UNMATCHED.names=13
+UNMATCHED.rows=20512
+note=rows_observed counts accepted data rows only; SQL*Plus trailer lines and short/long rows are excluded here
