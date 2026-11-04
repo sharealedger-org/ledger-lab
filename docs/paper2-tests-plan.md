@@ -1,4 +1,4 @@
-# Paper 2 AI Tests — Implementation Plan
+﻿# Paper 2 AI Tests — Implementation Plan
 
 **Status:** In progress
 **Revised:** 2026-11-03
@@ -33,33 +33,50 @@ all four Python fitting scripts receive it automatically.
 
 ---
 
-## The architectural insight behind this plan
+## The architectural design
 
-The four research tests are not a separate Python analysis project. They are a consequence of one
-missing step in the core engine: **`transIPID` is hardcoded to `"0"`** in both the payment and PO
-transform paths. Until that is fixed, no instrument-level CKB pass can be performed, the
-instrument pivot theorem cannot be measured, and the Layer 3 vs Layer 2 comparison collapses
-to nothing because both layers share the same broken key.
+The experiment has two parallel tracks that run against the same input snapshot:
 
-Once `transIPID` is populated from `VENDORID` (for POs) and from a VendorMaster name lookup (for
-payments), both event types can be sorted on the same instrument key and streamed through a single
-CKB pass. That pass reads commitment records and payment records together in instrument order,
-maintains in-flight per-vendor state, and emits multiple output views simultaneously — one for each
-research question — without re-reading the source files.
+**Track 1 — CCP1: Status-quo baseline (GL architecture)**
 
-This is exactly the GenevaERS / CKB model: sort once, extract all views in one ordered stream.
+```
+Original transactions
+    │
+    ├──► GL post (sort by account key) ──► GL balances
+    │                                          │
+    │                                          └──► AIM1–AIM5 against GL [all miss]
+    │
+    └──► Permutation generator ──► Key-embedded permutation table
+                                        │
+                                        └──► AIM1–AIM5 against permutations [all miss]
+```
+
+CCP1 measures the cost of today's systems. The permutation table is the legacy architecture's
+best possible response to the information-loss problem — all dimensions expanded, but event
+sequence still gone. Both substrates fail the AIM tests for different and instructive reasons.
+
+**Track 2 — CCP2–CCP5: CKB instrument-ledger architecture**
 
 ```
 PO events (sorted by VENDORID, fiscal_year, ORDEREDDATE)  ──┐
-                                                             ├──► CKB pass ──► View A: monthly order volume by commodity
-Payment events (sorted by VENDORID, fiscal_period)        ──┘            ──► View B: vendor-year survival panel
-                                                                          ──► View C: agency-year commodity mix
-                                                                          ──► View D: payment totals by agency-year
-                                                                          ──► Updated Instrument Ledger
+                                                             ├──► CKB pass (CCP2) ──► Instrument Ledger
+Payment events (sorted by VENDORID, fiscal_period)        ──┘                              │
+                                                                                            └──► AIM1 [succeeds]
+
+CCP3: same pass + Step 5 views ──► View A: monthly order volume    ──► AIM4
+                                ──► View B: vendor-year survival    ──► AIM3
+                                ──► View C: agency-year commodity   ──► AIM2
+                                ──► View D: agency-year payments    ──► AIM2 baseline
 ```
 
-Views A–D are the bounded summary tables the research tests consume. Python fits the statistical
-models (STL, survival, regression, classifier) on those tables — not on 133M raw records.
+Views A–D are bounded summary tables (thousands of rows, not millions). Python fits statistical
+models on those tables — not on 133M raw records. The delta CCP2→CCP3 is the measured cost of
+producing all AI evidence substrate.
+
+The research tests are not a separate Python analysis project. They are a natural by-product of
+the engine working correctly. The missing step that currently blocks everything is
+**`transIPID` hardcoded to `"0"`** — fix that, bring POs into the sorted stream, and the CKB
+pass produces all four view tables as it always should have.
 
 ---
 
@@ -77,31 +94,49 @@ transform fix must make unmatched payments explicit with a declared unmatched st
 
 ## Sub-Task 0 — Confirm and commit acceptance thresholds
 
-**Intent:** Lock pass/fail numbers before any code runs. Per Section 5 of
-`TEST_DESIGN_PAPERS_1_2.md`, thresholds must be committed before any test run.
+**Status:** ✅ **COMPLETE — 2026-11-04**
 
-**Proposed values (owner must confirm or change before Sub-Task 3 begins):**
+All thresholds confirmed by owner. Recorded in `docs/TEST_DESIGN_PAPER_2.md` Section 4 and
+`docs/RESEARCH_OBJECTIVES.md` Section 7. Do not adjust after any test run.
 
-| Test question | Metric | Proposed threshold |
-|---|---|---|
-| Does knowing what an agency ordered improve next-year forecasting? | Layer 3 RMSE improvement over Layer 2 | ≥ 5% |
-| Does knowing what an agency ordered improve next-year forecasting? | Permutation p-value | < 0.05 |
-| Can we predict which vendors will stop doing business with the state? | C-statistic on held-out FY2015–2016 | > 0.65 |
-| Can we predict which vendors will stop doing business with the state? | Permutation p-value | < 0.05 |
-| Does when an agency orders carry information that when it pays does not? | Classes with significant Q4 spike | ≥ 3 of top 5 goods classes |
-| Does when an agency orders carry information that when it pays does not? | Per-class p-value | < 0.05 |
-| Can an AI model distinguish a spelling variant from a genuine org difference? | Precision on held-out exact-match pairs | ≥ 0.99 |
-| Can an AI model distinguish a spelling variant from a genuine org difference? | Confidence threshold for "genuine ambiguity" flag | < 0.70 |
+---
+
+## Sub-Task 0b — Build CCP1: GL post step and permutation generator
+
+**Intent:** CCP1 is the status-quo baseline — the General Ledger architecture every institution
+already runs. It produces two substrates: the GL output (account-keyed balances, instrument
+identity discarded) and a permutation table (every key-embedded combination that a GL
+architecture would need to materialise to answer all the questions the instrument ledger answers
+for free). Both substrates are run through the full AIM1–AIM5 test suite. All AIM tests are
+expected to fail or degrade on both CCP1 substrates — that failure, documented and compared
+against the CCP2/CCP3 results, is the empirical proof of Theorem 1.
+
+**The GL post step:**
+- Sort input transactions by account key `(AGENCY_NAME, OBJECT_NAME, FUND_NAME)` — not by
+  instrument ID. Instrument identity (VENDORID) is not carried into the GL output.
+- Accumulate account-keyed balances. Write GL output: `(account_key, fiscal_year, total_amount)`.
+- Emit `process_metrics.csv` rows with the same four fields as CCP2 for comparability.
+
+**The permutation generator (follow-on step, reads original transactions):**
+- For each distinct `(account_key)` in the GL output, join back to the original transactions
+  and enumerate all distinct combinations of instrument attributes
+  `(VENDORID, NIGPCODE_3digit, geo_region)` that contributed to that balance.
+- Write permutation table: `(account_key, permutation_key, record_count)`.
+- Record `permutation_rows` in `process_metrics.csv`.
+
+**Expected outcome:** The permutation table will be large — potentially orders of magnitude
+larger than the GL balance rows. That ratio is the Paper 1 cost-explosion finding.
 
 **Todo list:**
-- [ ] Owner reviews proposed thresholds
-- [ ] Update Section 4 of `docs/TEST_DESIGN_PAPER_2.md`: replace each "propose X" entry with
-  confirmed value and append `— FIXED`
-- [ ] Commit before any Scala or Python code is written for Sub-Tasks 2–5
+- [ ] Design the GL-post Scala step (sort spec: account key; accumulator: amount by account)
+- [ ] Implement `GLPost.scala` or equivalent in `02-foundation/va_pipeline/`
+- [ ] Implement permutation generator as a separate Scala step reading the original transactions
+- [ ] Emit `process_metrics.csv` rows for both steps with `workload_id = CCP1`
+- [ ] Run three replicates; confirm permutation_rows is non-zero and GL balance rows are correct
+- [ ] Run AIM1–AIM5 against GL output and permutation table; record results in
+  `data/test_evidence/` with `substrate = CCP1_GL` and `substrate = CCP1_PERM`
 
-**Relevant context:** `docs/TEST_DESIGN_PAPER_2.md` Section 4 and Section 5 author notes.
-
-**Status:** [ ] pending
+**Status:** [ ] pending — `process_metrics.csv` repair is prerequisite
 
 ---
 

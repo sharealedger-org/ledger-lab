@@ -1,20 +1,21 @@
-# VA Corpus — Paper 2 AI Model Evidence Tests (AIM0–AIM5)
+﻿# VA Corpus — Paper 2 AI Model Evidence Tests (AIM0–AIM5)
 
-**Folder:** `01-evidence/universal-ledger-demo/`  
-**Status:** Design only, 2026-11-01. No tests have been run at full scale.  
-**Source document:** [`ledger-lab/docs/TEST_DESIGN_PAPER_2.md`](https://github.com/KipTwitchell/ledger-lab/blob/main/docs/TEST_DESIGN_PAPER_2.md)  
+**Folder:** `01-evidence/universal-ledger-demo/`
+**Status:** Design only, 2026-11-04. No tests have been run at full scale.
+**Source document:** [`ledger-lab/docs/TEST_DESIGN_PAPER_2.md`](https://github.com/KipTwitchell/ledger-lab/blob/main/docs/TEST_DESIGN_PAPER_2.md)
 **Purpose:** Self-contained summary mapping the Virginia public procurement corpus to Paper 2
 ("Pre-Hierarchy Event Repositories") claims, recording the AIM0 closure finding, and
-specifying AIM1–AIM5 with their AIM IDs.
+specifying AIM1–AIM5 with their AIM IDs and two-substrate experiment design.
 
 ---
 
 ## How to read this file
 
-Each test corresponds to a specific claim in Paper 2. The **Paper 2 claim** row for each test
-states, in plain language, what the test will demonstrate if it succeeds — and where in Paper 2
-that claim lives. Run the tests in order: AIM0 is a feasibility check already closed; AIM4
-is the cheapest next run; AIM5 unblocks AIM2 and AIM3.
+Each test corresponds to a specific claim in Paper 2. Every AIM test (except AIM0) is run
+**twice** — once against the CCP1 substrates (GL output and permutation table, representing
+the legacy architecture's best effort) and once against the CCP2/CCP3 outputs (instrument
+ledger and Step 5 views, representing the CKB architecture). The gap between the two substrate
+results is the empirical proof of Theorem 1.
 
 **The three-layer framework (from Paper 2 §5.3):**
 
@@ -24,9 +25,18 @@ is the cheapest next run; AIM5 unblocks AIM2 and AIM3.
 | Layer 2 | Pre-computed balance totals from posted accounting records | Any attribute discarded at posting time (counterparty, order date, event sequence) |
 | Layer 3 | Raw pre-hierarchy events before any posting or aggregation | Nothing — this is the full record |
 
+**The two-substrate design:**
+
+| Substrate | Produced by | What it represents | Expected AIM result |
+|-----------|------------|-------------------|-------------------|
+| GL output | CCP1 | Today's General Ledger — instrument identity discarded | All AIM tests miss or degrade |
+| Permutation table | CCP1 (follow-on step) | Legacy architecture's best effort: all key-embedded permutations generated from original transactions | All AIM tests still miss — permutations multiply dimensions but cannot restore event sequence |
+| Instrument Ledger | CCP2 | CKB architecture — instrument identity preserved | AIM1 succeeds |
+| Step 5 views | CCP3 | CKB perspective aggregation — bounded feature tables | AIM2–AIM4 succeed |
+
 **The central claim of Paper 2** is that Layer 3 data contains predictive signal that Layer 2
 data *cannot* contain, because posting permanently destroys the information. The tests below
-measure whether that gap is real and large enough to matter.
+measure that gap by running the same tests against both substrates and reporting the difference.
 
 ---
 
@@ -95,22 +105,31 @@ has been located. Test 2 is replaced by AIM2–AIM5 below.
 > the same posted record. This test measures that non-injectivity directly — no statistical
 > inference required. It makes Theorem 1 empirically concrete.
 
-**Method:** For each PO line, construct its posted image: `(AGENCY_NAME, OBJECT_NAME, AMOUNT)`
-— the three fields that survive into the APA expenditure record. Count how many distinct
-pre-hierarchy patterns `(VENDORID, NIGPCODE_3digit, QUANTITYORDERED, revision_suffix)` map to
-the same posted key. Produce the distribution: what fraction of posted keys are the image of
-N=1, N=2, N=3+ distinct procurement sequences?
+**This test runs as a post-hoc step against aggregated output — not against the live event
+stream.** This is deliberate: it measures the information loss from the *outside*, exactly as
+any downstream consumer would experience it. A system that intercepts the stream mid-flight
+trivially holds both sides; a downstream observer working from the posted output cannot.
+
+**Two-substrate design:**
+
+| Substrate | Method | Expected result |
+|-----------|--------|----------------|
+| **CCP1: GL output** | For each GL account balance `(AGENCY_NAME, OBJECT_NAME)`, count how many distinct PO patterns `(VENDORID, NIGPCODE_3digit, revision_suffix)` fed into it. | High collapse. Many-to-one. Instrument identity gone. |
+| **CCP1: Permutation table** | The permutation table enumerates all key-embedded combinations derived from the same original transactions. Ask the same non-injectivity question against permutation keys. | Collapse appears reduced — but this is an artifact. Permutations were *constructed* from side tables after posting; the original event sequence (ordering, revision chain, temporal pattern) is still unrecoverable. |
+| **CCP2: Instrument Ledger** | For each instrument ledger balance `(VENDORID, fiscal_year)`, count how many distinct PO patterns `(NIGPCODE_3digit, revision_suffix)` map to the same ledger key. | Instrument identity preserved. Non-injectivity measurable with full fidelity. Revision sequence visible. |
 
 **Data:** PO files FY2006–FY2016 (133M records); APA expenditure files FY2006–FY2016.
 Join via aggregate key `(AGENCY, fiscal_year)` — the only reliable cross-file join available
 (established by AIM0).
 
 **Acceptance:** This test has no pass/fail threshold — it is a measurement. Report the
-distribution and the fraction of posted keys with N≥2 distinct pre-hierarchy antecedents.
-Any non-zero fraction is evidence of non-injectivity. A large fraction is strong evidence.
+distribution for all three substrates side by side. The gap between the CCP1 substrates and
+the CCP2 result is the evidence. Any non-zero gap is informative; a large gap is strong
+evidence of structural information loss that cannot be recovered by dimensional explosion.
 
-**Output:** `data/test_evidence/AIM1_noninjectivity_distribution.csv` and a summary statistic
-in the evidence JSON. This output is a direct citation target in Paper 2 §2.1.
+**Output:** `data/test_evidence/AIM1_noninjectivity_distribution.csv` — one section per
+substrate. A summary table comparing all three substrates is a direct citation target in
+Paper 2 §2.1.
 
 ---
 
@@ -125,6 +144,12 @@ angle. The idea is: *a purchase order (the commitment) carries information that 
 the final payment record (the posted balance).* If you only look at what was paid, you miss what
 was ordered, when it was ordered, and what happened to orders that never completed. AIM2–AIM5
 each find a different way to show that this missing information is predictively useful.
+
+**Two-substrate protocol for AIM2–AIM5:** Each test is run against the CCP1 permutation table
+(the legacy architecture's best effort — all dimensions available, but no event sequence) and
+against the CCP3 Step 5 views (the CKB architecture's natural output). The acceptance thresholds
+(Section 4) apply to the CCP3-substrate run. The CCP1-substrate run is expected to fail to meet
+the threshold — that failure is itself a finding, reported alongside the CCP3 result.
 
 ---
 
@@ -255,11 +280,12 @@ from cross-file joins and documented as scope limitations.
 
 ---
 
-## 4. Open decisions (owner required before running any test)
+## 4. Decisions (confirmed 2026-11-04)
 
-Proposed values — **pending owner decision**
+All values in this table were confirmed by the project owner on 2026-11-04 and are now fixed.
+Do not adjust thresholds after any test has been run.
 
-| Decision | AIM tests affected | Proposed value |
+| Decision | AIM tests affected | Confirmed value |
 |----------|--------------------|----------------|
 | AIM2 RMSE improvement threshold | AIM2 | ≥ 5% |
 | AIM2 permutation p-value | AIM2 | < 0.05 |
@@ -268,10 +294,10 @@ Proposed values — **pending owner decision**
 | AIM4 seasonality p-value and class count | AIM4 | p < 0.05, ≥ 3 of top 5 classes |
 | AIM5 precision floor | AIM5 | ≥ 0.99 |
 | AIM5 ambiguity confidence threshold | AIM5 | < 0.70 |
-| Surrogate key for ML train/test split | AIM2, AIM3, AIM4 | `vendorSurrogateKey = SHA256(VENDORID) mod 2^32` — stable, semantically neutral |
-| Longitudinal evaluation: single held-out split vs. 7-window robustness (from PAPER_02_NOTES.md Test 4) | AIM2, AIM3 | Owner decision required |
-| AIM1: whether to add `PONUMBER` revision suffix (`-Vn`) to the non-injectivity count | AIM1, AIM2 | Owner decision — adds one field to the CKB view |
-| Whether original vendor substitution test is permanently dropped or deferred | Paper 2 scope | Deferred — no independent payment-side ID found |
+| Surrogate key for ML train/test split | AIM2, AIM3, AIM4 | `vendorSurrogateKey = SHA256(VENDORID) mod 2^32` |
+| Longitudinal evaluation strategy | AIM2, AIM3 | **7-window longitudinal** — train on years 1–7, predict year 8; repeat for all 7 windows across FY03–FY16 |
+| AIM1: `PONUMBER` revision suffix (`-Vn`) in non-injectivity count | AIM1, AIM2 | **Include** — revisions are new commitment events; the CKB view schema includes `revision_suffix` as a distinct field |
+| Original vendor substitution test | Paper 2 scope | Deferred — no independent payment-side ID found in public corpus |
 
 ---
 

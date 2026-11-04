@@ -1,4 +1,4 @@
-# External Runtime Data
+﻿# External Runtime Data
 
 The repository keeps only small fixtures and metadata. Full Virginia expenditure, revenue,
 budget, and purchase-order files belong outside Git.
@@ -57,7 +57,7 @@ To use the archive:
 ```bash
 # Download the zip from the Zenodo record, extract, then point the pipeline at it:
 export UL_DATA_ROOT=/path/to/extracted/virginia-apa-eva-data
-bash scripts/run_pipeline_orchestrator.sh --years 2003-2016 --curve CCP2
+bash scripts/run_pipeline_orchestrator.sh --years 2003-2016 --curve CCP3
 ```
 
 **License note:** Virginia state government records are public domain (no copyright).
@@ -121,7 +121,7 @@ corpus, use either form:
 ```bash
 export UL_DATA_ROOT=/path/to/va-runtime-data
 bash scripts/run_c1_smoke_test.sh --years 2003,2004
-bash scripts/run_pipeline_orchestrator.sh --years 2003-2016 --curve CCP2
+bash scripts/run_pipeline_orchestrator.sh --years 2003-2016 --curve CCP3
 ```
 
 or:
@@ -130,7 +130,7 @@ or:
 bash scripts/run_pipeline_orchestrator.sh \
   --data-root /path/to/va-runtime-data \
   --years 2003-2016 \
-  --curve CCP2
+  --curve CCP3
 ```
 
 Generated outputs and logs stay under the external root. The repository fixtures are not

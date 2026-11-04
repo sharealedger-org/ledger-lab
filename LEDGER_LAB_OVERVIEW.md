@@ -1,4 +1,4 @@
-# Ledger Lab — What We're Trying to Show
+﻿# Ledger Lab — What We're Trying to Show
 
 **Start here if you haven't read the papers.**  
 This document explains what Ledger Lab is testing and why, in plain English. No academic background required. The papers are referenced at the bottom for anyone who wants the full argument.
@@ -111,13 +111,18 @@ A single test confirming its hypothesis is evidence. Multiple tests confirming a
 
 ## Suggested run order
 
-| Step | Test | AIM ID | Why |
-|------|------|--------|-----|
-| 0 | **CCP1** (cost-curve baseline run) | — | The CKB pass produces the joined PO+payment stream that AIM1–AIM4 consume. Must complete before any AIM test. |
-| 1 | **Test 2c** (Q4 ordering seasonality) | AIM4 | No join required, no reconciliation required. Cheapest and fastest confirmation that ordering timing carries signal payment timing doesn't. |
-| 2 | **Test 2d** (spelling vs. org difference) | AIM5 | Produces the agency reconciliation table needed by Tests 2a and 3. Also independently confirms the "preserved names carry information" claim. |
-| 3 | **Test 2b** (vendor survival) | AIM3 | PO-only, no join required. Independently tests the lifecycle/relationship claim. |
-| 4 | **Test 2a** (commodity forecasting) | AIM2 | Requires agency reconciliation from Test 2d. Tests the Layer 3 vs Layer 2 forecasting claim directly. |
+| Step | Run | AIM ID | Why |
+|------|-----|--------|-----|
+| 0 | **CCP1** (GL baseline + permutation table) | — | Establishes the status-quo cost and produces the legacy substrates for the full AIM comparison. |
+| 1 | **AIM1–AIM5 against CCP1 substrates** | All | Run the full test suite against GL output and permutation table. All expected to miss — document the failure modes. |
+| 2 | **CCP2** (Instrument Ledger baseline) | — | Left anchor of the minimum cost curve. Instrument identity now preserved. |
+| 3 | **AIM1 against CCP2** | AIM1 | Post-hoc step reading the Instrument Ledger. Non-injectivity now directly measurable. Compare to CCP1 result. |
+| 4 | **AIM5** (spelling vs. org difference) | AIM5 | Produces agency reconciliation table needed by AIM2 and CCP5. |
+| 5 | **CCP3** (IL + Step 5 views) | — | Step 5 views ARE the AIM2–AIM4 feature tables. Delta CCP2→CCP3 = cost of producing all AI evidence. |
+| 6 | **AIM4** (Q4 ordering seasonality) | AIM4 | Cheapest AIM on CCP3 views — no join, no reconciliation. |
+| 7 | **AIM3** (vendor survival) | AIM3 | PO-only. Tests lifecycle/relationship claim. |
+| 8 | **AIM2** (commodity forecasting) | AIM2 | Requires AIM5 agency reconciliation. Tests Layer 3 vs Layer 2 forecasting directly. |
+| 9 | **CCP4, CCP5** | — | Revaluation + allocation cost points. AIM5 prerequisite for CCP5. |
 
 ---
 

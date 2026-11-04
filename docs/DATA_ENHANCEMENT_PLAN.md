@@ -1,4 +1,4 @@
-# Data Enhancement Plan — VA Dataset for Risk/Finance Demonstration
+﻿# Data Enhancement Plan — VA Dataset for Risk/Finance Demonstration
 
 > **Parent:** `PROJECT_BRIEF.md` — Universal Ledger POC  
 > **Purpose:** Plan for extending the VA government expenditure data to support a GL vs. source-system reconciliation demonstration, the Basel/risk attribute gap analysis, and a phased enrichment roadmap that unlocks progressively richer risk/finance use cases.  
@@ -460,4 +460,4 @@ With Phase D-5 complete, the full demonstration sequence is:
 
 3. **The compounding case**: In a real enterprise, all six processes run simultaneously — revaluation, accrual, reclass, allocation, budgeting, consolidation — each one adding another layer of un-attributable summary entries. The IL is the only architecture that keeps all six auditable at instrument level without maintaining six separate subledger reconciliation processes.
 
-4. **The cost argument** (Experiment 1 curves CCP3 and CCP4): CCP3 adds revaluation-class processes; CCP4 adds allocation and consolidation. If CCP3 ≈ CCP2 and CCP4 ≈ CCP3 on the cost surface, the single-pass universality claim is empirically validated AND the drill-down capability comes at near-zero marginal cost. That combination — same cost, exponentially more capability — is the theorem.
+4. **The cost argument** (Experiment 1 curves CCP4 and CCP5): CCP4 adds revaluation-class processes; CCP5 adds allocation and consolidation. If CCP4 ≈ CCP3 and CCP5 ≈ CCP4 on the cost surface, the single-pass universality claim is empirically validated AND the drill-down capability comes at near-zero marginal cost. That combination — same cost, exponentially more capability — is the theorem.

@@ -1,4 +1,4 @@
-# GenevaERS Ledger POC Functional Specifications — Using VA Data
+﻿# GenevaERS Ledger POC Functional Specifications — Using VA Data
 
 **Author:** Kip Twitchell  
 **Original date:** April 14, 2018 · Updated May 26, 2021  
@@ -277,7 +277,7 @@ transSourceType=CONTRA
 
 Although shown in balance format above, these must be created as transactions, then posted to
 any existing summarized balance rows. After posting, the sum of all `ldgrTransAmount` across all
-rows for EXP202 = 0.00. This is the **zero-sum proof** validated by the CCP1 smoke test.
+rows for EXP202 = 0.00. This is the **zero-sum proof** validated by the CCP2 smoke test.
 
 ---
 
@@ -503,7 +503,7 @@ flowchart TD
 
 > **Single-pass universality:** All of steps 1–6 run in a single sequential pass per partition
 > set. No step requires a full restart of prior steps. This is the core architectural claim
-> demonstrated by the CCP1–CCP4 cost curves.
+> demonstrated by the CCP2–CCP5 cost curves.
 
 ---
 

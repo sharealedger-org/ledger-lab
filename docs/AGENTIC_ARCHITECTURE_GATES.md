@@ -1,4 +1,4 @@
-# Agentic Architecture Gates
+﻿# Agentic Architecture Gates
 
 This repository measures an accounting architecture, not merely whether a program produces plausible numbers. An agent may produce a passing fixture while still invalidating the experiment through a wrong process boundary, an incompatible record contract, an unmeasured materialization, or an unbounded implementation.
 
@@ -58,7 +58,7 @@ A successful fixture run is functional evidence only. It is not scale evidence, 
 
 ## 5. Cost-Curve Discipline
 
-Cost points are comparable only when they use the same input snapshot, rules, output capability, engine substrate, and replication protocol. Keep engine compute, orchestration, sorting, storage, reconciliation, and interpretation overhead separately identifiable. Do not compare a synthetic helper or a different language/runtime to the Scala financial path. Do not claim CCP3/CCP4 equality, a minimum, or a theorem from one run.
+Cost points are comparable only when they use the same input snapshot, rules, output capability, engine substrate, and replication protocol. Keep engine compute, orchestration, sorting, storage, reconciliation, and interpretation overhead separately identifiable. Do not compare a synthetic helper or a different language/runtime to the Scala financial path. Do not claim CCP4/CCP5 equality, a minimum, or a theorem from one run.
 
 ## 6. Session Handoff Discipline
 

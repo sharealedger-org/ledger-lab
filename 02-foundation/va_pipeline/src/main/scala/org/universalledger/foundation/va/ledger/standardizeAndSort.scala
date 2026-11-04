@@ -146,6 +146,7 @@ object standardizeAndSort {
 
   // ── Entry point called by LedgerApp dispatcher ─────────────────────────────
   def apply(params: Map[String, String]): Unit = {
+    val t0 = System.currentTimeMillis()
 
     println("*" * 100)
     println("                         Step 2 — Standardize & Sort (standardizeAndSort)")
@@ -302,6 +303,14 @@ object standardizeAndSort {
     val sizeMb = new File(outFile).length().toDouble / 1024 / 1024
     println(f"Written: $outFile ($sizeMb%.1f MB, $rowsWritten%,d rows)")
     println("STATUS: COMPLETE")
+
+    val elapsedS  = ((System.currentTimeMillis() - t0) / 1000).max(1)
+    val inBytes   = new File(inFile).length()
+    val outBytes  = new File(outFile).length()
+    val peakRss   = Runtime.getRuntime.totalMemory()
+    println(s"RESULT step=2 year=$year rc=0 records_read=$jrnlID records_written=$rowsWritten elapsed_s=$elapsedS input_bytes=$inBytes output_bytes=$outBytes")
+    println(s"RESOURCE step=2 year=$year peak_rss_bytes=$peakRss")
+
     println("*" * 100)
     println(s"Process End Time: ${Calendar.getInstance.getTime}")
     println("*" * 100)

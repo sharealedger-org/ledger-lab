@@ -1,4 +1,4 @@
-# Ledger Lab — Contributor Onboarding
+﻿# Ledger Lab — Contributor Onboarding
 
 This document is written for a technical contributor — a student, researcher, or engineer — who
 knows databases, distributed systems, or financial software and is encountering this repository for
@@ -95,7 +95,7 @@ The honest status as of the last audit:
 - Generalized 05 perspective engine.
 - Postgres-backed perspective aggregation (design exists in `docs/step5-postgres-design.md`).
 - The two elimination processes (intra-unit ARE elimination, inter-unit scope sum).
-- Named CCP1–CCP4 workload manifests and the full cost surface.
+- Named CCP2–CCP5 workload manifests and the full cost surface.
 
 **What is broken and known:**
 - Process metrics on macOS: Step 3 reports `records_read=0`, storage `?`. The pipeline ran but
@@ -114,12 +114,12 @@ The goal is an **agentic cost-curve agent** — a system that can:
 5. Emit a verified cost point — only if all assertions pass.
 6. Vary one axis (add Step 5, change materialization profile, change to a prior-period allocation)
    and compare the resulting cost dimensions.
-7. Eventually compare CCP1 (post only), CCP2 (post + analysis), CCP3 (post + analysis + revaluation),
-   and CCP4 (full pipeline including allocation) on the same input snapshot to produce the four-curve
+7. Eventually compare CCP2 (post only), CCP3 (post + analysis), CCP4 (post + analysis + revaluation),
+   and CCP5 (full pipeline including allocation) on the same input snapshot to produce the four-curve
    cost surface.
 
-The CCP3/CCP4 overlap is the empirical proof of single-pass universality. If allocation collapses to
-one pass via prior-period divisors (as the architecture claims), CCP4 should not cost more than CCP3.
+The CCP4/CCP5 overlap is the empirical proof of single-pass universality. If allocation collapses to
+one pass via prior-period divisors (as the architecture claims), CCP5 should not cost more than CCP4.
 If it does diverge, that divergence — and its cause — is itself a publishable finding.
 
 The agent cannot produce meaningful results until the measurement substrate is reliable. An agent
@@ -146,18 +146,18 @@ Until this is done, no cost point is credible.
 3. **Audit legacy steps (reclass, forecasting, consolidation).** These exist in code. Before they
    can contribute to a cost curve, their actual producers, consumers, schema, CKB placement, and
    memory behavior must be traced and recorded in the audit register.
-4. **Define the CCP1 named workload and run three replicates.** Steps 2 and 3 on the fixture
+4. **Define the CCP2 named workload and run three replicates.** Steps 2 and 3 on the fixture
    snapshot. The first verifiable cost point. Three replicates establish that the measurement
    is stable before comparing to anything else.
-5. **Define and run CCP2.** Add Step 5 aggregation. The delta from CCP1 is the measured marginal cost
+5. **Define and run CCP3.** Add Step 5 aggregation. The delta from CCP2 is the measured marginal cost
    of reporting materialization.
 
 ### The further items that lead to the theorem
 
 - Complete the engine contract tests for booked revaluation (rate/period edge cases, CKB placement).
 - Implement the two elimination processes through the shared CKB path.
-- Define CCP3 and CCP4 workload manifests.
-- Run CCP3 and CCP4 on the same input snapshot. Document the delta and its source.
+- Define CCP4 and CCP5 workload manifests.
+- Run CCP4 and CCP5 on the same input snapshot. Document the delta and its source.
 
 ---
 

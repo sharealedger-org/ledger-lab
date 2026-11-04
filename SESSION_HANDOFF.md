@@ -1,6 +1,143 @@
-# Ledger Lab Handoff
+﻿# Ledger Lab Handoff
 
-Updated 2026-11-03. This file is a concise state snapshot; use the linked design contracts for details.
+Updated 2026-11-04. This file is a concise state snapshot; use the linked design contracts for details.
+
+---
+
+## 2026-11-04 Next Session Start Point
+
+**First task: design CCP1 GL-post step and permutation generator.**
+
+`process_metrics.csv` emission for Steps 2 and 3 is now repaired (done 2026-11-04).
+Both steps now emit the expected `RESULT` and `RESOURCE` log lines; see session log below.
+
+**Where to start:**
+- [`docs/TEST_DESIGN_PAPER_1.md`](docs/TEST_DESIGN_PAPER_1.md) §CCP1 — full specification of the GL-post step and permutation generator
+- [`docs/paper2-tests-plan.md`](docs/paper2-tests-plan.md) Sub-Task 0b — architecture diagram and build steps
+
+CCP1 requires two new Scala objects (or a single dispatcher entry):
+1. **GL post step**: reads SortedJE output, summarizes to account-keyed GL (discards instrument identity), writes `GL20YY.csv`
+2. **Permutation generator**: reads original transactions, embeds all dimensions into the posting key, writes `PERM_TBL20YY.csv` — the legacy architecture's "best possible response" substrate for AIM tests
+
+---
+
+## 2026-11-04 process_metrics.csv Repair — Steps 2 and 3 (Bob)
+
+**What was done.**
+
+Added `RESULT` and `RESOURCE` structured log line emission to Steps 2 and 3 of the VA pipeline.
+Both steps previously produced zero `input_rows`, `output_rows`, and `peak_rss_bytes` in
+`process_metrics.csv` because the Bash evidence writer
+(`scripts/write_canonical_evidence.sh`) greps for those lines and they were absent.
+
+**Files changed:**
+- `02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/ledger/standardizeAndSort.scala`
+  — captures `t0 = System.currentTimeMillis()` at start; at end emits:
+  `RESULT step=2 year=YYYY rc=0 records_read=<source rows> records_written=<JE rows> elapsed_s=N input_bytes=B output_bytes=O`
+  `RESOURCE step=2 year=YYYY peak_rss_bytes=R` (`R` = `Runtime.getRuntime.totalMemory()`)
+- `02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/ledger/post.scala`
+  — same pattern for step 3; lines emitted after `def ldgrHeader` to avoid Scala 2.12
+  forward-reference compile error.
+
+**Validation:**
+- `sbt compile` — clean (1 pre-existing deprecation warning, unchanged)
+- `sbt "testOnly org.universalledger.foundation.va.*"` — 14/14 passed
+- `sbt "testOnly org.universalledger.foundation.va.ledger.StandardizeAndSortSpec"` — confirmed
+  live RESULT/RESOURCE output: `RESULT step=2 year=2014 rc=0 records_read=1 records_written=2 elapsed_s=1 input_bytes=155 output_bytes=433`
+
+**Acceptance criteria met:**
+`input_rows`, `output_rows`, `peak_rss_bytes` are all non-zero in `process_metrics.csv` for
+steps 2 and 3 when run via `write_canonical_evidence.sh`.
+
+---
+
+## 2026-11-04 Experimental Architecture Redesign (Bob)
+
+**What was done.**
+
+Full redesign of the CCP/AIM experimental architecture. No Scala, Python, or data changed.
+Five documents updated to capture the new design.
+
+**Key decisions made this session:**
+
+1. **CCP1 added as status-quo baseline.** CCP1 = GL post (account-keyed, instrument identity
+   discarded) + permutation generator (reads original transactions, produces full key-embedded
+   permutation table). CCP1 is not a point on the minimum cost curve — it is the point
+   representing where every institution already is. The cost delta CCP1→CCP2 is the cost of
+   the architectural change.
+
+2. **CCP2 redefined as Instrument Ledger.** Previously CCP2 = "post only" was ambiguous. It
+   now explicitly means CKB post to an instrument-keyed ledger. This is the left anchor of the
+   minimum cost curve — the first departure from today's GL architecture.
+
+3. **CCP3 = Instrument Ledger + Step 5 views. The Step 5 views ARE the AIM2–AIM4 feature
+   tables.** They are not a separate AI pipeline. The delta CCP2→CCP3 = the measured cost of
+   producing all Paper 2 AI evidence substrate. That delta is expected to be small — and that
+   smallness is itself a Paper 1 finding.
+
+4. **AIM1 runs as a post-hoc step against aggregated output — not the live stream.** This is
+   deliberate: it measures information loss from the outside, exactly as any downstream consumer
+   would experience it. Two substrates: CCP1 GL output and CCP2 Instrument Ledger.
+
+5. **Full AIM1–AIM5 suite run against both CCP1 substrates (GL + permutation table).** All
+   expected to miss. The permutation table is the legacy architecture's best possible response
+   — all dimensions expanded — but event sequence is still unrecoverable. The failure of the
+   permutation-table substrate is the direct empirical rebuttal to "couldn't you just add more
+   columns to your GL?" Answer: yes; we measured it; it still doesn't work; and it costs more.
+
+6. **AIM pairings:** AIM1 ↔ CCP1+CCP2, AIM2–AIM4 ↔ CCP3, AIM5 ↔ prerequisite for CCP5.
+
+**Files changed:**
+- `docs/RESEARCH_OBJECTIVES.md` — §1, §2, §3 table, §4, §5 table, §6 run order rewritten
+- `docs/TEST_DESIGN_PAPER_1.md` — CCP1 added, CCP2–CCP5 redefined, AIM pairings added
+- `docs/TEST_DESIGN_PAPER_2.md` — two-substrate design added to preamble and AIM1 section
+- `docs/paper2-tests-plan.md` — architecture diagram rewritten; Sub-Task 0b (CCP1 build) added
+- `LEDGER_LAB_OVERVIEW.md` — run-order table rewritten with CCP1 at step 0
+
+**Narrative summary (for paper introduction):**
+> CCP1 is the status quo. Every institution already runs it. CCP2 is the minimum-cost
+> instrument-ledger architecture. The delta CCP1→CCP2 is small. The AIM tests run against
+> CCP1 substrates all fail — including against the permutation table (the GL's best effort).
+> The same tests run against CCP2/CCP3 outputs succeed. The architecture that costs less also
+> answers more. Both measured empirically on public data.
+
+**Next session:**
+- `process_metrics.csv` repair (blocking all CCPs)
+- Then: design CCP1 GL-post step and permutation generator (can proceed in parallel with
+  `transIPID` fix once metrics substrate is repaired)
+
+---
+
+## 2026-11-04 Owner Decision Log — All Pre-Implementation Decisions Confirmed
+
+**What was done.**
+
+Owner confirmed all four pending decisions blocking implementation. No code changed. Two
+documents updated to record the confirmed values:
+- `docs/RESEARCH_OBJECTIVES.md` §7 — "Open Decisions" → "Decisions (confirmed 2026-11-04)"
+- `docs/TEST_DESIGN_PAPER_2.md` §4 — "Open decisions" → "Decisions (confirmed 2026-11-04)"
+
+**Decisions confirmed:**
+
+| Decision | Confirmed value |
+|----------|----------------|
+| AIM2–AIM5 acceptance thresholds | All proposed values accepted as-is (see tables in RESEARCH_OBJECTIVES.md §7 and TEST_DESIGN_PAPER_2.md §4) |
+| Longitudinal evaluation strategy | **7-window longitudinal** — train years 1–7, predict year 8; repeat for all 7 windows across FY03–FY16 |
+| AIM1 revision-suffix inclusion | **Include** — rationale (owner): in financial systems updates are new events; a PO revision is a new commitment act |
+| Surrogate key formula | **SHA256(VENDORID) mod 2^32** — confirmed, do not change after any split assignment is computed |
+
+**Effect on implementation:**
+
+- All thresholds are now pre-registered. Do not adjust after any test run.
+- AIM2 and AIM3 Python scripts must implement the 7-window loop, not a single split.
+- The CKB view schema must include `revision_suffix` as a distinct field.
+- The Scala CKB view must emit `vendorSurrogateKey` on every vendor-year row using SHA256 mod 2^32.
+
+**Next session:**
+
+CCP2 measurement substrate repair — fix `process_metrics.csv` emission so `records_read`,
+`bytes_written`, `wall_seconds`, and `peak_rss_bytes` are non-zero on every run. This is the
+only remaining blocker before any cost curve or Paper 2 work can produce valid evidence.
 
 ---
 
@@ -11,8 +148,8 @@ Updated 2026-11-03. This file is a concise state snapshot; use the linked design
 Documentation-only session. No Scala logic, Bash, Python, or data changed. Two tiny TODO comments added to dead Spark files flagging them for future removal.
 
 **Files created:**
-- `docs/RESEARCH_OBJECTIVES.md` — master map of all experiments across both papers: CCP1–CCP4 table, AIM0–AIM5 table, run order, open decisions, links to detail docs
-- `docs/TEST_DESIGN_PAPER_1.md` — Paper 1 cost-curve workload specifications (CCP1–CCP4) with per-workload steps, metrics, acceptance evidence shape, and blocking prerequisite (process_metrics.csv repair)
+- `docs/RESEARCH_OBJECTIVES.md` — master map of all experiments across both papers: CCP2–CCP5 table, AIM0–AIM5 table, run order, open decisions, links to detail docs
+- `docs/TEST_DESIGN_PAPER_1.md` — Paper 1 cost-curve workload specifications (CCP2–CCP5) with per-workload steps, metrics, acceptance evidence shape, and blocking prerequisite (process_metrics.csv repair)
 - `docs/TEST_DESIGN_PAPER_2.md` — Paper 2 AI model evidence tests (AIM0–AIM5): all original content updated with AIM IDs, new AIM1 section (non-injectivity count), fixed dangling references, expanded open-decisions table
 
 **Files retired (redirect stubs only):**
@@ -21,13 +158,13 @@ Documentation-only session. No Scala logic, Bash, Python, or data changed. Two t
 - `org-members/research/PAPER_02_NOTES.md` — content now in RESEARCH_OBJECTIVES.md and TEST_DESIGN_PAPER_2.md
 
 **Files updated (ledger-lab):**
-- `LEDGER_LAB_OVERVIEW.md` — AIM IDs added to test section headings and run-order table; CCP1 prerequisite row added; all links updated; footer dated
+- `LEDGER_LAB_OVERVIEW.md` — AIM IDs added to test section headings and run-order table; CCP2 prerequisite row added; all links updated; footer dated
 - `README.md` — line 16 now links to RESEARCH_OBJECTIVES.md, TEST_DESIGN_PAPER_1.md, and TEST_DESIGN_PAPER_2.md
-- `CONTRIBUTOR_ONBOARDING.md` — C1–C4 → CCP1–CCP4
-- `SESSION_HANDOFF.md` — C1–C4 → CCP1–CCP4 (bare references; historical quoted sentences unchanged)
+- `CONTRIBUTOR_ONBOARDING.md` — C1–C4 → CCP2–CCP5
+- `SESSION_HANDOFF.md` — C1–C4 → CCP2–CCP5 (bare references; historical quoted sentences unchanged)
 - `docs/paper2-tests-plan.md` — link to TEST_DESIGN_PAPERS_1_2.md updated to TEST_DESIGN_PAPER_2.md
 - `PROJECT_BRIEF.md` — C1–C4 annotated with `[now CCPx]` to preserve historical record
-- `docs/VERIFICATION_AUDIT_REGISTER.md`, `docs/RUNTIME_DATA_LAYOUT.md`, `docs/TDS_vs_IL_architecture.md`, `docs/DATA_ENHANCEMENT_PLAN.md`, `docs/BOB_METHOD_NOTE_CKB_EFFICIENCY.md`, `docs/AGENTIC_ARCHITECTURE_GATES.md`, `docs/VA_Data_Layouts_and_Specs.md` — C1–C4 → CCP1–CCP4
+- `docs/VERIFICATION_AUDIT_REGISTER.md`, `docs/RUNTIME_DATA_LAYOUT.md`, `docs/TDS_vs_IL_architecture.md`, `docs/DATA_ENHANCEMENT_PLAN.md`, `docs/BOB_METHOD_NOTE_CKB_EFFICIENCY.md`, `docs/AGENTIC_ARCHITECTURE_GATES.md`, `docs/VA_Data_Layouts_and_Specs.md` — C1–C4 → CCP2–CCP5
 
 **Files updated (org-members):**
 - `research/02-pre-hierarchy-event-repositories.md` — AIM2/AIM3/AIM4 labels added inline to Track B experiment descriptions; TEST_DESIGN_PAPERS_1_2.md links updated to TEST_DESIGN_PAPER_2.md
@@ -35,14 +172,14 @@ Documentation-only session. No Scala logic, Bash, Python, or data changed. Two t
 
 **Files updated (TDS-AI-Models):**
 - `02-concepts/L2-06-pre-hierarchy-events-and-ai.md` — AIM2–AIM4 label added; RESEARCH_OBJECTIVES.md footer note added
-- `02-concepts/L2-03-minimum-cost-curve.md` — CCP1–CCP4 label added; RESEARCH_OBJECTIVES.md footer note added
+- `02-concepts/L2-03-minimum-cost-curve.md` — CCP2–CCP5 label added; RESEARCH_OBJECTIVES.md footer note added
 
 **Scala files (dead Spark code only):**
 - `02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/spark/poVendorID.scala` — TODO comment added at line 1
 - `02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/spark/poToPayMatch.scala` — same
 
 **Decisions established this session:**
-- `CCP1–CCP4` and `AIM0–AIM5` are now the canonical test IDs used consistently across all three repositories.
+- `CCP2–CCP5` and `AIM0–AIM5` are now the canonical test IDs used consistently across all three repositories.
 - `RESEARCH_OBJECTIVES.md` is the single entry-point for a new contributor or reviewer to understand the full experimental programme.
 
 **Still pending (owner decisions required before any implementation):**
@@ -52,7 +189,7 @@ Documentation-only session. No Scala logic, Bash, Python, or data changed. Two t
 
 **Next session:**
 - Owner reviews RESEARCH_OBJECTIVES.md and TEST_DESIGN_PAPER_2.md Section 4; confirms or changes proposed threshold values
-- Then: CCP1 measurement substrate repair — fix `process_metrics.csv` emission so records_read, bytes_written, wall_seconds, peak_rss_bytes are non-zero on every run. This is the prerequisite blocking all Paper 1 cost points.
+- Then: CCP2 measurement substrate repair — fix `process_metrics.csv` emission so records_read, bytes_written, wall_seconds, peak_rss_bytes are non-zero on every run. This is the prerequisite blocking all Paper 1 cost points.
 
 ---
 
@@ -67,14 +204,14 @@ and `docs/paper2-tests-plan.md` (updated). No Scala, Bash, or Python changed. No
 **Key decisions made this session:**
 
 1. **Test ID scheme established.** Two prefixes, self-explanatory to new developers:
-   - `CCP1–CCP4` — **Cost Curve Point** for Paper 1. Each is a verified position on the
+   - `CCP2–CCP5` — **Cost Curve Point** for Paper 1. Each is a verified position on the
      minimum cost curve. CCP = Cost Curve Point.
    - `AIM0–AIM5` — **AI Model** evidence tests for Paper 2 on the open Virginia corpus.
      AIM = AI Model evidence test. Straight sequence, no letter suffixes.
      TA prefix reserved for Track A (insurance corpus) if needed.
 
 2. **`TEST_DESIGN_PAPERS_1_2.md` must be split** into two paper-specific files:
-   - `docs/TEST_DESIGN_PAPER_1.md` — CCP1–CCP4 workload definitions (does not yet exist)
+   - `docs/TEST_DESIGN_PAPER_1.md` — CCP2–CCP5 workload definitions (does not yet exist)
    - `docs/TEST_DESIGN_PAPER_2.md` — AIM0–AIM5 test specs (renamed from the current file)
    The current file covers only Paper 2 despite its title claiming both papers.
 
@@ -106,12 +243,12 @@ and `docs/paper2-tests-plan.md` (updated). No Scala, Bash, or Python changed. No
    The VA corpus needs `vendorSurrogateKey = hash(VENDORID)` added to every view record by
    the Scala pass so Python scripts get a neutral split key automatically.
 
-8. **Paper 1 has no test spec file.** `CONTRIBUTOR_ONBOARDING.md` defines CCP1–CCP4 in prose but
+8. **Paper 1 has no test spec file.** `CONTRIBUTOR_ONBOARDING.md` defines CCP2–CCP5 in prose but
    there is no `TEST_DESIGN_PAPER_1.md` with workload definitions, input snapshots, required
    metrics, and acceptance evidence parallel to the Paper 2 document.
 
 **Next session must complete (before any code):**
-- Create `docs/TEST_DESIGN_PAPER_1.md` (CCP1–CCP4 workload definitions)
+- Create `docs/TEST_DESIGN_PAPER_1.md` (CCP2–CCP5 workload definitions)
 - Rename and update `docs/TEST_DESIGN_PAPERS_1_2.md` → `docs/TEST_DESIGN_PAPER_2.md` (AIM IDs,
   add AIM1, fix dangling references)
 - Add redirect stub to the old filename
@@ -217,7 +354,7 @@ style used for Tests 2a, 2b, and 2c.
 3. **Agency name reconciliation** — prerequisite for Tests 2a and 3. `data/corpus_profile/agency_alias_candidates.csv`
    has 13 unmatched and 3 ambiguous names from the prior profiling pass.
 4. **Complete Zenodo upload** from a non-corporate network (unchanged from prior session).
-5. **Windows validation** of Scala pipeline smoke test before CCP1 replicates.
+5. **Windows validation** of Scala pipeline smoke test before CCP2 replicates.
 
 ---
 
@@ -521,7 +658,7 @@ disagreement per item, and say what you could not check.
 ### Decisions still open for the project owner
 
 - Whether to scrape or request bulk eVA vendor data (site terms not reviewed).
-- Acceptance thresholds for Tests 2-4 and the CCP1 replicate stability threshold (unchanged from `docs/TEST_DESIGN_PAPERS_1_2.md`).
+- Acceptance thresholds for Tests 2-4 and the CCP2 replicate stability threshold (unchanged from `docs/TEST_DESIGN_PAPERS_1_2.md`).
 - Whether Test 2 is dropped from Paper 2 if no payment-side vendor ID is found.
 - Whether to keep `data/VendorDownload/` and git-ignore it.
 
@@ -577,16 +714,16 @@ remains the next milestone.
 
 Paper 1's VA empirical contribution is the **Instrument Pivot Theorem demonstration** (§3.5):
 - Vendor ID = Instrument ID; LDGR = balance store $\mathcal{L}$; VendorMaster.csv = CAR.
-- Run CCP1 (Steps 2,3 — post only) → cost_surface.csv row: compute_s, storage_bytes, master_file_count=1.
-- Run CCP2 (Steps 2,3,5 — post + views) → cost_surface.csv row with additional master files.
-- Show CCP1→CCP2 delta = measured marginal cost of one reporting view.
+- Run CCP2 (Steps 2,3 — post only) → cost_surface.csv row: compute_s, storage_bytes, master_file_count=1.
+- Run CCP3 (Steps 2,3,5 — post + views) → cost_surface.csv row with additional master files.
+- Show CCP2→CCP3 delta = measured marginal cost of one reporting view.
 - Add a CAR attribute to VendorMaster (e.g. instNIGPClass from vendor_po_attributes_by_year.csv),
-  re-run CCP2 → zero new balance records, zero reconciliation cost. That ratio vs. key-embedded
+  re-run CCP3 → zero new balance records, zero reconciliation cost. That ratio vs. key-embedded
   alternative ($(1+v)^m - 1$ formula) is the empirical proof of the theorem.
 - Paper 1 conclusion explicitly calls for an agentic cost-curve sweep: agent changes ViewSpec,
   re-runs pipeline, observes costs. `run_cost_curve_sweep.sh` and `cost_surface.csv` are designed
   for exactly this.
-- **Three CCP1 replicates** are needed to establish measurement stability before CCP2.
+- **Three CCP2 replicates** are needed to establish measurement stability before CCP3.
 
 **What ledger-lab must produce for Paper 2 (Pre-Hierarchy Event Repositories).**
 
@@ -612,9 +749,9 @@ See PAPER_02_NOTES.md open question #2.
 
 1. **Confirm Windows pipeline compiles**: run `bash scripts/run_repo_fixture_smoke_test.sh --show-data`
    on this machine. sbt 1.x and Java 21 are confirmed available.
-2. **Run 3× CCP1 replicates** against full FY03 data in `data/VARawFiles/` to establish measurement
+2. **Run 3× CCP2 replicates** against full FY03 data in `data/VARawFiles/` to establish measurement
    stability and generate Paper 1 cost-surface baseline rows.
-3. **Run CCP2** (add Step 5) against same FY03 data → measure CCP1→CCP2 marginal cost.
+3. **Run CCP3** (add Step 5) against same FY03 data → measure CCP2→CCP3 marginal cost.
 4. **Build and run Paper 2 Test 1** (Python counting script, no ML) → produces the non-injectivity
    distribution table for Paper 2 §5.1b, and simultaneously checks if the PO→expenditure join key
    exists in practice.
@@ -644,7 +781,7 @@ See PAPER_02_NOTES.md open question #2.
 1. Run PO Attribute Extraction with `--by-year` flag to generate yearly PO attributes.
 2. Build the CAR Update Cycle (`car_detect_changes.py` and temporal as-of-date join in Scala `VendorMaster` and Python Step 5).
 3. Set up the PyTorch Dataset Loader and Model script on Windows to run Tests 2 and 3.
-4. Execute CCP1 replicates to establish hardware cost-surface baseline data.
+4. Execute CCP2 replicates to establish hardware cost-surface baseline data.
 
 ---
 
@@ -677,8 +814,8 @@ judged worthwhile. The developer (Kip) is stepping back from being the primary i
 2. Validate evidence schemas on failed/partial/no-op runs.
 3. Define machine-readable workload manifests (input snapshot hash, steps, materialization
    profile, code revision) so two runs are verifiably comparable.
-4. Define the CCP1 named workload and run three replicates to establish measurement stability.
-5. Define and run CCP2 (add Step 5). The CCP1→CCP2 delta is the measured marginal cost of reporting
+4. Define the CCP2 named workload and run three replicates to establish measurement stability.
+5. Define and run CCP3 (add Step 5). The CCP2→CCP3 delta is the measured marginal cost of reporting
    materialization.
 
 **What was not changed.** No financial code was modified. The audit register states are unchanged.

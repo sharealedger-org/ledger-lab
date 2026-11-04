@@ -1,4 +1,4 @@
-# Method Note: Token-Efficient Agentic Work on Large Financial Datasets
+﻿# Method Note: Token-Efficient Agentic Work on Large Financial Datasets
 
 > **Audience:** Bob (AI assistant) trainers and future Bob instances working in this repo.
 > **Purpose:** Establish the correct computational *method* for agentic work here — grounded
@@ -454,7 +454,7 @@ should read files at most once per task, extracting all needed information in th
 ```bash
 bash scripts/run_pipeline.sh \
   --inPath data/ --outPath data/output/ \
-  --years 03 --steps 2,3 --curve CCP1 --config "post-only"
+  --years 03 --steps 2,3 --curve CCP2 --config "post-only"
 ```
 
 Then read **only**:

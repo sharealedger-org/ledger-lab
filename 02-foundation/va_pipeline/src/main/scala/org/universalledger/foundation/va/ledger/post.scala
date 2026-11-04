@@ -32,6 +32,7 @@ import scala.io.Source
 object post {
   def apply(fileInLocation: String, fileOutLocation: String, filterYear: String = "",
             journalNameContains: String = ""): Unit = {
+    val t0 = System.currentTimeMillis()
 
     println("*" * 100)
     println("                                Post Module")
@@ -506,6 +507,18 @@ object post {
     //*****************************************************************************************
     // End of Program
     //*****************************************************************************************
+
+    // ── Emit structured metrics for process_metrics.csv (write_canonical_evidence.sh) ──────
+    val reportYear = if (filterYear.length == 4) filterYear else "20" + filterYear.takeRight(2)
+    val shortYr    = reportYear.takeRight(2)
+    val inFile     = new java.io.File(fileInLocation, s"SortedJEFY${shortYr}q1exp.csv")
+    val outFile    = new java.io.File(fileOutLocation, s"LDGR${reportYear}.csv")
+    val inBytes    = if (inFile.exists())  inFile.length()  else 0L
+    val outBytes   = if (outFile.exists()) outFile.length() else 0L
+    val elapsedS   = ((System.currentTimeMillis() - t0) / 1000).max(1)
+    val peakRss    = Runtime.getRuntime.totalMemory()
+    println(s"RESULT step=3 year=$reportYear rc=0 records_read=$totalJrnlRowsRead records_written=$totalLdgrRowsWritten elapsed_s=$elapsedS input_bytes=$inBytes output_bytes=$outBytes")
+    println(s"RESOURCE step=3 year=$reportYear peak_rss_bytes=$peakRss")
 
   }
 }
