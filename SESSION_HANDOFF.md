@@ -4,9 +4,302 @@ Updated 2026-11-04. This file is a concise state snapshot; use the linked design
 
 ---
 
+## 2026-11-04 Sub-Task 3c — Architecture documentation and strategy (Bob)
+
+**What was done.**
+
+A substantial design session produced four new/updated architecture documents and resolved
+all Sub-Task 2b owner decisions. No Scala code changed in this sub-task. No financial logic touched.
+
+**Files created:**
+- `docs/RESEARCH_STRATEGY.md` — new. The intellectual architecture of the full research
+  program: paper sequence as proof sequence, full-corpus commitment from paper 1 onward,
+  AIM family interaction pattern (model outputs feeding model inputs), drill-down thesis
+  (GL → instrument → vendor with no gaps), scope boundaries per paper, GenevaERS simulation
+  rule, what no one else is doing.
+
+**Files updated:**
+- `docs/CKB_LAYER_EXECUTION_MODEL.md` — two new sections added:
+  1. **Reference Joins and the Hash-Map Boundary** — Pattern 1 (hash-map, small tables),
+     Pattern 2 (sorted-merge join, large/unknown tables), GenevaERS simulation rule.
+  2. **CKB Delivery Groups and the Intra-Buffer Processing DAG** — Group 0 (state/reference,
+     lookup only), Group 1 (primary events, exits generate GenBuf records), Group 2+
+     (spawned records consumed by downstream views). Acyclicity constraint documented.
+     Paper sequence mapped to delivery groups (Papers 1+2 = Group 1 only).
+- `docs/GENEVAERS_CAPABILITY_GAP_REGISTER.md` — GERS-002: sorted-merge reference join for
+  large lookup tables. Current `loadVendorMap()` hash-map is architecturally incorrect for
+  full-corpus cost measurement.
+- `AGENTS.md` — Python section extended: GenevaERS simulation rule + owner-approval
+  requirement before writing any Python.
+- `docs/VERIFICATION_AUDIT_REGISTER.md` — Steps 2p/2m and Step 5v entries added.
+- `SESSION_HANDOFF.md` — Sub-Task 2b decisions closed; architecture gap noted; this entry.
+
+**Key decisions made this session:**
+1. Sub-Task 2b all closed: non-injectivity covered by Step 21; 7-window approved;
+   `vendorSurrogateKey` approved and implemented (SHA-256, 8 hex chars, View B); revision
+   count already in View C.
+2. Full-corpus commitment from paper 1 onward: fixture is CI only.
+3. AIM family is cross-model: AIM3 output feeds AIM2; AIM4 output feeds AIM2.
+4. Enriched view schemas before any Python: design first, implement in Scala, run once.
+5. Delivery group DAG governs view design: paper 2 views are Group 1 consumers only.
+
+**Next session — start here:**
+
+1. **Design enriched view schemas** — Views A–D against three questions each:
+   (a) minimum for paper 2 AIM model, (b) cross-model interaction features,
+   (c) extension point for papers 3–7. Frame: `docs/RESEARCH_STRATEGY.md` and
+   `docs/CKB_LAYER_EXECUTION_MODEL.md` §CKB Delivery Groups.
+2. **Implement enriched schemas in `CKBViews.scala`** after owner reviews design.
+3. **Run full corpus** — after schemas final; one run produces permanent view tables.
+4. **Python fitting scripts** — owner approval required; AIM5 first (unblocks AIM2);
+   then AIM3, AIM4, AIM2. 7-window longitudinal split throughout.
+5. **`write_canonical_evidence.sh`** — add `append_process` for steps 2p, 2m, 5v before
+   any CCP2/CCP3 replicate counts as a valid measured run.
+
+**New — read first for strategic context:** [`docs/RESEARCH_STRATEGY.md`](docs/RESEARCH_STRATEGY.md)
+— the intellectual architecture of the full paper series: proof sequence, full-corpus commitment,
+AIM family interaction pattern, drill-down thesis, and scope boundaries per paper.
+
+---
+
+## 2026-11-04 Sub-Task 3 — Step 5v: CKB Views (Bob)
+
+**What was done.**
+
+Implemented Step 5v (`CKBViews`) — the CCP3 extract-time summarization pass.
+Sub-Tasks 1, 2, and 3 are now all complete.
+
+**Files created:**
+- `02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/ledger/CKBViews.scala`
+  — New Scala object. Reads all `SortedJEFY*.csv` files (39-field Transaction rows) in a single
+  pass. Routes each record to four bounded aggregation maps keyed on declared grouping keys:
+  - View A (`view_monthly_order_volume.csv`): `COMMITMENT` debit rows → `(fiscal_period, nigp_class_3digit)` → po_line_count, total_committed_amount
+  - View B (`view_vendor_year_survival.csv`): `COMMITMENT` debit rows → `(vendor_id, fiscal_year)` → first_order_year, present_next_year, total_amount, po_count
+  - View C (`view_agency_year_commodity_mix.csv`): `COMMITMENT` debit rows → `(agency, fiscal_year, nigp_class_3digit)` → po_count, total_committed_amount, revision_count (commitmentID contains "-V")
+  - View D (`view_agency_year_payment_totals.csv`): non-`COMMITMENT` debit rows → `(agency, fiscal_year)` → total_payment_amount, payment_count
+  - Writes all four CSV files to `outPath`. Memory contract: O(distinct keys per view).
+  - Emits `RESULT step=5v` and `RESOURCE step=5v` log lines.
+- `02-foundation/va_pipeline/src/test/scala/org/universalledger/foundation/va/ledger/CKBViewsSpec.scala`
+  — New: 8 unit tests covering: View A COMMITMENT debit accumulation, View B present_next_year flag,
+    View C revision detection, View D non-COMMITMENT isolation, all-files output, metric emission,
+    date format handling (YYYY/MM/DD and MM/DD/YYYY), year-filter isolation.
+
+**Files changed:**
+- `02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/ledger/LedgerApp.scala`
+  — Added `case "5v"` → `CKBViews(params + ("inPath" -> outPath, ...))` dispatch entry.
+  — Added `5v = CKBViews` to usage help.
+- `docs/paper2-tests-plan.md` — Sub-Task 3 todo items marked complete; status updated.
+
+**Validation:**
+- `sbt compile` — clean (1 pre-existing deprecation warning, unchanged)
+- `sbt "testOnly org.universalledger.foundation.va.*"` — 35/35 passed (27 prior + 8 new)
+
+**Architecture gate compliance:**
+- Workload declared before coding (workload declaration in CKBViews.scala file header and in this
+  handoff entry above).
+- Reads `SortedJEFY*.csv` — the declared CKB stream output from Step 2/2m. Not a raw source scan.
+- Four in-memory aggregation maps; no `toList` on source rows; source is streamed line-by-line.
+- Analytical outputs (not canonical state, not SJE, no balancing required).
+- Step ID `5v` does not collide with existing steps (2, 2p, 2m, 3, 4, 5, 6, 7, 8, 9, 12, 20, 21).
+- No Python or Bash financial logic introduced.
+
+**Still open:**
+- Fixture smoke test: ✅ passed on Git Bash — `442 ledger rows, amount sum 0.00` (both base and `--with-po-fixture`).
+- Update `VERIFICATION_AUDIT_REGISTER.md` with Step 5v evidence.
+- Sub-Task 4: Python statistical fitting on the four view tables.
+
+---
+
 ## 2026-11-04 Next Session Start Point
 
-**Sub-Task 1 is complete. Sub-Task 2 was attempted and reverted. See architectural correction below.**
+**Sub-Tasks 1, 2, and 3 are complete.**
+
+- Sub-Task 1 (`transIPID` fix): complete — 2026-11-04.
+- Sub-Task 2 (PO SJE into sorted stream): complete — 2026-11-04.
+- Sub-Task 3 (CKB views, Step 5v): complete — 2026-11-04.
+
+**Sub-Task 3b — owner decisions resolved (2026-11-04):**
+
+All four Sub-Task 2b decisions from `docs/paper2-tests-plan.md` are now closed:
+1. **Non-injectivity count view** — No fifth CKB view needed. Step 21 (PermutationGenerator)
+   already produces `PERM_TBL20YY.csv`; the `permutation_rows ÷ GL balance rows` ratio is the
+   Theorem 1 cost-explosion number. The Python analysis step reads that output directly.
+2. **PO modification sequence** — Already implemented: View C `revision_count` field counts
+   `-Vn` suffixes. Closed.
+3. **7-window longitudinal evaluation (Test 4)** — Approved. Implement in the four Python
+   fitting scripts (Sub-Task 4): use 7 rolling train/test year-windows instead of a single split.
+4. **`vendorSurrogateKey = hash(VENDORID)`** — Approved. Must be added to `CKBViews.scala`
+   before Sub-Task 4 Python scripts are written (Scala produces it; Python consumes it).
+
+**Next tasks (in priority order):**
+
+1. **Update `VERIFICATION_AUDIT_REGISTER.md`** with Step 5v evidence. ✅ Done 2026-11-04.
+2. **Add `vendor_surrogate_key` to `CKBViews.scala`** ✅ Done 2026-11-04 — SHA-256 hash of
+   `VENDORID` (first 8 hex chars) on every View B row; 36/36 tests pass.
+3. **Design enriched view schemas before writing Python** — see architecture note below.
+4. **Sub-Task 4: Python statistical fitting** — four scripts, one per view table. Owner approval
+   required before writing any Python (AGENTS.md). Use 7-window longitudinal split.
+
+**Architecture gap — Step 2 VendorMaster hash-map (recorded 2026-11-04):**
+
+The current `loadVendorMap()` in `standardizeAndSort.scala` resolves `VENDOR_NAME → VENDORID`
+using an in-memory `HashMap`. This is an architectural shortcut that does not simulate GenevaERS:
+
+- GenevaERS resolves large reference tables via **sorted-merge join** (both inputs sorted on the
+  join key; O(1) memory per record; no hash map). The hash map is only correct for tables of
+  hundreds of rows.
+- Distinct vendor name strings across 14 years of APA expenditure data are likely in the hundreds
+  of thousands — not hash-map territory.
+- The hash-map approach hides a sort/materialization pass boundary from the cost-curve measurement.
+
+**Correct target architecture (two-pass):**
+- Pass 1: sort payment SJEs by `VENDOR_NAME`, sort VendorMaster by `VENDOR_NAME`, CKB merge →
+  assign `VENDORID`. Output: payment SJEs with `transIPID` populated.
+- Pass 2: re-sort by `VENDORID`, merge with PO SJEs → existing CKB instrument pass.
+
+Recorded in `docs/GENEVAERS_CAPABILITY_GAP_REGISTER.md` as GERS-002.
+Recorded in `docs/CKB_LAYER_EXECUTION_MODEL.md` §Reference Joins and the Hash-Map Boundary.
+
+The hash-map implementation remains valid at fixture scale. Full-corpus CCP2/CCP3 runs must
+replace it or mark the workload `blocked_by_engine_capability`.
+
+**TDS repo todo (paper narrative):**
+
+- In the CCP1 pipeline description (TDS-AI-Models), document Steps 20 and 21 as reading the same
+  input independently, with Step 21 (permutation table) described *before* Step 20 (GL post) to
+  match the real-world causal order: the source system holds the full instrument-level permutation
+  space and *collapses* it into a GL feed — the GL post step receives that collapsed output, it
+  does not produce the permutation space. The step numbers (20, 21) do not need to change;
+  only the narrative ordering in the paper matters.
+
+Smoke test is confirmed passing on Git Bash (no WSL required):
+- Base: `bash scripts/run_repo_fixture_smoke_test.sh --show-data` — 442 ledger rows, sum 0.00
+- PO path: `bash scripts/run_repo_fixture_smoke_test.sh --with-po-fixture --show-data` — same controls
+- Invoke via: `& "C:\Program Files\Git\bin\bash.exe" -c "bash scripts/run_repo_fixture_smoke_test.sh --show-data"`
+
+---
+
+## 2026-11-04 Windows Compatibility — Smoke Test Now Passes on Git Bash (Bob)
+
+**What was done.**
+
+Four script/build files fixed so the fixture smoke test runs to completion on Windows
+Git Bash without WSL. The financial pipeline itself was unchanged.
+
+**Files changed:**
+- `02-foundation/va_pipeline/build.sbt`
+  — Added `Compile / run / mainClass := Some("org.universalledger.foundation.va.ledger.LedgerApp")`.
+  In batch mode (`sbt -batch run ...`), sbt refuses to run when multiple main classes exist
+  and no run-scoped mainClass is set. This caused every pipeline step to fail with
+  "No main class detected."
+- `scripts/run_pipeline.sh`
+  — `tee /dev/stderr` replaced with `tee "$_tee_target"` throughout the three branches of
+  the sbt invocation block. `_tee_target` is set to `/dev/stderr` on Linux/macOS and to
+  `$(mktemp)` on `MINGW*`/`MSYS*`/`CYGWIN*` (Git Bash on Windows). The temp file is
+  deleted after capture. `/dev/stderr` does not exist in Git Bash; `tee` to it produces
+  an error that PowerShell treats as a fatal process failure.
+- `scripts/run_repo_fixture_smoke_test.sh`
+  — Added Windows-compatible Python3 guard: `type -P python3` resolves to the Windows
+  App Execution Alias stub (a `.exe` symlink target); `readlink -f` reveals the `.exe`
+  suffix and the guard skips execution. The `python3 --version` probe bypasses redirects
+  and writes to the console regardless of `2>/dev/null`.
+  — Added `OUTPUT_DIR` Windows fallback: after the pipeline completes, if
+  `$OUTPUT_DIR/SortedJEFY03q1exp.csv` is absent (because `commit_attempt` could not
+  create an NTFS symlink), the smoke test resolves `OUTPUT_DIR` to the latest
+  `output.generations/run_*` subdirectory.
+- `scripts/interpret_run.sh`
+  — Same `.exe`-stub guard for `python3`, using `readlink -f` on the `type -P` result.
+  Added awk fallback to parse manifest CSV fields when Python is unavailable.
+
+**Validation:**
+- `sbt "testOnly org.universalledger.foundation.va.*"` — 27/27 passed (unchanged)
+- `bash scripts/run_repo_fixture_smoke_test.sh --show-data` — exit 0
+  - Step 2: `rc=0 records_read=760 records_written=1520`
+  - Step 3: `rc=0 records_read=1520 records_written=442`
+  - `Fixture check passed: 442 ledger rows, amount sum 0.00`
+  - Interpretation report generated; `[INFO] python3 not found — skipping post-run metric evidence check.`
+
+**Architecture gate compliance:**
+- No Scala changed. No financial logic touched.
+- All fixes are Bash/build orchestration only.
+- On Linux/macOS, behavior is identical to before (same code paths taken).
+
+**Still open:**
+- `RESOURCE step=2 peak_rss_bytes=` is empty — the `grep` pattern in
+  `write_canonical_evidence.sh` extracts the value but Scala emits `peak_rss_bytes=<N>`
+  (from `Runtime.getRuntime.totalMemory()`). The evidence writer may be dropping it
+  during parsing. Pre-existing; not introduced this session.
+
+---
+
+## 2026-11-04 Sub-Task 2 — Steps 2p and 2m: PO SJE into the sorted stream (Bob)
+
+**What was done.**
+
+Implemented the two-step pattern described in the architectural correction below.
+No `transStandardize.scala` was touched. Both steps live in the live CKB path.
+
+**Files changed:**
+- `02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/ledger/standardizeAndSort.scala`
+  — Added `applyPO(params)` (Step 2p): reads a tab-delimited VA PO file
+    (`VA_opendata_FY20YY.txt`), streams rows through `SortEngine.externalSort` with
+    `SortedJE.sortspec` (the same 15-field posting key used by payment SJEs), emits two
+    balanced 39-field SJE rows per PO line
+    (`transBusinessEventCode="COMMITMENT"`, `transCommitmentID=poNumber`,
+    `transIPID=poVendorID`, `transTransAmount=price×qty` / `-price×qty`),
+    writes `SortedJEFY{yr}q{n}PO.csv`. Memory contract: O(chunkSize) via a custom
+    `Iterator[String]` — no `ArrayBuffer` of rows. RESULT/RESOURCE log lines emitted.
+  — Added `tryBigDecimal` and `makePORow` private helpers.
+  — Added block-comment at file top documenting PO column mapping.
+- `02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/ledger/LedgerApp.scala`
+  — Added `case "2p"` → `standardizeAndSort.applyPO(...)` dispatch entry.
+  — Added `case "2m"` → `runMerge(...)` dispatch entry.
+  — Added `runMerge` private method: calls `SortEngine.mergeSpills(Seq(paymentFile, poFile),
+    mergedFile, sortSpec)`; writes `SortedJEFY{yr}merged.csv`. Memory contract: O(k open
+    file handles). RESULT/RESOURCE log lines emitted.
+  — Updated usage help to document steps 2p, 2m, `--payment`, and `--po` parameters.
+  — `inputPOPath` in CLI mode now equals `inPath` (not `inPath + "poData/"`) so `--inPath`
+    can point directly to the PO file directory.
+- `02-foundation/va_pipeline/src/test/scala/org/universalledger/foundation/va/ledger/StandardizeAndSortPOSpec.scala`
+  — New: 6 unit tests covering: column count (39), debit+credit balance, transIPID from
+    VENDORID, transCommitmentID = PONUMBER, RESULT/RESOURCE metric emission, and Step 2m
+    sort-order preservation across merge.
+- `docs/paper2-tests-plan.md` — Sub-Task 2 todo items marked complete; status updated.
+
+**Validation:**
+- `sbt compile` — clean (1 pre-existing deprecation warning, unchanged)
+- `sbt "testOnly org.universalledger.foundation.va.ledger.StandardizeAndSortPOSpec"` — 6/6 passed
+- `sbt "testOnly org.universalledger.foundation.va.*"` — 27/27 passed (21 prior + 6 new)
+
+**Architecture gate compliance:**
+- Workload declared before coding.
+- `applyPO` is in `standardizeAndSort.scala` — the live Step 2 object, same CKB path as
+  payment SJEs, feeds `post.scala` via the same sorted file contract.
+- Memory contract: `externalSort` is O(chunkSize); `mergeSpills` is O(k open readers).
+  No `ArrayBuffer` of rows.
+- Same `SortedJE.sortspec` key used for both PO and payment SJEs — k-way merge produces a
+  single file in the correct instrument posting order for `post.scala`.
+- No Python or Bash financial logic introduced.
+- Step IDs `2p` and `2m` do not collide with existing steps (2,3,4,5,6,7,8,9,12,20,21).
+
+**Acceptance criteria met:**
+- PO SJE rows use `transBusinessEventCode="COMMITMENT"` and `transCommitmentID=poNumber`.
+- `transIPID` is populated from `VENDORID` (col 6), not `"0"`.
+- Debit + credit amounts cancel to 0.00 per journal group.
+- `SortedJEFY{yr}merged.csv` contains both event types in correct sort order.
+- 6/6 new tests pass; 27/27 full suite passes.
+
+**Still open (deferred):**
+- Fixture smoke test on merged stream: ✅ passed on Git Bash — `442 ledger rows, amount sum 0.00`.
+- Update `VERIFICATION_AUDIT_REGISTER.md` with Step 2p/2m evidence.
+- Sub-Task 3: CKB views (monthly order volume, vendor-year survival, agency-year commodity,
+  agency-year payments) — now unblocked by the merged stream.
+
+---
+
+## 2026-11-04 Next Session Start Point
+
+**Sub-Task 1 is complete. Sub-Task 2 is complete. See Sub-Task 3 design below.**
 
 Sub-Task 1 (`transIPID` fix) is done (2026-11-04).
 
@@ -24,25 +317,14 @@ does not feed `post.scala`. The live CKB path is:
 standardizeAndSort (Step 2)  →  SortedJEFY{yr}{suffix}.csv  →  post.scala (Step 3)
 ```
 
-Sub-Task 2 must be implemented in two declared steps:
+Sub-Task 2 is complete. The next task is Sub-Task 3 — CKB views.
 
-**Step 2p — PO standardize + sort** (new `type=PO` branch in `standardizeAndSort.scala`):
-- Reads a PO file (tab-delimited, same columns as `transStandardize.processPOs`).
-- Emits two balanced 39-field `Transaction` SJE rows per PO line:
-  debit: `transBusinessEventCode="COMMITMENT"`, `transCommitmentID=poNumber`, `transIPID=poVendorID`, `amount = price × qty`
-  credit: same fields, `amount = -(price × qty)`
-- Streams rows through `SortEngine.externalSort` with `SortedJE.sortspec` — **no accumulation**.
-- Writes `SortedJEFY{yr}q{n}PO.csv`.
-- Emits `RESULT step=2p` and `RESOURCE step=2p` log lines.
-
-**Step 2m — merge** (new dispatch entry in `LedgerApp`):
-- Calls `SortEngine.mergeSpills(Seq(paymentSortedJE, poSortedJE), mergedOutPath, sortSpec)`.
-- Writes `SortedJEFY{yr}merged.csv` — the declared input for `post.scala`.
-- No financial logic; pure sort-partition coordination. Bash orchestrator calls this after step 2 and step 2p.
-
-**Memory contract:** `externalSort` is O(chunkSize); `mergeSpills` is O(k open file handles). No `ArrayBuffer` of rows.
-
-**Workload declaration required** per `AGENTIC_ARCHITECTURE_GATES.md` §1 before any code is written.
+**Sub-Task 3 — CKB views** (now unblocked):
+- Add four bounded aggregation view outputs to the CKB pass (`post.scala` or a new step):
+  monthly order volume, vendor-year survival panel, agency-year commodity mix, agency-year
+  payment totals.
+- Workload declaration required per `AGENTIC_ARCHITECTURE_GATES.md` §1 before any code.
+- See `docs/paper2-tests-plan.md` §Sub-Task 3 for full specification.
 
 ---
 

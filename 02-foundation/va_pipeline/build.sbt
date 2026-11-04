@@ -6,6 +6,7 @@ lazy val root = (project in file("."))
     scalaVersion := "2.12.20",
     Compile / unmanagedSourceDirectories += baseDirectory.value / "../../04-engines/calculation_engines/src/main/scala",
     Compile / packageBin / mainClass := Some("org.universalledger.foundation.va.ledger.LedgerApp"),
+    Compile / run / mainClass        := Some("org.universalledger.foundation.va.ledger.LedgerApp"),
 
     exportJars := true,
 

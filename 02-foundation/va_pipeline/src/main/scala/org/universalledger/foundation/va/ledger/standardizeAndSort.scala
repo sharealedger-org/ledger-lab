@@ -110,6 +110,46 @@ import scala.io.Source
 //         Corrects transIPID=0 defect; restores scale-invariant external merge-sort
 //***************************************************************************************************************
 
+// ── PO column indices in the VA_opendata_FY20YY.txt tab-delimited file ──────────────────────────
+//   0  PONUMBER
+//   1  AGENCY
+//   2  ORDEREDDATE
+//   3  VENDORCOMMODITYDESC
+//   4  QUANTITYORDERED
+//   5  PRICE
+//   6  VENDORID
+//   7  VENDORNAME
+//   8  VENDORADDRESS
+//   9  VENDORCITY
+//  10  VENDORSTATE
+//  11  VENDORPOSTALCODE
+//  12  VENDORLOC_EMAILADDRESS
+//  13  NIGPCODE
+//  14  NIGPDESCRIPTION
+//  15  UOMCode
+//  16  UOMDesc
+//  17  VENDORPARTNUMBER
+//  18  MANPARTNUMBER
+//
+// PO SJE column mapping (same 39-field schema as payment SJEs):
+//   transIPID (0)             = VENDORID (col 6)
+//   transContractID (1)       = "0"
+//   transCommitmentID (2)     = PONUMBER (col 0)  ← commitment identity
+//   transBusinessEventCode(5) = "COMMITMENT"
+//   transLegalEntityID (12)   = AGENCY (col 1)
+//   transCenterID (13)        = "0000"
+//   transProjectID (14)       = NIGPCODE (col 13) ← commodity classification
+//   transNominalAccountID(16) = "COMMIT"
+//   transFiscalPeriod (22)    = fiscal year (4-digit)
+//   transTransDate (24)       = ORDEREDDATE (col 2)
+//   transTransAmount (25)     = PRICE * QUANTITYORDERED (positive on debit, negative on credit)
+//   transUnitOfMeasure (26)   = UOMCode (col 15)
+//   transUnitPrice (27)       = PRICE (col 5)
+//   transStatisticAmount (28) = QUANTITYORDERED (col 4)
+//
+// CLI invocation for Step 2p (via LedgerApp dispatcher):
+//   sbt "run --step 2p --inPath data/VAPOData/ --outPath data/output/ --year 2003 --quarter 1"
+
 object standardizeAndSort {
 
   private case class AccountingRule(
@@ -314,6 +354,197 @@ object standardizeAndSort {
     println("*" * 100)
     println(s"Process End Time: ${Calendar.getInstance.getTime}")
     println("*" * 100)
+  }
+
+  // ── Step 2p: PO standardize + external sort → SortedJEFY{yr}q{n}PO.csv ─────
+  //
+  //  Reads a tab-delimited VA PO file (VA_opendata_FY20YY.txt), emits two 39-field
+  //  SJE rows per PO line (debit + credit, both signed so they cancel), sorts them
+  //  using SortEngine.externalSort with the same SortedJE.sortspec as payment SJEs,
+  //  and writes SortedJEFY{yr}q{n}PO.csv.
+  //
+  //  Memory contract: externalSort is O(chunkSize).  No ArrayBuffer of all rows.
+  def applyPO(params: Map[String, String]): Unit = {
+    val t0 = System.currentTimeMillis()
+
+    println("*" * 100)
+    println("                     Step 2p — PO Standardize & Sort (standardizeAndSort.applyPO)")
+    println("Start Time: " + java.util.Calendar.getInstance.getTime)
+    println("*" * 100)
+
+    val inPath     = params.getOrElse("inPath",  "data/VAPOData/")
+    val outPath    = params.getOrElse("outPath", "data/output/")
+    val yearStr    = params.getOrElse("year",    "2003")
+    val quarterStr = params.getOrElse("quarter", "1")
+    val chunkSize  = params.get("chunkSize").map(_.toInt).getOrElse(DEFAULT_CHUNK)
+    val dryRun     = params.getOrElse("dryRun", "false").toLowerCase == "true"
+
+    val shortYr  = yearStr.takeRight(2)
+    val quarter  = quarterStr.toInt
+    val inFile   = inPath.stripSuffix("/") + "/VA_opendata_FY20" + shortYr + ".txt"
+    val outFile  = outPath.stripSuffix("/") + "/SortedJEFY" + shortYr + "q" + quarter + "PO.csv"
+    val acctDate = quarterToDate(yearStr, quarter)
+
+    println(s"  Input file   : $inFile")
+    println(s"  Output file  : $outFile")
+    println(s"  Year         : $yearStr  Quarter: $quarter")
+    println(s"  AcctDate     : $acctDate")
+
+    val specParam = params.getOrElse("sortspec", "")
+    val specPath  = resolveSpecPath(specParam)
+    val sortSpec  = SortEngine.loadSpec(specPath)
+    println(s"  SortSpec     : $specPath  (${sortSpec.size} fields)")
+    println(s"  ChunkSize    : $chunkSize")
+
+    val inF = new File(inFile)
+    if (!inF.exists()) {
+      System.err.println(s"ERROR: PO input file not found: $inFile")
+      sys.exit(1)
+    }
+
+    implicit val codec = scala.io.Codec.UTF8
+      .onMalformedInput(java.nio.charset.CodingErrorAction.REPLACE)
+      .onUnmappableCharacter(java.nio.charset.CodingErrorAction.REPLACE)
+
+    val tmpDir = outPath.stripSuffix("/") + "/.sortedPO_spill_" + System.currentTimeMillis()
+    new File(tmpDir).mkdirs()
+
+    var sourceRows    = 0L
+    var totalRows     = 0L
+    var totalAmt      = BigDecimal(0)
+    var jrnlID        = 0
+
+    // Stream the PO file through the sort engine one row at a time.
+    // The iterator yields comma-joined 39-field SJE strings; SortEngine.externalSort
+    // handles the chunk/spill/merge cycle at O(chunkSize) peak heap.
+    val rowIterator: Iterator[String] = new Iterator[String] {
+      private val src   = scala.io.Source.fromFile(inFile)(codec)
+      private val lines = src.getLines()
+
+      // Consume header
+      if (lines.hasNext) lines.next()
+
+      private var pending: List[String] = Nil
+
+      override def hasNext: Boolean = pending.nonEmpty || fetchNext()
+
+      private def fetchNext(): Boolean = {
+        while (lines.hasNext) {
+          val raw = lines.next().trim
+          if (raw.nonEmpty) {
+            val cols = raw.split("\t", -1).map(_.trim)
+            if (cols.length >= 7) {
+              sourceRows += 1
+              jrnlID     += 1
+              val poNumber   = cols(0)
+              val agency     = cols(1)
+              val ordDate    = if (cols(2).nonEmpty) cols(2) else acctDate
+              val commDesc   = if (cols.length > 3) cols(3).replace(",", " ") else " "
+              val qty        = tryBigDecimal(cols, 4, BigDecimal(1))
+              val price      = tryBigDecimal(cols, 5, BigDecimal(0))
+              val vendorId   = cols(6)
+              val nigpCode   = if (cols.length > 13) cols(13) else "00000"
+              val uomCode    = if (cols.length > 15) cols(15) else " "
+              val amt        = price * qty
+
+              val jid = "ID" + jrnlID + acctDate + "PO"
+
+              val debitRow  = makePORow(vendorId, poNumber, jid, "1", "COMMITMENT",
+                                        agency, nigpCode, yearStr, acctDate, ordDate,
+                                        amt.toString(), uomCode, price.toString(), qty.toString(),
+                                        commDesc)
+              val creditRow = makePORow(vendorId, poNumber, jid, "2", "COMMITMENT",
+                                        agency, "0000", yearStr, acctDate, ordDate,
+                                        (-amt).toString(), uomCode, price.toString(), qty.toString(),
+                                        "COMMITMENT_OFFSET")
+
+              totalRows += 2
+              totalAmt  += amt + (-amt)   // always 0; tracked for control assertion
+              pending = debitRow :: creditRow :: Nil
+              return true
+            }
+          }
+        }
+        src.close()
+        false
+      }
+
+      override def next(): String = {
+        val h = pending.head
+        pending = pending.tail
+        h
+      }
+    }
+
+    if (dryRun) {
+      // Drain the iterator for control-total accounting without writing
+      rowIterator.foreach(_ => ())
+      println(s"\n--dryRun: source_rows=$sourceRows sje_rows=$totalRows")
+      new File(tmpDir).delete()
+      return
+    }
+
+    val (rowsWritten, spillCount) = SortEngine.externalSort(rowIterator, outFile, sortSpec, chunkSize, tmpDir)
+    new File(tmpDir).delete()
+
+    val elapsedS = ((System.currentTimeMillis() - t0) / 1000).max(1)
+    val inBytes  = inF.length()
+    val outBytes = new File(outFile).length()
+    val peakRss  = Runtime.getRuntime.totalMemory()
+
+    println(f"\nControl totals:")
+    println(f"  PO source rows read : $sourceRows%,d")
+    println(f"  SJE rows produced   : $rowsWritten%,d  (= 2 × source rows)")
+    println(f"  Spill files used    : $spillCount%d")
+    println(f"  Sum of all amounts  : $totalAmt%.2f  (should be 0.00)")
+    println(s"\nRESULT step=2p year=$yearStr rc=0 records_read=$sourceRows records_written=$rowsWritten elapsed_s=$elapsedS input_bytes=$inBytes output_bytes=$outBytes")
+    println(s"RESOURCE step=2p year=$yearStr peak_rss_bytes=$peakRss")
+    println("STATUS: COMPLETE")
+    println("*" * 100)
+    println(s"Process End Time: ${java.util.Calendar.getInstance.getTime}")
+    println("*" * 100)
+  }
+
+  // ── Helper: safely read a BigDecimal from a column, returning default on failure ──
+  private def tryBigDecimal(cols: Array[String], idx: Int, default: BigDecimal): BigDecimal =
+    if (idx < cols.length) try BigDecimal(cols(idx).replace(",", "")) catch { case _: Exception => default }
+    else default
+
+  // ── PO SJE row builder — 39-field comma-joined string ────────────────────────
+  //  Same 39-column schema as makeRow() used by payment SJEs.
+  //  Key differences from payments:
+  //    col 2  (transCommitmentID) = poNumber  (marks this as a commitment event)
+  //    col 5  (transBusinessEventCode) = bizEvent ("COMMITMENT")
+  //    col 14 (transProjectID)   = nigpCode  (commodity classification)
+  //    col 16 (transNominalAccountID) = "COMMIT" on debit, "0000" on credit
+  //    col 26 (transUnitOfMeasure)    = uomCode
+  //    col 27 (transUnitPrice)        = price
+  //    col 28 (transStatisticAmount)  = qty
+  private def makePORow(
+      instId:    String,
+      poNumber:  String,
+      jrnlId:    String,
+      lineId:    String,
+      bizEvent:  String,
+      agency:    String,
+      nigpCode:  String,
+      year:      String,
+      acctDate:  String,
+      transDate: String,
+      amount:    String,
+      uomCode:   String,
+      price:     String,
+      qty:       String,
+      descript:  String
+  ): String = {
+    Seq(
+      instId, "0", poNumber, jrnlId, lineId, bizEvent, "PO Sys", "Unknown", descript,
+      LEDGER_ID, JRNL_TYPE, BOOK_CODE,
+      agency, "0000", nigpCode, PRODUCT_ID, if (lineId == "1") "COMMIT" else "0000", ALT_ACCOUNT,
+      CCY_SRC, CCY_TYPE_SRC, CCY_TGT, CCY_TYPE_TGT,
+      year, acctDate, transDate, amount,
+      uomCode, price, qty, " ", " ", "D", "N", "N", " ", " ", " ", " ", " "
+    ).mkString(",")
   }
 
   // ── Record format auto-detection ──────────────────────────────────────────

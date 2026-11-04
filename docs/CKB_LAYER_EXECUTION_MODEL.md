@@ -201,6 +201,95 @@ ordered perspective extract
 
 This is not automatically a new layer pass. It is a conditional materialization and sort boundary determined by data volume, grouping cardinality, output order, and the scale-invariant memory contract.
 
+## CKB Delivery Groups and the Intra-Buffer Processing DAG
+
+Within a single CKB pass, multiple entity types may be loaded into the buffer for the same
+instrument key. The order in which those entities arrive and are processed by views is not
+arbitrary — it forms a directed acyclic graph (DAG) where earlier groups produce generated
+records that later groups consume. This is the mechanism by which financial processes
+(reclass, FX, allocation, elimination) are chained inside a single CKB pass without
+intermediate files.
+
+### Delivery group model
+
+Every entity in the CKB buffer belongs to a numbered delivery group. Groups are processed
+in ascending order for each instrument key:
+
+```text
+Group 0  — state and reference entities (prior ledger state, lookup tables, rate tables)
+             Loaded first. Views do not select these directly — they are accessed via
+             lookup from exits. They provide the "what was true before today" context.
+
+Group 1  — primary event stream (today's ARE SJEs — the source of all new activity)
+             Views select these records and fire exits. Exits may generate new SJEs
+             into the Generated Transaction Buffer (GenBuf).
+
+Group 2  — first-generation spawned records (e.g. reclass SJEs generated from Group 1)
+             Views select GenBuf records delivered in Group 2 order and may generate
+             further records into GenBuf.
+
+Group 3+ — subsequent-generation spawned records (e.g. IUE SJEs generated from reclass,
+             GAAP reclass generated from IUE, allocation SJEs generated from Group 1, etc.)
+             Each group's views may read all prior groups' output and generate further records.
+```
+
+The break fires — and the terminal output stage writes — only after all delivery groups for
+the current instrument key have been fully processed. Every generated record remains in the
+buffer until the break.
+
+### The acyclicity constraint
+
+A view in Group N may read records from Groups 0 through N. It must not generate records
+that an earlier group's view would need to read. Violating this creates a processing loop
+that expands the buffer without bound.
+
+**The delivery group number is the topological sort position in the processing DAG.**
+Assigning a process to a group number is a declaration that it depends only on groups with
+lower numbers. This must be verified before any new process is added to an existing CKB pass.
+
+```text
+VALID:   Group 1 (reclass) → generates → Group 2 records
+         Group 2 (IUE) → reads Group 1 output, generates → Group 3 records
+         Group 3 (GAAP) → reads Groups 1+2 output, generates → Group 4 records
+
+INVALID: Group 3 generates a record that Group 1's view needs to read
+         (Group 1 has already fired — the record arrives too late and creates a loop)
+```
+
+### What is available at the instrument break
+
+When the break fires, the buffer contains:
+- All Group 0 state and reference data for this instrument
+- All Group 1 source event records for this instrument
+- All generated records from every downstream group (Groups 2+) for this instrument
+- Accumulated state from every view that ran during this instrument's processing window
+
+A write exit firing at the break has access to **all of the above simultaneously**. This is
+what makes break-time statistical computation powerful: the exit sees the complete analytical
+picture for the instrument — source events, spawned transactions, reference state, and all
+intermediate generated records — in a single computation, without any additional I/O.
+
+### Process hierarchy and the paper sequence
+
+The paper series maps naturally to the delivery group model:
+
+| Paper | Financial process | Delivery group position |
+|-------|------------------|------------------------|
+| 1, 2  | Source SJEs only (no spawned processes) | Group 1 only |
+| 3     | Allocation — reads Group 1, spawns allocation SJEs | Group 1 → Group 2 |
+| 4     | FX revaluation — reads Group 1 balances, spawns revaluation SJEs | Group 1 → Group 2 (or 3 if after allocation) |
+| 5     | Elimination — reads Groups 1–N, spawns elimination SJEs | Last group before terminal |
+| 6+    | Reclassification, consolidation, etc. | Assigned by dependency order |
+
+Papers 1 and 2 use only Group 1 (source events). The views designed for paper 2 are therefore
+Group 1 consumers. When paper 3 adds allocation as Group 2, the paper 2 views are unchanged —
+they still consume Group 1 and the allocation process adds Group 2 downstream of them.
+
+**View schema design implication:** Design paper 2 view schemas to consume Group 1 source
+events only. Do not assume availability of spawned records from Groups 2+. Leave the schema
+extensible so that future papers can add Group 2+ consumers without redesigning the Group 1
+views.
+
 ## Extract-Time Summarization
 
 CKB views can summarize while the ordered stream is being processed. The view allocates a bounded
@@ -233,6 +322,72 @@ The conditional sort in this technique has a different scope from the ARE sort: 
 reduced partial aggregates emitted by an overflowing view buffer. Its input is not today's raw
 transaction stream and not the full ledger history. A later sort may also substantiate a view for a
 downstream CKB section, but that sort is charged to that view's new order contract.
+
+## Reference Joins and the Hash-Map Boundary
+
+A CKB process often needs to resolve an attribute from a reference table — for example, resolving
+a vendor name to a vendor ID, assigning a canonical agency key from an agency name string, or
+looking up an allocation rate by rule version. There are two correct patterns, and the choice
+depends on the size of the reference table relative to the available memory contract:
+
+### Pattern 1 — Hash-map side-input (small reference table)
+
+When the reference table is bounded and small (hundreds to low thousands of rows), load it once
+into memory as a `HashMap` keyed on the lookup field before the stream begins. Every record in
+the stream resolves its attribute in O(1) time at zero marginal I/O cost.
+
+```text
+Reference table (e.g. ~350 agency name → agency key rows)
+        loaded once into HashMap[lookupKey → attribute]
+                |
+sorted SJE stream ──► for each record: map.get(lookupField) → resolved attribute
+                |
+        stream continues with attribute populated
+```
+
+**Memory contract:** proportional to the reference table size, not the stream size. Acceptable
+when the reference table is demonstrably bounded and fits within the declared process memory
+envelope.
+
+**Limit:** do not use this pattern when the reference table cardinality is unknown, unbounded,
+or potentially in the millions. A vendor name table across 14 years of expenditure data may
+contain hundreds of thousands of distinct strings — that is not a hash-map workload.
+
+### Pattern 2 — Sorted merge join (large or unbounded reference table)
+
+When the reference table is large, sort both the stream and the reference table on the same join
+key, then perform a CKB-style merge join in one pass. No hash map is loaded; both inputs advance
+in lockstep on the shared key.
+
+```text
+Stream sorted by VENDOR_NAME ──────────────────────────────┐
+                                                            ├──► CKB merge on VENDOR_NAME
+VendorMaster sorted by VENDOR_NAME (reference entity) ─────┘        → assign VENDORID per record
+                                                            │
+                                        output: stream with VENDORID populated
+                                                            │
+                                        re-sort by VENDORID for next CKB pass
+```
+
+This is an additional physical pass (two sorts instead of zero), but memory is bounded by one
+record from each input at a time — it is not proportional to either file's total size. The sort
+cost must be recorded as a measured pass boundary.
+
+**Use this pattern** whenever the reference table size is unknown at design time, may grow with
+corpus size, or is documented as large. Default to this pattern for any vendor, counterparty, or
+instrument reference that spans multiple fiscal years of source data.
+
+### The GenevaERS simulation rule
+
+In Scala prototype code, a `HashMap` side-input is a valid approximation for a small reference
+table. For a large reference table it is an architectural shortcut that does not simulate the
+GenevaERS sorted-merge join. Any `HashMap` lookup against a reference table of unknown or
+potentially large cardinality must be recorded in `GENEVAERS_CAPABILITY_GAP_REGISTER.md` as a
+deviation from the target architecture, not treated as a correct simulation.
+
+The current `VendorMaster` hash-map lookup in Step 2 (`standardizeAndSort`) is an example of
+this deviation — it works at fixture scale but must be replaced with a sorted-merge join pass
+before full-corpus cost measurements are valid.
 
 ## Prior-State Divisors
 

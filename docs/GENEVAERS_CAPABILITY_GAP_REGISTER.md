@@ -56,6 +56,78 @@ spill/materialization, collision/retry counts, and whether the capability introd
 pass. Do not include a helper implementation in a comparable cost curve unless the GenevaERS
 runtime enhancement is part of the declared engine configuration.
 
+## GERS-002: Sorted-Merge Reference Join for Large Lookup Tables
+
+**Status:** `candidate enhancement`
+
+**Requirement:** A GenevaERS process must be able to join a large reference table to a primary
+stream using a sorted-merge CKB pattern — both inputs sorted on the same join key, advancing in
+lockstep — rather than requiring a pre-loaded in-memory hash map. This is the correct pattern
+when the reference table cardinality is unknown, potentially in the millions, or may grow with
+corpus size.
+
+**Why it matters to Ledger Lab:** The current Scala Step 2 (`standardizeAndSort`) resolves
+`VENDOR_NAME → VENDORID` using a `HashMap` loaded from `VendorMaster.csv`. This is architecturally
+incorrect for full-corpus execution because:
+
+1. Distinct vendor name strings across 14 years of APA expenditure data may be in the hundreds of
+   thousands — a hash map of that size is not a GenevaERS-native pattern.
+2. The GenevaERS target architecture resolves reference attributes through sorted-merge join passes,
+   not in-memory maps. Using a hash map in the Scala prototype does not simulate GenevaERS cost.
+3. The measured pass count for the CCP2 cost curve must include the vendor-name resolution pass.
+   Hiding that pass inside a hash map understates the true sort/materialization cost.
+
+**Required execution pattern:**
+
+```text
+Pass 1 — vendor name resolution:
+  Stream (payment SJEs) sorted by VENDOR_NAME
+  VendorMaster sorted by VENDOR_NAME (reference entity)
+    → CKB merge on VENDOR_NAME → assign VENDORID
+    → unmatched records receive UNMATCHED_<hex8> key
+  Output: payment SJEs with VENDORID populated
+
+Pass 2 — CKB instrument pass:
+  Re-sort Pass 1 output by VENDORID
+  Merge with PO SJEs (already VENDORID-keyed)
+    → CKB processes both event types in instrument order
+```
+
+**Memory contract:** O(1) per record in both passes. No hash map. Sort cost is the dominant cost
+and must be measured as two separate sort/materialization boundaries in `process_metrics.csv`.
+
+**Execution phase:** Layer 01-transformation / Step 2 — after source standardization, before
+the CKB instrument pass. The name-resolution pass is a pre-CKB sort boundary.
+
+**Input contract:**
+- Payment SJE stream with `VENDOR_NAME` populated (col 0 or declared field)
+- VendorMaster reference file sorted by normalized `VENDOR_NAME`
+
+**Output contract:**
+- Payment SJE stream with `transIPID` (VENDORID) populated
+- `UNMATCHED_VENDORS.csv` control output for unresolved names
+- `RESULT step=2n` log line with matched/unmatched counts
+
+**Determinism:** Both inputs are immutable; output is deterministic given the same inputs.
+
+**Lineage:** Matched records carry the VendorMaster `instID` as `transIPID`. Unmatched records
+carry a declared `UNMATCHED_<hex8>` key derived from the name hash — reproducible on retry.
+
+**Ledger Lab validation contract:** A fixture with 5+ vendors, including one unmatched name,
+proves that VENDORID is correctly assigned, unmatched records are explicit, and the control
+total (matched + unmatched = total payment records) passes.
+
+**Cost evidence:** Record sort cost for Pass 1 (name sort), merge pass row count, matched/unmatched
+split, and re-sort cost for Pass 2 (VENDORID sort). Compare against the current hash-map
+implementation to quantify the architectural difference in the cost curve.
+
+**Current Scala approximation:** `loadVendorMap()` in `standardizeAndSort.scala` — valid at
+fixture scale (183 VendorMaster rows); not valid for full-corpus cost measurement.
+
+**Required before:** Full-corpus CCP2/CCP3 cost-curve runs can claim to simulate GenevaERS
+execution costs. The hash-map implementation must be replaced or the workload marked
+`blocked_by_engine_capability` for the sort-merge join capability.
+
 ## Boundary Rule
 
 When a required capability is absent:

@@ -13,6 +13,7 @@ package org.universalledger.foundation.va.ledger
 //
 //      Parameters:
 //        --step     N    Step to run: 2=transStandardize, 3=post,
+//                        5v=CKBViews (extract-time view aggregation, CCP3),
 //                        20=GLPost (CCP1), 21=PermutationGenerator (CCP1)
 //        --inPath   path Input data directory  (default: /VAdata/data/)
 //        --outPath  path Output data directory (default: /VAdata/data/)
@@ -77,7 +78,8 @@ object LedgerApp {
     val year        = params.getOrElse("year",    DefaultYear)
     val quarter     = params.getOrElse("quarter", DefaultQuarter)
     val POfileIn    = "VA_opendata_FY20" + year + ".txt"
-    val inputPOPath = inPath + "poData/"
+    // Step 2p reads PO files from --inPath directly (not a poData/ subdirectory)
+    val inputPOPath = inPath
 
     println(s"[CLI] step=$step  inPath=$inPath  outPath=$outPath  year=$year  quarter=$quarter")
     println("-" * 35)
@@ -148,17 +150,25 @@ object LedgerApp {
                inputPOPath: String, POfileIn: String, year: String = "",
                params: Map[String, String] = Map.empty): Unit = {
     step match {
-      // Step 2: standardize raw VA files + external merge-sort → SortedJE (Scala, Session 21)
-      // Replaces transStandardize (lost vendor identity) + sortJE (in-memory, not scale-invariant)
+      // Step 2: standardize raw VA payment files + external merge-sort → SortedJE
       case "2"  => standardizeAndSort(params + ("inPath" -> inPath, "outPath" -> outPath, "year" -> year))
-      case "3"  => post(outPath, outPath, year)   // input and output are the same location for posting
-      case "4"  => contraCreation(outPath)       // must run LAST — after all balance-updating processes
+
+      // Step 2p: standardize PO file + external sort → SortedJEFY{yr}q{n}PO.csv
+      // --inPath must point to the directory containing VA_opendata_FY20YY.txt
+      case "2p" => standardizeAndSort.applyPO(params + ("inPath" -> inputPOPath, "outPath" -> outPath, "year" -> year))
+
+      // Step 2m: k-way merge of payment SortedJE + PO SortedJE → SortedJEFY{yr}merged.csv
+      // Requires --payment (path to payment SortedJE file) and --po (path to PO SortedJE file).
+      // Defaults to the standard derived file names when not supplied.
+      case "2m" => runMerge(params + ("outPath" -> outPath, "year" -> year))
+
+      case "3"  => post(outPath, outPath, year)
+      case "4"  => contraCreation(outPath)
       case "5"  => dataAggregation(outPath, inPath + "ViewSpec.csv")
-                                                 // LDGR in outPath; ViewSpec + VendorMaster in inPath
-      case "6"  => financialAllocation(outPath, params.getOrElse("allocationRules", inPath))  // allocates overhead to receivers; posts allocation SJEs
-      case "7"  => consolidation(outPath)        // consolidates agencies; eliminates interagency transfers
-      case "8"  => forecastingBudgeting(outPath) // projects actuals to budget; produces variance report
-      case "9"  => arrangementReclass(outPath)   // reads/writes VendorMaster, VendorUpdate, LDGR files
+      case "6"  => financialAllocation(outPath, params.getOrElse("allocationRules", inPath))
+      case "7"  => consolidation(outPath)
+      case "8"  => forecastingBudgeting(outPath)
+      case "9"  => arrangementReclass(outPath)
       case "12" =>
         org.universalledger.engines.CurrencyRevaluation.run(
           new java.io.File(outPath, s"LDGR20${year}_OPENING.csv").getPath,
@@ -168,11 +178,77 @@ object LedgerApp {
           year,
           params.getOrElse("sortSpec", "../sort_specs/SortedJE.sortspec")
         )
+      // CCP3 step — read SortedJE output, produce four bounded aggregation view tables
+      case "5v" => CKBViews(params + ("inPath" -> outPath, "outPath" -> outPath, "year" -> year))
+
       // CCP1 baseline steps — read SortedJE output, produce GL balances and permutation table
       case "20" => GLPost(params + ("inPath" -> inPath, "outPath" -> outPath, "year" -> year))
       case "21" => PermutationGenerator(params + ("inPath" -> inPath, "outPath" -> outPath, "year" -> year))
       case _    => println(s"Step '$step' is not implemented.")
     }
+  }
+
+  // ── Step 2m: k-way merge of payment + PO sorted SJE files ────────────────
+  //
+  //  Pure sort-partition coordination: no financial logic.
+  //  Calls SortEngine.mergeSpills on two already-sorted files to produce a single
+  //  merged sorted file for post.scala.  Memory contract: O(k open file handles).
+  //
+  //  Params:
+  //    --payment  path to payment SortedJE file  (default: SortedJEFY{yr}q1exp.csv)
+  //    --po       path to PO SortedJE file        (default: SortedJEFY{yr}q1PO.csv)
+  //    --outPath  output directory
+  //    --year     4-digit year (used for default file name derivation)
+  private def runMerge(params: Map[String, String]): Unit = {
+    val t0      = System.currentTimeMillis()
+    val outPath = params.getOrElse("outPath", DefaultOutPath)
+    val yearStr = params.getOrElse("year", DefaultYear)
+    val shortYr = yearStr.takeRight(2)
+
+    val paymentFile = params.getOrElse("payment",
+      outPath.stripSuffix("/") + "/SortedJEFY" + shortYr + "q1exp.csv")
+    val poFile      = params.getOrElse("po",
+      outPath.stripSuffix("/") + "/SortedJEFY" + shortYr + "q1PO.csv")
+    val mergedFile  = outPath.stripSuffix("/") + "/SortedJEFY" + shortYr + "merged.csv"
+
+    println("*" * 100)
+    println("                     Step 2m — Merge Payment + PO SortedJE streams")
+    println("Start Time: " + java.util.Calendar.getInstance.getTime)
+    println("*" * 100)
+    println(s"  Payment file : $paymentFile")
+    println(s"  PO file      : $poFile")
+    println(s"  Merged output: $mergedFile")
+
+    val specParam = params.getOrElse("sortspec", "")
+    val specPath  = {
+      val candidates = if (specParam.nonEmpty) Seq(specParam) else Seq.empty
+      val defaults   = Seq("../sort_specs/SortedJE.sortspec", "../../sort_specs/SortedJE.sortspec")
+      (candidates ++ defaults).find(p => new java.io.File(p).exists())
+        .getOrElse(defaults.head)
+    }
+    val sortSpec = SortEngine.loadSpec(specPath)
+    println(s"  SortSpec     : $specPath  (${sortSpec.size} fields)")
+
+    Seq(paymentFile, poFile).foreach { f =>
+      if (!new java.io.File(f).exists()) {
+        System.err.println(s"ERROR: Merge input not found: $f")
+        sys.exit(1)
+      }
+    }
+
+    val rowsWritten = SortEngine.mergeSpills(Seq(paymentFile, poFile), mergedFile, sortSpec)
+
+    val elapsedS  = ((System.currentTimeMillis() - t0) / 1000).max(1)
+    val outBytes  = new java.io.File(mergedFile).length()
+    val peakRss   = Runtime.getRuntime.totalMemory()
+
+    println(f"\n  Merged rows written: $rowsWritten%,d")
+    println(s"\nRESULT step=2m year=$yearStr rc=0 records_read=0 records_written=$rowsWritten elapsed_s=$elapsedS input_bytes=0 output_bytes=$outBytes")
+    println(s"RESOURCE step=2m year=$yearStr peak_rss_bytes=$peakRss")
+    println("STATUS: COMPLETE")
+    println("*" * 100)
+    println(s"Process End Time: ${java.util.Calendar.getInstance.getTime}")
+    println("*" * 100)
   }
 
   // ── usage help ────────────────────────────────────────────────────────────
@@ -181,15 +257,23 @@ object LedgerApp {
     println("USAGE (CLI mode):")
     println("  sbt \"run --step <N> [--inPath <path>] [--outPath <path>] [--vendormaster <path>] [--year <YYYY>] [--quarter <Q>] [--type <E|R>]\"")
     println("")
-    println("  --step         N     Required. 2=standardizeAndSort, 3=post, 4=contraCreation, 5=dataAggregation,")
-    println("                                 6=financialAllocation, 7=consolidation, 8=forecastingBudgeting, 9=arrangementReclass, 12=currencyRevaluation,")
-    println("                                 20=GLPost (CCP1 GL baseline), 21=PermutationGenerator (CCP1 permutation table)")
+    println("  --step         N     Required.")
+    println("                         2   = standardizeAndSort (payment files → SortedJEFY*.csv)")
+    println("                         2p  = PO standardize+sort (VA_opendata_FY20YY.txt → SortedJEFY*PO.csv)")
+    println("                         2m  = merge payment + PO SortedJE → SortedJEFY*merged.csv")
+    println("                         3   = post, 4=contraCreation, 5=dataAggregation,")
+    println("                         5v  = CKBViews (CCP3 extract-time view aggregation)")
+    println("                         6   = financialAllocation, 7=consolidation, 8=forecastingBudgeting,")
+    println("                         9   = arrangementReclass, 12=currencyRevaluation,")
+    println("                         20  = GLPost (CCP1 GL baseline), 21=PermutationGenerator (CCP1)")
     println(s"  --inPath       path  Optional. Raw file directory.  Default: $DefaultInPath")
     println(s"  --outPath      path  Optional. Output directory.    Default: $DefaultOutPath")
     println( "  --vendormaster path  Optional. VendorMaster CSV.    Default: data/VendorMaster_full.csv")
     println(s"  --year         YYYY  Optional. 4-digit fiscal year. Default: 20$DefaultYear")
     println(s"  --quarter      Q     Optional. 1-4=expense, 5=revenue. Default: $DefaultQuarter")
     println( "  --type         E|R   Optional. E=Expense, R=Revenue.  Default: E")
+    println( "  --payment      path  Optional (step 2m). Payment SortedJE file.")
+    println( "  --po           path  Optional (step 2m). PO SortedJE file.")
     println("")
     println("USAGE (interactive mode):")
     println("  sbt run         (no arguments)")

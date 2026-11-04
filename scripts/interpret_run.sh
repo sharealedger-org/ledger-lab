@@ -43,8 +43,18 @@ start_time=""
 end_time=""
 wall_seconds=""
 git_revision=""
+# Detect a real python3 binary (not the Windows App Execution Alias .exe stub).
+# Resolve symlinks: the alias is a .exe at the readlink-resolved target.
+_py3_interp=""
+_py3_interp=$(type -P python3 2>/dev/null || true)
+if [[ -n "$_py3_interp" ]]; then
+  _py3_resolved=$(readlink -f "$_py3_interp" 2>/dev/null || echo "$_py3_interp")
+  case "$_py3_resolved" in *.exe) _py3_interp="" ;; esac
+fi
+
 if [[ -f "$MANIFEST" ]]; then
-  manifest_values="$(python3 - "$MANIFEST" <<'PY'
+  if [[ -n "$_py3_interp" ]]; then
+    manifest_values="$(python3 - "$MANIFEST" <<'PY'
 import csv
 import sys
 
@@ -55,7 +65,12 @@ fields = ("run_id", "point_id", "curve", "git_revision", "start_time", "end_time
 print("\t".join(row.get(field, "") for field in fields))
 PY
 )"
-  IFS=$'\t' read -r run_id point_id curve git_revision start_time end_time wall_seconds run_status <<< "$manifest_values"
+    IFS=$'\t' read -r run_id point_id curve git_revision start_time end_time wall_seconds run_status <<< "$manifest_values"
+  else
+    # Fallback: parse the manifest CSV with awk when python3 is unavailable.
+    manifest_values="$(awk -F',' 'NR==2 { print $1"\t"$2"\t"$3"\t"$4"\t"$5"\t"$6"\t"$7"\t"$8 }' "$MANIFEST")"
+    IFS=$'\t' read -r run_id point_id curve git_revision start_time end_time wall_seconds run_status <<< "$manifest_values"
+  fi
   [[ -n "$run_id" ]] || run_id="unknown"
   [[ -n "$run_status" ]] || run_status="partial"
   config="${point_id#*-}"

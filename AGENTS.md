@@ -49,6 +49,17 @@ Python is not acceptable for mainline financial flow. It may be used only for:
 
 Python must not read source transactions and perform accounting, posting, CKB, step-up, calculation-engine, or perspective-processing work in place of Scala. A Python implementation of an engine invalidates the cost experiment because it measures a different substrate.
 
+**GenevaERS simulation rule:** This codebase simulates a GenevaERS production deployment where
+Scala = GenevaERS (the high-efficiency mainline engine). Before writing any Python, the agent
+must ask: "could this work be done in Scala (i.e. GenevaERS) instead?" The goal is to push as
+much computation as possible into the Scala/GenevaERS layer before falling back to Python. Python
+is the last resort for work that is genuinely post-engine (statistical fitting on bounded summary
+tables), not the first choice for any analytical task.
+
+**Owner approval required before writing Python:** The agent must describe the proposed Python
+work and explicitly receive owner approval before writing any new Python script or adding Python
+logic to an existing script. Do not write Python code speculatively and ask for review afterward.
+
 ## Measurement Integrity
 
 - Do not include code-generation speed in engine design or cost-curve reasoning.

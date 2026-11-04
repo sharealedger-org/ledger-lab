@@ -124,6 +124,17 @@ bash "$REPO_ROOT/scripts/run_pipeline.sh" \
   --profile "$PROFILE" \
   --materialization "$MATERIALIZATION"
 
+# On Windows Git Bash, the commit_attempt symlink creation may fail (NTFS symlinks
+# require Developer Mode or admin rights).  Resolve OUTPUT_DIR to the actual
+# generation directory (latest run subdirectory) if it is not already a symlink
+# or a directory containing the expected output file directly.
+if [[ ! -f "$OUTPUT_DIR/SortedJEFY03q1exp.csv" ]]; then
+  GENERATION_LATEST=$(ls -td "${OUTPUT_DIR}.generations"/run_* 2>/dev/null | head -1)
+  if [[ -n "$GENERATION_LATEST" && -d "$GENERATION_LATEST" ]]; then
+    OUTPUT_DIR="$GENERATION_LATEST"
+  fi
+fi
+
 SORTED_FILE="$OUTPUT_DIR/SortedJEFY03q1exp.csv"
 LEDGER_FILE="$OUTPUT_DIR/LDGR2003.csv"
 
@@ -151,6 +162,18 @@ awk -F, '
   }
 ' "$LEDGER_FILE"
 
+# Post-run Python evidence check — skip gracefully if python3 is not available.
+# On Windows Git Bash, the python3 App Execution Alias is a .exe redirector that
+# bypasses Bash redirects and writes "Python was not found" to the console.
+# Guard: only run if the resolved path does NOT end in .exe (i.e., it is a real binary).
+_py3=""
+_py3=$(type -P python3 2>/dev/null || true)
+# Resolve symlinks: the Windows App Execution Alias is a .exe at the resolved target.
+if [[ -n "$_py3" ]]; then
+  _py3_resolved=$(readlink -f "$_py3" 2>/dev/null || echo "$_py3")
+  case "$_py3_resolved" in *.exe) _py3="" ;; esac
+fi
+if [[ -n "$_py3" ]]; then
 python3 - "$OUTPUT_DIR" <<'PY'
 import csv
 import re
@@ -207,6 +230,9 @@ assert re.search(
 )
 print("Metric checks passed: process rows, byte counts, manifest interpretation")
 PY
+else
+  echo "[INFO] python3 not found — skipping post-run metric evidence check."
+fi
 
 if [[ "$SHOW_RESULTS" -eq 1 ]]; then
   bash "$SCRIPT_DIR/show_repo_fixture_results.sh" "$OUTPUT_DIR" \

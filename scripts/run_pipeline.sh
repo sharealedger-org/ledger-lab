@@ -279,9 +279,19 @@ run_step() {
   local start_epoch
   start_epoch=$(date +%s)
 
-  # Capture output while still streaming it to terminal
+  # Capture output while still streaming it to terminal.
+  # On Windows Git Bash (uname -s = MINGW*), /dev/stderr does not exist —
+  # use a temp file for tee so the output is still captured in $out.
   local out
   local time_mode=""
+  local _tee_target
+  local _uname
+  _uname=$(uname -s 2>/dev/null)
+  if [[ "$_uname" == MINGW* || "$_uname" == MSYS* || "$_uname" == CYGWIN* ]]; then
+    _tee_target=$(mktemp)
+  else
+    _tee_target=/dev/stderr
+  fi
   if [[ "$(uname -s 2>/dev/null)" == "Darwin" && -x /usr/bin/time ]]; then
     time_mode="macos"
   elif /usr/bin/time --version >/dev/null 2>&1; then
@@ -290,16 +300,18 @@ run_step() {
   if [[ "$time_mode" == "macos" ]]; then
     out=$(cd "$SBT_PROJECT" && /usr/bin/time -l sbt -batch \
       "run --step $step --inPath $IN_PATH --outPath $OUT_PATH --year $year --quarter $quarter$vm_arg$allocation_rules_arg$fx_args" \
-      2>&1 | tee /dev/stderr)
+      2>&1 | tee "$_tee_target")
   elif [[ "$time_mode" == "gnu" ]]; then
     out=$(cd "$SBT_PROJECT" && /usr/bin/time -v sbt -batch \
       "run --step $step --inPath $IN_PATH --outPath $OUT_PATH --year $year --quarter $quarter$allocation_rules_arg$fx_args" \
-      2>&1 | tee /dev/stderr)
+      2>&1 | tee "$_tee_target")
   else
     out=$(cd "$SBT_PROJECT" && sbt -batch \
       "run --step $step --inPath $IN_PATH --outPath $OUT_PATH --year $year --quarter $quarter$vm_arg$allocation_rules_arg$fx_args" \
-      2>&1 | tee /dev/stderr)
+      2>&1 | tee "$_tee_target")
   fi
+  # Clean up temp tee file if we used one (non-stderr path)
+  [[ "$_tee_target" != /dev/stderr ]] && rm -f "$_tee_target"
 
   local rc=$?
   local end_epoch

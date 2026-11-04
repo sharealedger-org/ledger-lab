@@ -202,3 +202,33 @@ All five findings from this audit session are resolved or closed:
 
 **Remaining CCP1 gate requirement:** Steps 20/21 must reach `partially_verified`. The only outstanding gate item is a first run against real corpus data to confirm non-zero output and emit non-empty `process_metrics.csv` rows for steps 20 and 21.
 
+
+## 2026-11-04 Steps 2p and 2m — PO SJE standardisation and merge (Bob)
+
+Scope: Sub-Task 2 — bringing PO commitment events into the sorted SJE stream. Does not change the payment standardisation path or Step 3 posting behaviour.
+
+| Claim | State | Evidence | Remaining gap |
+|---|---|---|---|
+| `standardizeAndSort.applyPO` (Step 2p) reads `VA_opendata_FY*.txt`, emits 2 × 39-field balanced SJE rows per PO line with `transBusinessEventCode="COMMITMENT"`, `transCommitmentID=poNumber`, `transIPID=poVendorID` | `partially_verified` | `StandardizeAndSortPOSpec` 6/6 pass: row count (2 per source), debit/credit balance, `transIPID` from VENDORID, `transCommitmentID` from PONUMBER, RESULT/RESOURCE emission, merge row count; fixture smoke test `442 ledger rows, amount sum 0.00` | No full-corpus PO run; balance verified at fixture scale only; `transIPID` non-zero confirmed by unit test but not by real-data run |
+| Step 2m (`LedgerApp.runMerge`) merges payment and PO sorted partitions in declared sort order and writes `SortedJEFY{yr}merged.csv` | `partially_verified` | `StandardizeAndSortPOSpec` merge test: 4 rows written from 2+2 payment/PO inputs; step dispatch wired via `case "2m"` | No adversarial sort-order or multi-spill merge test; real-corpus merge not yet run |
+| Fixture smoke test passes after Steps 2p and 2m are added to the pipeline | `verified` | `bash scripts/run_repo_fixture_smoke_test.sh --with-po-fixture --show-data` — `442 ledger rows, amount sum 0.00` on Git Bash (Windows); same result as base fixture | PO path adds commitment rows to stream; ledger control totals unchanged |
+| RESULT/RESOURCE log lines are emitted for both steps | `verified` | `StandardizeAndSortPOSpec` test 5 captures stdout and asserts `RESULT step=2p` and `RESOURCE step=2p`; Step 2m emits `RESULT step=2m` confirmed in test output | `write_canonical_evidence.sh` not yet extended with `append_process` cases for steps 2p and 2m |
+
+**Remaining gate:** `write_canonical_evidence.sh` needs `append_process` + `append_partition` entries for steps 2p and 2m before any CCP2/CCP3 replicate counts as a valid measured run. Real-corpus PO run required to confirm non-zero commitment row counts and balance controls.
+
+## 2026-11-04 Step 5v — CKB Views extract-time summarisation (Bob)
+
+Scope: Sub-Task 3 — CCP3 extract-time summarisation pass. Reads the CKB sorted SJE stream and produces four bounded analytical view tables plus `vendor_surrogate_key` on View B. Does not change canonical ledger state or Step 3 posting.
+
+| Claim | State | Evidence | Remaining gap |
+|---|---|---|---|
+| `CKBViews` (Step 5v) reads all `SortedJEFY*.csv` files in one pass and routes COMMITMENT debit rows to Views A/B/C and non-COMMITMENT debit rows to View D | `partially_verified` | `CKBViewsSpec` 9/9 pass (8 original + 1 new surrogate-key test); fixture smoke test `442 ledger rows, amount sum 0.00` | No real-corpus run; view totals not cross-checked against `vendor_po_attributes_by_year.csv` or APA corpus |
+| View A (`view_monthly_order_volume.csv`) schema: `fiscal_period, nigp_class_3digit, po_line_count, total_committed_amount` | `verified` | `CKBViewsSpec` Test 1: two fiscal periods from three rows (credit excluded); amounts match | - |
+| View B (`view_vendor_year_survival.csv`) schema: `vendor_id, vendor_surrogate_key, fiscal_year, first_order_year, present_next_year, total_amount, po_count` | `verified` | `CKBViewsSpec` Tests 2 and 2b: `present_next_year` flag; surrogate key 8-char hex, deterministic, distinct across vendors; column indices validated in test assertions | - |
+| View C (`view_agency_year_commodity_mix.csv`) schema: `agency, fiscal_year, nigp_class_3digit, po_count, total_committed_amount, revision_count` | `verified` | `CKBViewsSpec` Test 3: original and `-V2` revision detected; `revision_count=1`, `po_count=2` | - |
+| View D (`view_agency_year_payment_totals.csv`) schema: `agency, fiscal_year, total_payment_amount, payment_count` | `verified` | `CKBViewsSpec` Test 4: COMMITMENT row excluded; payment debit accumulated; credit excluded | - |
+| `vendor_surrogate_key` on View B is `SHA-256(vendor_id)` first 8 hex chars, semantically neutral, suitable for `mod 5` train/validate/test splits | `verified` | `CKBViewsSpec` Test 2b: format `[0-9a-f]{8}`, matches `CKBViews.vendorSurrogateKey("v001")` directly, distinct for `v001`/`v002`; `java.security.MessageDigest` SHA-256, deterministic across JVM runs | Collision probability at fixture scale (2 vendors) negligible; not tested at 65K-vendor corpus scale |
+| RESULT/RESOURCE log lines emitted for Step 5v | `verified` | `CKBViewsSpec` Test 6 captures stdout and asserts `RESULT step=5v` and `RESOURCE step=5v` | `write_canonical_evidence.sh` not yet extended with `append_process` case for step 5v |
+| Memory contract O(distinct keys per view) — no full-source ArrayBuffer | `design_only` | Code inspection: four `mutable.HashMap` accumulators; `getOrElseUpdate` pattern; source streamed line-by-line via `Source.getLines()`; no `toList` on source | Not measured at corpus scale; if heap exhausted, declared fix is lower `chunkSize` or add spill-to-file analogous to SortEngine |
+
+**Remaining gate:** `write_canonical_evidence.sh` needs an `append_process` case for step 5v before any CCP3 replicate counts as a valid measured run. Real-corpus run required; view totals should be cross-checked against `vendor_po_attributes_by_year.csv` and APA agency totals for sanity.
