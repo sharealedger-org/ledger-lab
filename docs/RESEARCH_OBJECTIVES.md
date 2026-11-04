@@ -125,30 +125,48 @@ to meet them on the CCP1 substrate.
 
 ## 6 — Run Order
 
+### Conservative staged sequence (approved 2026-11-04)
+
+The full-corpus run is expensive and runs once. Work proceeds in four stages so that model
+code correctness and directional results are confirmed before any 14-year commitment.
+
 ```
-CCP1  ──► AIM1 variants (vs GL + vs permutation table)  [all miss — Paper 2 evidence]
-      │
-      └──► permutation table size recorded               [Paper 1 cost explosion evidence]
+Stage 1 — No corpus run needed
+  AIM5  reads agency_alias_candidates.csv (already exists)
+        produces agency_reconciliation_table.csv
+        unblocks AIM2 and CCP5
 
-CCP2  ──► [instrument ledger valid]
-      │
-      └──► AIM1 (vs instrument ledger)  ──►  AIM3
-                                        └──►  AIM4
+Stage 2 — 1-year validation run (FY2003 only)
+  Pipeline correctness gate: confirm all view files produced,
+  process_metrics.csv rows non-zero, ledger controls pass.
+  Run AIM1/3/4 fitting scripts against 1-year outputs:
+    confirm code executes and produces plausible output
+    (not against locked thresholds — 1 year is too little data)
 
-CCP3  ──► AIM2 (requires AIM5 first)
-      │
-      └──► AIM5  ──►  AIM2
+Stage 3 — 3–5 year slice (FY2003–FY2007)
+  Run pipeline on 5 years.
+  Run AIM1, AIM3, AIM4 against slice outputs:
+    AIM1: verify non-zero non-injectivity gap (directional check)
+    AIM3: C-stat computable and > 0 (survival signal exists)
+    AIM4: at least one class shows Q4 pattern (seasonal signal exists)
+  Run AIM2 against slice:
+    confirm code executes across 7-window loop
+    (7-window final verdict requires full 14 years)
 
-CCP5  ──► requires AIM5 (clean agency keys for allocation)
+Stage 4 — Full 14-year corpus (FY2003–FY2016), 3 replicates each CCP
+  All AIM tests run against locked thresholds.
+  Final evidence for both papers.
 ```
 
 | Constraint | Reason |
 |-----------|--------|
-| **CCP1 before any AIM run** | CCP1 produces the GL output and permutation table that are the first substrate for every AIM test. |
-| **CCP2 before AIM1 (IL substrate)** | The instrument ledger is the second AIM1 substrate. CCP2 produces it. |
-| **CCP3 before AIM2–AIM4** | The Step 5 views (CCP3 outputs) are the feature tables for AIM2–AIM4. |
-| **AIM5 before AIM2** | AIM2 requires clean agency identifiers. AIM5 produces them. |
-| **AIM5 before CCP5** | Allocation requires clean agency keys. AIM5 provides the reconciliation table. |
+| **AIM5 first** | No corpus run needed; unblocks AIM2 and CCP5; cheapest possible first result. |
+| **1-year validation before any slice** | Confirms pipeline correctness before investing compute. |
+| **Fixture for model smoke** | Use existing `FY03q1exp_small.txt` + `VA_opendata_FY2003_small.txt` to confirm script syntax/execution only; too few rows for any statistical result. |
+| **FY2003–FY2007 slice for directional check** | AIM3 survival needs ≥4 years of `present_next_year` signal; AIM4 STL needs ≥3 years of monthly volume; 5 years covers both. |
+| **Full 14 years for locked thresholds** | AIM2 7-window protocol requires FY2003–FY2016; AIM3/AIM4 thresholds were set against the full corpus. |
+| **AIM5 before AIM2** | AIM2 requires clean agency keys from AIM5 reconciliation table. |
+| **AIM5 before CCP5** | Allocation (Step 6) requires clean agency keys. |
 | **CCP2 before CCP3, CCP4, CCP5** | Each layers capability onto the prior CKB pass output. |
 
 ---
@@ -203,9 +221,8 @@ computed.
 
 | Document | Location | What it contains |
 |----------|----------|-----------------|
-| `TEST_DESIGN_PAPER_1.md` | `ledger-lab/docs/` | Full Paper 1 spec: CCP1 and CCP2–CCP5 workload definitions, permutation generator, input snapshots, required metrics, acceptance evidence shape |
-| `TEST_DESIGN_PAPER_2.md` | `ledger-lab/docs/` | Full Paper 2 spec: AIM0–AIM5 test specifications, two-substrate design, open-decisions table, author notes |
-| `paper2-tests-plan.md` | `ledger-lab/docs/` | Implementation sub-tasks: `transIPID` fix, PO stream merge, CKB view emission, Python fitting scripts |
+| `TEST_DESIGN.md` | `ledger-lab/docs/` | **Unified** CCP cost-point workload definitions (CCP1–CCP5) and AIM model evidence test specifications (AIM0–AIM5). Pipeline readiness, run sequence, locked decisions, workload manifest template. Supersedes `TEST_DESIGN_PAPER_1.md` and `TEST_DESIGN_PAPER_2.md`. |
+| `ENGINE_IMPLEMENTATION_PLAN.md` | `ledger-lab/docs/` | Engine implementation sub-tasks for both papers: `transIPID` fix, PO stream merge, CKB view emission, cost surface axis design, Python fitting scripts |
 | `SESSION_HANDOFF.md` | `ledger-lab/` | Session log with key decisions and context |
-| `PAPER_02_NOTES.md` | `org-members/research/` | Original working notes; superseded by this document and `TEST_DESIGN_PAPER_2.md` |
+| `PAPER_02_NOTES.md` | `org-members/research/` | Original working notes; superseded by this document and `TEST_DESIGN.md` |
 | `next-session-plan.md` | `ledger-lab/docs/` | Planning document; superseded by this document |

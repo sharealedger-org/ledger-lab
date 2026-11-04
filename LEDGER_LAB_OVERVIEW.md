@@ -49,7 +49,7 @@ These tests compare prediction performance between a model that only sees paymen
 
 **Data:** ~240 agency-year pairs, FY2006–FY2016.  
 **Success:** The ordering-data model reduces forecast error by at least 5% over the payment-only model (threshold to be confirmed before running).  
-**Full spec:** [`docs/TEST_DESIGN_PAPER_2.md`](./docs/TEST_DESIGN_PAPER_2.md) — Test 2a
+**Full spec:** [`docs/TEST_DESIGN.md`](./docs/TEST_DESIGN.md) — Test 2a
 
 ---
 
@@ -60,7 +60,7 @@ These tests compare prediction performance between a model that only sees paymen
 **Data:** PO files FY2006–FY2016, ~130M records, top 5 goods commodity classes.  
 **Success:** At least 3 of the top 5 goods classes show a statistically significant Q4 spike in ordering volume.  
 **Why run this first:** Cheapest test — requires no join between the PO and expenditure files.  
-**Full spec:** [`docs/TEST_DESIGN_PAPER_2.md`](./docs/TEST_DESIGN_PAPER_2.md) — Test 2c
+**Full spec:** [`docs/TEST_DESIGN.md`](./docs/TEST_DESIGN.md) — Test 2c
 
 ---
 
@@ -76,7 +76,7 @@ If those features are predictive (C-statistic > 0.65 on held-out years), it demo
 
 **Data:** 65,000 vendors × up to 12 fiscal years, FY2006–FY2016.  
 **Success:** C-statistic > 0.65 on held-out years (FY2015–2016), permutation p < 0.05.  
-**Full spec:** [`docs/TEST_DESIGN_PAPER_2.md`](./docs/TEST_DESIGN_PAPER_2.md) — Test 2b
+**Full spec:** [`docs/TEST_DESIGN.md`](./docs/TEST_DESIGN.md) — Test 2b
 
 ---
 
@@ -95,13 +95,13 @@ The test trains a classifier on the 99.1% exact-match cases (labeled: same agenc
 **Data:** `agency_alias_candidates.csv` — 16 unresolved agency names, 3 genuinely ambiguous.  
 **Success:** Precision ≥ 0.99 on held-out exact-match pairs; the 3 ambiguous cases produce confidence < 0.7 (flagged rather than force-resolved).  
 **This test also unblocks Tests 2a and 3** by producing the agency reconciliation table cross-file joins require.  
-**Full spec:** [`docs/TEST_DESIGN_PAPER_2.md`](./docs/TEST_DESIGN_PAPER_2.md) — Test 2d
+**Full spec:** [`docs/TEST_DESIGN.md`](./docs/TEST_DESIGN.md) — Test 2d
 
 ---
 
 ## What counts as overall success
 
-Each test has its own acceptance threshold (see [`docs/TEST_DESIGN_PAPER_2.md`](./docs/TEST_DESIGN_PAPER_2.md)). The overall claim Ledger Lab is testing is:
+Each test has its own acceptance threshold (see [`docs/TEST_DESIGN.md`](./docs/TEST_DESIGN.md)). The overall claim Ledger Lab is testing is:
 
 > **Pre-hierarchy data (orders, relationships, raw names) contains predictive signal that is absent from post-hierarchy data (payments, balances, account codes) — not just missing from this particular dataset, but structurally absent from any system that summarizes transactions before storing them.**
 
@@ -141,9 +141,9 @@ The VA corpus tests (this document) are the **Track B** open-data implementation
 
 ## Technical details and open decisions
 
-Full test specifications, data paths, acceptance thresholds that must be confirmed before running, and the Test 0 feasibility findings (what cross-file joins are and aren't possible in the public corpus) are in:
+Full test specifications, data paths, acceptance thresholds, and the Test 0 feasibility findings (what cross-file joins are and aren't possible in the public corpus) are in:
 
-- **[`docs/TEST_DESIGN_PAPER_2.md`](./docs/TEST_DESIGN_PAPER_2.md)** — complete test specifications, data facts, open decisions
+- **[`docs/TEST_DESIGN.md`](./docs/TEST_DESIGN.md)** — unified CCP cost-point and AIM model evidence test design (authoritative)
 - **[`docs/RESEARCH_OBJECTIVES.md`](./docs/RESEARCH_OBJECTIVES.md)** — master map of all experiments across both papers, run order, and open decisions
 - **[`ckb-analysis.md`](./ckb-analysis.md)** — code-to-paper mapping for the GenevaERS pipeline implementation
 

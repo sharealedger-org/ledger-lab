@@ -18,6 +18,18 @@ import scala.io.Source
 //    - RESULT/RESOURCE metric lines are emitted.
 //    - Memory contract: O(distinct keys) — no ArrayBuffer of all source rows.
 //
+//  View schemas (enriched 2026-11-04):
+//    View A: (fiscal_period, nigp_class_3digit, agency) →
+//              po_line_count, total_committed_amount, revision_count
+//    View B: (vendor_id, fiscal_year) →
+//              vendor_surrogate_key, first_order_year, present_next_year,
+//              total_amount, po_count, nigp_class_modal, agency_count, distinct_nigp_classes
+//    View C: (agency, fiscal_year, nigp_class_3digit) →
+//              po_count, total_committed_amount, revision_count,
+//              vendor_count, min_order_amount, max_order_amount
+//    View D: (agency, fiscal_year, fund_id, object_code) →
+//              total_payment_amount, payment_count
+//
 //  Fixture: Two synthetic SortedJE rows per journal (1 COMMITMENT debit + 1 COMMITMENT credit)
 //           and two synthetic payment rows (1 payment debit + 1 payment credit).
 
@@ -40,11 +52,13 @@ class CKBViewsSpec extends AnyFunSuite {
   // ── Minimal 39-field SJE row builder ────────────────────────────────────────
   // Arguments map to the fields CKBViews reads:
   //   col 0  = vendorId, col 2 = commitId, col 5 = bizEvent, col 12 = agency,
-  //   col 14 = nigpCode, col 22 = fiscYear, col 24 = transDate, col 25 = amount
+  //   col 13 = fundId,   col 14 = nigpCode, col 22 = fiscYear,
+  //   col 24 = transDate, col 25 = amount
   private def makeRow(
     vendorId: String, commitId: String, bizEvent: String,
     agency: String, nigpCode: String, fiscYear: String,
-    transDate: String, amount: String
+    transDate: String, amount: String,
+    fundId: String = "FUND1"
   ): String = {
     // Build a 39-element array with placeholders for unused fields
     val cols = Array.fill(39)(" ")
@@ -52,6 +66,7 @@ class CKBViewsSpec extends AnyFunSuite {
     cols(2)  = commitId
     cols(5)  = bizEvent
     cols(12) = agency
+    cols(13) = fundId
     cols(14) = nigpCode
     cols(22) = fiscYear
     cols(24) = transDate
@@ -73,9 +88,11 @@ class CKBViewsSpec extends AnyFunSuite {
   }
 
   // ── Test 1: View A — monthly order volume from COMMITMENT rows ───────────────
-  test("CKBViews: View A accumulates COMMITMENT debit rows by fiscal_period × nigp_class_3digit") {
+  // Schema: fiscal_period(0), nigp_class_3digit(1), agency(2), po_line_count(3),
+  //         total_committed_amount(4), revision_count(5)
+  test("CKBViews: View A accumulates COMMITMENT debit rows by fiscal_period × nigp_class_3digit × agency") {
     withTempDirectory("ckbv-viewA-") { tempDir =>
-      // Two COMMITMENT debit rows: same nigp3 "081", different fiscal months
+      // Two COMMITMENT debit rows: same nigp3 "081", different fiscal months, same agency
       // One COMMITMENT credit row (should be ignored — amount negative)
       val row1 = makeRow("v001", "PO1", "COMMITMENT", "AGY1", "08015", "2003", "2003/09/01", "100.00")
       val row2 = makeRow("v001", "PO2", "COMMITMENT", "AGY1", "08015", "2003", "2003/12/01", "200.00")
@@ -89,19 +106,44 @@ class CKBViewsSpec extends AnyFunSuite {
       assert(viewA.exists(), "view_monthly_order_volume.csv should be created")
 
       val rows = readCsvData(viewA)
-      // row1 → fiscal_period=2003/09, row2 → 2003/12 — two distinct keys
+      // row1 → fiscal_period=2003/09, row2 → 2003/12 — two distinct (period, nigp3, agency) keys
       assert(rows.length == 2, s"Expected 2 view A rows; got ${rows.length}")
 
-      val byPeriod = rows.map(r => r(0) -> (r(2).toLong, BigDecimal(r(3)))).toMap
+      // col 0=fiscal_period, col 2=agency, col 3=po_line_count, col 4=total_committed_amount
+      val byPeriod = rows.map(r => r(0) -> (r(3).toLong, BigDecimal(r(4)))).toMap
       assert(byPeriod("2003/09")._1 == 1L, "2003/09 should have 1 PO line")
       assert(byPeriod("2003/12")._1 == 1L, "2003/12 should have 1 PO line")
       assert(byPeriod("2003/09")._2 == BigDecimal("100.00"), "2003/09 amount should be 100.00")
+
+      // agency field should be present
+      assert(rows.forall(_(2) == "AGY1"), "agency column should be AGY1 for all rows")
+    }
+  }
+
+  // ── Test 1b: View A — revision_count populated ───────────────────────────────
+  test("CKBViews: View A counts revision POs (commitmentID contains -V)") {
+    withTempDirectory("ckbv-viewA-rev-") { tempDir =>
+      val rowOrig = makeRow("v001", "PO1",       "COMMITMENT", "AGY1", "08015", "2003", "2003/09/01", "100.00")
+      val rowRev  = makeRow("v001", "PO1-V2",    "COMMITMENT", "AGY1", "08015", "2003", "2003/09/01", "110.00")
+      val rowOrig2 = makeRow("v001", "PO2",      "COMMITMENT", "AGY1", "08015", "2003", "2003/09/01", "90.00")
+
+      writeSortedJE(tempDir, "03", rowOrig, rowRev, rowOrig2)
+
+      CKBViews(Map("inPath" -> tempDir.toString, "outPath" -> tempDir.toString, "year" -> "2003"))
+
+      val rows = readCsvData(new File(tempDir.toFile, "view_monthly_order_volume.csv"))
+      assert(rows.length == 1, s"All rows same key; expected 1; got ${rows.length}")
+      // col 5 = revision_count
+      assert(rows.head(5).toLong == 1L, s"revision_count should be 1; got ${rows.head(5)}")
+      // col 3 = po_line_count = 3 (original, revision, another original)
+      assert(rows.head(3).toLong == 3L, s"po_line_count should be 3; got ${rows.head(3)}")
     }
   }
 
   // ── Test 2: View B — vendor-year survival present_next_year flag ─────────────
   // Schema: vendor_id(0), vendor_surrogate_key(1), fiscal_year(2), first_order_year(3),
-  //         present_next_year(4), total_amount(5), po_count(6)
+  //         present_next_year(4), total_amount(5), po_count(6),
+  //         nigp_class_modal(7), agency_count(8), distinct_nigp_classes(9)
   test("CKBViews: View B sets present_next_year=1 when vendor appears in a later year") {
     withTempDirectory("ckbv-viewB-") { tempDir =>
       // vendor v001 appears in both 2003 and 2004 → present_next_year=1 for 2003
@@ -155,7 +197,32 @@ class CKBViewsSpec extends AnyFunSuite {
     }
   }
 
+  // ── Test 2c: View B — nigp_class_modal, agency_count, distinct_nigp_classes ──
+  test("CKBViews: View B emits nigp_class_modal, agency_count, and distinct_nigp_classes") {
+    withTempDirectory("ckbv-viewB-enriched-") { tempDir =>
+      // vendor v001 in 2003: three rows — two for class "081", one for class "204", two agencies
+      val r1 = makeRow("v001", "PO1", "COMMITMENT", "AGY1", "08115", "2003", "2003/09/01", "100.00")
+      val r2 = makeRow("v001", "PO2", "COMMITMENT", "AGY1", "08120", "2003", "2003/10/01", "150.00")
+      val r3 = makeRow("v001", "PO3", "COMMITMENT", "AGY2", "20401", "2003", "2003/11/01", "200.00")
+
+      writeSortedJE(tempDir, "03", r1, r2, r3)
+      CKBViews(Map("inPath" -> tempDir.toString, "outPath" -> tempDir.toString, "year" -> ""))
+
+      val rows = readCsvData(new File(tempDir.toFile, "view_vendor_year_survival.csv"))
+      assert(rows.length == 1, s"Expected 1 row (v001/2003); got ${rows.length}")
+
+      val r = rows.head
+      // col 7=nigp_class_modal, col 8=agency_count, col 9=distinct_nigp_classes
+      assert(r(7) == "081", s"modal class should be '081' (2 rows vs 1); got '${r(7)}'")
+      assert(r(8).toInt == 2, s"agency_count should be 2; got ${r(8)}")
+      assert(r(9).toInt == 2, s"distinct_nigp_classes should be 2 (081, 204); got ${r(9)}")
+    }
+  }
+
   // ── Test 3: View C — agency-year commodity mix with revision detection ────────
+  // Schema: agency(0), fiscal_year(1), nigp_class_3digit(2), po_count(3),
+  //         total_committed_amount(4), revision_count(5),
+  //         vendor_count(6), min_order_amount(7), max_order_amount(8)
   test("CKBViews: View C counts POs and detects -V revision suffix in commitmentID") {
     withTempDirectory("ckbv-viewC-") { tempDir =>
       // Two rows: one original PO, one revision (commitId contains "-V")
@@ -173,19 +240,45 @@ class CKBViewsSpec extends AnyFunSuite {
       assert(rows.length == 1, s"Expected 1 aggregated row (same agency/year/nigp3); got ${rows.length}")
 
       val r = rows.head
-      // col 3 = po_count, col 4 = total_committed_amount, col 5 = revision_count
+      // col 3=po_count, col 4=total_committed_amount, col 5=revision_count
       assert(r(3).toLong == 2L, s"po_count should be 2; got ${r(3)}")
       assert(r(5).toLong == 1L, s"revision_count should be 1 (only -V2 row); got ${r(5)}")
       assert(BigDecimal(r(4)) == BigDecimal("210.00"), s"total should be 210.00; got ${r(4)}")
     }
   }
 
+  // ── Test 3b: View C — vendor_count, min_order_amount, max_order_amount ────────
+  test("CKBViews: View C emits vendor_count, min_order_amount, max_order_amount") {
+    withTempDirectory("ckbv-viewC-enriched-") { tempDir =>
+      // Two different vendors, same agency-year-class
+      val r1 = makeRow("v001", "PO1", "COMMITMENT", "AGY1", "08015", "2003", "2003/09/01", "50.00")
+      val r2 = makeRow("v002", "PO2", "COMMITMENT", "AGY1", "08015", "2003", "2003/10/01", "200.00")
+      val r3 = makeRow("v001", "PO3", "COMMITMENT", "AGY1", "08015", "2003", "2003/11/01", "100.00")
+
+      writeSortedJE(tempDir, "03", r1, r2, r3)
+      CKBViews(Map("inPath" -> tempDir.toString, "outPath" -> tempDir.toString, "year" -> "2003"))
+
+      val rows = readCsvData(new File(tempDir.toFile, "view_agency_year_commodity_mix.csv"))
+      assert(rows.length == 1, s"Expected 1 aggregated row; got ${rows.length}")
+
+      val r = rows.head
+      // col 6=vendor_count, col 7=min_order_amount, col 8=max_order_amount
+      assert(r(6).toInt == 2, s"vendor_count should be 2 (v001, v002); got ${r(6)}")
+      assert(BigDecimal(r(7)) == BigDecimal("50.00"),  s"min should be 50.00; got ${r(7)}")
+      assert(BigDecimal(r(8)) == BigDecimal("200.00"), s"max should be 200.00; got ${r(8)}")
+    }
+  }
+
   // ── Test 4: View D — agency-year payment totals (non-COMMITMENT only) ─────────
-  test("CKBViews: View D accumulates non-COMMITMENT debit rows only") {
+  // Schema: agency(0), fiscal_year(1), fund_id(2), object_code(3),
+  //         total_payment_amount(4), payment_count(5)
+  test("CKBViews: View D accumulates non-COMMITMENT debit rows only, keyed by fund_id and object_code") {
     withTempDirectory("ckbv-viewD-") { tempDir =>
-      // One payment debit, one payment credit (should be ignored), one COMMITMENT (should not appear)
-      val payDebit  = makeRow("v001", "0", "EXPENSE_PAYMENT", "AGY1", "EXPOBJ1", "2003", "2003/09/01", "500.00")
-      val payCredit = makeRow("v001", "0", "EXPENSE_PAYMENT", "AGY1", "0000",    "2003", "2003/09/01", "-500.00")
+      // One payment debit, one payment credit (should be ignored), one COMMITMENT (should not appear in D)
+      val payDebit  = makeRow("v001", "0", "EXPENSE_PAYMENT", "AGY1", "EXPOBJ1", "2003", "2003/09/01", "500.00",
+                               fundId = "FUND1")
+      val payCredit = makeRow("v001", "0", "EXPENSE_PAYMENT", "AGY1", "0000",    "2003", "2003/09/01", "-500.00",
+                               fundId = "FUND1")
       val commitRow = makeRow("v002", "PO1", "COMMITMENT",    "AGY1", "08015",   "2003", "2003/09/01", "200.00")
 
       writeSortedJE(tempDir, "03", payDebit, payCredit, commitRow)
@@ -196,12 +289,29 @@ class CKBViewsSpec extends AnyFunSuite {
       assert(viewD.exists(), "view_agency_year_payment_totals.csv should be created")
 
       val rows = readCsvData(viewD)
-      assert(rows.length == 1, s"Expected 1 row (AGY1/2003); got ${rows.length}")
+      assert(rows.length == 1, s"Expected 1 row (AGY1/2003/FUND1/EXPOBJ1); got ${rows.length}")
 
       val r = rows.head
-      // col 2 = total_payment_amount, col 3 = payment_count
-      assert(BigDecimal(r(2)) == BigDecimal("500.00"), s"Payment total should be 500.00; got ${r(2)}")
-      assert(r(3).toLong == 1L, s"payment_count should be 1; got ${r(3)}")
+      // col 2=fund_id, col 3=object_code, col 4=total_payment_amount, col 5=payment_count
+      assert(r(2) == "FUND1",   s"fund_id should be FUND1; got ${r(2)}")
+      assert(r(3) == "EXPOBJ1", s"object_code should be EXPOBJ1; got ${r(3)}")
+      assert(BigDecimal(r(4)) == BigDecimal("500.00"), s"Payment total should be 500.00; got ${r(4)}")
+      assert(r(5).toLong == 1L, s"payment_count should be 1; got ${r(5)}")
+    }
+  }
+
+  // ── Test 4b: View D — separate rows for different fund_id × object_code ───────
+  test("CKBViews: View D produces separate rows for different fund_id or object_code combinations") {
+    withTempDirectory("ckbv-viewD-multikey-") { tempDir =>
+      val r1 = makeRow("v001", "0", "EXPENSE_PAYMENT", "AGY1", "OBJ1", "2003", "2003/09/01", "100.00", fundId = "F1")
+      val r2 = makeRow("v001", "0", "EXPENSE_PAYMENT", "AGY1", "OBJ2", "2003", "2003/09/01", "200.00", fundId = "F1")
+      val r3 = makeRow("v001", "0", "EXPENSE_PAYMENT", "AGY1", "OBJ1", "2003", "2003/09/01", "300.00", fundId = "F2")
+
+      writeSortedJE(tempDir, "03", r1, r2, r3)
+      CKBViews(Map("inPath" -> tempDir.toString, "outPath" -> tempDir.toString, "year" -> "2003"))
+
+      val rows = readCsvData(new File(tempDir.toFile, "view_agency_year_payment_totals.csv"))
+      assert(rows.length == 3, s"Expected 3 rows for 3 distinct (fund,obj) keys; got ${rows.length}")
     }
   }
 

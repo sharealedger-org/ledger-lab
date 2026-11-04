@@ -1,0 +1,329 @@
+observed_name,matched_ref_name,matched_ref_key,matched_ref_code,confidence,disposition,source_relation,source_ambiguous
+Appropriation Vetoes-Operating,Appropriation Vetoes-Operating,189,990,1.0,RESOLVED,EXACT_REF_NAME,false
+Attorney General - Division of Debt Collection,Attorney General - Division of Debt Collection,99,143,1.0,RESOLVED,EXACT_REF_NAME,false
+Attorney General and Department of Law,Attorney General and Department of Law,91,141,1.0,RESOLVED,EXACT_REF_NAME,false
+Auditor of Public Accounts,Auditor of Public Accounts,82,133,1.0,RESOLVED,EXACT_REF_NAME,false
+Augusta Correctional Center,Augusta Correctional Center,46,754,1.0,RESOLVED,EXACT_REF_NAME,false
+Autism Advisory Council,Autism Advisory Council,449,871,1.0,RESOLVED,EXACT_REF_NAME,false
+Baskerville Correctional Center,Baskerville Correctional Center,65,761,1.0,RESOLVED,EXACT_REF_NAME,false
+Bland Correctional Center,Bland Correctional Center,203,718,1.0,RESOLVED,EXACT_REF_NAME,false
+Blue Ridge Community College,Blue Ridge Community College,31,291,1.0,RESOLVED,EXACT_REF_NAME,false
+Board of Accountancy,Board of Accountancy,256,226,1.0,RESOLVED,EXACT_REF_NAME,false
+Board of Bar Examiners,Board of Bar Examiners,259,233,1.0,RESOLVED,EXACT_REF_NAME,false
+Board of Towing and Recovery Operators,Board of Towing and Recovery Operators,320,507,1.0,RESOLVED,EXACT_REF_NAME,false
+Brown v Board of Education Scholarship Awards Comm,Brown v Board of Education Scholarship Awards Comm,323,858,1.0,RESOLVED,EXACT_REF_NAME,false
+Brunswick Correctional Center,Brunswick Correctional Center,213,730,1.0,RESOLVED,EXACT_REF_NAME,false
+Buckingham Correctional Center,Buckingham Correctional Center,264,749,1.0,RESOLVED,EXACT_REF_NAME,false
+COUNCIL ON VIRGINIA'S FUTURE,Frontier Culture Museum of Virginia,269,239,0.6667,AMBIGUOUS,UNMATCHED,false
+Capital Square Preservation Council,Capital Square Preservation Council,112,820,1.0,RESOLVED,EXACT_REF_NAME,false
+Catawba Hospital,Catawba Hospital,208,724,1.0,RESOLVED,EXACT_REF_NAME,false
+Centennial Women's Right to Vote,VA Bicentennial of American War of 1812,373,867,0.5352,AMBIGUOUS,UNMATCHED,false
+Central Appropriations - Capital Outlay,Central Appropriations - Capital Outlay,174,949,1.0,RESOLVED,EXACT_REF_NAME,false
+Central Appropriations - Debt Bonds 9(D),Central Appropriations - Debt Bonds 9(D),176,951,1.0,RESOLVED,EXACT_REF_NAME,false
+Central Appropriations-Administration,Central Appropriations-Administration,197,995,1.0,RESOLVED,EXACT_REF_NAME,false
+Central Region Correctional Field Units,Central Region Correctional Field Units,64,760,1.0,RESOLVED,EXACT_REF_NAME,false
+Central State Hospital,Central State Hospital,137,703,1.0,RESOLVED,EXACT_REF_NAME,false
+Central Virginia Community College,Central Virginia Community College,32,292,1.0,RESOLVED,EXACT_REF_NAME,false
+Central Virginia Training Center,Central Virginia Training Center,149,707,1.0,RESOLVED,EXACT_REF_NAME,false
+Chesapeake Bay Commission,Chesapeake Bay Commission,123,842,1.0,RESOLVED,EXACT_REF_NAME,false
+Chesapeake Bay Local Assistance Department,Chesapeake Bay Local Assistance Department,78,408,1.0,RESOLVED,EXACT_REF_NAME,false
+Chippokes Plantation Farm Foundation,Chippokes Plantation Farm Foundation,49,319,1.0,RESOLVED,EXACT_REF_NAME,false
+Christopher Newport University,Christopher Newport University,271,242,1.0,RESOLVED,EXACT_REF_NAME,false
+Circuit Courts,Circuit Courts,43,113,1.0,RESOLVED,EXACT_REF_NAME,false
+Citizen Advisory Commission - Executive Mansion,Citizen Advisory Commission - Executive Mansion,117,836,1.0,RESOLVED,EXACT_REF_NAME,false
+City and County Treasurers,City and County Treasurers,200,998,1.0,RESOLVED,EXACT_REF_NAME,false
+Coffeewood Correctional Center,Coffeewood Correctional Center,86,773,1.0,RESOLVED,EXACT_REF_NAME,false
+Combined District Courts,Combined District Courts,52,116,1.0,RESOLVED,EXACT_REF_NAME,false
+Commission On Electric Utility Restructuring,Commission On Electric Utility Restructuring,363,863,1.0,RESOLVED,EXACT_REF_NAME,false
+Commission On Prevention Of Human Trafficking,Commission On Prevention Of Human Trafficking,366,866,1.0,RESOLVED,EXACT_REF_NAME,false
+Commission on Civics Education,Commission on Civics Education,430,870,1.0,RESOLVED,EXACT_REF_NAME,false
+Commission on Local Government,Commission on Local Government,290,968,1.0,RESOLVED,EXACT_REF_NAME,false
+Commission on Unemployment Compensation,Commission on Unemployment Compensation,325,860,1.0,RESOLVED,EXACT_REF_NAME,false
+Commission on Virginia Alcohol Safety Action Program,Commission on Virginia Alcohol Safety Action Program,89,413,1.0,RESOLVED,EXACT_REF_NAME,false
+Commissioners for Promotion of Uniformity of Legislation,Commissioners for Promotion of Uniformity of Legislation,100,145,1.0,RESOLVED,EXACT_REF_NAME,false
+Commonwealth Attorneys' Services Council,Commonwealth Attorneys' Services Council,177,957,1.0,RESOLVED,EXACT_REF_NAME,false
+Commonwealth Center for Behavioral Rehabilitation,Commonwealth Center for Behavioral Rehabilitation,103,794,1.0,RESOLVED,EXACT_REF_NAME,false
+Commonwealth Center for Children and Adolescents,Commonwealth Center for Children and Adolescents,156,708,1.0,RESOLVED,EXACT_REF_NAME,false
+Commonwealth Competition Council,Commonwealth Competition Council,154,169,1.0,RESOLVED,EXACT_REF_NAME,false
+Commonwealth Employees Health Insurance Fund,Commonwealth Employees Health Insurance Fund,109,149,1.0,RESOLVED,EXACT_REF_NAME,false
+Compensation Board,Compensation Board,133,157,1.0,RESOLVED,EXACT_REF_NAME,false
+Comprehensive Services for At-Risk Youth and Families,Comprehensive Services for At-Risk Youth and Families,227,200,1.0,RESOLVED,EXACT_REF_NAME,false
+Cooperative Extension and Agricultural Research Service,Cooperative Extension and Agricultural Research Service,260,234,1.0,RESOLVED,EXACT_REF_NAME,false
+Corrections - Division of Institutions,Corrections - Division of Institutions,59,756,1.0,RESOLVED,EXACT_REF_NAME,false
+Court of Appeals of Virginia,Court of Appeals of Virginia,70,125,1.0,RESOLVED,EXACT_REF_NAME,false
+Culpeper Correctional Facility for Women,Virginia Correctional Center for Women,201,716,0.6923,AMBIGUOUS,UNMATCHED,false
+DMHMRSAS - Grants to Localities,DMHMRSAS - Grants to Localities,95,790,1.0,RESOLVED,EXACT_REF_NAME,false
+Dabney S. Lancaster Community College,Dabney S. Lancaster Community College,28,287,1.0,RESOLVED,EXACT_REF_NAME,false
+Danville Community College,Danville Community College,21,279,1.0,RESOLVED,EXACT_REF_NAME,false
+Deep Meadow Correctional Center,Deep Meadow Correctional Center,44,752,1.0,RESOLVED,EXACT_REF_NAME,false
+Deerfield Correctional Center,Deerfield Correctional Center,45,753,1.0,RESOLVED,EXACT_REF_NAME,false
+Department Of Corrections - Employee Relations and Training,Department Of Corrections - Employee Relations and Training,235,742,1.0,RESOLVED,EXACT_REF_NAME,false
+Department for the Aging,Department for the Aging,145,163,1.0,RESOLVED,EXACT_REF_NAME,false
+Department for the Deaf & Hard-of-Hearing,Department for the Deaf & Hard-of-Hearing,6,751,1.0,RESOLVED,EXACT_REF_NAME,false
+Department for the Rights of Virginians with Disabilities,Department for the Rights of Virginians with Disabilities,288,762,1.0,RESOLVED,EXACT_REF_NAME,false
+Department of Accounts,Department of Accounts,119,151,1.0,RESOLVED,EXACT_REF_NAME,false
+Department of Accounts Transfer Payments,Department of Accounts Transfer Payments,284,162,1.0,RESOLVED,EXACT_REF_NAME,false
+Department of Accounts-Statewide Activities,Department of Accounts-Statewide Activities,199,997,1.0,RESOLVED,EXACT_REF_NAME,false
+Department of Agriculture and Consumer Services,Department of Agriculture and Consumer Services,40,301,1.0,RESOLVED,EXACT_REF_NAME,false
+Department of Alcoholic Beverage Control,Department of Alcoholic Beverage Control,230,999,1.0,RESOLVED,EXACT_REF_NAME,false
+Department of Aviation,Department of Aviation,122,841,1.0,RESOLVED,EXACT_REF_NAME,false
+Department of Business Assistance,Department of Business Assistance,57,325,1.0,RESOLVED,EXACT_REF_NAME,false
+Department of Charitable Gaming,Department of Charitable Gaming,166,173,1.0,RESOLVED,EXACT_REF_NAME,false
+Department of Conservation & Recreation,Department of Conservation & Recreation,226,199,1.0,RESOLVED,EXACT_REF_NAME,false
+Department of Correctional Education,Department of Correctional Education,5,750,1.0,RESOLVED,EXACT_REF_NAME,false
+"Department of Corrections, Central Activities",Department of Corrections Central Activities,111,799,1.0,RESOLVED,NORMALIZED_REF_NAME,false
+"Department of Corrections, Division of Institutions",Department of Corrections Division of Institutions,110,795,1.0,RESOLVED,NORMALIZED_REF_NAME,false
+Department of Corrections-Central Administration,Department of Corrections-Central Administration,129,701,1.0,RESOLVED,EXACT_REF_NAME,false
+Department of Criminal Justice Services,Department of Criminal Justice Services,90,140,1.0,RESOLVED,EXACT_REF_NAME,false
+Department of Education - Central Office Operations,Department of Education - Central Office Operations,228,201,1.0,RESOLVED,EXACT_REF_NAME,false
+Department of Education - Direct Aid to Public Education,Department of Education - Direct Aid to Public Education,225,197,1.0,RESOLVED,EXACT_REF_NAME,false
+Department of Emergency Management,Department of Emergency Management,71,127,1.0,RESOLVED,EXACT_REF_NAME,false
+Department of Employment Dispute Resolution,Department of Employment Dispute Resolution,182,962,1.0,RESOLVED,EXACT_REF_NAME,false
+Department of Environmental Quality,Department of Environmental Quality,104,440,1.0,RESOLVED,EXACT_REF_NAME,false
+Department of Fire Programs,Department of Fire Programs,178,960,1.0,RESOLVED,EXACT_REF_NAME,false
+Department of Forensic Science,Department of Forensic Science,301,778,1.0,RESOLVED,EXACT_REF_NAME,false
+Department of Forestry,Department of Forestry,88,411,1.0,RESOLVED,EXACT_REF_NAME,false
+Department of Game and Inland Fisheries,Department of Game and Inland Fisheries,69,403,1.0,RESOLVED,EXACT_REF_NAME,false
+Department of General Services,Department of General Services,224,194,1.0,RESOLVED,EXACT_REF_NAME,false
+Department of Health,Department of Health,115,601,1.0,RESOLVED,EXACT_REF_NAME,false
+Department of Health Professions,Department of Health Professions,255,223,1.0,RESOLVED,EXACT_REF_NAME,false
+Department of Historic Resources,Department of Historic Resources,97,423,1.0,RESOLVED,EXACT_REF_NAME,false
+Department of Housing and Community Development,Department of Housing and Community Development,146,165,1.0,RESOLVED,EXACT_REF_NAME,false
+Department of Human Resource Management,Department of Human Resource Management,72,129,1.0,RESOLVED,EXACT_REF_NAME,false
+Department of Information Technology,Department of Information Technology,282,138,1.0,RESOLVED,EXACT_REF_NAME,false
+Department of Juvenile Justice,Department of Juvenile Justice,94,777,1.0,RESOLVED,EXACT_REF_NAME,false
+Department of Labor and Industry,Department of Labor and Industry,179,181,1.0,RESOLVED,EXACT_REF_NAME,false
+Department of Medical Assistance Services,Department of Medical Assistance Services,127,602,1.0,RESOLVED,EXACT_REF_NAME,false
+Department of Military Affairs,Department of Military Affairs,63,123,1.0,RESOLVED,EXACT_REF_NAME,false
+"Department of Mines, Minerals and Energy",Department of Mines Minerals and Energy,87,409,1.0,RESOLVED,NORMALIZED_REF_NAME,false
+Department of Minority Business Enterprise,Department of Minority Business Enterprise,361,232,1.0,MULTI_KEY,EXACT_REF_NAME,true
+Department of Motor Vehicles,Department of Motor Vehicles,124,154,1.0,RESOLVED,EXACT_REF_NAME,false
+Department of Motor Vehicles Transfer Payment,Department of Motor Vehicles Transfer Payment,407,530,1.0,MULTI_KEY,EXACT_REF_NAME,true
+Department of Planning and Budget,Department of Planning and Budget,62,122,1.0,RESOLVED,EXACT_REF_NAME,false
+Department of Professional and Occupational Regulation,Department of Professional and Occupational Regulation,254,222,1.0,RESOLVED,EXACT_REF_NAME,false
+Department of Rail and Public Transportation,Department of Rail and Public Transportation,113,505,1.0,RESOLVED,EXACT_REF_NAME,false
+Department of Rehabilitative Services,Department of Rehabilitative Services,277,262,1.0,RESOLVED,EXACT_REF_NAME,false
+Department of Small Business and Supplier Diversity,Department of Business Assistance,57,325,0.6667,AMBIGUOUS,UNMATCHED,false
+Department of Social Services,Department of Social Services,66,765,1.0,RESOLVED,EXACT_REF_NAME,false
+Department of State Police,Department of State Police,126,156,1.0,RESOLVED,EXACT_REF_NAME,false
+Department of Taxation,Department of Taxation,144,161,1.0,RESOLVED,EXACT_REF_NAME,false
+Department of Technology Planning,Department of Technology Planning,281,137,1.0,RESOLVED,EXACT_REF_NAME,false
+Department of Transportation,Department of Transportation,106,501,1.0,RESOLVED,EXACT_REF_NAME,false
+Department of Treasury-Trust Funds,Department of Treasury-Trust Funds,196,994,1.0,RESOLVED,EXACT_REF_NAME,false
+Department of Veterans Affairs,Department of Veterans Affairs,292,131,1.0,RESOLVED,EXACT_REF_NAME,false
+Department of Veterans Services,Department of Veterans Services,360,912,1.0,MULTI_KEY,EXACT_REF_NAME,true
+Department of the State Internal Auditor,Department of the State Internal Auditor,283,150,1.0,RESOLVED,EXACT_REF_NAME,false
+Department of the Treasury,Department of the Treasury,120,152,1.0,RESOLVED,EXACT_REF_NAME,false
+Department of the Treasury-Statewide Activities,Department of the Treasury-Statewide Activities,198,996,1.0,RESOLVED,EXACT_REF_NAME,false
+Dept. of Behavioral Health & Developmental Services,Dept. of Behavioral Health & Developmental Services,406,720,1.0,RESOLVED,EXACT_REF_NAME,false
+"Dept. of Mental Health, Mental Retardation and Substance Abuse Services - Central Office",Dept. of Mental Health Mental Retardation and Substance Abuse Services - Central Office,205,720,1.0,RESOLVED,NORMALIZED_REF_NAME,false
+Dillwyn Correctional Center,Dillwyn Correctional Center,80,770,1.0,RESOLVED,EXACT_REF_NAME,false
+Disability Commission,Disability Commission,302,837,1.0,RESOLVED,EXACT_REF_NAME,false
+Division of Capitol Police,Division of Capitol Police,181,961,1.0,RESOLVED,EXACT_REF_NAME,false
+Division of Community Corrections,Division of Community Corrections,74,767,1.0,RESOLVED,EXACT_REF_NAME,false
+Division of Legislative Automated Systems,Division of Legislative Automated Systems,19,109,1.0,RESOLVED,EXACT_REF_NAME,false
+Division of Legislative Services,Division of Legislative Services,14,107,1.0,RESOLVED,EXACT_REF_NAME,false
+Dr. Martin Luther King Memorial Commission,Dr. Martin Luther King Memorial Commission,131,845,1.0,RESOLVED,EXACT_REF_NAME,false
+Eastern Shore Community College,Eastern Shore Community College,25,284,1.0,RESOLVED,EXACT_REF_NAME,false
+Eastern State Hospital,Eastern State Hospital,138,704,1.0,RESOLVED,EXACT_REF_NAME,false
+Eastern Virginia Medical School,Eastern Virginia Medical School,11,274,1.0,RESOLVED,EXACT_REF_NAME,false
+Economic Development Incentive Payments,Economic Development Incentive Payments,410,312,1.0,RESOLVED,EXACT_REF_NAME,false
+Enterprise Application Public - Private Partner Prj,Enterprise Application Public - Private Partner Prj,326,861,1.0,RESOLVED,EXACT_REF_NAME,false
+Fluvanna Women's Correctional Center,Fluvanna Women's Correctional Center,239,743,1.0,RESOLVED,EXACT_REF_NAME,false
+Fort Monroe Authority,Virginia Port Authority,77,407,0.6818,AMBIGUOUS,UNMATCHED,false
+Frontier Culture Museum of Virginia,Frontier Culture Museum of Virginia,269,239,1.0,RESOLVED,EXACT_REF_NAME,false
+General District Courts,General District Courts,50,114,1.0,RESOLVED,EXACT_REF_NAME,false
+George Mason University,George Mason University,274,247,1.0,RESOLVED,EXACT_REF_NAME,false
+Germanna Community College,Germanna Community College,37,297,1.0,RESOLVED,EXACT_REF_NAME,false
+Governors Commission on Government Finance Reform for the 21st Century,Governors Commission on Government Finance Reform for the 21st Century,151,855,1.0,RESOLVED,EXACT_REF_NAME,false
+Grayson County Correctional Center,Grayson County Correctional Center,409,785,1.0,RESOLVED,EXACT_REF_NAME,false
+Green Rock Correctional Center,Green Rock Correctional Center,322,776,1.0,RESOLVED,EXACT_REF_NAME,false
+Greensville Correctional Center,Greensville Correctional Center,79,769,1.0,RESOLVED,EXACT_REF_NAME,false
+Gunston Hall,Gunston Hall,96,417,1.0,RESOLVED,EXACT_REF_NAME,false
+Haynesville Correctional Center,Haynesville Correctional Center,85,772,1.0,RESOLVED,EXACT_REF_NAME,false
+Higher Education Research Initiative,Higher Education Research Initiative,305,989,1.0,RESOLVED,EXACT_REF_NAME,false
+Higher Education Tuition Moderation Incentive,Higher Education Tuition Moderation Incentive,374,980,1.0,RESOLVED,EXACT_REF_NAME,false
+Hiram W. Davis Medical Center,Hiram W. Davis Medical Center,263,748,1.0,RESOLVED,EXACT_REF_NAME,false
+House of Delegates,House of Delegates,2,101,1.0,RESOLVED,EXACT_REF_NAME,false
+Human Rights Council,Human Rights Council,155,170,1.0,RESOLVED,EXACT_REF_NAME,false
+Indian Creek Correctional Center,Indian Creek Correctional Center,84,771,1.0,RESOLVED,EXACT_REF_NAME,false
+Innovation & Entreprenuership Investment Authority,Innovation & Entreprenuership Investment Authority,397,934,1.0,RESOLVED,EXACT_REF_NAME,false
+Innovative Technology Authority,Innovative Technology Authority,162,934,1.0,RESOLVED,EXACT_REF_NAME,false
+Institute for Advanced Learning and Research,Institute for Advanced Learning and Research,291,885,1.0,RESOLVED,EXACT_REF_NAME,false
+Interstate Organization Contributions,Interstate Organization Contributions,161,921,1.0,RESOLVED,EXACT_REF_NAME,false
+J. Sargeant Reynolds Community College,J. Sargeant Reynolds Community College,24,283,1.0,RESOLVED,EXACT_REF_NAME,false
+James Madison University,James Madison University,248,216,1.0,RESOLVED,EXACT_REF_NAME,false
+James River Correctional Center,James River Correctional Center,204,719,1.0,RESOLVED,EXACT_REF_NAME,false
+Jamestown 2007,Jamestown 2007,67,400,1.0,RESOLVED,EXACT_REF_NAME,false
+Jamestown-Yorktown Foundation,Jamestown-Yorktown Foundation,98,425,1.0,RESOLVED,EXACT_REF_NAME,false
+"Jefferson Science Associates, LLC",Jefferson Science Associates LLC,398,936,1.0,RESOLVED,NORMALIZED_REF_NAME,false
+John Tyler Community College,John Tyler Community College,30,290,1.0,RESOLVED,EXACT_REF_NAME,false
+Joint Commission On Administrative Rules,Joint Commission On Administrative Rules,365,865,1.0,RESOLVED,EXACT_REF_NAME,false
+Joint Commission on Health Care,Joint Commission on Health Care,130,844,1.0,RESOLVED,EXACT_REF_NAME,false
+Joint Commission on Technology and Science,Joint Commission on Technology and Science,132,847,1.0,RESOLVED,EXACT_REF_NAME,false
+Joint Commission on Transportation Accountablility,Joint Commission On Administrative Rules,365,865,0.6222,AMBIGUOUS,UNMATCHED,false
+Joint Legislative Audit & Review Commission,Joint Legislative Audit & Review Commission,20,110,1.0,RESOLVED,EXACT_REF_NAME,false
+Judicial Department Reversion Clearing Account,Judicial Department Reversion Clearing Account,9,104,1.0,RESOLVED,EXACT_REF_NAME,false
+Judicial Inquiry and Review Commission,Judicial Inquiry and Review Commission,42,112,1.0,RESOLVED,EXACT_REF_NAME,false
+Juvenile & Domestic Relations District Courts,Juvenile & Domestic Relations District Courts,51,115,1.0,RESOLVED,EXACT_REF_NAME,false
+Keen Mountain Correctional Center,Keen Mountain Correctional Center,75,768,1.0,RESOLVED,EXACT_REF_NAME,false
+Legislative Department Reversion Clearing Account,Legislative Department Reversion Clearing Account,7,102,1.0,RESOLVED,EXACT_REF_NAME,false
+Lieutenant Governor,Lieutenant Governor,55,119,1.0,RESOLVED,EXACT_REF_NAME,false
+Longwood University,Longwood University,246,214,1.0,RESOLVED,EXACT_REF_NAME,false
+Lord Fairfax Community College,Lord Fairfax Community College,38,298,1.0,RESOLVED,EXACT_REF_NAME,false
+Lunenburg Correctional Center,Lunenburg Correctional Center,93,774,1.0,RESOLVED,EXACT_REF_NAME,false
+Magistrate System,Magistrate System,8,103,1.0,RESOLVED,EXACT_REF_NAME,false
+Manufacturing Development Commission,Manufacturing Development Commission,364,864,1.0,RESOLVED,EXACT_REF_NAME,false
+Marine Resources Commission,Marine Resources Commission,68,402,1.0,RESOLVED,EXACT_REF_NAME,false
+Marion Correctional Treatment Center,Marion Correctional Treatment Center,262,747,1.0,RESOLVED,EXACT_REF_NAME,false
+Mecklenburg Correctional Center,Mecklenburg Correctional Center,240,744,1.0,RESOLVED,EXACT_REF_NAME,false
+Melchers-Monroe Memorials - Mary Washington College,Melchers-Monroe Memorials - Mary Washington College,252,220,1.0,RESOLVED,EXACT_REF_NAME,false
+Mental Health Treatment Centers,Mental Health Treatment Centers,101,792,1.0,RESOLVED,EXACT_REF_NAME,false
+Mental Retardation Training Centers,Mental Retardation Training Centers,102,793,1.0,RESOLVED,EXACT_REF_NAME,false
+Milk Commission,Milk Commission,286,305,1.0,RESOLVED,EXACT_REF_NAME,false
+Motor Vehicle Dealer Board,Motor Vehicle Dealer Board,114,506,1.0,RESOLVED,EXACT_REF_NAME,false
+Mountain Empire Community College,Mountain Empire Community College,39,299,1.0,RESOLVED,EXACT_REF_NAME,false
+New College Institute,New College Institute,304,938,1.0,RESOLVED,EXACT_REF_NAME,false
+New River Community College,New River Community College,12,275,1.0,RESOLVED,EXACT_REF_NAME,false
+Nonstate Agencies,Nonstate Agencies,188,986,1.0,RESOLVED,EXACT_REF_NAME,false
+Norfolk State University,Norfolk State University,245,213,1.0,RESOLVED,EXACT_REF_NAME,false
+Northern Region Correctional Field Units,Northern Region Correctional Field Units,287,759,1.0,RESOLVED,EXACT_REF_NAME,false
+Northern Virginia Community College,Northern Virginia Community College,22,280,1.0,RESOLVED,EXACT_REF_NAME,false
+Northern Virginia Mental Health Institute,Northern Virginia Mental Health Institute,211,728,1.0,RESOLVED,EXACT_REF_NAME,false
+Northern Virginia Training Center,Northern Virginia Training Center,209,725,1.0,RESOLVED,EXACT_REF_NAME,false
+Nottoway Correctional Center,Nottoway Correctional Center,261,745,1.0,RESOLVED,EXACT_REF_NAME,false
+Office for Substance Abuse Prevention,Office for Substance Abuse Prevention,143,853,1.0,RESOLVED,EXACT_REF_NAME,false
+Office of Children's Services,Department of Criminal Justice Services,90,140,0.6176,AMBIGUOUS,UNMATCHED,false
+Office of Commonwealth Preparedness,Office of Commonwealth Preparedness,105,454,1.0,RESOLVED,EXACT_REF_NAME,false
+Office of Inspector General Mental Health,Office of Inspector General Mental Health,300,722,1.0,RESOLVED,EXACT_REF_NAME,false
+Office of the Governor,Office of the Governor,61,121,1.0,RESOLVED,EXACT_REF_NAME,false
+Office of the State Inspector General,Office of Inspector General Mental Health,300,722,0.6923,AMBIGUOUS,UNMATCHED,false
+Old Dominion University,Old Dominion University,253,221,1.0,RESOLVED,EXACT_REF_NAME,false
+Opportunity Educational Instituition,Corrections - Division of Institutions,59,756,0.5556,AMBIGUOUS,UNMATCHED,false
+Patrick Henry Community College,Patrick Henry Community College,26,285,1.0,RESOLVED,EXACT_REF_NAME,false
+Paul D. Camp Community College,Paul D. Camp Community College,17,277,1.0,RESOLVED,EXACT_REF_NAME,false
+Personal Property Tax Relief Act,Personal Property Tax Relief Act,140,850,1.0,RESOLVED,EXACT_REF_NAME,false
+Piedmont Geriatric Hospital,Piedmont Geriatric Hospital,212,729,1.0,RESOLVED,EXACT_REF_NAME,false
+Piedmont Virginia Community College,Piedmont Virginia Community College,23,282,1.0,RESOLVED,EXACT_REF_NAME,false
+Planned Reversions,Planned Reversions,194,992,1.0,RESOLVED,EXACT_REF_NAME,false
+Pocahontas State Correctional Center,Pocahontas State Correctional Center,321,775,1.0,RESOLVED,EXACT_REF_NAME,false
+Powhatan Correctional Center,Powhatan Correctional Center,157,709,1.0,RESOLVED,EXACT_REF_NAME,false
+Powhatan Reception and Classification Center,Powhatan Reception and Classification Center,206,721,1.0,RESOLVED,EXACT_REF_NAME,false
+Public Defender Commission,Public Defender Commission,139,848,1.0,RESOLVED,EXACT_REF_NAME,false
+Radford University,Radford University,249,217,1.0,RESOLVED,EXACT_REF_NAME,false
+Rappahannock Community College,Rappahannock Community College,18,278,1.0,RESOLVED,EXACT_REF_NAME,false
+Red Onion State Prison,Red Onion State Prison,234,741,1.0,RESOLVED,EXACT_REF_NAME,false
+Richard Bland College,Richard Bland College,270,241,1.0,RESOLVED,EXACT_REF_NAME,false
+Roanoke Higher Education Authority,Roanoke Higher Education Authority,163,935,1.0,RESOLVED,EXACT_REF_NAME,false
+Secretary of Administration,Secretary of Administration,172,180,1.0,RESOLVED,EXACT_REF_NAME,false
+Secretary of Agriculture and Forestry,Secretary of Agriculture and Forestry,285,193,1.0,RESOLVED,EXACT_REF_NAME,false
+Secretary of Commerce and Trade,Secretary of Commerce and Trade,223,192,1.0,RESOLVED,EXACT_REF_NAME,false
+Secretary of Education,Secretary of Education,186,185,1.0,RESOLVED,EXACT_REF_NAME,false
+Secretary of Finance,Secretary of Finance,221,190,1.0,RESOLVED,EXACT_REF_NAME,false
+Secretary of Health & Human Resources,Secretary of Health & Human Resources,192,188,1.0,RESOLVED,EXACT_REF_NAME,false
+Secretary of Natural Resources,Secretary of Natural Resources,184,183,1.0,RESOLVED,EXACT_REF_NAME,false
+Secretary of Public Safety,Secretary of Public Safety,191,187,1.0,RESOLVED,EXACT_REF_NAME,false
+Secretary of Technology,Secretary of Technology,185,184,1.0,RESOLVED,EXACT_REF_NAME,false
+Secretary of Transportation,Secretary of Transportation,190,186,1.0,RESOLVED,EXACT_REF_NAME,false
+Secretary of Veterans and Defense Affairs,Department of Veterans Affairs,292,131,0.6761,AMBIGUOUS,UNMATCHED,false
+Secretary of the Commonwealth,Secretary of the Commonwealth,153,166,1.0,RESOLVED,EXACT_REF_NAME,false
+Senate,Senate,1,100,1.0,RESOLVED,EXACT_REF_NAME,false
+Sitter-Barfoot Veterans Care Center,Sitter-Barfoot Veterans Care Center,370,922,1.0,RESOLVED,EXACT_REF_NAME,false
+Small Business Commission,Small Business Commission,362,862,1.0,RESOLVED,EXACT_REF_NAME,false
+Southampton Correctional Center,Southampton Correctional Center,202,717,1.0,RESOLVED,EXACT_REF_NAME,false
+Southampton Reception and Classification Center,Southampton Reception and Classification Center,233,740,1.0,RESOLVED,EXACT_REF_NAME,false
+"Southeastern University Research Association, Inc.",Southeastern University Research Association Inc.,167,936,1.0,RESOLVED,NORMALIZED_REF_NAME,false
+Southeastern Virginia Training Center,Southeastern Virginia Training Center,207,723,1.0,RESOLVED,EXACT_REF_NAME,false
+Southern Virginia Higher Education Center,Southern Virginia Higher Education Center,303,937,1.0,RESOLVED,EXACT_REF_NAME,false
+Southern Virginia Mental Health Institute,Southern Virginia Mental Health Institute,220,739,1.0,RESOLVED,EXACT_REF_NAME,false
+Southside Virginia Community College,Southside Virginia Community College,16,276,1.0,RESOLVED,EXACT_REF_NAME,false
+Southside Virginia Training Center,Southside Virginia Training Center,210,726,1.0,RESOLVED,EXACT_REF_NAME,false
+Southwest Virginia Community College,Southwest Virginia Community College,34,294,1.0,RESOLVED,EXACT_REF_NAME,false
+Southwest Virginia Higher Education Center,Southwest Virginia Higher Education Center,173,948,1.0,RESOLVED,EXACT_REF_NAME,false
+Southwestern Virginia Mental Health Institute,Southwestern Virginia Mental Health Institute,147,705,1.0,RESOLVED,EXACT_REF_NAME,false
+Southwestern Virginia Training Center,Southwestern Virginia Training Center,219,738,1.0,RESOLVED,EXACT_REF_NAME,false
+St. Brides Correctional Center,St. Brides Correctional Center,218,737,1.0,RESOLVED,EXACT_REF_NAME,false
+State Board of Elections,State Board of Elections,81,132,1.0,RESOLVED,EXACT_REF_NAME,false
+State Corporation Commission,State Corporation Commission,164,171,1.0,RESOLVED,EXACT_REF_NAME,false
+State Council of Higher Education for Virginia,State Council of Higher Education for Virginia,272,245,1.0,RESOLVED,EXACT_REF_NAME,false
+State Lottery Department,State Lottery Department,165,172,1.0,RESOLVED,EXACT_REF_NAME,false
+State Water Commission,State Water Commission,187,971,1.0,RESOLVED,EXACT_REF_NAME,false
+Staunton Correctional Center,Staunton Correctional Center,214,731,1.0,RESOLVED,EXACT_REF_NAME,false
+Supreme Court,Supreme Court,41,111,1.0,RESOLVED,EXACT_REF_NAME,false
+Sussex I State Prison,Sussex I State Prison,215,733,1.0,RESOLVED,EXACT_REF_NAME,false
+Sussex II State Prison,Sussex II State Prison,216,734,1.0,RESOLVED,EXACT_REF_NAME,false
+The College of William and Mary in Virginia,The College of William and Mary in Virginia,237,204,1.0,RESOLVED,EXACT_REF_NAME,false
+The Library of Virginia,The Library of Virginia,229,202,1.0,RESOLVED,EXACT_REF_NAME,false
+The Science Museum of Virginia,The Science Museum of Virginia,107,146,1.0,RESOLVED,EXACT_REF_NAME,false
+Thomas Nelson Community College,Thomas Nelson Community College,33,293,1.0,RESOLVED,EXACT_REF_NAME,false
+Tidewater Community College,Tidewater Community College,35,295,1.0,RESOLVED,EXACT_REF_NAME,false
+Tobacco Indemnification & Revitalization Commission,Tobacco Indemnification & Revitalization Commission,141,851,1.0,RESOLVED,EXACT_REF_NAME,false
+Treasury Board,Treasury Board,125,155,1.0,RESOLVED,EXACT_REF_NAME,false
+Treasury Construction Financing,Treasury Construction Financing,195,993,1.0,RESOLVED,EXACT_REF_NAME,false
+Unconstitutional Appropriations,Unconstitutional Appropriations,193,991,1.0,RESOLVED,EXACT_REF_NAME,false
+University of Mary Washington,University of Mary Washington,247,215,1.0,RESOLVED,EXACT_REF_NAME,false
+University of Virginia - College at Wise,University of Virginia - College at Wise,273,246,1.0,RESOLVED,EXACT_REF_NAME,false
+University of Virginia Medical Center,University of Virginia Medical Center,242,209,1.0,RESOLVED,EXACT_REF_NAME,false
+University of Virginia-Academic Division,University of Virginia-Academic Division,238,207,1.0,RESOLVED,EXACT_REF_NAME,false
+VA Bicentennial of American War of 1812,VA Bicentennial of American War of 1812,373,867,1.0,RESOLVED,EXACT_REF_NAME,false
+VA Comm Centennial of the Woodrow Wilson Presidency,VA Comm Centennial of the Woodrow Wilson Presidency,429,869,1.0,RESOLVED,EXACT_REF_NAME,false
+VA Conflict of Interest & Ethics Advisory Council,Virginia Freedom of Information Advisory Council,116,834,0.5979,AMBIGUOUS,UNMATCHED,false
+VIRGINIA COMMISSION ON ENERGY AND ENVIRONMENT,VIRGINIA COMMISSION ON ENERGY AND ENVIRONMENT,408,868,1.0,RESOLVED,EXACT_REF_NAME,false
+Virginia Agricultural Council,Virginia Agricultural Council,47,307,1.0,RESOLVED,EXACT_REF_NAME,false
+Virginia Board for People with Disabilities,Virginia Board for People with Disabilities,128,606,1.0,RESOLVED,EXACT_REF_NAME,false
+Virginia Coal & Energy Commission,Virginia Coal & Energy Commission,54,118,1.0,RESOLVED,EXACT_REF_NAME,false
+Virginia Code Commission,Virginia Code Commission,15,108,1.0,RESOLVED,EXACT_REF_NAME,false
+Virginia College Savings Plan,Virginia College Savings Plan,170,174,1.0,RESOLVED,EXACT_REF_NAME,false
+Virginia Commercial Space Flight Authority,Virginia College Building Authority,168,941,0.7013,RESOLVED,UNMATCHED,false
+Virginia Commission for the Arts,Virginia Commission for the Arts,108,148,1.0,RESOLVED,EXACT_REF_NAME,false
+Virginia Commission on Intergovernmental Cooperation,Virginia Commission on Intergovernmental Cooperation,13,105,1.0,RESOLVED,EXACT_REF_NAME,false
+Virginia Commission on Youth,Virginia Commission on Youth,118,839,1.0,RESOLVED,EXACT_REF_NAME,false
+Virginia Commonwealth University - Academic Division,Virginia Commonwealth University - Academic Division,267,236,1.0,RESOLVED,EXACT_REF_NAME,false
+Virginia Community College System,Virginia Community College System,275,260,1.0,RESOLVED,EXACT_REF_NAME,false
+Virginia Community College System - Utility,Virginia Community College System - Utility,10,270,1.0,RESOLVED,EXACT_REF_NAME,false
+Virginia Community College System- System Office,Virginia Community College System- System Office,276,261,1.0,RESOLVED,EXACT_REF_NAME,false
+Virginia Correctional Center for Women,Virginia Correctional Center for Women,201,716,1.0,RESOLVED,EXACT_REF_NAME,false
+Virginia Correctional Enterprises,Virginia Correctional Enterprises,158,711,1.0,RESOLVED,EXACT_REF_NAME,false
+Virginia Crime Commission,Virginia Crime Commission,92,142,1.0,RESOLVED,EXACT_REF_NAME,false
+Virginia Criminal Sentencing Commission,Virginia Criminal Sentencing Commission,135,160,1.0,RESOLVED,EXACT_REF_NAME,false
+Virginia Department for the Blind and Vision Impaired,Virginia Department for the Blind and Vision Impaired,136,702,1.0,RESOLVED,EXACT_REF_NAME,false
+Virginia Economic Development Partnership,Virginia Economic Development Partnership,48,310,1.0,RESOLVED,EXACT_REF_NAME,false
+Virginia Employment Commission,Virginia Employment Commission,180,182,1.0,RESOLVED,EXACT_REF_NAME,false
+Virginia Freedom of Information Advisory Council,Virginia Freedom of Information Advisory Council,116,834,1.0,RESOLVED,EXACT_REF_NAME,false
+Virginia Highlands Community College,Virginia Highlands Community College,36,296,1.0,RESOLVED,EXACT_REF_NAME,false
+Virginia Housing Study Commission,Virginia Housing Study Commission,121,840,1.0,RESOLVED,EXACT_REF_NAME,false
+Virginia Information Providers Network Authority,Virginia Information Providers Network Authority,280,135,1.0,RESOLVED,EXACT_REF_NAME,false
+Virginia Information Technologies Agency,Virginia Information Technologies Agency,83,136,1.0,RESOLVED,EXACT_REF_NAME,false
+Virginia Institute of Marine Science,Virginia Institute of Marine Science,4,268,1.0,RESOLVED,EXACT_REF_NAME,false
+Virginia Liaison Office,Virginia Liaison Office,183,963,1.0,RESOLVED,EXACT_REF_NAME,false
+Virginia Military Institute,Virginia Military Institute,243,211,1.0,RESOLVED,EXACT_REF_NAME,false
+Virginia Museum of Fine Arts,Virginia Museum of Fine Arts,268,238,1.0,RESOLVED,EXACT_REF_NAME,false
+Virginia Museum of Natural History,Virginia Museum of Natural History,169,942,1.0,RESOLVED,EXACT_REF_NAME,false
+Virginia Office for Protection and Advocacy,Virginia Office for Protection and Advocacy,171,175,1.0,RESOLVED,EXACT_REF_NAME,false
+Virginia Parole Board,Virginia Parole Board,73,766,1.0,RESOLVED,EXACT_REF_NAME,false
+Virginia Polytechnic Institute And State University,Virginia Polytechnic Institute And State University,241,208,1.0,RESOLVED,EXACT_REF_NAME,false
+"Virginia Polytechnic Institute And State University, VA Cooperative Extension And Agricultural Experiment Station Division",Virginia Polytechnic Institute And State University VA Cooperative Extension And Agricultural Experiment Station Division,257,229,1.0,RESOLVED,NORMALIZED_REF_NAME,false
+Virginia Port Authority,Virginia Port Authority,77,407,1.0,RESOLVED,EXACT_REF_NAME,false
+Virginia Public Broadcasting Board,Virginia Public Broadcasting Board,289,911,1.0,RESOLVED,EXACT_REF_NAME,false
+Virginia Racing Commission,Virginia Racing Commission,76,405,1.0,RESOLVED,EXACT_REF_NAME,false
+Virginia Rehabilitation Center for the Blind and Vision Impaired,Virginia Rehabilitation Center for the Blind and Vision Impaired,3,263,1.0,RESOLVED,EXACT_REF_NAME,false
+Virginia Retirement System,Virginia Retirement System,134,158,1.0,RESOLVED,EXACT_REF_NAME,false
+Virginia School for Deaf and Blind at Staunton,Virginia School for Deaf and Blind at Staunton,250,218,1.0,RESOLVED,EXACT_REF_NAME,false
+"Virginia School for Deaf, Blind and Multi-Disabled at Hampton",Virginia School for Deaf Blind and Multi-Disabled at Hampton,251,219,1.0,RESOLVED,NORMALIZED_REF_NAME,false
+Virginia Sesquicentennial American Civil War Commission,Virginia Sesquicentennial American Civil War Commission,324,859,1.0,RESOLVED,EXACT_REF_NAME,false
+Virginia State Bar,Virginia State Bar,53,117,1.0,RESOLVED,EXACT_REF_NAME,false
+Virginia State University,Virginia State University,244,212,1.0,RESOLVED,EXACT_REF_NAME,false
+Virginia Tobacco Settlement Foundation,Virginia Tobacco Settlement Foundation,142,852,1.0,RESOLVED,EXACT_REF_NAME,false
+Virginia Tourism Authority,Virginia Tourism Authority,56,320,1.0,RESOLVED,EXACT_REF_NAME,false
+Virginia Veterans Care Center,Virginia Veterans Care Center,371,128,1.0,RESOLVED,EXACT_REF_NAME,false
+Virginia Veterans Care Center Board of Trustees,Virginia Veterans Care Center Board of Trustees,279,128,1.0,RESOLVED,EXACT_REF_NAME,false
+Virginia Western Community College,Virginia Western Community College,27,286,1.0,RESOLVED,EXACT_REF_NAME,false
+Virginia Workers' Compensation Commission,Virginia Workers' Compensation Commission,222,191,1.0,RESOLVED,EXACT_REF_NAME,false
+Virginia-Israel Advisory Board,Virginia-Israel Advisory Board,58,330,1.0,RESOLVED,EXACT_REF_NAME,false
+WW II 75th Anniversary Commemoration Commission,State Corporation Commission,164,171,0.64,AMBIGUOUS,UNMATCHED,false
+Wallens Ridge State Prison,Wallens Ridge State Prison,217,735,1.0,RESOLVED,EXACT_REF_NAME,false
+Western Region Correctional Field Units,Western Region Correctional Field Units,60,757,1.0,RESOLVED,EXACT_REF_NAME,false
+Western State Hospital,Western State Hospital,148,706,1.0,RESOLVED,EXACT_REF_NAME,false
+Woodrow Wilson Rehabilitation Center,Woodrow Wilson Rehabilitation Center,236,203,1.0,RESOLVED,EXACT_REF_NAME,false
+Workforce Development Agency,Workforce Development Agency,340,326,1.0,RESOLVED,EXACT_REF_NAME,false
+Wytheville Community College,Wytheville Community College,29,288,1.0,RESOLVED,EXACT_REF_NAME,false

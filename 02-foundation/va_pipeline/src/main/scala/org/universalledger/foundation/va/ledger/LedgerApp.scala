@@ -150,6 +150,13 @@ object LedgerApp {
                inputPOPath: String, POfileIn: String, year: String = "",
                params: Map[String, String] = Map.empty): Unit = {
     step match {
+      // Step ttl: APA Technical Transform Layer — resolves name columns → key columns,
+      // discovers FY monthly CSV subdirectories, and writes SortedJEFY{yr}q{n}exp.csv
+      // (and SortedJEFY{yr}rev.csv when --type R or B).
+      // --inPath  must point to the directory containing "FY 2003 Expenditure" etc.
+      // --refPath must point to the directory containing aRef*.txt (default = inPath/../)
+      case "ttl" => standardizeAndSort.applyAPA(params + ("inPath" -> inPath, "outPath" -> outPath, "year" -> year))
+
       // Step 2: standardize raw VA payment files + external merge-sort → SortedJE
       case "2"  => standardizeAndSort(params + ("inPath" -> inPath, "outPath" -> outPath, "year" -> year))
 
@@ -162,6 +169,8 @@ object LedgerApp {
       // Defaults to the standard derived file names when not supplied.
       case "2m" => runMerge(params + ("outPath" -> outPath, "year" -> year))
 
+      // Step 3: post sorted SJE to instrument ledger.
+      // post.scala reads all SortedJEFY{yr}*.csv files as a k-way match-merge — no pre-merge needed.
       case "3"  => post(outPath, outPath, year)
       case "4"  => contraCreation(outPath)
       case "5"  => dataAggregation(outPath, inPath + "ViewSpec.csv")

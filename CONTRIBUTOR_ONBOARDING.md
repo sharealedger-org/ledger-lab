@@ -71,93 +71,64 @@ Scala CKB substrate. A Python implementation measures a different runtime.
 
 ## What Actually Exists Today
 
-The honest status as of the last audit:
+For the current verified status of every architectural claim, see
+[`docs/VERIFICATION_AUDIT_REGISTER.md`](docs/VERIFICATION_AUDIT_REGISTER.md). For the
+research programme state and what to run next, see
+[`docs/RESEARCH_OBJECTIVES.md`](docs/RESEARCH_OBJECTIVES.md) and
+[`SESSION_HANDOFF.md`](../SESSION_HANDOFF.md) (top entry = start here).
 
-**What runs and has been adversarially verified (at fixture scale):**
-- Step 2: raw VA expenditure records → 39-field balanced SJE partitions, externally sorted on the
-  CKB posting key. 1,520 SJE rows, 0 unbalanced journal groups, 0 sort-key violations.
-- Step 3: sorted SJE + prior ledger → instrument-level ledger state. 59 ledger rows, ledger
-  total $0.00, conservation controls pass.
-- Active cost allocation smoke profile: 45 generated balanced allocation SJEs, rounding residual
-  recorded, next-period divisor regenerated.
-- Booked currency revaluation: 4 balanced SJEs generated, applied through the poster, controls pass.
-- Canonical evidence bundle: run manifest, process metrics, sort events, partition catalog,
-  reconciliation results — emitted for the baseline and allocation profiles.
-- Post-run interpretation report: states what ran, which controls passed, which evidence is missing.
+**Implemented and test-verified (2026-11-04, 48/48 tests pass):**
+- Step 2: raw VA expenditure/APA records → 39-field balanced SJE partitions, externally sorted.
+- Step 2p: VA PO commitment events → sorted SJE with `transIPID` from `VENDORID`.
+- Step 2m: k-way merge of payment + PO SortedJE streams.
+- Step 3: CKB match-merge post → instrument-keyed ledger (`LDGR20YY.csv`). Controls pass.
+- Step 5v: single-pass CKB view extraction → four bounded analytical tables (Views A–D).
+- Step 20: GL post → account-keyed balances (`GL20YY.csv`). CCP1 baseline.
+- Step 21: Permutation generator → `PERM_TBL20YY.csv`. CCP1 cost-explosion evidence.
+- Step ttl: APA direct-download TTL — resolves name columns to keys, routes by fiscal month.
+- Process metrics (`RESULT`/`RESOURCE` log lines): non-zero for all active steps.
+- AIM5: agency name classifier — 312/312 positives correct, precision 1.0000. ✅ PASS
 
-**What exists as code but has not been fully audited:**
-- Reclassification (`arrangementReclass.scala`), forecasting/budgeting, and consolidation steps.
-- Legacy aggregation step (Step 5 / `dataAggregation.scala`) — in-memory prototype, not
-  the bounded perspective design.
+**Implemented but not yet run on full corpus:**
+- Full 14-year VA corpus run (FY2003–FY2016) — Stage 2 validation (1-year) in progress.
+- CCP1–CCP3 three-replicate cost points on full corpus.
+- AIM1–AIM4 Python fitting scripts (to be written after corpus run).
 
-**What is documented but not implemented:**
-- Generalized 04 engine contracts (one rejected implementation; the gates are now documented).
-- Generalized 05 perspective engine.
-- Postgres-backed perspective aggregation (design exists in `docs/step5-postgres-design.md`).
-- The two elimination processes (intra-unit ARE elimination, inter-unit scope sum).
-- Named CCP2–CCP5 workload manifests and the full cost surface.
-
-**What is broken and known:**
-- Process metrics on macOS: Step 3 reports `records_read=0`, storage `?`. The pipeline ran but
-  the measurement didn't. This is the most important thing to fix before any cost curve work.
+**Documented but not yet verified for cost curve contribution:**
+- Reclassification, forecasting/budgeting, consolidation (code exists; not audit-registered).
+- Booked currency revaluation (code exists; engine contract audit in progress).
+- CCP4 and CCP5 (blocked on CCP3 and engine contract audits).
 
 ---
 
 ## What the Goal Is
 
-The goal is an **agentic cost-curve agent** — a system that can:
+Two published papers from a single run of the pipeline against the full Virginia procurement
+corpus (FY2003–FY2016, ~133M PO lines):
 
-1. Declare a named workload (input snapshot, steps, materialization profile, code revision).
-2. Run the pipeline through the Bash orchestrator.
-3. Read the canonical evidence bundle.
-4. Assert that process metrics are non-null, per-group balancing holds, and sort contracts matched.
-5. Emit a verified cost point — only if all assertions pass.
-6. Vary one axis (add Step 5, change materialization profile, change to a prior-period allocation)
-   and compare the resulting cost dimensions.
-7. Eventually compare CCP2 (post only), CCP3 (post + analysis), CCP4 (post + analysis + revaluation),
-   and CCP5 (full pipeline including allocation) on the same input snapshot to produce the four-curve
-   cost surface.
+**Paper 1 — Minimum cost curve.** Measure the cost of CCP1 (legacy GL), CCP2 (instrument
+ledger), CCP3 (+ perspective views), CCP4 (+ revaluation), CCP5 (+ allocation). Show that
+CCP2–CCP5 cost no more than CCP1. The cost of each added capability layer is the finding.
 
-The CCP4/CCP5 overlap is the empirical proof of single-pass universality. If allocation collapses to
-one pass via prior-period divisors (as the architecture claims), CCP5 should not cost more than CCP4.
-If it does diverge, that divergence — and its cause — is itself a publishable finding.
+**Paper 2 — AI consequence of posting as lossy compression.** Run AIM1–AIM5 against the CCP1
+substrates (GL output, permutation table) and the CCP2/CCP3 substrates (instrument ledger,
+views). All AIM tests fail on CCP1. All pass on CCP2/CCP3. The gap is the empirical proof
+that posting destroys predictively useful information.
 
-The agent cannot produce meaningful results until the measurement substrate is reliable. An agent
-reading `records_read=0` from a successful run will mis-state the cost of every step it measures.
+The cost surface has three independent axes — capability layer (CCP1–CCP5), time partition
+granularity (`annual`/`quarterly`/`monthly`), and materialization scope (`movement-only`
+through `movement+all-rollups`). See [`docs/TEST_DESIGN.md`](docs/TEST_DESIGN.md) §4 for
+the full experimental design.
 
 ---
 
 ## Where the Work Is
 
-### The most urgent open item: repair the measurement substrate
-
-Fix the process metrics emission in the Scala pipeline so that every run produces trustworthy
-`process_metrics.csv` rows with actual `records_read`, `records_written`, `bytes_written`,
-`wall_seconds`, and `peak_rss_bytes`. This is tracked in `SESSION_HANDOFF.md` → Next Work → item 2.
-Until this is done, no cost point is credible.
-
-### The next open items in priority order
-
-1. **Validate evidence schemas on failed/partial/no-op runs.** An agent driving the pipeline will
-   hit all of these. The evidence bundle must be interpretable for every terminal state.
-2. **Define machine-readable workload manifests.** A workload manifest fixes: input snapshot hash,
-   sbt revision, steps selected, materialization profile, and declared output capability. Two runs
-   are only comparable when their manifests match on all fixed dimensions.
-3. **Audit legacy steps (reclass, forecasting, consolidation).** These exist in code. Before they
-   can contribute to a cost curve, their actual producers, consumers, schema, CKB placement, and
-   memory behavior must be traced and recorded in the audit register.
-4. **Define the CCP2 named workload and run three replicates.** Steps 2 and 3 on the fixture
-   snapshot. The first verifiable cost point. Three replicates establish that the measurement
-   is stable before comparing to anything else.
-5. **Define and run CCP3.** Add Step 5 aggregation. The delta from CCP2 is the measured marginal cost
-   of reporting materialization.
-
-### The further items that lead to the theorem
-
-- Complete the engine contract tests for booked revaluation (rate/period edge cases, CKB placement).
-- Implement the two elimination processes through the shared CKB path.
-- Define CCP4 and CCP5 workload manifests.
-- Run CCP4 and CCP5 on the same input snapshot. Document the delta and its source.
+See [`SESSION_HANDOFF.md`](../SESSION_HANDOFF.md) top entry for the current next step.
+See [`docs/ENGINE_IMPLEMENTATION_PLAN.md`](docs/ENGINE_IMPLEMENTATION_PLAN.md) for the ordered
+sub-task list. The staged run plan (Stage 1 AIM5 complete → Stage 2 1-year validation →
+Stage 3 5-year slice → Stage 4 full corpus) is in
+[`docs/RESEARCH_OBJECTIVES.md`](docs/RESEARCH_OBJECTIVES.md) §6.
 
 ---
 
@@ -265,7 +236,6 @@ ground the cost-curve and pivot-theorem claims in the monograph.
 
 ## The One-Sentence Summary
 
-> The architecture is sound and partially verified at fixture scale. The measurement substrate
-> needed to produce comparable cost points is not yet reliable. The next milestone is not a new
-> financial feature — it is making the existing pipeline emit trustworthy evidence that an agent
-> can read and interpret without human intervention.
+> The engine is built and the measurement substrate is working. The next milestone is the
+> first full-corpus run — FY2003 validation, then 5-year slice, then 14 years × 3 replicates
+> per CCP — producing the cost surface and AIM evidence that ground both papers.

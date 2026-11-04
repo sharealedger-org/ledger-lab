@@ -1,10 +1,11 @@
-﻿# Paper 2 AI Tests — Implementation Plan
+# Engine Implementation Plan — CKB Pipeline (Papers 1 & 2)
 
 **Status:** In progress
-**Revised:** 2026-11-03
-**Scope:** Extend the core Scala CKB engine to ingest PO commitment events alongside payment
-events under a shared instrument key, and produce all Paper 2 research outputs as views in one
-ordered CKB pass.
+**Revised:** 2026-11-04
+**Scope:** Implement and verify all Scala engine sub-tasks required for the Paper 1 cost curve
+experiment (CCP1–CCP5) and the Paper 2 AI evidence test suite (AIM1–AIM5). Covers instrument
+ID fix, PO stream ingestion, CKB view emission, cost surface axis design, and Python fitting
+scripts.
 
 **Language:** Scala for all financial and feature extraction work (AGENTS.md §Language Boundaries).
 Python only for bounded post-processing of the small summary tables the Scala pass emits.
@@ -96,8 +97,8 @@ transform fix must make unmatched payments explicit with a declared unmatched st
 
 **Status:** ✅ **COMPLETE — 2026-11-04**
 
-All thresholds confirmed by owner. Recorded in `docs/TEST_DESIGN_PAPER_2.md` Section 4 and
-`docs/RESEARCH_OBJECTIVES.md` Section 7. Do not adjust after any test run.
+All thresholds confirmed by owner. Recorded in `docs/TEST_DESIGN.md` §9 and
+`docs/RESEARCH_OBJECTIVES.md` §7. Do not adjust after any test run.
 
 ---
 
@@ -252,7 +253,7 @@ VERIFICATION_AUDIT_REGISTER update remains as a next task.
 
 ## Sub-Task 2b — Resolve test alignment with PAPER_02_NOTES.md (owner decision required)
 
-**Intent:** Document a known gap between the current `TEST_DESIGN_PAPERS_1_2.md` test set and the
+**Intent:** Document a known gap between the current `TEST_DESIGN.md` test set and the
 original test design in `org-members/research/PAPER_02_NOTES.md`. Must be resolved before the
 CKB views in Sub-Task 3 are finalized, because the views need to carry the right fields.
 
@@ -280,7 +281,13 @@ Scala CKB pass, not added in Python after the fact.
 4. Confirm `vendorSurrogateKey = hash(VENDORID)` is the correct VA analog of the insurance
    surrogate key — or propose an alternative.
 
-**Status:** [ ] pending — owner decision required before Sub-Task 3
+**Status:** ✅ **COMPLETE — 2026-11-04 (confirmed by owner)**
+
+All four decisions confirmed:
+1. Non-injectivity count (Test 1) — covered by Step 21 `PermutationGenerator` (permutation row count directly measures non-injectivity without a fifth view).
+2. PO modification sequence (`-Vn` suffix) added to View C `revision_count` field — implemented in Sub-Task 3.
+3. 7-window longitudinal evaluation adopted — confirmed, locked; applies to AIM2 and AIM3 on both substrates.
+4. `vendorSurrogateKey = SHA256(VENDORID)` first 8 hex chars confirmed — implemented in View B; formula locked.
 
 ---
 
@@ -353,6 +360,143 @@ VERIFICATION_AUDIT_REGISTER update remains as a next task.
 
 ---
 
+## Sub-Task 3e — Cost surface axes: time partition granularity and materialization scope
+
+**Status:** [ ] Design complete 2026-11-04. Implementation pending.
+
+**Intent:** The CCP1–CCP5 capability-layer axis is the first dimension of the cost surface.
+Two additional orthogonal axes must be explicitly varied to produce the full empirical test of
+Paper 1's universality claim. This sub-task defines those axes, their experimental run
+configurations, and the `cost_surface.csv` schema changes needed to record them. It does not
+change any engine code; it documents what must be wired before the full-corpus run.
+
+### Background — the movement architecture contract
+
+The instrument ledger is a **movement store**, not a balance store. Every row in
+`LDGR20YY.csv` carries the net of journal movements for one (key, period) combination.
+Running balances, year-to-date totals, and balance-at-any-date are all derived by query-time
+summation of movement rows. No pre-computed balance cache is stored in the ledger.
+
+This is a first-class design decision: the VSAM/BDAM pattern of storing monthly buckets plus
+a pre-computed annual total in the same master record exists to reduce read-time compute cost
+when the same total is queried many times online. This system's query pattern is batch
+analytical — one pass of the ledger produces all needed aggregations. Redundant pre-computed
+totals are not needed, and adding them would obscure the cost measurement.
+
+### Axis 2 — Time partition granularity (`--periodGranularity`)
+
+`transFiscalPeriod` (col 22 of the SortedJE schema) is the ledger posting period key. Its
+granularity determines how many distinct rows the ledger produces per key combination and how
+many sequential CKB passes `post.scala` makes per fiscal year.
+
+| Parameter value | `transFiscalPeriod` | Source derivation |
+|----------------|---------------------|-------------------|
+| `annual`    | `"2003"`       | Year parameter only |
+| `quarterly` | `"2003/Q2"`    | Quarter of fiscal year |
+| `monthly`   | `"2003/07"`    | Calendar month of event date |
+
+**Derivation rules per stream:**
+- **APA expenditures:** month derived from source filename (`"Expenditures Jul 2002.csv"` →
+  `"2002/07"`). One SortedJE output file per source month under `T-monthly`.
+- **PO data:** month derived per-row from `ORDEREDDATE` (`"07/22/2002"` → `"2002/07"`).
+  All rows remain in one `SortedJEFY03_PO.csv`; period key varies per row.
+- **Revenue:** month derived per-row from `DEPOSIT_DATE`. Annual file, per-row period keys.
+
+**`T-monthly` is the default for AIM test substrates.** AIM4 STL decomposition requires
+monthly order volume; with quarterly or annual granularity the seasonal signal is too coarse.
+AIM2 and AIM3 also benefit from monthly commitment resolution. Papers 3–5 (allocation, FX,
+elimination) require month-end close granularity matching standard accounting practice.
+
+**`T-annual` is the minimum-cost anchor.** Use for cost-curve left anchor and for runs where
+year-end totals are sufficient (e.g. Paper 1 cost delta CCP1→CCP2).
+
+**CKB pass count implications:**
+- `T-monthly`: ~14 passes per FY (12 expenditure months + 1 PO + 1 revenue)
+- `T-quarterly`: ~5 passes per FY (4 quarterly + 1 PO)
+- `T-annual`: 1–2 passes per FY (1 merged + 1 PO, or 1 combined merged)
+
+More passes = more sequential I/O. The cost of finer granularity is measured by the
+`total_compute_s` and `total_storage_bytes` columns in `cost_surface.csv`. If cost is flat
+across granularities, the richer granularity is free. If cost grows, the growth is a finding.
+
+### Axis 3 — Materialization scope (`--materialization`)
+
+Whether aggregated period summaries are pre-computed in a follow-on pass or derived on demand
+from the movement ledger.
+
+| Parameter value | What is produced beyond `LDGR` | Extra passes |
+|----------------|-------------------------------|-------------|
+| `movement-only`       | None — movements only | 0 |
+| `movement+annual`     | Annual summary: one total per key across all periods | 1 |
+| `movement+all-rollups` | Monthly + quarterly + annual + YTD summaries | 3 |
+
+**Default for all CCP runs:** `movement-only`. Pre-computed rollups are not needed for any
+AIM test — all AIM scripts consume the CKB views (step 5v), not the ledger directly.
+
+### The four experimental configurations
+
+```
+Run A:  T-annual  + movement-only     → minimum output (Paper 1 left anchor)
+Run B:  T-monthly + movement-only     → AIM substrate (richest granularity, no extra cost)
+Run C:  T-monthly + movement+annual   → richest granularity + annual cache
+Run D:  T-monthly + movement+all-rollups → maximal pre-computation (right anchor)
+```
+
+The Paper 1 claim: if cost(A) ≈ cost(B), monthly granularity is free. If cost(B) ≈ cost(D),
+pre-computation is also free. If cost(D) > cost(B), the excess is the pre-computation cost —
+the time-dimension analog of the permutation explosion on the capability dimension.
+
+Every CCP level (CCP1–CCP5) should eventually be measured at configurations A and B at minimum.
+Configuration B is also the AIM test substrate — it is both the research instrument and a cost
+curve point.
+
+### `cost_surface.csv` schema changes required before full corpus run
+
+Current columns: `run_id, run_timestamp, curve, config_description, years, steps,
+total_compute_s, total_storage_bytes, master_file_count, total_cost_proxy`
+
+Required additions:
+
+| New column | Values | Notes |
+|-----------|--------|-------|
+| `capability_layer` | CCP1–CCP5 | Replaces `curve`; same values |
+| `period_granularity` | `annual` \| `quarterly` \| `monthly` | Axis 2 |
+| `materialization_scope` | `movement-only` \| `movement+annual` \| `movement+all-rollups` | Axis 3 |
+| `ledger_row_count` | integer | Rows in `LDGR20YY.csv` — granularity impact diagnostic |
+| `ldgr_file_bytes` | integer | Ledger file size — separated from total for analysis |
+| `view_file_bytes` | integer | Sum of all step 5v view file sizes |
+| `permutation_rows` | integer | Rows in `PERM_TBL20YY.csv` (CCP1 only; 0 otherwise) |
+
+*Until `--periodGranularity` and `--materialization` are wired as CLI parameters, capture
+their values in `config_description` using the labels above (e.g. `"T-monthly/movement-only"`).*
+
+### Implementation todo list
+
+- [ ] Add `--periodGranularity annual|quarterly|monthly` to `run_pipeline.sh`
+- [ ] Thread `periodGranularity` through `LedgerApp` dispatcher to `applyAPA` and `applyPO`
+- [ ] In `applyAPA`: replace quarterly loop with per-source-file loop; derive period from
+      calendar month already available from `discoverApaFiles`; name output file
+      `SortedJEFY03_YYYY_MM_exp.csv`; set `transFiscalPeriod = "YYYY/MM"`
+- [ ] In `applyPO`: derive `transFiscalPeriod` per-row from `ORDEREDDATE` when
+      `periodGranularity = monthly` (already available in `transTransDate`; just promote to col 22)
+- [ ] Update `cost_surface.csv` init to new schema
+- [ ] Update `record_cost_point` to emit new columns
+- [ ] Update `write_canonical_evidence.sh` to capture `ledger_row_count`, `ldgr_file_bytes`,
+      `view_file_bytes`, `permutation_rows`
+- [ ] Add `period_granularity` and `materialization_scope` as labelled `--curve` sub-fields in
+      the pipeline run header (no structural change; just make them explicit in log output)
+- [ ] Update `Ledger.scala` comment on `ldgrTransAmount`: clarify it is a period movement total,
+      not a balance — `"sum of journal movements for this key in this period"`
+
+**Note:** `post.scala` requires **no changes** for monthly granularity. With distinct period
+keys per month, the match-merge loop naturally produces period-isolated movement rows. The
+"balance accumulation" behaviour (prior period's row added to current period's journal) only
+fires when a prior SortedJE file wrote the same full key — which only happens when period
+granularity is annual (all months share one period key). Monthly period keys make each pass's
+rows independent by construction.
+
+---
+
 ## Sub-Task 4 — Python: fit statistical models on the four view tables
 
 **Intent:** With four small bounded summary tables produced by the Scala CKB pass, the four
@@ -396,11 +540,11 @@ the only Python work in the plan, and it operates on hundreds or thousands of ro
 
 ## Sub-Task 5 — Record results and update documentation
 
-**Intent:** After all tests have run, record pass/fail results in `TEST_DESIGN_PAPERS_1_2.md`
+**Intent:** After all tests have run, record pass/fail results in `TEST_DESIGN.md`
 and update `SESSION_HANDOFF.md`.
 
 **Todo list:**
-- [ ] Add `**Result:**` block to each test section in `TEST_DESIGN_PAPERS_1_2.md`:
+- [ ] Add `**Result:**` block to each test section in `TEST_DESIGN.md`:
   pass/fail, metric value, evidence file path, date run
 - [ ] Confirm `data/test_evidence/` is git-tracked (add `.gitkeep`; evidence JSON files are
   small and should be committed)

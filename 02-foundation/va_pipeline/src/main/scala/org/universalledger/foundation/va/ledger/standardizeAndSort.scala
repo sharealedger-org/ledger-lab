@@ -824,4 +824,419 @@ object standardizeAndSort {
                (-amt).toString(), accountingRule.ruleSetId, accountingRule.ruleId), matched, -amt)
     )
   }
+
+  // ── Step ttl: APA expenditure/revenue TTL (Technical Transform Layer) ────────
+  //
+  //  The APA direct-download files carry human-readable names only — no numeric keys.
+  //  This step is the TTL pass that resolves names → keys using the DPB reference tables
+  //  (aRefAgencyCSV.txt, aRefFundCSV.txt, aRefObjectCSV.txt, aRefProgramCSV.txt /
+  //  aRefSourceCSV.txt) and writes one SortedJEFY{yr}q{n}exp.csv per Virginia fiscal quarter
+  //  (and one SortedJEFY{yr}rev.csv for revenue).
+  //
+  //  Virginia FY quarters (Jul-Jun):
+  //    Q1 = Jul, Aug, Sep   Q2 = Oct, Nov, Dec
+  //    Q3 = Jan, Feb, Mar   Q4 = Apr, May, Jun
+  //
+  //  APA expenditure schema (comma-delimited, BOM-prefixed):
+  //    AGENCY_NAME | AMOUNT | FUND_NAME | LOCALITY | OBJECT_NAME | PROGRAM_NAME |
+  //    VENDOR_NAME | VOUCHER_NUMBER | VOUCHER_DATE
+  //
+  //  APA revenue schema (comma-delimited, BOM-prefixed):
+  //    AGENCY_NAME | AMOUNT | FUND_NAME | LOCALITY | SOURCE_TYPE | SOURCE | DEPOSIT_DATE
+  //
+  //  Output: same 39-field SortedJE CSV as step 2 — drop-in input for post.scala.
+  //
+  //  CLI invocation (via LedgerApp dispatcher):
+  //    sbt "run --step ttl --inPath data/VARawFiles --refPath data --outPath data/output
+  //             --year 2003"
+  //
+  //  Parameters:
+  //    inPath   — directory containing the FY subdirectories (e.g. "FY 2003 Expenditure")
+  //    refPath  — directory containing aRef*.txt reference tables (default = inPath/../)
+  //    outPath  — directory for SortedJE output
+  //    year     — 4-digit fiscal year (e.g. 2003)
+  //    type     — E=Expenditure (default), R=Revenue, B=Both
+
+  // ── Reference data container ─────────────────────────────────────────────────
+  case class ApaReferenceData(
+    agencyByName:  Map[String, String],   // UPPER(name) → AGY_AGENCY_KEY string
+    fundByName:    Map[String, String],   // UPPER(name) → FNDDTL_FUND_DETAIL_KEY string
+    objectByName:  Map[String, String],   // UPPER(name) → OBJ_OBJECT_KEY string
+    programByName: Map[String, String],   // UPPER(name) → SPRG_SUB_PROGRAM_KEY string
+    sourceByName:  Map[String, String]    // UPPER(name) → SRC_SOURCE_KEY string
+  )
+
+  // Load one reference table: returns Map[UPPER(nameCol) → keyCol]
+  private def loadRefTable(path: String, keyCol: String, nameCol: String): Map[String, String] = {
+    val result = mutable.HashMap[String, String]()
+    val f = new File(path)
+    if (!f.exists()) {
+      System.err.println(s"WARNING: Reference table not found: $path — name lookups will miss")
+      return result.toMap
+    }
+    implicit val codec = scala.io.Codec.UTF8
+      .onMalformedInput(java.nio.charset.CodingErrorAction.REPLACE)
+      .onUnmappableCharacter(java.nio.charset.CodingErrorAction.REPLACE)
+    val src = Source.fromFile(f)(codec)
+    try {
+      val lines = src.getLines()
+      if (!lines.hasNext) return result.toMap
+      val rawHeader = lines.next().stripPrefix("\uFEFF").split(",", -1).map(_.trim)
+      val ki = rawHeader.indexOf(keyCol)
+      val ni = rawHeader.indexOf(nameCol)
+      if (ki < 0 || ni < 0) {
+        System.err.println(s"WARNING: $path missing column '$keyCol' or '$nameCol'")
+        return result.toMap
+      }
+      for (line <- lines) {
+        val cols = line.split(",", -1).map(_.trim.stripPrefix("\"").stripSuffix("\""))
+        if (cols.length > math.max(ki, ni)) {
+          val key  = cols(ki)
+          val name = cols(ni).toUpperCase
+          if (key.nonEmpty && name.nonEmpty) result(name) = key
+        }
+      }
+    } finally src.close()
+    result.toMap
+  }
+
+  def loadApaReferenceData(refPath: String): ApaReferenceData = {
+    val base = refPath.stripSuffix("/")
+    ApaReferenceData(
+      agencyByName  = loadRefTable(s"$base/aRefAgencyCSV.txt",  "AGY_AGENCY_KEY",        "AGY_AGENCY_NAME"),
+      fundByName    = loadRefTable(s"$base/aRefFundCSV.txt",    "FNDDTL_FUND_DETAIL_KEY", "FNDDTL_FUND_DETAIL_NAME"),
+      objectByName  = loadRefTable(s"$base/aRefObjectCSV.txt",  "OBJ_OBJECT_KEY",         "4-DIGIT OBJECT NAME"),
+      programByName = loadRefTable(s"$base/aRefProgramCSV.txt", "SPRG_SUB_PROGRAM_KEY",   "SPRG_SUB_PROGRAM_NAME"),
+      sourceByName  = loadRefTable(s"$base/aRefSourceCSV.txt",  "SRC_SOURCE_KEY",         "SRC_SOURCE_NAME")
+    )
+  }
+
+  // ── Month name → (quarter, calendarMonth) mapping for Virginia FY (Jul-Jun) ──
+  // Returns (quarter 1-4, calendarMonth 1-12) or None for unrecognised names.
+  private def apaMonthInfo(monthToken: String): Option[(Int, Int)] = {
+    monthToken.toLowerCase.take(3) match {
+      case "jul" => Some((1,  7))
+      case "aug" => Some((1,  8))
+      case "sep" | "sep" => Some((1,  9))
+      case "oct" => Some((2, 10))
+      case "nov" => Some((2, 11))
+      case "dec" => Some((2, 12))
+      case "jan" => Some((3,  1))
+      case "feb" => Some((3,  2))
+      case "mar" => Some((3,  3))
+      case "apr" => Some((4,  4))
+      case "may" => Some((4,  5))
+      case "jun" => Some((4,  6))
+      case _     => None
+    }
+  }
+
+  // ── Discover APA monthly files for a given FY and type ───────────────────────
+  // Returns list of (file, quarter, calendarMonth) sorted by month.
+  private def discoverApaFiles(inPath: String, yearInt: Int, recType: String): Seq[(File, Int, Int)] = {
+    val typeLabel = if (recType == "R") "Revenue" else "Expenditure"
+    // Folder naming: "FY 2003 Expenditure", "All Expenditures for Fiscal Year 2014", etc.
+    val root = new File(inPath.stripSuffix("/"))
+    if (!root.exists()) return Seq.empty
+
+    val candidates = Option(root.listFiles()).getOrElse(Array.empty[File])
+      .filter(_.isDirectory)
+      .filter { dir =>
+        val n = dir.getName.toLowerCase
+        n.contains(yearInt.toString) && (
+          if (recType == "R") n.contains("revenue") || n.contains("revenues")
+          else n.contains("expenditure") || n.contains("expenditures")
+        )
+      }
+
+    if (candidates.isEmpty) {
+      System.err.println(s"WARNING: No $typeLabel directory found for FY$yearInt under $inPath")
+      return Seq.empty
+    }
+
+    val fyDir = candidates.head
+    val csvFiles = Option(fyDir.listFiles()).getOrElse(Array.empty[File])
+      .filter(f => f.isFile && f.getName.toLowerCase.endsWith(".csv"))
+
+    csvFiles.flatMap { f =>
+      // Extract month token from filename, e.g. "Expenditures Apr 2003.csv" → "Apr"
+      val monthToken = f.getName.split("[ _]").find(t => apaMonthInfo(t).isDefined).getOrElse("")
+      apaMonthInfo(monthToken).map { case (q, m) => (f, q, m) }
+    }.sortBy { case (_, _, m) =>
+      // Sort so that within a FY: Jul(7)..Dec(12) then Jan(1)..Jun(6)
+      if (m >= 7) m else m + 12
+    }
+  }
+
+  // ── APA row TTL: name-resolve one expenditure row to format-A equivalent cols ─
+  // Returns (agencyKey, fundKey, objKey, progKey, vendorName, amount, transDate) or None.
+  private def resolveApaExpRow(cols: Array[String], ref: ApaReferenceData, rowNum: Int)
+      : Option[(String, String, String, String, String, String, String)] = {
+    if (cols.length < 7) return None
+    val agencyName  = cols(0)
+    val rawAmt      = cols(1)
+    val fundName    = cols(2)
+    // cols(3) = LOCALITY — not used
+    val objectName  = cols(4)
+    val programName = cols(5)
+    val vendorName  = cols(6)
+    val transDate   = if (cols.length > 8) cols(8) else ""
+
+    try { BigDecimal(rawAmt.replace(",", "")) } catch { case _: Exception => return None }
+
+    val agencyKey  = ref.agencyByName.getOrElse(agencyName.toUpperCase, "0")
+    val fundKey    = ref.fundByName.getOrElse(fundName.toUpperCase, "0")
+    val objKey     = ref.objectByName.getOrElse(objectName.toUpperCase, "0")
+    val progKey    = ref.programByName.getOrElse(programName.toUpperCase, "0")
+
+    Some((agencyKey, fundKey, objKey, progKey, vendorName, rawAmt, transDate))
+  }
+
+  // APA revenue row TTL: resolve one revenue row.
+  private def resolveApaRevRow(cols: Array[String], ref: ApaReferenceData, rowNum: Int)
+      : Option[(String, String, String, String, String)] = {
+    if (cols.length < 6) return None
+    val agencyName = cols(0)
+    val rawAmt     = cols(1)
+    val fundName   = cols(2)
+    // cols(3) = LOCALITY, cols(4) = SOURCE_TYPE — not used
+    val sourceName = cols(5)
+    val transDate  = if (cols.length > 6) cols(6) else ""
+
+    try { BigDecimal(rawAmt.replace(",", "")) } catch { case _: Exception => return None }
+
+    val agencyKey  = ref.agencyByName.getOrElse(agencyName.toUpperCase, "0")
+    val fundKey    = ref.fundByName.getOrElse(fundName.toUpperCase, "0")
+    val srcKey     = ref.sourceByName.getOrElse(sourceName.toUpperCase, "0")
+
+    Some((agencyKey, fundKey, srcKey, rawAmt, transDate))
+  }
+
+  // ── applyAPA: TTL entry point ─────────────────────────────────────────────────
+  def applyAPA(params: Map[String, String]): Unit = {
+    val t0 = System.currentTimeMillis()
+
+    println("*" * 100)
+    println("                   Step ttl — APA Technical Transform Layer (standardizeAndSort.applyAPA)")
+    println("Start Time: " + java.util.Calendar.getInstance.getTime)
+    println("*" * 100)
+
+    val inPath    = params.getOrElse("inPath",   "data/VARawFiles/")
+    val refPath   = params.getOrElse("refPath",  inPath.stripSuffix("/") + "/../")
+    val outPath   = params.getOrElse("outPath",  "data/output/")
+    val yearStr   = params.getOrElse("year",     "2003")
+    val recTypes  = params.getOrElse("type",     "E").toUpperCase match {
+                     case "B" => Seq("E", "R")
+                     case t   => Seq(t)
+                   }
+    val chunkSize = params.get("chunkSize").map(_.toInt).getOrElse(DEFAULT_CHUNK)
+    val dryRun    = params.getOrElse("dryRun", "false").toLowerCase == "true"
+    val yearInt   = yearStr.toInt
+    val shortYr   = yearStr.takeRight(2)
+
+    val specParam = params.getOrElse("sortspec", "")
+    val specPath  = resolveSpecPath(specParam)
+    val sortSpec  = SortEngine.loadSpec(specPath)
+
+    val vmPath       = params.getOrElse("vendormaster", "")
+    val resolvedVmPath = resolveVmPath(vmPath)
+    val vendorMap    = loadVendorMaster(resolvedVmPath)
+
+    println(s"  inPath      : $inPath")
+    println(s"  refPath     : $refPath")
+    println(s"  outPath     : $outPath")
+    println(s"  year        : $yearStr  types: ${recTypes.mkString(",")}")
+    println(s"  SortSpec    : $specPath  (${sortSpec.size} fields)")
+    println(s"  VendorMaster: $resolvedVmPath  (${vendorMap.size} entries)")
+    println(s"  ChunkSize   : $chunkSize")
+
+    // Load reference tables once for the whole FY run
+    val ref = loadApaReferenceData(refPath)
+    println(s"  Reference   : agency=${ref.agencyByName.size} fund=${ref.fundByName.size} " +
+            s"object=${ref.objectByName.size} program=${ref.programByName.size} source=${ref.sourceByName.size}")
+
+    var totalSourceRows  = 0L
+    var totalSjeRows     = 0L
+    var totalUnresolved  = 0L
+
+    for (recType <- recTypes) {
+      val accountingRule = loadAccountingRule(params.get("accountingRules"), params.get("refPath"), recType)
+      val files = discoverApaFiles(inPath, yearInt, recType)
+
+      if (files.isEmpty) {
+        println(s"  WARNING: No APA ${recType} files discovered for FY$yearInt — skipping")
+      } else {
+        println(s"  Discovered ${files.size} ${recType} files for FY$yearInt")
+      }
+
+      // Group files by quarter; process one quarter at a time to produce one output file each
+      val byQuarter = files.groupBy { case (_, q, _) => q }
+
+      for (quarter <- 1 to 4) {
+        val suffix  = if (recType == "R") "rev" else s"q${quarter}exp"
+        val outFile = outPath.stripSuffix("/") + "/SortedJEFY" + shortYr + suffix + ".csv"
+        val acctDate = quarterToDate(yearStr, quarter)
+        val filesForQ = byQuarter.getOrElse(quarter, Seq.empty)
+
+        if (recType == "R" && quarter > 1) {
+          // Revenue is a single annual file; produce it once (quarter=1 sentinel)
+        } else if (recType == "R" || filesForQ.nonEmpty) {
+          val revFiles = if (recType == "R") files else filesForQ  // revenue: all files in one pass
+
+          println(s"\n  Processing ${recType} Q$quarter → $outFile  (${revFiles.size} file(s))")
+
+          val tmpDir = outPath.stripSuffix("/") + "/.apa_spill_" + recType + quarter + "_" + System.currentTimeMillis()
+          new File(tmpDir).mkdirs()
+          val spills = mutable.ArrayBuffer[String]()
+          val chunk  = mutable.ArrayBuffer[String]()
+          var sourceRows   = 0L
+          var sjeRows      = 0L
+          var unmatchedRef = 0L
+          var jrnlID       = 0
+
+          def flushChunk(): Unit = {
+            if (chunk.nonEmpty) {
+              val spillPath = SortEngine.spillChunk(SortEngine.sortChunk(chunk.toSeq, sortSpec), tmpDir, spills.size)
+              spills += spillPath
+              chunk.clear()
+              print(s"  Spilled chunk ${spills.size}  ($sjeRows SJE rows so far)\r")
+            }
+          }
+
+          implicit val codec = scala.io.Codec.UTF8
+            .onMalformedInput(java.nio.charset.CodingErrorAction.REPLACE)
+            .onUnmappableCharacter(java.nio.charset.CodingErrorAction.REPLACE)
+
+          for ((inFile, _, calMonth) <- revFiles) {
+            // For expenditures: accrue each monthly file's date to the quarter acctDate
+            // but preserve VOUCHER_DATE / DEPOSIT_DATE as transDate
+            val src = Source.fromFile(inFile)(codec)
+            try {
+              val lines = src.getLines()
+              if (!lines.hasNext) { /* empty file */ }
+              else {
+                val headerLine = lines.next()  // consume BOM + header
+                var rowNum = 1
+                for (line <- lines) {
+                  val raw = line.trim
+                  if (raw.nonEmpty) {
+                    rowNum += 1
+                    val cols = splitAndStrip(raw, ",")
+                    val resolved = if (recType == "R")
+                      resolveApaRevRow(cols, ref, rowNum).map { case (agk, fnk, srck, amt, td) =>
+                        // Build format-RA equivalent: agencyKey, fundKey, sourceKey, amount
+                        // transDate passed through acctDate override: use file date if present
+                        val transDate = if (td.nonEmpty) td else acctDate
+                        Array(agk, fnk, srck, amt, transDate)
+                      }
+                    else
+                      resolveApaExpRow(cols, ref, rowNum).map { case (agk, fnk, obk, prk, vnd, amt, td) =>
+                        // Build format-A equivalent: agencyKey, fundKey, objKey, progKey, vendorName, amount
+                        // Plus optional transDate as col 6 (like format-B)
+                        val transDate = if (td.nonEmpty) td else acctDate
+                        Array(agk, fnk, obk, prk, vnd, amt, transDate)
+                      }
+
+                    resolved match {
+                      case None => unmatchedRef += 1
+                      case Some(normalized) =>
+                        sourceRows += 1
+                        jrnlID     += 1
+                        val fmt = if (recType == "R") "RA_APA" else "A_APA"
+                        val pairs = buildJEPairsAPA(normalized, recType, vendorMap,
+                                                    accountingRule, yearStr, acctDate, jrnlID)
+                        for ((rowStr, _, _) <- pairs) {
+                          chunk += rowStr
+                          sjeRows += 1
+                          if (chunk.size >= chunkSize) flushChunk()
+                        }
+                    }
+                  }
+                }
+              }
+            } finally src.close()
+          }
+
+          flushChunk()
+
+          println(s"\n  Q$quarter: source=$sourceRows sje=$sjeRows unresolved_ref=$unmatchedRef spills=${spills.size}")
+
+          if (!dryRun && sjeRows > 0) {
+            println(s"  Merging ${spills.size} spill(s) → $outFile ...")
+            val rowsWritten = SortEngine.mergeSpills(spills.toSeq, outFile, sortSpec)
+            println(f"  Written: $outFile ($rowsWritten%,d rows)")
+          } else if (dryRun) {
+            println(s"  --dryRun: no output written for Q$quarter")
+          } else {
+            println(s"  No rows produced for Q$quarter — output file not written")
+          }
+
+          spills.foreach(p => new File(p).delete())
+          new File(tmpDir).delete()
+
+          totalSourceRows += sourceRows
+          totalSjeRows    += sjeRows
+          totalUnresolved += unmatchedRef
+
+          if (recType == "R") {
+            // Revenue is a single annual file — break after first pass
+            val elapsedS  = ((System.currentTimeMillis() - t0) / 1000).max(1)
+            val inBytes   = revFiles.foldLeft(0L) { case (acc, (f, _, _)) => acc + f.length() }
+            val outBytes  = new File(outFile).length()
+            val peakRss   = Runtime.getRuntime.totalMemory()
+            println(s"\nRESULT step=ttl year=$yearStr rc=0 records_read=$totalSourceRows records_written=$totalSjeRows elapsed_s=$elapsedS input_bytes=$inBytes output_bytes=$outBytes")
+            println(s"RESOURCE step=ttl year=$yearStr peak_rss_bytes=$peakRss")
+          }
+        }
+
+        if (recType == "R") {
+          // produced the single rev file above; skip quarters 2-4
+          //noinspection ScalaUnusedExpression
+          () // nothing
+        }
+      }
+
+      if (recType == "E") {
+        val elapsedS  = ((System.currentTimeMillis() - t0) / 1000).max(1)
+        val inBytes   = files.foldLeft(0L) { case (acc, (f, _, _)) => acc + f.length() }
+        val outFileSample = outPath.stripSuffix("/") + "/SortedJEFY" + shortYr + "q1exp.csv"
+        val outBytes  = new File(outFileSample).length()
+        val peakRss   = Runtime.getRuntime.totalMemory()
+        println(s"\nControl totals:")
+        println(s"  Source rows processed : $totalSourceRows")
+        println(s"  SJE rows produced     : $totalSjeRows  (= ~2 × source rows)")
+        println(s"  Unresolved ref lookups: $totalUnresolved")
+        println(s"\nRESULT step=ttl year=$yearStr rc=0 records_read=$totalSourceRows records_written=$totalSjeRows elapsed_s=$elapsedS input_bytes=$inBytes output_bytes=$outBytes")
+        println(s"RESOURCE step=ttl year=$yearStr peak_rss_bytes=$peakRss")
+        println("STATUS: COMPLETE")
+      }
+    }
+
+    println("*" * 100)
+    println(s"Process End Time: ${java.util.Calendar.getInstance.getTime}")
+    println("*" * 100)
+  }
+
+  // ── JE pair builder for APA-resolved rows (normalized cols) ──────────────────
+  // For expenditure: normalized = Array(agencyKey, fundKey, objKey, progKey, vendorName, amount, transDate)
+  // For revenue:     normalized = Array(agencyKey, fundKey, sourceKey, amount, transDate)
+  private def buildJEPairsAPA(
+      normalized:     Array[String],
+      recType:        String,
+      vendorMap:      Map[String, String],
+      accountingRule: AccountingRule,
+      year:           String,
+      acctDate:       String,
+      seqNo:          Int
+  ): Seq[(String, Boolean, BigDecimal)] = {
+    if (recType == "R") {
+      // revenue: reuse buildRevenuePairs with format "RA" (agencyKey, fundKey, srcKey, amount)
+      // normalized(4) = transDate — inject as col 4 so buildRevenuePairs sees it as RC-style
+      val cols = Array(normalized(0), normalized(1), normalized(2), normalized(3), normalized(4))
+      buildRevenuePairs(cols, "RC", vendorMap, accountingRule, year, acctDate, seqNo)
+    } else {
+      // expense: reuse buildExpensePairs with format "B" (agencyKey, fundKey, objKey, progKey, vendorName, amount, transDate)
+      buildExpensePairs(normalized, "B", vendorMap, accountingRule, year, acctDate, seqNo)
+    }
+  }
 }

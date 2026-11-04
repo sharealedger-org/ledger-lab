@@ -212,7 +212,7 @@ architecture.
 | Current code area | Existing behavior | Design status / caution |
 |---|---|---|
 | `standardizeAndSort.scala` and `post.scala` | Transform VA expenditure records, externally sort journal entries, and accumulate ledger balances. | A physical VA path that combines transformation and foundation responsibilities. |
-| `dataAggregation.scala` | Read ledger output and configured views, resolve vendor attributes, emit CSV summaries. | Existing in-memory implementation is a prototype; PostgreSQL selection and bounded cursor design is deferred in `docs/step5-postgres-design.md`. |
+| `dataAggregation.scala` | Read ledger output and configured views, resolve vendor attributes, emit CSV summaries. | Legacy in-memory prototype. Superseded for research purposes by `CKBViews.scala` (Step 5v), which extracts views in a single pass over SortedJE without loading LDGR into memory. |
 | Allocation, consolidation, budget, reclassification, and contra modules | Legacy balance-driven financial operations and reconciliation. | These do not by themselves establish generalized 04 Engine contracts. Test both active and no-op cases. |
 | `04-engines/` and `05-perspectives/` | Target ownership boundaries and planned experiment scaffolds. | Generalized implementations are incomplete. |
 
@@ -246,6 +246,5 @@ Do not run a full historical workload with output directed into the Git reposito
 4. [Measurement and logging contract](docs/MEASUREMENT_AND_LOGGING.md)
 5. [99 interpretation boundary](99-interpretation/README.md)
 
-`PROJECT_BRIEF.md` and `docs/universal-ledger-DESIGN.md` preserve historical design material.
-Use the current layer READMEs and the status statements above for the repository's present design
-and implementation state.
+`PROJECT_BRIEF.md` preserves historical design material. Use the current layer READMEs and the
+status statements above for the repository's present design and implementation state.

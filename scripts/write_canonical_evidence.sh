@@ -165,17 +165,52 @@ append_process() {
       input_rows="$(file_data_rows "$input_file")"
       output_rows="$(file_rows "$output_file")"
       ;;
+    2p)
+      input_file="$IN_PATH/poData/VA_opendata_FY20${short_year}.txt"
+      output_file="$OUT_PATH/SortedJEFY${short_year}q1PO.csv"
+      input_partition="raw_po_fy${short_year}"
+      output_partition="sje_po_fy${short_year}q1"
+      input_rows="$(file_data_rows "$input_file")"
+      output_rows="$(file_rows "$output_file")"
+      ;;
+    2m)
+      output_file="$OUT_PATH/SortedJEFY${short_year}merged.csv"
+      input_partition="sje_fy${short_year}q1exp;sje_po_fy${short_year}q1"
+      output_partition="sje_merged_fy${short_year}"
+      output_rows="$(file_rows "$output_file")"
+      input_rows="0"
+      ;;
     3)
       input_file="$OUT_PATH/SortedJEFY${short_year}q1exp.csv"
       output_file="$OUT_PATH/LDGR20${short_year}.csv"
       input_partition="sje_fy${short_year}q1exp"
-      if [[ ",$STEPS," == *,12,* ]]; then
+      if [[ ",$STEPS," == *,2m,* ]]; then
+        input_file="$OUT_PATH/SortedJEFY${short_year}merged.csv"
+        input_partition="sje_merged_fy${short_year}"
+      elif [[ ",$STEPS," == *,12,* ]]; then
         input_file="$OUT_PATH/SortedJEFY${short_year}_FXR.csv"
         input_partition="generated_sje_currency_reval_fy${short_year}"
       fi
       output_partition="ledger_fy20${short_year}"
       input_rows="$(file_rows "$input_file")"
       output_rows="$(file_data_rows "$output_file")"
+      ;;
+    5v)
+      # Step 5v reads SortedJE stream; produces four analytical view files
+      if [[ ",$STEPS," == *,2m,* ]]; then
+        input_file="$OUT_PATH/SortedJEFY${short_year}merged.csv"
+        input_partition="sje_merged_fy${short_year}"
+      else
+        input_file="$OUT_PATH/SortedJEFY${short_year}q1exp.csv"
+        input_partition="sje_fy${short_year}q1exp"
+      fi
+      output_file="$OUT_PATH/view_monthly_order_volume.csv"
+      output_partition="views_fy${short_year}"
+      input_rows="$(file_rows "$input_file")"
+      output_rows="$(( $(file_data_rows "$OUT_PATH/view_monthly_order_volume.csv") \
+                      + $(file_data_rows "$OUT_PATH/view_vendor_year_survival.csv") \
+                      + $(file_data_rows "$OUT_PATH/view_agency_year_commodity_mix.csv") \
+                      + $(file_data_rows "$OUT_PATH/view_agency_year_payment_totals.csv") ))"
       ;;
     6)
       input_file="$OUT_PATH/LDGR20${short_year}.csv"
@@ -230,7 +265,17 @@ append_process() {
   process_layer="02-foundation"
   process_name="step-${step}"
   engine_name="legacy-va"
-  if [[ "$step" == "6" ]]; then
+  if [[ "$step" == "2p" ]]; then
+    process_name="po-standardize"
+    engine_name="legacy-va-po"
+  elif [[ "$step" == "2m" ]]; then
+    process_name="merge-payment-po"
+    engine_name="legacy-va-merge"
+  elif [[ "$step" == "5v" ]]; then
+    process_layer="05-perspectives"
+    process_name="ckb-views"
+    engine_name="ccp3-ckb-views"
+  elif [[ "$step" == "6" ]]; then
     process_layer="04-engines"
     process_name="allocation"
     engine_name="legacy-va-allocation"
@@ -261,6 +306,35 @@ append_process() {
       "instrument,ledger,journal,book,agency,fund,object,product,nominal,alt,currency-source,currency-type-source,currency-target,currency-type-target,fiscal-period" \
       "$input_rows" "$output_rows" "$input_bytes" "$output_bytes" "200000" "" "" "" \
       "$step_elapsed" "complete"
+  elif [[ "$step" == "2p" ]]; then
+    append_partition "$input_partition" "raw_source" "01-transformation" "$process_id" "" \
+      "$input_file" "$input_rows" "" ""
+    append_partition "$output_partition" "sje" "02-foundation" "$process_id" "$input_partition" \
+      "$output_file" "$output_rows" "Y" "SortedJE"
+    append_csv_row "$SORT_EVENTS" "$RUN_ID" "${RUN_ID}-sort-po-fy${short_year}q1" \
+      "$process_id" "1" "$input_partition" "$output_partition" "SortedJE" "" \
+      "instrument,ledger,journal,book,agency,fund,object,product,nominal,alt,currency-source,currency-type-source,currency-target,currency-type-target,fiscal-period" \
+      "$input_rows" "$output_rows" "$input_bytes" "$output_bytes" "200000" "" "" "" \
+      "$step_elapsed" "complete"
+  elif [[ "$step" == "2m" ]]; then
+    append_partition "$output_partition" "sje" "02-foundation" "$process_id" "$input_partition" \
+      "$output_file" "$output_rows" "Y" "SortedJE"
+    append_csv_row "$SORT_EVENTS" "$RUN_ID" "${RUN_ID}-sort-merged-fy${short_year}" \
+      "$process_id" "1" "$input_partition" "$output_partition" "SortedJE" "" \
+      "instrument,ledger,journal,book,agency,fund,object,product,nominal,alt,currency-source,currency-type-source,currency-target,currency-type-target,fiscal-period" \
+      "0" "$output_rows" "0" "$output_bytes" "200000" "" "" "" \
+      "$step_elapsed" "complete"
+  elif [[ "$step" == "5v" ]]; then
+    for view_file in \
+        view_monthly_order_volume.csv \
+        view_vendor_year_survival.csv \
+        view_agency_year_commodity_mix.csv \
+        view_agency_year_payment_totals.csv; do
+      local vpath="$OUT_PATH/$view_file"
+      local vname="${view_file%.csv}_fy${short_year}"
+      [[ -f "$vpath" ]] && append_partition "$vname" "analytical_view" "05-perspectives" \
+        "$process_id" "$input_partition" "$vpath" "$(file_data_rows "$vpath")" "" ""
+    done
   elif [[ "$step" == "3" ]]; then
     append_partition "$output_partition" "ledger_master" "03-instrument-ledger" "$process_id" \
       "$input_partition" "$output_file" "$output_rows" "" ""

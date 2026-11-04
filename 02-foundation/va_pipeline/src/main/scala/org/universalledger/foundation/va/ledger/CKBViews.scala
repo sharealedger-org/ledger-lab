@@ -20,30 +20,65 @@ package org.universalledger.foundation.va.ledger
 //
 //    Input schema: 39-field comma-delimited Transaction rows.
 //      col  0  transIPID              — vendor / instrument ID
+//      col  2  transCommitmentID      — PONUMBER for PO rows; "0" for payments
 //      col  5  transBusinessEventCode — "COMMITMENT" (PO) or payment event code
 //      col 12  transLegalEntityID     — agency
+//      col 13  transCenterID          — fund code (payments); "0000" (PO rows)
 //      col 14  transProjectID         — NIGP code for PO rows; object code for payments
 //      col 22  transFiscalPeriod      — fiscal year (4-digit string)
 //      col 24  transTransDate         — order date or accounting date
 //      col 25  transTransAmount       — signed amount (debit positive, credit negative)
 //
 //    Output schema (analytical outputs — not canonical state, not posted to ledger):
-//      view_monthly_order_volume.csv       : fiscal_period, nigp_class_3digit, po_line_count,
-//                                            total_committed_amount
-//      view_vendor_year_survival.csv       : vendor_id, vendor_surrogate_key, fiscal_year,
-//                                            first_order_year, present_next_year, total_amount,
-//                                            po_count
+//
+//    View A  view_monthly_order_volume.csv
+//      key  : (fiscal_period, nigp_class_3digit, agency)
+//      cols : fiscal_period, nigp_class_3digit, agency, po_line_count,
+//             total_committed_amount, revision_count
+//      notes: agency added to key so AIM4 can produce per-agency Q4 seasonality flags.
+//             revision_count enables intra-year revision-surge detection.
+//
+//    View B  view_vendor_year_survival.csv
+//      key  : (vendor_id, fiscal_year)
+//      cols : vendor_id, vendor_surrogate_key, fiscal_year, first_order_year,
+//             present_next_year, total_amount, po_count,
+//             nigp_class_modal, agency_count, distinct_nigp_classes
+//      notes:
 //        vendor_surrogate_key = first 8 hex chars of SHA-256(vendor_id).
-//        Used by Python fitting scripts as a semantically-neutral shuffle/split key
-//        (vendorSurrogateKey mod 5 → train/validate/test) — the VA analog of the insurance
-//        corpus surrogate key (Paper 2 §5.2).
-//      view_agency_year_commodity_mix.csv  : agency, fiscal_year, nigp_class_3digit,
-//                                            po_count, total_committed_amount, revision_count
-//      view_agency_year_payment_totals.csv : agency, fiscal_year, total_payment_amount,
-//                                            payment_count
+//          Used as semantically-neutral shuffle/split key for ML train/test splits:
+//          vendorSurrogateKey mod 5 → partition index (VA analog of insurance corpus key §5.2).
+//        nigp_class_modal = most frequent 3-digit NIGP class this vendor-year.
+//          Captures commodity identity; enables AIM3 year-over-year commodity class shift.
+//        agency_count = distinct agencies served by this vendor in this year.
+//          Measures market concentration; feeds AIM3 agency-dependency feature.
+//        distinct_nigp_classes = count of distinct 3-digit NIGP classes this vendor-year.
+//          Measures product breadth; extension point for Papers 3–7 allocation rules.
+//
+//    View C  view_agency_year_commodity_mix.csv
+//      key  : (agency, fiscal_year, nigp_class_3digit)
+//      cols : agency, fiscal_year, nigp_class_3digit, po_count,
+//             total_committed_amount, revision_count,
+//             vendor_count, min_order_amount, max_order_amount
+//      notes:
+//        vendor_count = distinct vendors supplying this agency-year-class.
+//          Enables AIM2 supply-concentration feature.
+//        min_order_amount, max_order_amount = range of individual line amounts.
+//          Proxy for order-size distribution without requiring sort; enables AIM2 median proxy.
+//
+//    View D  view_agency_year_payment_totals.csv
+//      key  : (agency, fiscal_year, fund_id, object_code)
+//      cols : agency, fiscal_year, fund_id, object_code,
+//             total_payment_amount, payment_count
+//      notes:
+//        fund_id = transCenterID (col 13); populated on payment rows.
+//        object_code = transProjectID (col 14); populated on payment rows.
+//        Finer key enables AIM2 Layer 2 baseline with object-code proxy for commodity.
+//        fund_id is the natural allocation partition for Paper 3 allocation driver tables.
 //
 //    Materialization: single scan; four bounded in-memory maps; no spill at fixture scale.
 //    Memory contract: O(distinct keys per view) ≪ O(N source rows).
+//    View B accumulates per-vendor-year sub-maps for nigp_class frequency and agency set;
+//    these are also O(distinct values per vendor-year) and collapse to scalars at write time.
 //
 //    Controls emitted:
 //      RESULT step=5v year=... rc=0 records_read=N view_monthly_N view_vendor_N
@@ -53,10 +88,17 @@ package org.universalledger.foundation.va.ledger
 //  Canonical state vs analytical output: these files are analytical outputs only.
 //  They are not SJE, are not posted, and do not require balancing controls.
 //
+//  Schema design session: 2026-11-04. See SESSION_HANDOFF.md for design rationale.
+//  Three-question design principle per view (RESEARCH_STRATEGY.md §View schema design):
+//    (a) minimum for paper 2 AIM model
+//    (b) cross-model interaction features (AIM3→AIM2, AIM4→AIM2)
+//    (c) extension point for papers 3–7
+//
 //  *(c) Copyright IBM Corporation. 2018
 //  * SPDX-License-Identifier: Apache-2.0
 //  * By Kip Twitchell
 //  2026 — Sub-Task 3 implementation (Bob AI, Session N+1)
+//  2026 — Enriched view schemas (Bob AI, Session N+2)
 //***************************************************************************************************************
 
 import java.io.{File, PrintWriter}
@@ -71,27 +113,39 @@ object CKBViews {
   // ── Accumulator types ─────────────────────────────────────────────────────
 
   // View A: monthly order volume
-  //   key: (fiscalPeriod, nigpClass3)
-  private case class MonthlyVolumeAcc(var poLineCount: Long = 0L, var totalAmt: BigDecimal = 0)
+  //   key: (fiscalPeriod, nigpClass3, agency)
+  private case class MonthlyVolumeAcc(
+    var poLineCount:    Long       = 0L,
+    var totalAmt:       BigDecimal = 0,
+    var revisionCount:  Long       = 0L
+  )
 
   // View B: vendor-year survival panel
   //   key: (vendorId, fiscalYear)
+  //   nigpClassFreq: mutable sub-map for computing modal class at write time
+  //   agencySet:     mutable set for counting distinct agencies at write time
   private case class VendorYearAcc(
-    var firstOrderYear: String = "",
-    var totalAmt: BigDecimal = 0,
-    var poCount: Long = 0L
+    var firstOrderYear: String                        = "",
+    var totalAmt:       BigDecimal                    = 0,
+    var poCount:        Long                          = 0L,
+    nigpClassFreq:      mutable.HashMap[String, Long] = mutable.HashMap.empty,
+    agencySet:          mutable.HashSet[String]        = mutable.HashSet.empty
   )
 
   // View C: agency-year commodity mix
   //   key: (agency, fiscalYear, nigpClass3)
+  //   vendorSet: mutable set for counting distinct vendors at write time
   private case class AgencyCommodityAcc(
-    var poCount: Long = 0L,
-    var totalAmt: BigDecimal = 0,
-    var revisionCount: Long = 0L    // rows whose transCommitmentID contains a "-V" suffix
+    var poCount:       Long                 = 0L,
+    var totalAmt:      BigDecimal           = 0,
+    var revisionCount: Long                 = 0L,
+    var minAmt:        BigDecimal           = BigDecimal(Long.MaxValue),
+    var maxAmt:        BigDecimal           = BigDecimal(Long.MinValue),
+    vendorSet:         mutable.HashSet[String] = mutable.HashSet.empty
   )
 
   // View D: agency-year payment totals
-  //   key: (agency, fiscalYear)
+  //   key: (agency, fiscalYear, fundId, objectCode)
   private case class AgencyPaymentAcc(var totalAmt: BigDecimal = 0, var paymentCount: Long = 0L)
 
   // ── Entry point called by LedgerApp dispatcher ─────────────────────────────
@@ -108,10 +162,10 @@ object CKBViews {
     val yearStr = params.getOrElse("year",    "")
 
     // ── Aggregation maps ───────────────────────────────────────────────────
-    val monthlyMap   = mutable.HashMap[(String, String), MonthlyVolumeAcc]()
+    val monthlyMap   = mutable.HashMap[(String, String, String), MonthlyVolumeAcc]()
     val vendorMap    = mutable.HashMap[(String, String), VendorYearAcc]()
     val commodityMap = mutable.HashMap[(String, String, String), AgencyCommodityAcc]()
-    val paymentMap   = mutable.HashMap[(String, String), AgencyPaymentAcc]()
+    val paymentMap   = mutable.HashMap[(String, String, String, String), AgencyPaymentAcc]()
 
     // ── Collect all years seen (for vendor-year survival "present_next_year") ─
     val vendorYears = mutable.HashMap[String, mutable.SortedSet[String]]()
@@ -155,14 +209,15 @@ object CKBViews {
             val cols = raw.split(",", -1)
             if (cols.length >= 26) {
               totalRecordsRead += 1
-              val vendorId  = cols(0)
-              val commitId  = if (cols.length > 2) cols(2) else ""
-              val bizEvent  = cols(5)
-              val agency    = cols(12)
-              val nigpCode  = cols(14)
-              val fiscYear  = cols(22)
-              val transDate = cols(24)  // YYYY/MM/DD or MM/DD/YYYY
-              val rawAmt    = cols(25)
+              val vendorId   = cols(0)
+              val commitId   = if (cols.length > 2)  cols(2)  else ""
+              val bizEvent   = cols(5)
+              val agency     = cols(12)
+              val fundId     = cols(13)
+              val nigpCode   = cols(14)
+              val fiscYear   = cols(22)
+              val transDate  = cols(24)  // YYYY/MM/DD or MM/DD/YYYY
+              val rawAmt     = cols(25)
 
               val amt = try BigDecimal(rawAmt) catch { case _: Exception => BigDecimal(0) }
 
@@ -177,10 +232,11 @@ object CKBViews {
 
               if (bizEvent == "COMMITMENT" && isDebit) {
                 // ── View A: monthly order volume ─────────────────────────
-                val keyA = (fiscMonth, nigp3)
+                val keyA = (fiscMonth, nigp3, agency)
                 val accA = monthlyMap.getOrElseUpdate(keyA, MonthlyVolumeAcc())
                 accA.poLineCount += 1
-                accA.totalAmt += amt
+                accA.totalAmt    += amt
+                if (commitId.contains("-V")) accA.revisionCount += 1
 
                 // ── View B: vendor-year survival ─────────────────────────
                 val keyB = (vendorId, fiscYear)
@@ -189,6 +245,8 @@ object CKBViews {
                   accB.firstOrderYear = fiscYear
                 accB.totalAmt += amt
                 accB.poCount  += 1
+                accB.nigpClassFreq(nigp3) = accB.nigpClassFreq.getOrElse(nigp3, 0L) + 1L
+                accB.agencySet += agency
 
                 // Track all years this vendor appears in (for present_next_year)
                 vendorYears.getOrElseUpdate(vendorId, mutable.SortedSet[String]()) += fiscYear
@@ -198,15 +256,17 @@ object CKBViews {
                 val accC = commodityMap.getOrElseUpdate(keyC, AgencyCommodityAcc())
                 accC.poCount  += 1
                 accC.totalAmt += amt
-                // A PO is a revision if its commitmentID contains "-V" (e.g. "A501_0000200268-V2")
                 if (commitId.contains("-V")) accC.revisionCount += 1
+                if (amt < accC.minAmt) accC.minAmt = amt
+                if (amt > accC.maxAmt) accC.maxAmt = amt
+                accC.vendorSet += vendorId
               }
 
               if (bizEvent != "COMMITMENT" && isDebit) {
                 // ── View D: agency-year payment totals ────────────────────
-                val keyD = (agency, fiscYear)
+                val keyD = (agency, fiscYear, fundId, nigpCode)
                 val accD = paymentMap.getOrElseUpdate(keyD, AgencyPaymentAcc())
-                accD.totalAmt    += amt
+                accD.totalAmt     += amt
                 accD.paymentCount += 1
               }
             }
@@ -228,47 +288,65 @@ object CKBViews {
     // View A
     val writerA = new PrintWriter(viewAFile)
     try {
-      writerA.println("fiscal_period,nigp_class_3digit,po_line_count,total_committed_amount")
-      for (((fp, nigp3), acc) <- monthlyMap.toSeq.sortBy(_._1))
-        writerA.println(s"$fp,$nigp3,${acc.poLineCount},${acc.totalAmt}")
+      writerA.println("fiscal_period,nigp_class_3digit,agency,po_line_count,total_committed_amount,revision_count")
+      for (((fp, nigp3, ag), acc) <- monthlyMap.toSeq.sortBy(_._1))
+        writerA.println(s"$fp,$nigp3,$ag,${acc.poLineCount},${acc.totalAmt},${acc.revisionCount}")
     } finally writerA.close()
 
-    // View B — compute present_next_year flag and vendor_surrogate_key
+    // View B — compute present_next_year flag, vendor_surrogate_key, and derived scalars
     val writerB = new PrintWriter(viewBFile)
     try {
-      writerB.println("vendor_id,vendor_surrogate_key,fiscal_year,first_order_year,present_next_year,total_amount,po_count")
+      writerB.println(
+        "vendor_id,vendor_surrogate_key,fiscal_year,first_order_year,present_next_year," +
+        "total_amount,po_count,nigp_class_modal,agency_count,distinct_nigp_classes"
+      )
       for (((vid, fy), acc) <- vendorMap.toSeq.sortBy(_._1)) {
-        val yearsForVendor = vendorYears.getOrElse(vid, mutable.SortedSet.empty[String])
-        // "present_next_year" = 1 if there is any year > fy in this vendor's year set
-        val presentNextYear = if (yearsForVendor.exists(_ > fy)) 1 else 0
-        val surrogateKey    = vendorSurrogateKey(vid)
-        writerB.println(s"$vid,$surrogateKey,$fy,${acc.firstOrderYear},$presentNextYear,${acc.totalAmt},${acc.poCount}")
+        val yearsForVendor   = vendorYears.getOrElse(vid, mutable.SortedSet.empty[String])
+        val presentNextYear  = if (yearsForVendor.exists(_ > fy)) 1 else 0
+        val surrogateKey     = vendorSurrogateKey(vid)
+        val modalClass       = if (acc.nigpClassFreq.isEmpty) "" else acc.nigpClassFreq.maxBy(_._2)._1
+        val agencyCount      = acc.agencySet.size
+        val distinctClasses  = acc.nigpClassFreq.size
+        writerB.println(
+          s"$vid,$surrogateKey,$fy,${acc.firstOrderYear},$presentNextYear," +
+          s"${acc.totalAmt},${acc.poCount},$modalClass,$agencyCount,$distinctClasses"
+        )
       }
     } finally writerB.close()
 
     // View C
     val writerC = new PrintWriter(viewCFile)
     try {
-      writerC.println("agency,fiscal_year,nigp_class_3digit,po_count,total_committed_amount,revision_count")
-      for (((ag, fy, n3), acc) <- commodityMap.toSeq.sortBy(_._1))
-        writerC.println(s"$ag,$fy,$n3,${acc.poCount},${acc.totalAmt},${acc.revisionCount}")
+      writerC.println(
+        "agency,fiscal_year,nigp_class_3digit,po_count,total_committed_amount,revision_count," +
+        "vendor_count,min_order_amount,max_order_amount"
+      )
+      for (((ag, fy, n3), acc) <- commodityMap.toSeq.sortBy(_._1)) {
+        // Guard min/max against the initial sentinel values (no rows accumulated)
+        val minAmt = if (acc.poCount == 0L) BigDecimal(0) else acc.minAmt
+        val maxAmt = if (acc.poCount == 0L) BigDecimal(0) else acc.maxAmt
+        writerC.println(
+          s"$ag,$fy,$n3,${acc.poCount},${acc.totalAmt},${acc.revisionCount}," +
+          s"${acc.vendorSet.size},$minAmt,$maxAmt"
+        )
+      }
     } finally writerC.close()
 
-    // View D
+    // View D — key now (agency, fiscal_year, fund_id, object_code)
     val writerD = new PrintWriter(viewDFile)
     try {
-      writerD.println("agency,fiscal_year,total_payment_amount,payment_count")
-      for (((ag, fy), acc) <- paymentMap.toSeq.sortBy(_._1))
-        writerD.println(s"$ag,$fy,${acc.totalAmt},${acc.paymentCount}")
+      writerD.println("agency,fiscal_year,fund_id,object_code,total_payment_amount,payment_count")
+      for (((ag, fy, fund, obj), acc) <- paymentMap.toSeq.sortBy(_._1))
+        writerD.println(s"$ag,$fy,$fund,$obj,${acc.totalAmt},${acc.paymentCount}")
     } finally writerD.close()
 
     // ── Emit structured metrics ────────────────────────────────────────────
-    val elapsedS    = ((System.currentTimeMillis() - t0) / 1000).max(1)
-    val peakRss     = Runtime.getRuntime.totalMemory()
-    val nMonthly    = monthlyMap.size
-    val nVendor     = vendorMap.size
-    val nCommodity  = commodityMap.size
-    val nPayment    = paymentMap.size
+    val elapsedS   = ((System.currentTimeMillis() - t0) / 1000).max(1)
+    val peakRss    = Runtime.getRuntime.totalMemory()
+    val nMonthly   = monthlyMap.size
+    val nVendor    = vendorMap.size
+    val nCommodity = commodityMap.size
+    val nPayment   = paymentMap.size
 
     println("*" * 100)
     println(s"Files processed     : ${jeFiles.size}")
@@ -292,6 +370,8 @@ object CKBViews {
   //    - suitable for mod-N train/validate/test splits without explicit shuffling
   //
   //  Used by Python fitting scripts as: vendorSurrogateKey mod 5 → partition index.
+  //  Formula locked 2026-11-04: SHA256(VENDORID) first 8 hex chars ≡ mod 2^32.
+  //  Do not change after any split assignment has been computed.
   private[ledger] def vendorSurrogateKey(vendorId: String): String = {
     val digest = MessageDigest.getInstance("SHA-256")
     val bytes  = digest.digest(vendorId.getBytes("UTF-8"))

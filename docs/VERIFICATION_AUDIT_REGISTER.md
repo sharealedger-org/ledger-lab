@@ -124,7 +124,7 @@ These entries establish `not_audited` as the baseline state per `VERIFICATION_SE
 ## 2026-11-04 Adversarial audit: Steps 20/21 and evidence infrastructure (Bob)
 
 **Role:** Adversarial Architecture Reviewer
-**Scope:** `GLPost.scala`, `PermutationGenerator.scala`, `write_canonical_evidence.sh`, `TEST_DESIGN_PAPER_1.md`, `GLPostSpec.scala`, `run_c1_smoke_test.sh`
+**Scope:** `GLPost.scala`, `PermutationGenerator.scala`, `write_canonical_evidence.sh`, `TEST_DESIGN.md`, `GLPostSpec.scala`, `run_c1_smoke_test.sh`
 
 ### Confirmed: column indices independently verified
 
@@ -132,7 +132,7 @@ Column indices declared in `GLPost.scala` (COL_AGENCY=12, COL_FUND=13, COL_NOMIN
 
 ### Confirmed: debit-only accumulation semantics
 
-Both steps filter `cols(COL_DIR_FLAG).trim == "D"` before accumulating. `TEST_DESIGN_PAPER_1.md §CCP1` does not explicitly state debit-only, but the intent — accumulate the economic amount of each transaction without double-counting the balanced debit+credit pair — is correctly implemented. The tests confirm offset ("N") rows are excluded and amounts sum correctly.
+Both steps filter `cols(COL_DIR_FLAG).trim == "D"` before accumulating. `TEST_DESIGN.md §CCP1` does not explicitly state debit-only, but the intent — accumulate the economic amount of each transaction without double-counting the balanced debit+credit pair — is correctly implemented. The tests confirm offset ("N") rows are excluded and amounts sum correctly.
 
 ### Confirmed: 7/7 unit tests pass
 
@@ -146,12 +146,12 @@ The original finding was that CCP1 Step 2 uses the instrument-key sort rather th
 
 - CCP1 Step 2 uses the same SortedJE partition as CCP2 (shared input snapshot). `GLPost` is sort-order-agnostic (full-file accumulator), so the GL balance output is numerically correct regardless.
 - The shared sort introduces a **known measurement conservatism**: CCP1's Step 2 sort cost includes sorting a vendor-bearing key, which a true legacy system would never do. This makes CCP1 sort cost equal to or *higher* than a real legacy system — the CCP1→CCP2 delta is therefore a **lower bound** on the true architectural cost difference, not an overstatement.
-- `TEST_DESIGN_PAPER_1.md §CCP1` has been updated to document this conservatism explicitly, replace the "sort by account key" description, and reframe `PermutationGenerator` as measuring externalised upstream cost rather than a GL post-hoc step.
+- `TEST_DESIGN.md §CCP1` has been updated to document this conservatism explicitly, replace the "sort by account key" description, and reframe `PermutationGenerator` as measuring externalised upstream cost rather than a GL post-hoc step.
 
 | Claim | State | Evidence | Remaining gap |
 |---|---|---|---|
-| CCP1 sort-cost conservatism is documented and the CCP1→CCP2 delta is a valid lower bound | `design_accepted` | `TEST_DESIGN_PAPER_1.md §CCP1` updated 2026-11-04; `GLPost` ignores `transIPID`; conservatism is in the direction of making CCP1 cost higher, not lower | A separate account-key-only sort sensitivity run could quantify the conservatism; not required for the cost point |
-| `PermutationGenerator` measures externalised upstream materialisation cost, not a GL step | `design_accepted` | `TEST_DESIGN_PAPER_1.md §CCP1` updated 2026-11-04; reads from SortedJE (original stream), not from GL output; framing confirmed by project owner | AIM1 consumer not yet implemented |
+| CCP1 sort-cost conservatism is documented and the CCP1→CCP2 delta is a valid lower bound | `design_accepted` | `TEST_DESIGN.md §CCP1` updated 2026-11-04; `GLPost` ignores `transIPID`; conservatism is in the direction of making CCP1 cost higher, not lower | A separate account-key-only sort sensitivity run could quantify the conservatism; not required for the cost point |
+| `PermutationGenerator` measures externalised upstream materialisation cost, not a GL step | `design_accepted` | `TEST_DESIGN.md §CCP1` updated 2026-11-04; reads from SortedJE (original stream), not from GL output; framing confirmed by project owner | AIM1 consumer not yet implemented |
 
 ### FINDING 2 (MEDIUM) — Output filename mismatch between code and evidence script — **FIXED 2026-11-04**
 
@@ -184,11 +184,11 @@ The `peak_rss_bytes` RESOURCE field uses `Runtime.getRuntime.totalMemory()` (JVM
 
 ### FINDING 5 — AIM1 consumer — **DEFERRED 2026-11-04**
 
-`GL20YY.csv` and `PERM_TBL20YY.csv` are the correct terminal outputs of CCP1. They are not orphaned — they are the declared substrates for the AIM1 test family described in `TEST_DESIGN_PAPER_1.md §AIM pairing`. AIM1 is a future gate, not a current blocker. The outputs exist, are correctly named, and are catalogued in `partition_catalog.csv` by `write_canonical_evidence.sh`. No action is required until AIM1 is implemented.
+`GL20YY.csv` and `PERM_TBL20YY.csv` are the correct terminal outputs of CCP1. They are not orphaned — they are the declared substrates for the AIM1 test family described in `TEST_DESIGN.md §AIM pairing`. AIM1 is a future gate, not a current blocker. The outputs exist, are correctly named, and are catalogued in `partition_catalog.csv` by `write_canonical_evidence.sh`. No action is required until AIM1 is implemented.
 
 | Claim | State | Evidence | Remaining gap |
 |---|---|---|---|
-| `GL20YY.csv` and `PERM_TBL20YY.csv` are correctly produced terminal outputs of CCP1 | `design_accepted` | Files written by Steps 20/21; catalogued in `partition_catalog.csv`; named in `TEST_DESIGN_PAPER_1.md §AIM pairing` as AIM1 substrates | AIM1 implementation is a future gate; not a current blocker for the CCP1 cost point |
+| `GL20YY.csv` and `PERM_TBL20YY.csv` are correctly produced terminal outputs of CCP1 | `design_accepted` | Files written by Steps 20/21; catalogued in `partition_catalog.csv`; named in `TEST_DESIGN.md §AIM pairing` as AIM1 substrates | AIM1 implementation is a future gate; not a current blocker for the CCP1 cost point |
 
 ### Immediate order for CCP1 gate (updated 2026-11-04)
 
@@ -228,7 +228,80 @@ Scope: Sub-Task 3 — CCP3 extract-time summarisation pass. Reads the CKB sorted
 | View C (`view_agency_year_commodity_mix.csv`) schema: `agency, fiscal_year, nigp_class_3digit, po_count, total_committed_amount, revision_count` | `verified` | `CKBViewsSpec` Test 3: original and `-V2` revision detected; `revision_count=1`, `po_count=2` | - |
 | View D (`view_agency_year_payment_totals.csv`) schema: `agency, fiscal_year, total_payment_amount, payment_count` | `verified` | `CKBViewsSpec` Test 4: COMMITMENT row excluded; payment debit accumulated; credit excluded | - |
 | `vendor_surrogate_key` on View B is `SHA-256(vendor_id)` first 8 hex chars, semantically neutral, suitable for `mod 5` train/validate/test splits | `verified` | `CKBViewsSpec` Test 2b: format `[0-9a-f]{8}`, matches `CKBViews.vendorSurrogateKey("v001")` directly, distinct for `v001`/`v002`; `java.security.MessageDigest` SHA-256, deterministic across JVM runs | Collision probability at fixture scale (2 vendors) negligible; not tested at 65K-vendor corpus scale |
-| RESULT/RESOURCE log lines emitted for Step 5v | `verified` | `CKBViewsSpec` Test 6 captures stdout and asserts `RESULT step=5v` and `RESOURCE step=5v` | `write_canonical_evidence.sh` not yet extended with `append_process` case for step 5v |
+| RESULT/RESOURCE log lines emitted for Step 5v | `verified` | `CKBViewsSpec` Test 6 captures stdout and asserts `RESULT step=5v` and `RESOURCE step=5v` | — |
 | Memory contract O(distinct keys per view) — no full-source ArrayBuffer | `design_only` | Code inspection: four `mutable.HashMap` accumulators; `getOrElseUpdate` pattern; source streamed line-by-line via `Source.getLines()`; no `toList` on source | Not measured at corpus scale; if heap exhausted, declared fix is lower `chunkSize` or add spill-to-file analogous to SortEngine |
 
-**Remaining gate:** `write_canonical_evidence.sh` needs an `append_process` case for step 5v before any CCP3 replicate counts as a valid measured run. Real-corpus run required; view totals should be cross-checked against `vendor_po_attributes_by_year.csv` and APA agency totals for sanity.
+**Remaining gate:** Real-corpus run required. Confirm non-zero `process_metrics.csv` rows for step 5v; view totals should be cross-checked against `vendor_po_attributes_by_year.csv` and APA agency totals for sanity.
+
+## 2026-11-04 Sub-Task 3d — Enriched view schemas (Bob)
+
+Scope: schema enrichment of the four CKBViews analytical outputs against the three-question design principle (minimum for paper 2 AIM model; cross-model interaction features; extension point for papers 3–7). No Python, no pipeline steps, no canonical state changed. View files are analytical outputs only.
+
+| Claim | State | Evidence | Remaining gap |
+|---|---|---|---|
+| View A key gains `agency`; `revision_count` added | `verified` | `CKBViewsSpec` Test 1b: agency key present in all output rows; revision_count column asserted; 40/40 suite pass | No real-corpus run |
+| View B adds `nigp_class_modal`, `agency_count`, `distinct_nigp_classes` | `verified` | `CKBViewsSpec` Test 2c: modal class, agency count, distinct class count all asserted from fixture rows; O(distinct values per key) accumulators (per-vendor-year sub-map and agency HashSet) | No real-corpus run; modal stability at scale unverified |
+| View C adds `vendor_count`, `min_order_amount`, `max_order_amount` | `verified` | `CKBViewsSpec` Test 3b: vendor count, min/max amounts asserted; no sort required (running min/max) | No real-corpus run |
+| View D key gains `fund_id` (col 13) and `object_code` (col 14) | `verified` | `CKBViewsSpec` Test 4b: fund_id and object_code present in output rows; PO rows carry `fund_id = "0000"` (expected for commitment events with no fund) | No real-corpus run; fund_id/object_code only populated on payment rows (View D's input) |
+| Fixture smoke test passes with enriched schemas | `verified` | `bash scripts/run_repo_fixture_smoke_test.sh --with-po-fixture --show-data` → `442 ledger rows, amount sum 0.00`; 40/40 suite pass | — |
+| `run_pipeline.sh` `run_step()` has explicit cases for steps 2p, 2m, 5v, 20, 21 | `verified` | `run_pipeline.sh` lines contain `2p)`, `2m)`, `5v)`, `20)`, `21)` case blocks with correct file derivation and RESULT-line metric extraction; input_bytes accumulation guard excludes steps 20/21 from single-file override | No corpus run yet to confirm non-zero metrics |
+| `write_canonical_evidence.sh` `append_process()` has cases for steps 2p, 2m, 5v, 20, 21 | `verified` | `write_canonical_evidence.sh` contains explicit case blocks for all five steps; partition catalog entries emitted for each | — |
+
+**Final view schemas (locked 2026-11-04):**
+
+```
+View A  view_monthly_order_volume.csv
+  key : (fiscal_period, nigp_class_3digit, agency)
+  cols: fiscal_period, nigp_class_3digit, agency, po_line_count,
+        total_committed_amount, revision_count
+
+View B  view_vendor_year_survival.csv
+  key : (vendor_id, fiscal_year)
+  cols: vendor_id, vendor_surrogate_key, fiscal_year, first_order_year,
+        present_next_year, total_amount, po_count,
+        nigp_class_modal, agency_count, distinct_nigp_classes
+
+View C  view_agency_year_commodity_mix.csv
+  key : (agency, fiscal_year, nigp_class_3digit)
+  cols: agency, fiscal_year, nigp_class_3digit, po_count,
+        total_committed_amount, revision_count,
+        vendor_count, min_order_amount, max_order_amount
+
+View D  view_agency_year_payment_totals.csv
+  key : (agency, fiscal_year, fund_id, object_code)
+  cols: agency, fiscal_year, fund_id, object_code,
+        total_payment_amount, payment_count
+```
+
+**Remaining gate:** Validate all four enriched view schemas on 1–2 years of real corpus data. Confirm non-zero row counts, cross-check view totals against `vendor_po_attributes_by_year.csv` and APA agency totals, and emit non-empty `process_metrics.csv` rows for step 5v.
+
+
+## 2026-11-04 AIM5 — Agency name classifier (Bob)
+
+Scope: Stage 1 of the conservative staged sequence. Reads `agency_alias_candidates.csv` only — no corpus run required. Produces `agency_reconciliation_table.csv` which unblocks AIM2 and CCP5.
+
+| Claim | State | Evidence | Remaining gap |
+|---|---|---|---|
+| Precision >= 0.99 on held-out exact/normalized matches (312 positives) | `verified` | `py scripts/fit_agency_name_classifier.py` — precision = 1.0000; 312/312 correct; `data/test_evidence/AIM5_classifier_results.csv` | — |
+| 3 ambiguous EXACT_REF_NAME rows (two agency keys each) correctly identified as MULTI_KEY, not misclassified | `verified` | All three score conf=1.000 (name match is correct); disposition = MULTI_KEY; key assignment deferred as data governance decision | Key selection between the two agency keys for each multi-key name is unresolved |
+| 12 of 13 UNMATCHED rows score below 0.70 ambiguity threshold and are flagged AMBIGUOUS | `verified` | Script output: 12 flagged < 0.70; 1 row ('Virginia Commercial Space Flight Authority', conf=0.701) just above threshold | The 13 UNMATCHED agency names have no reference match — top candidates are informational only; human review required before CCP5 |
+| `agency_reconciliation_table.csv` written with 328 rows (all candidates classified) | `verified` | File written to `data/corpus_profile/agency_reconciliation_table.csv`, 37 KB | — |
+| Method: `difflib.SequenceMatcher` + `_token_sort_ratio` (no external dependencies) | `verified` | stdlib only; no pip requirements; token-sort ratio avoids superstring collapse problem of token-set ratio | — |
+
+**AIM5 verdict:** PASS. `agency_reconciliation_table.csv` is available. AIM2 and CCP5 are unblocked pending human review of UNMATCHED rows and MULTI_KEY key-selection decisions.
+
+
+## 2026-11-04 Step ttl — APA Technical Transform Layer (Bob)
+
+Scope: TTL pass that resolves APA direct-download expenditure/revenue name columns (AGENCY_NAME, FUND_NAME, OBJECT_NAME, PROGRAM_NAME, SOURCE) to DPB numeric keys using `aRef*.txt` reference tables, discovers monthly CSV files under the FY subdirectory tree, groups them by Virginia fiscal quarter (Q1=Jul-Sep, Q2=Oct-Dec, Q3=Jan-Mar, Q4=Apr-Jun), and writes one `SortedJEFY{yr}q{n}exp.csv` per quarter (plus `SortedJEFY{yr}rev.csv` for revenue). Output is the same 39-field SortedJE CSV as step 2 — drop-in input for post.scala.
+
+| Claim | State | Evidence | Remaining gap |
+|---|---|---|---|
+| `applyAPA` (step `ttl`) discovers monthly CSVs under `FY YYYY Expenditure` folder, groups by quarter, and writes one `SortedJEFY{yr}q{n}exp.csv` per quarter with rows | `partially_verified` | `ApaTtlSpec` 8/8 pass: folder discovery, 2 SJE rows per source, debit/credit balance, agency key resolution, Q1/Q4 routing, revenue path, RESULT/RESOURCE emission, unresolved-name fallback to key `"0"` | No real-corpus run; reference miss rate on 97M APA rows not measured; fund/object/program key resolution not independently validated against full tables |
+| `loadApaReferenceData` loads `aRefAgencyCSV.txt`, `aRefFundCSV.txt`, `aRefObjectCSV.txt`, `aRefProgramCSV.txt`, `aRefSourceCSV.txt` and returns correct entry counts | `verified` | `ApaTtlSpec` Test 1: fixture tables loaded with expected 2-entry maps per dimension | Production table sizes (326 agency, 10,645 fund, 472 object, 2,486 program, 2,275 source rows) not tested in isolation |
+| Rows with unresolvable name (e.g. new agencies not in reference snapshot) produce SJE rows with key `"0"` rather than being dropped | `verified` | `ApaTtlSpec` Test 8: unknown agency name produces 2 rows with `transLegalEntityID="0"` | Unresolved count in real corpus will be non-zero (13 unmatched agency names, unknown fund/object/program miss rate) |
+| Revenue TTL writes `SortedJEFY{yr}rev.csv` from APA revenue monthly files | `partially_verified` | `ApaTtlSpec` Test 6: single revenue file produces 2 balanced SJE rows | No real-corpus revenue run |
+| `run_pipeline.sh` `run_step()` has explicit `ttl)` case with input-bytes accumulation and RESULT-line metric extraction | `verified` | `run_pipeline.sh` contains `ttl)` case in both the file-path block and the records_written block; `input_bytes` guard excludes `ttl` from single-file override | No corpus run yet to confirm non-zero metrics |
+| 48/48 full test suite passes after TTL addition | `verified` | `sbt "testOnly org.universalledger.foundation.va.*"` — 48/48 passed 2026-11-04 | — |
+
+**Remaining gate:** Real-corpus FY2003 TTL run required. Check: all 4 quarterly expenditure output files non-zero; `process_metrics.csv` row for step `ttl` non-empty; unresolved reference count plausible (expected low for agency; unknown for fund/object/program).

@@ -13,7 +13,7 @@ general validity of the research claims.
 
 **New to Ledger Lab?** Read [`LEDGER_LAB_OVERVIEW.md`](./LEDGER_LAB_OVERVIEW.md) — a plain-English explanation of what all the tests are trying to show and why, grouped by claim rather than by technical name. No prior knowledge of the research papers required. The Overview connects back to the papers for anyone who wants the full argument.
 
-**Already familiar with the research?** For a map of all experiments across both papers, start with [`docs/RESEARCH_OBJECTIVES.md`](docs/RESEARCH_OBJECTIVES.md). Detailed specifications are in [`docs/TEST_DESIGN_PAPER_1.md`](docs/TEST_DESIGN_PAPER_1.md) (Paper 1 cost-curve workloads CCP2–CCP5) and [`docs/TEST_DESIGN_PAPER_2.md`](docs/TEST_DESIGN_PAPER_2.md) (Paper 2 VA corpus AI model evidence tests AIM0–AIM5).
+**Already familiar with the research?** For a map of all experiments across both papers, start with [`docs/RESEARCH_OBJECTIVES.md`](docs/RESEARCH_OBJECTIVES.md). Detailed specifications are in [`docs/TEST_DESIGN.md`](docs/TEST_DESIGN.md) (unified CCP cost-curve workloads and AIM model evidence tests).
 
 ## Research Questions
 
@@ -26,13 +26,11 @@ These are hypotheses to evaluate with comparable workloads, explicit controls, a
 measurements. See [99-interpretation](99-interpretation/README.md) for how results should be
 interpreted and what the evidence must contain.
 
-The current VA source-model replacement contract is documented in
+The current VA source-model contract is documented in
 [docs/VA_DATA_MODEL_CONTRACT.md](docs/VA_DATA_MODEL_CONTRACT.md). It is derived from the VA
-source workbook preserved in the Sharealedger conceptual-model repository and is intended to
-replace the older Universal Ledger fixture assumptions incrementally.
-
-Start implementation from the concise [Sharealedger Model Handoff](docs/SHAREALEDGER_MODEL_HANDOFF.md),
-then use the detailed VA contract for field, lineage, control, and evidence requirements.
+source workbook preserved in the Sharealedger conceptual-model repository. For the research
+programme, start with [docs/RESEARCH_OBJECTIVES.md](docs/RESEARCH_OBJECTIVES.md) — master map
+of all experiments, run order, and acceptance thresholds.
 
 ## Strategic Boundary
 

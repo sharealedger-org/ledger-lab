@@ -1,15 +1,13 @@
 # Research Strategy — Ledger Lab
 
-**Status:** Working strategy document. Updated 2026-11-04 from design session.
+**Status:** Working strategy document. Updated 2026-11-04.
 **Audience:** Project owner, coauthors, and AI agents working in this repository.
-
-This document captures the intellectual architecture of the research program — what each paper
-proves, why the full corpus is the measurement target from paper 1 onward, how the AIM test
-family is designed to interact, and what the drill-down thesis ultimately demonstrates.
-
-It is not an implementation spec. For implementation details see `paper2-tests-plan.md`,
-`TEST_DESIGN_PAPER_2.md`, and the architecture documents. For tactical session state see
-`SESSION_HANDOFF.md`.
+**Companion:** [`RESEARCH_OBJECTIVES.md`](RESEARCH_OBJECTIVES.md) — operational spec: CCP/AIM
+tables, acceptance thresholds, run order, locked decisions. Read that first for *what to do*.
+This document explains *why the program is structured this way* — the proof sequence, corpus
+commitment rationale, AIM interaction architecture, and the drill-down thesis. It is not an
+implementation spec; for that see [`ENGINE_IMPLEMENTATION_PLAN.md`](ENGINE_IMPLEMENTATION_PLAN.md),
+[`TEST_DESIGN.md`](TEST_DESIGN.md), and [`SESSION_HANDOFF.md`](../SESSION_HANDOFF.md).
 
 ---
 

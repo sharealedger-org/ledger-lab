@@ -16,15 +16,23 @@
 #                          e.g.  --years 03,04,05
 #    -s, --steps    LIST   Comma-separated step numbers to run   (default: 2,3)
 #                          e.g.  --steps 2,3,5,4
-#                          Steps: 1=poToPayMatch(Spark), 2=transStandardize,
+#                          Steps: ttl=APATechnicalTransformLayer,
+#                                 1=poToPayMatch(Spark), 2=transStandardize,
+#                                 2p=POStandardize, 2m=MergePaymentPO,
 #                                 3=post, 4=contraCreation(LAST),
 #                                 5=dataAggregation(ViewSpec-driven pivot),
+#                                 5v=CKBViews(four analytical view tables),
 #                                 6=financialAllocation, 7=consolidation,
 #                                 8=forecastingBudgeting,
 #                                 9=arrangementReclass(before 4 and 5),
 #                                 10=initFiles, 11=DPBSpark(Spark),
-#                                 12=booked currency revaluation engine
-#                          Experiment curve configurations:
+#                                 12=booked currency revaluation engine,
+#                                 20=GLPost, 21=PermutationGenerator
+#                          Experiment curve configurations (Paper 1 cost curves):
+#                            CCP1 (GL + permutation table):  --steps 2,2p,2m,3,20,21
+#                            CCP2 (instrument ledger):       --steps 2,2p,2m,3
+#                            CCP3 (CCP2 + views):            --steps 2,2p,2m,3,5v
+#                          Legacy curve configurations:
 #                            C1 (Post only):              --steps 2,3
 #                            C2 (Post+Analysis):          --steps 2,3,5
 #                            C3 (Post+Analysis+Reval):    --steps 2,3,5,8,9
@@ -188,6 +196,17 @@ COST_SURFACE="${OUT_PATH%/}/cost_surface.csv"
 VIEWSPEC="${IN_PATH%/}/ViewSpec.csv"
 
 # ── helpers ───────────────────────────────────────────────────────────────────
+
+# Convert a POSIX path to a Windows drive-qualified path for the JVM when
+# running under Git Bash / MINGW where cygpath is available.  No-op elsewhere.
+to_jvm_path() {
+  if command -v cygpath >/dev/null 2>&1; then
+    cygpath -m "$1"
+  else
+    echo "$1"
+  fi
+}
+
 log() {
   local msg="[$(date '+%Y-%m-%d %H:%M:%S')] $*"
   echo "$msg"
@@ -221,7 +240,7 @@ run_step() {
   log "START  step=$step  year=$year  quarter=$quarter"
 
   local vm_arg=""
-  if [[ "$step" == "2" ]]; then
+  if [[ "$step" == "2" || "$step" == "ttl" ]]; then
     local vm_candidate
     for vm_candidate in \
       "$IN_PATH/VendorMaster_full.csv" \
@@ -229,6 +248,19 @@ run_step() {
       "$IN_PATH/VendorMaster.csv"; do
       if [[ -f "$vm_candidate" ]]; then
         vm_arg=" --vendormaster $vm_candidate"
+        break
+      fi
+    done
+  fi
+  local ref_arg=""
+  if [[ "$step" == "ttl" ]]; then
+    # refPath: directory containing aRef*.txt — look beside IN_PATH first, then REPO_ROOT/data
+    local ref_candidate
+    for ref_candidate in \
+      "$(dirname "$IN_PATH")" \
+      "$REPO_ROOT/data"; do
+      if [[ -f "$ref_candidate/aRefAgencyCSV.txt" ]]; then
+        ref_arg=" --refPath $ref_candidate"
         break
       fi
     done
@@ -245,16 +277,76 @@ run_step() {
   local input_file="" output_file="" input_bytes="0" output_file_bytes="0"
   local records_read="?" records_written="?"
   case "$step" in
+    ttl)
+      # TTL step: reads the FY subdirectory tree; reports Q1 output file as representative
+      input_file="$IN_PATH"
+      output_file="$OUT_PATH/SortedJEFY${year}q1exp.csv"
+      # Accumulate bytes across all 12 monthly files discovered under the FY directory
+      input_bytes=0
+      for apa_file in "$IN_PATH/FY ${year:0:2}2${year:1:1}? Expenditure/"*.csv \
+                       "$IN_PATH/All Expenditures for Fiscal Year 20${year}"*/*.csv; do
+        [[ -f "$apa_file" ]] || continue
+        input_bytes=$((input_bytes + $(count_file_bytes "$apa_file")))
+      done
+      ;;
     2)
       input_file="$IN_PATH/FY${year}q${quarter_number}exp.txt"
       output_file="$OUT_PATH/SortedJEFY${year}q${quarter_number}exp.csv"
       records_read=$(count_data_rows "$input_file")
+      ;;
+    2p)
+      input_file="$IN_PATH/poData/VA_opendata_FY20${year}.txt"
+      output_file="$OUT_PATH/SortedJEFY${year}q${quarter_number}PO.csv"
+      records_read=$(count_data_rows "$input_file")
+      ;;
+    2m)
+      input_file="$OUT_PATH/SortedJEFY${year}q${quarter_number}exp.csv"
+      output_file="$OUT_PATH/SortedJEFY${year}merged.csv"
+      records_read=0
+      input_bytes=0
+      for sje_file in "$OUT_PATH/SortedJEFY${year}q"*"exp.csv" "$OUT_PATH/SortedJEFY${year}q"*"PO.csv"; do
+        [[ -f "$sje_file" ]] || continue
+        input_bytes=$((input_bytes + $(count_file_bytes "$sje_file")))
+      done
       ;;
     3)
       input_file="$OUT_PATH/SortedJEFY${year}q${quarter_number}exp.csv"
       output_file="$OUT_PATH/LDGR20${year}.csv"
       records_read=0
       input_bytes=0
+      for sje_file in "$OUT_PATH/SortedJEFY${year}"*.csv; do
+        [[ -f "$sje_file" ]] || continue
+        records_read=$((records_read + $(count_file_rows "$sje_file")))
+        input_bytes=$((input_bytes + $(count_file_bytes "$sje_file")))
+      done
+      ;;
+    5v)
+      # Step 5v produces four view files; use the merged SJE as reference input
+      input_file="$OUT_PATH/SortedJEFY${year}merged.csv"
+      [[ -f "$input_file" ]] || input_file="$OUT_PATH/SortedJEFY${year}q${quarter_number}exp.csv"
+      output_file="$OUT_PATH/view_monthly_order_volume.csv"
+      records_read=$(count_file_rows "$input_file")
+      ;;
+    20)
+      # GLPost: accumulates account-keyed balances from all SortedJEFY*.csv files
+      input_file="$OUT_PATH/SortedJEFY${year}merged.csv"
+      [[ -f "$input_file" ]] || input_file="$OUT_PATH/SortedJEFY${year}q${quarter_number}exp.csv"
+      output_file="$OUT_PATH/GL20${year}.csv"
+      input_bytes=0
+      records_read=0
+      for sje_file in "$OUT_PATH/SortedJEFY${year}"*.csv; do
+        [[ -f "$sje_file" ]] || continue
+        records_read=$((records_read + $(count_file_rows "$sje_file")))
+        input_bytes=$((input_bytes + $(count_file_bytes "$sje_file")))
+      done
+      ;;
+    21)
+      # PermutationGenerator: same input glob as step 20
+      input_file="$OUT_PATH/SortedJEFY${year}merged.csv"
+      [[ -f "$input_file" ]] || input_file="$OUT_PATH/SortedJEFY${year}q${quarter_number}exp.csv"
+      output_file="$OUT_PATH/PERM_TBL20${year}.csv"
+      input_bytes=0
+      records_read=0
       for sje_file in "$OUT_PATH/SortedJEFY${year}"*.csv; do
         [[ -f "$sje_file" ]] || continue
         records_read=$((records_read + $(count_file_rows "$sje_file")))
@@ -272,7 +364,7 @@ run_step() {
       records_read=$(count_data_rows "$input_file")
       ;;
   esac
-  if [[ "$step" != "3" ]]; then
+  if [[ "$step" != "3" && "$step" != "20" && "$step" != "21" && "$step" != "ttl" ]]; then
     input_bytes=$(count_file_bytes "$input_file")
   fi
 
@@ -297,17 +389,47 @@ run_step() {
   elif /usr/bin/time --version >/dev/null 2>&1; then
     time_mode="gnu"
   fi
+  # Convert POSIX paths to Windows drive-qualified paths for the JVM (Git Bash on Windows)
+  local jvm_in_path jvm_out_path
+  jvm_in_path="$(to_jvm_path "$IN_PATH")"
+  jvm_out_path="$(to_jvm_path "$OUT_PATH")"
+
+  # Step 2p needs --inPath pointing at the VAPOData directory, not VARawFiles.
+  # Resolve by looking for VAPOData as a sibling of IN_PATH (or IN_PATH/../VAPOData).
+  if [[ "$step" == "2p" ]]; then
+    local po_dir=""
+    for po_candidate in \
+      "$(dirname "${IN_PATH%/}")/VAPOData" \
+      "${IN_PATH%/}/../VAPOData" \
+      "${IN_PATH%/}/VAPOData"; do
+      if [[ -d "$po_candidate" ]]; then
+        po_dir="$po_candidate"
+        break
+      fi
+    done
+    if [[ -n "$po_dir" ]]; then
+      jvm_in_path="$(to_jvm_path "$po_dir")"
+    fi
+  fi
+
+  # Also convert any path arguments embedded in vm_arg and ref_arg
+  local jvm_vm_arg="$vm_arg" jvm_ref_arg="$ref_arg"
+  if command -v cygpath >/dev/null 2>&1; then
+    [[ -n "$vm_arg" ]] && jvm_vm_arg=" --vendormaster $(cygpath -m "${vm_arg#* --vendormaster }")"
+    [[ -n "$ref_arg" ]] && jvm_ref_arg=" --refPath $(cygpath -m "${ref_arg#* --refPath }")"
+  fi
+
   if [[ "$time_mode" == "macos" ]]; then
     out=$(cd "$SBT_PROJECT" && /usr/bin/time -l sbt -batch \
-      "run --step $step --inPath $IN_PATH --outPath $OUT_PATH --year $year --quarter $quarter$vm_arg$allocation_rules_arg$fx_args" \
+      "run --step $step --inPath $jvm_in_path --outPath $jvm_out_path --year $year --quarter $quarter$jvm_vm_arg$jvm_ref_arg$allocation_rules_arg$fx_args" \
       2>&1 | tee "$_tee_target")
   elif [[ "$time_mode" == "gnu" ]]; then
     out=$(cd "$SBT_PROJECT" && /usr/bin/time -v sbt -batch \
-      "run --step $step --inPath $IN_PATH --outPath $OUT_PATH --year $year --quarter $quarter$allocation_rules_arg$fx_args" \
+      "run --step $step --inPath $jvm_in_path --outPath $jvm_out_path --year $year --quarter $quarter$jvm_ref_arg$allocation_rules_arg$fx_args" \
       2>&1 | tee "$_tee_target")
   else
     out=$(cd "$SBT_PROJECT" && sbt -batch \
-      "run --step $step --inPath $IN_PATH --outPath $OUT_PATH --year $year --quarter $quarter$vm_arg$allocation_rules_arg$fx_args" \
+      "run --step $step --inPath $jvm_in_path --outPath $jvm_out_path --year $year --quarter $quarter$jvm_vm_arg$jvm_ref_arg$allocation_rules_arg$fx_args" \
       2>&1 | tee "$_tee_target")
   fi
   # Clean up temp tee file if we used one (non-stderr path)
@@ -329,6 +451,19 @@ run_step() {
 
   local records_written
   case "$step" in
+    ttl)
+      # TTL: extract read/written from RESULT step=ttl structured log line; sum Q1-Q4 output files
+      result_line_ttl=$(echo "$out" | grep -E "RESULT step=ttl " | tail -1 || true)
+      records_read=$(printf '%s\n' "$result_line_ttl" | sed -nE 's/.*records_read=([0-9]+).*/\1/p' | tail -1)
+      [[ -n "$records_read" ]] || records_read="?"
+      records_written=0
+      for q in 1 2 3 4; do
+        qf="$OUT_PATH/SortedJEFY${year}q${q}exp.csv"
+        [[ -f "$qf" ]] && records_written=$((records_written + $(count_file_rows "$qf")))
+      done
+      [[ "$records_written" == "0" ]] && records_written=$(printf '%s\n' "$result_line_ttl" | sed -nE 's/.*records_written=([0-9]+).*/\1/p' | tail -1)
+      [[ -n "$records_written" ]] || records_written="?"
+      ;;
     2)
       records_written=$(count_file_rows "$output_file")
       if [[ "$records_read" == "0" || "$records_read" == "?" ]]; then
@@ -338,6 +473,26 @@ run_step() {
         records_written=$(echo "$out" | grep -i "Journal lines produced:" | tail -1 | grep -oE '[0-9]+' | tail -1 || echo "?")
       fi
       ;;
+    2p)
+      records_written=$(count_file_rows "$output_file")
+      result_line_2p=$(echo "$out" | grep -E "RESULT step=2p " | tail -1 || true)
+      if [[ -z "$records_read" || "$records_read" == "?" || "$records_read" == "0" ]]; then
+        records_read=$(printf '%s\n' "$result_line_2p" | sed -nE 's/.*records_read=([0-9]+).*/\1/p' | tail -1)
+        [[ -n "$records_read" ]] || records_read="?"
+      fi
+      if [[ -z "$records_written" || "$records_written" == "?" || "$records_written" == "0" ]]; then
+        records_written=$(printf '%s\n' "$result_line_2p" | sed -nE 's/.*records_written=([0-9]+).*/\1/p' | tail -1)
+        [[ -n "$records_written" ]] || records_written="?"
+      fi
+      ;;
+    2m)
+      records_written=$(count_file_rows "$output_file")
+      result_line_2m=$(echo "$out" | grep -E "RESULT step=2m " | tail -1 || true)
+      if [[ -z "$records_written" || "$records_written" == "?" || "$records_written" == "0" ]]; then
+        records_written=$(printf '%s\n' "$result_line_2m" | sed -nE 's/.*records_written=([0-9]+).*/\1/p' | tail -1)
+        [[ -n "$records_written" ]] || records_written="?"
+      fi
+      ;;
     3)
       records_written=$(count_data_rows "$output_file")
       if [[ "$records_read" == "0" || "$records_read" == "?" ]]; then
@@ -345,6 +500,36 @@ run_step() {
       fi
       if [[ "$records_written" == "0" || "$records_written" == "?" ]]; then
         records_written=$(echo "$out" | grep -i "Ledger Records Written:" | tail -1 | grep -oE '[0-9]+' | tail -1 || echo "?")
+      fi
+      ;;
+    5v)
+      # Step 5v writes four view files; capture per-view row counts from the RESULT line
+      result_line_5v=$(echo "$out" | grep -E "RESULT step=5v " | tail -1 || true)
+      records_read=$(printf '%s\n' "$result_line_5v" | sed -nE 's/.*records_read=([0-9]+).*/\1/p' | tail -1)
+      [[ -n "$records_read" ]] || records_read="?"
+      # Represent total view rows written as sum of all four view file counts
+      view_a=$(count_data_rows "$OUT_PATH/view_monthly_order_volume.csv")
+      view_b=$(count_data_rows "$OUT_PATH/view_vendor_year_survival.csv")
+      view_c=$(count_data_rows "$OUT_PATH/view_agency_year_commodity_mix.csv")
+      view_d=$(count_data_rows "$OUT_PATH/view_agency_year_payment_totals.csv")
+      records_written=$(( view_a + view_b + view_c + view_d ))
+      ;;
+    20)
+      # GLPost: extract records_read and records_written from RESULT line
+      result_line_20=$(echo "$out" | grep -E "RESULT step=20 " | tail -1 || true)
+      records_written=$(count_data_rows "$output_file")
+      if [[ -z "$records_written" || "$records_written" == "0" ]]; then
+        records_written=$(printf '%s\n' "$result_line_20" | sed -nE 's/.*records_written=([0-9]+).*/\1/p' | tail -1)
+        [[ -n "$records_written" ]] || records_written="?"
+      fi
+      ;;
+    21)
+      # PermutationGenerator: extract records_read and records_written from RESULT line
+      result_line_21=$(echo "$out" | grep -E "RESULT step=21 " | tail -1 || true)
+      records_written=$(count_data_rows "$output_file")
+      if [[ -z "$records_written" || "$records_written" == "0" ]]; then
+        records_written=$(printf '%s\n' "$result_line_21" | sed -nE 's/.*records_written=([0-9]+).*/\1/p' | tail -1)
+        [[ -n "$records_written" ]] || records_written="?"
       fi
       ;;
     6)
