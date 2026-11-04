@@ -12,8 +12,8 @@ package org.universalledger.foundation.va.ledger
 //      sbt "run --step <N> --inPath <path> --outPath <path> --year <YY> --quarter <QQ>"
 //
 //      Parameters:
-//        --step     N    Step to run: 1=poToPayMatch, 2=transStandardize, 3=post,
-//                        10=initFiles, 11=DPBSpark, 20=GLPost (CCP1), 21=PermutationGenerator (CCP1)
+//        --step     N    Step to run: 2=transStandardize, 3=post,
+//                        20=GLPost (CCP1), 21=PermutationGenerator (CCP1)
 //        --inPath   path Input data directory  (default: /VAdata/data/)
 //        --outPath  path Output data directory (default: /VAdata/data/)
 //        --year     YY   Two-digit fiscal year  (default: 03)
@@ -171,11 +171,7 @@ object LedgerApp {
       // CCP1 baseline steps — read SortedJE output, produce GL balances and permutation table
       case "20" => GLPost(params + ("inPath" -> inPath, "outPath" -> outPath, "year" -> year))
       case "21" => PermutationGenerator(params + ("inPath" -> inPath, "outPath" -> outPath, "year" -> year))
-      // Steps 1, 10, 11 (poToPayMatch, initFiles, DPBSpark) require Spark and are excluded from
-      // the default build. To enable: add Spark dependency to build.sbt and move sources back to
-      // src/main/scala/org/universalledger/foundation/va/ledger/ from
-      // src/main/scala/org/universalledger/foundation/va/spark/
-      case _    => println(s"Step '$step' is not yet implemented or requires Spark (steps 1, 10, 11).")
+      case _    => println(s"Step '$step' is not implemented.")
     }
   }
 
