@@ -73,38 +73,64 @@ Step 6 = allocation, Step 7 = consolidation, Step 8 = forecasting, Step 9 = recl
 
 ### CCP1 — General Ledger (Status Quo)
 
-**Architecture:** GL post, account-keyed. This is how financial systems work today. The
-instrument identity (VENDORID) is not preserved in the output.
+**Architecture:** GL post, account-keyed. This is how financial systems work today. In a real
+legacy GL, vendor identity is **not an input to the posting step** — it is collapsed out at
+standardisation and never carried into the sort file. The GL accumulates account-keyed balances
+only; the vendor dimension is absent from both the sort key and the accumulator.
 
-**Steps active:** Step 2 (standardise + sort by account key), GL-post (write account-keyed GL
-balances). This is a *different sort key* from CCP2: account code, not instrument ID.
+**Steps active:** Step 2 (standardise + sort), GL-post (write account-keyed GL balances, Step
+20), permutation generator (enumerate externalised upstream cost, Step 21).
 
-**Permutation generator (separate follow-on step):**  
-Reads the original transactions (same input snapshot as all CCPs). For each distinct
-`(account_code)` GL balance, enumerates every combination of instrument attributes
-(VENDORID × NIGP_class × geo_region × …) that collapsed into it. Produces a permutation
-table: `(account_code, permutation_key, permutation_count)`. This table's row count is the
-empirical size of the key-embedded architecture that would be required to answer all the same
-questions the instrument ledger answers for free.
+**Sort key note:** CCP1 Step 2 uses the same SortedJE partition as CCP2 for a shared input
+snapshot. `GLPost` ignores `transIPID` in its accumulation key, correctly replicating GL
+behaviour. The sort file still carries the vendor column (it is the shared SortedJE contract),
+which means the Step 2 sort cost includes sorting a vendor-bearing key — a slight overstatement
+of legacy GL sort cost. This is documented as a **known measurement conservatism**: CCP1 sort
+cost is if anything *higher* than a true legacy system, making the CCP1→CCP2 delta a lower
+bound on the true architectural cost difference. A separate account-key-only sort sensitivity
+run can quantify this gap if needed.
+
+**Permutation generator — externalised upstream cost (Step 21):**
+The GL architecture does not eliminate the need to answer instrument-level questions — it
+*externalises* that cost onto source systems and upstream data preparation. A real organisation
+running a GL architecture must materialise key-embedded balance permutations somewhere in its
+ecosystem (data warehouse dimensions, source-system cubes, reporting layers) if it wants to
+answer the questions the instrument ledger answers for free.
+
+The permutation generator measures exactly this externalised cost. It reads vendor identity
+from the **original transaction stream** (the same SortedJE input, not from the GL output —
+the GL output has already discarded vendor identity) and enumerates every distinct
+`(account_key, vendor_id)` combination. The permutation table row count is the empirical size
+of the upstream materialisation burden the GL architecture imposes on the rest of the system.
+
+This is the central cost-explosion finding of Theorem 1: the GL's apparent simplicity hides a
+cost that has merely moved upstream, not disappeared.
 
 **Metrics that must be emitted (`process_metrics.csv`):**
 
-| Metric | Column name | Notes |
-|--------|-------------|-------|
-| Records read | `records_read` | Inbound transaction count |
-| GL balance rows written | `bytes_written` | GL output size in bytes |
-| Permutation table rows | `permutation_rows` | Size of the key-embedded equivalent |
-| Elapsed wall time | `wall_seconds` | Step-level |
-| Peak resident set size | `peak_rss_bytes` | JVM heap + off-heap at peak |
+| Metric | Column | Notes |
+|--------|--------|-------|
+| Records read | `records_read` | Inbound transaction count (Steps 20 and 21 each report independently) |
+| GL balance rows written | `output_rows` | Step 20 output: `GL20YY.csv` |
+| Permutation table rows | `output_rows` | Step 21 output: `PERM_TBL20YY.csv` — the externalised cost measure |
+| Elapsed wall time | `wall_seconds` | Step-level for each of Steps 20 and 21 |
+| Peak resident set size | `peak_rss_bytes` | JVM heap at peak (not OS RSS — see audit register Finding 3) |
 
-**AIM pairing:**  
-After CCP1 completes, the AIM1 family of tests runs as post-hoc steps reading the GL output
-and the permutation table. The same AIM1–AIM5 tests are run against these CCP1 substrates
-as are run against the CCP2/CCP3 substrates. All CCP1-substrate runs are expected to miss —
-for different instructive reasons documented per test in `TEST_DESIGN_PAPER_2.md`.
+**AIM pairing:**
+After CCP1 completes, the AIM1 family of tests runs as post-hoc steps. When run against the
+GL output (`GL20YY.csv`), AIM1 misses because vendor identity has been discarded. When run
+against the permutation table (`PERM_TBL20YY.csv`), AIM1 finds the information — but only
+because the permutation table reconstructs what the source system would have had to
+pre-materialise. The miss on GL output and the hit on the permutation table together
+demonstrate both the information loss and the true location of the externalised cost.
 
-**Current status:** ⚠ Not yet implemented. GL-post step and permutation generator require
-design and build. `process_metrics.csv` substrate repair is a prerequisite.
+The same AIM1–AIM5 tests are run against CCP2/CCP3 substrates for direct comparison; all
+CCP1-substrate GL runs are expected to miss for the reasons above.
+
+**Current status:** ✅ Implemented (2026-11-04). Steps 20 and 21 exist, 7/7 unit tests pass,
+`write_canonical_evidence.sh` extended with `append_process` cases for both steps. Remaining
+gates before CCP1 counts as a cost point: Steps 20/21 must reach `partially_verified` (memory
+bound at scale unverified; AIM1 consumer not yet implemented — see audit register).
 
 ---
 

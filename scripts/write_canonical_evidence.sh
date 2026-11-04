@@ -125,7 +125,7 @@ init_file "$SORT_EVENTS" 'run_id,sort_id,process_id,pass_id,input_partition_id,o
 
 append_csv_row "$RUN_MANIFEST" \
   "$RUN_ID" "legacy-va" "1" "$CURVE-$CONFIG_DESC" "$WORKLOAD_PROFILE" "$MATERIALIZATION_PROFILE" "$CURVE" "" "" "" "" \
-  "$GIT_REVISION" "" "$HOST_ID" "$OS_VERSION" "" "2.12.18" "$RUN_TIMESTAMP" \
+  "$GIT_REVISION" "" "$HOST_ID" "$OS_VERSION" "" "2.12.20" "$RUN_TIMESTAMP" \
   "$RUN_END_TIMESTAMP" "$WALL_SECONDS" "$STATUS" "1"
 
 append_partition() {
@@ -195,6 +195,20 @@ append_process() {
       input_rows="$(file_data_rows "$input_file")"
       output_rows="$(file_rows "$output_file")"
       ;;
+    20)
+      # GLPost: input is all SortedJEFY{shortYr}*.csv; use RESULT line totals
+      output_file="$OUT_PATH/GL20${short_year}.csv"
+      input_partition="sje_fy${short_year}"
+      output_partition="gl_balance_fy20${short_year}"
+      output_rows="$(file_data_rows "$output_file")"
+      ;;
+    21)
+      # PermutationGenerator: same input glob as step 20; use RESULT line totals
+      output_file="$OUT_PATH/PERM_TBL20${short_year}.csv"
+      input_partition="sje_fy${short_year}"
+      output_partition="perm_tbl_fy20${short_year}"
+      output_rows="$(file_data_rows "$output_file")"
+      ;;
     *) return 0 ;;
   esac
   input_bytes="$(file_bytes "$input_file")"
@@ -224,6 +238,14 @@ append_process() {
     process_layer="04-engines"
     process_name="currency-revaluation"
     engine_name="booked-currency-revaluation"
+  elif [[ "$step" == "20" ]]; then
+    process_layer="02-foundation"
+    process_name="gl-post"
+    engine_name="ccp1-gl-post"
+  elif [[ "$step" == "21" ]]; then
+    process_layer="02-foundation"
+    process_name="permutation-generator"
+    engine_name="ccp1-permutation-generator"
   fi
   append_csv_row "$PROCESS_METRICS" "$RUN_ID" "$process_id" "" "$process_layer" \
     "$process_name" "$engine_name" "$input_partition" "$output_partition" "" "$step" \
@@ -241,6 +263,12 @@ append_process() {
       "$step_elapsed" "complete"
   elif [[ "$step" == "3" ]]; then
     append_partition "$output_partition" "ledger_master" "03-instrument-ledger" "$process_id" \
+      "$input_partition" "$output_file" "$output_rows" "" ""
+  elif [[ "$step" == "20" ]]; then
+    append_partition "$output_partition" "gl_balance" "02-foundation" "$process_id" \
+      "$input_partition" "$output_file" "$output_rows" "" ""
+  elif [[ "$step" == "21" ]]; then
+    append_partition "$output_partition" "permutation_table" "02-foundation" "$process_id" \
       "$input_partition" "$output_file" "$output_rows" "" ""
   elif [[ "$step" == "12" ]]; then
     append_partition "$input_partition" "ledger_master" "03-instrument-ledger" "" "" \

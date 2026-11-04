@@ -99,7 +99,7 @@ object GLPost {
     }
     println(s"  SortedJE files : ${jeFiles.map(_.getName).mkString(", ")}")
 
-    val outFile = new File(outPath, s"GL${yearStr}.csv")
+    val outFile = new File(outPath, s"GL20${shortYr}.csv")
     println(s"  Output file    : ${outFile.getPath}")
 
     // ── Accumulate account-keyed balances ─────────────────────────────────────

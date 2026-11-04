@@ -4,9 +4,62 @@ This repository is an empirical test of an accounting data architecture. A verif
 
 ## Mission
 
-The session builder is not a feature implementer. Its first responsibility is to determine whether the current implementation preserves the architectural claims it is supposed to measure. It must be willing to mark a capability `unknown`, `legacy`, `contradictory`, or `not implemented`.
+The session agent is not a feature implementer. Its first responsibility is to determine whether the current implementation preserves the architectural claims it is supposed to measure. It must be willing to mark a capability `unknown`, `legacy`, `contradicted`, or `not_implemented`.
 
 A passing fixture is functional evidence only. It is not evidence of correct layer ownership, CKB placement, scale behavior, materialization semantics, or cost-curve comparability.
+
+---
+
+## When to Run a Verification Session
+
+A verification session **must** precede any Builder/Implementer session when:
+
+- a new capability, engine, or perspective is being added;
+- the workload contract, sort key, memory bound, or materialization profile of an existing step is changing;
+- a claim in the audit register is being upgraded from `partially_verified` to `verified`;
+- a new CCP or AIM run is being prepared.
+
+A verification session is **not** required for:
+
+- pure housekeeping (dependency bumps, dead-code removal, documentation rewording, comment cleanup);
+- test-fixture additions that do not change production Scala logic;
+- documentation that explicitly records `design_only` or `not_implemented` state.
+
+If you are uncertain which category applies, start in **Adversarial Reviewer** mode and stop if no code changes are needed.
+
+---
+
+## What Changed Since the Original Protocol Was Written
+
+The repository has accumulated significant new work since the last Adversarial Review pass. Before starting a new verification session, a session agent should be aware of the following structural changes:
+
+### New steps added (not yet in the audit register)
+
+| Step | File | What it does | Audit state |
+|------|------|-------------|-------------|
+| Step 20 — GLPost | `ledger/GLPost.scala` | Reads `SortedJEFY*.csv`, accumulates account-keyed balances (instrument identity discarded), writes `GL20YY.csv`. Emits `RESULT step=20` and `RESOURCE step=20`. | `not_audited` — functional tests pass; no contract audit, no CKB placement claim, no memory-bound declaration. |
+| Step 21 — PermutationGenerator | `ledger/PermutationGenerator.scala` | Reads same `SortedJEFY*.csv`, accumulates `(account_key, vendor_id)` permutation counts, writes `PERM_TBL20YY.csv`. | `not_audited` — same. |
+| process_metrics RESULT/RESOURCE emission | `standardizeAndSort.scala`, `post.scala` | Steps 2 and 3 now emit `RESULT` and `RESOURCE` structured log lines; `write_canonical_evidence.sh` grep extracts them into `process_metrics.csv`. | `partially_verified` — emission confirmed by fixture test; CPU fields, spill evidence, and manifest identity hashes remain unverified. |
+| `transIPID` fix | `transStandardize.scala` | Legacy `transStandardize` path (not the live Step 2 path): PO path now populates `transIPID = rec.poVendorID`; payment path does VendorMaster name-lookup. | `partially_verified` — 21/21 fixture tests pass; no runtime fixture run with `--with-po-fixture`; `transIPID` non-zero on real data not confirmed. |
+| `POSortedJE.sortspec` | `02-foundation/sort_specs/` | Declares PO SJE sort key `(transIPID, transFiscalPeriod, transTransDate)`. | `design_only` — file exists, not yet wired to any running step. |
+
+### Evidence infrastructure: what `write_canonical_evidence.sh` actually emits
+
+`write_canonical_evidence.sh` is the only script that writes canonical evidence. It emits:
+
+| File | Populated? | What is missing |
+|------|-----------|-----------------|
+| `run_manifest.csv` | Partially | `java_version`, `engine_version`, `configuration_hash`, `rules_hash`, `viewspec_hash`, `input_snapshot_id`, `replicate_number` all written as empty strings. `scala_version` is hardcoded to `2.12.18` (now stale — actual version is `2.12.20`). |
+| `process_metrics.csv` | Partially | `cpu_user_seconds`, `cpu_system_seconds`, `cpu_total_seconds`, `peak_jvm_heap_bytes`, `pageins`, `context_switches`, `spill_bytes` all written as empty. `wall_seconds` is inferred from `elapsed_s` in the log. Process start/end times are both set to the run timestamp, not step-level timestamps. |
+| `partition_catalog.csv` | Partially | `first_key`, `last_key`, `min_period`, `max_period` all empty. `checksum` computed only for files that exist at write time; skips Step 3 input when Step 12 is active. |
+| `reconciliation_results.csv` | Partially | SJE and ledger balance controls present. Missing: per-group balance, ledger reconstruction from supporting SJEs, generated-event lineage coverage, shared-core equality, perspective totals vs. ledger totals, rounding residuals. |
+| `sort_events.csv` | Stub | Sort key written as a literal string (not from the `.sortspec` file). `spill_file_count`, `peak_memory_bytes`, `chunk_size` are empty. `sort_reason` and `input_scope` absent. |
+| `sje_engine_metrics.csv` | Written only when Step 12 active | `source_sje_rows` hardcoded to `0`. `lineage_coverage` hardcoded to `1.0`. |
+| Steps 20, 21 | Not handled | `write_canonical_evidence.sh` has no `append_process` case for steps 20 or 21. Their `RESULT`/`RESOURCE` lines are not extracted. |
+
+These gaps mean **no run currently produces a complete evidence bundle** as defined by `MEASUREMENT_AND_LOGGING.md`. Cost-curve comparisons based on existing evidence are limited to `input_rows`, `output_rows`, `elapsed_s`, and `peak_rss_bytes` for Steps 2, 3, 6, and 12.
+
+---
 
 ## Two User-Facing Modes
 
@@ -41,6 +94,8 @@ If you do not specify a mode, start in **Adversarial Reviewer** mode. A Builder 
 only begin after the relevant contract has a `verified` or explicitly approved `partially_verified`
 state in the audit register.
 
+---
+
 ## Source-Of-Truth Hierarchy
 
 When sources disagree, use this order and record the conflict:
@@ -55,6 +110,8 @@ When sources disagree, use this order and record the conflict:
 The GenevaERS Performance Engine architecture is an external comparator for phase discipline, declared control inputs, reference preparation, event execution, bounded worker state, downstream consumption, and separated measurements. It is not permission to copy its machine-specific implementation.
 
 Use [REFERENCE_ARCHITECTURE_MAP.md](REFERENCE_ARCHITECTURE_MAP.md) to connect the textbook and GenevaERS concepts to Ledger Lab audit questions. Treat those references as architectural intent and comparator evidence, never as proof that this repository implements the pattern.
+
+---
 
 ## Fundamental Principles
 
@@ -118,6 +175,8 @@ Use [REFERENCE_ARCHITECTURE_MAP.md](REFERENCE_ARCHITECTURE_MAP.md) to connect th
 - A named workload fixes its input snapshot, rules, view definitions, code revision, output capability, and replication protocol.
 - One successful run cannot establish a minimum, a U-shape, single-pass universality, or scale behavior.
 
+---
+
 ## Verification States
 
 Every claim in an audit register receives one state:
@@ -127,9 +186,13 @@ Every claim in an audit register receives one state:
 - `contradicted`: executable behavior conflicts with the declared architecture;
 - `legacy`: behavior or a limitation exists in the old VA path but is not evidence of generalized 01-05 capability, and does not by itself contradict the target architecture;
 - `not_implemented`: the contract is documented but no implementation exists;
+- `not_audited`: code exists and may run, but no verification session has traced producers/consumers, schema, CKB placement, memory contract, and controls for this capability;
+- `design_only`: a specification or sort spec file exists but is not wired to any running step;
 - `unknown`: insufficient evidence; do not infer success.
 
-Implementation maturity, run activity, and evidence assessment remain separate dimensions.
+`not_audited` is the correct initial state for any new code added without a prior verification session. It differs from `not_implemented` (no code) and `unknown` (some evidence exists but is inconclusive). A Builder session that adds code without a verification session must set the new capability to `not_audited` in the register.
+
+---
 
 ## Session Sequence
 
@@ -139,7 +202,7 @@ Run the unchanged compile and canonical fixture smoke test. Record rows, balance
 
 ### 1. State one architecture claim
 
-Example: “The Step 3 posting process consumes sorted SJE partition A and prior ledger partition B under the declared CKB key, producing reconstructible instrument state.” Split compound claims.
+Example: "The Step 3 posting process consumes sorted SJE partition A and prior ledger partition B under the declared CKB key, producing reconstructible instrument state." Split compound claims.
 
 ### 2. Trace actual execution
 
@@ -167,9 +230,70 @@ A second review pass attempts to falsify the claim by inspecting consumers, sche
 
 ### 7. Handoff
 
-Leave the claim, evidence paths, commands, state, limitations, and next falsifier. Do not leave “implemented” where only a helper or fixture was tested.
+Leave the claim, evidence paths, commands, state, limitations, and next falsifier. Do not leave "implemented" where only a helper or fixture was tested.
 
-## Initial Audit Scope
+---
+
+## Priority Order for Next Verification Work
+
+The following is the ordered queue based on what blocks the research programme. Work through it top-to-bottom; do not skip ahead to build a higher CCP until the items it depends on are `verified` or explicitly approved `partially_verified`.
+
+### Priority 1 — Evidence infrastructure gaps (blocks all CCPs)
+
+**What:** `write_canonical_evidence.sh` emits empty fields for the columns that make runs comparable and reproducible: `scala_version` is stale (`2.12.18` → should be `2.12.20`), `replicate_number` is hardcoded to `1`, `cpu_*` and `peak_jvm_heap_bytes` are empty, `sort_events` are stubs, Steps 20 and 21 have no `append_process` case.
+
+**Cheapest falsifier:** Run `run_c1_smoke_test.sh`, read the resulting `process_metrics.csv`, and check whether `cpu_user_seconds`, `peak_jvm_heap_bytes`, and `spill_bytes` are non-empty and whether Steps 20 and 21 appear.
+
+**Gate:** No CCP run counts as a replicate until process_metrics rows for all active steps have non-empty `wall_seconds`, `peak_rss_bytes`, and at minimum a recorded `status`. CPU and spill fields are desirable but may be deferred with explicit documentation.
+
+### Priority 2 — Steps 2 and 3 contract (blocks CCP2)
+
+**What:** The live pipeline path (`standardizeAndSort.scala` → `post.scala`) is `partially_verified`. The cheapest unrun falsifier is prior-ledger replay: run Step 3 with a non-empty opening `LDGR` file, verify each output ledger row can be reconstructed from its supporting SJEs.
+
+**Additional unrun checks:**
+- Per-group balance on the sorted SJE output (not just file total).
+- Sort-key equivalence between the Step 2 comparator and the Step 3 consumer for adversarial keys (duplicate keys, numeric fields, multi-field tie-breaks).
+- Empty-input behavior: Step 2 with zero source rows, Step 3 with zero SJE rows and a non-empty opening ledger.
+- Vendor-miss handling: source rows whose VENDORID has no VendorMaster entry.
+
+**Gate:** CCP2's first replicate requires `partially_verified` with explicit approval from the project owner for the remaining gaps.
+
+### Priority 3 — Steps 20 and 21 contract (blocks CCP1)
+
+**What:** GLPost and PermutationGenerator are `not_audited`. They run, produce output, and have 7 unit tests.
+
+**2026-11-04 adversarial audit findings (see audit register §"2026-11-04 Adversarial audit"):
+
+- ✅ Column indices verified against `standardizeAndSort.scala` schema — consistent across three sources.
+- ✅ Debit-only accumulation semantics correct; 7/7 unit tests pass.
+- ✅ **FINDING 1 (RESOLVED):** CCP1 sort-key and GL architecture semantics clarified. In a real legacy GL, vendor identity is not an input to the posting step. `GLPost` correctly ignores `transIPID`; shared SortedJE partition introduces a known measurement conservatism (CCP1 sort cost ≥ true legacy GL sort cost), making the CCP1→CCP2 delta a lower bound. `PermutationGenerator` measures externalised upstream materialisation cost, not a GL step. `TEST_DESIGN_PAPER_1.md` updated; framing confirmed by project owner.
+- ✅ **FINDING 2 (FIXED):** Output filenames standardised to two-digit year convention: `GL20YY.csv`, `PERM_TBL20YY.csv`.
+- ✅ **FINDING 3 (RESOLVED):** Memory bound not applicable to Steps 20/21 — both are measurement instruments / GL replicators, not CKB engines. Full-corpus accumulation is architecturally correct. `peak_rss_bytes` metric limitation (JVM heap, not OS RSS) noted in documentation.
+- ✅ **FINDING 4 (FIXED):** `write_canonical_evidence.sh` `scala_version` updated to `2.12.20`.
+- ✅ **FINDING 5 (DEFERRED):** `GL20YY.csv` and `PERM_TBL20YY.csv` are correct terminal CCP1 outputs; AIM1 consumer is a future gate, not a current blocker.
+
+**Remaining checks before CCP1 gate:**
+1. ~~Fix `scala_version` hardcode~~ **Done.**
+2. ~~Rename outputs and add `append_process` cases for steps 20/21~~ **Done.**
+3. ~~CCP1 sort-key gap~~ **Resolved** — conservatism documented; delta is a lower bound; confirmed by project owner.
+4. ~~Memory bound for PermutationGenerator~~ **Not applicable** — measurement instrument, not a CKB engine; full-corpus map is correct.
+5. ~~AIM1 consumer~~ **Deferred** — terminal outputs correctly produced; AIM1 is a future gate.
+
+**Gate:** CCP1 baseline run requires `partially_verified` for Steps 20 and 21. The only outstanding item is a first real-corpus run confirming non-zero output and non-empty `process_metrics.csv` rows for steps 20 and 21.
+
+### Priority 4 — Whole-process attempt lifecycle (blocks any publication claim)
+
+**What:** The symlink-swap publication model is `partially_verified`. The non-atomic window during first migration from a real output directory to a symlink has not been tested. Concurrent-reader behavior during the swap has not been verified.
+
+**Gate:** Deferred until CCP2 first replicate is in hand — lifecycle correctness is a pre-publication gate, not a first-run gate.
+
+### Priority 5 — Allocation, revaluation, reclassification (blocks CCP4/CCP5)
+
+**What:** Steps 6, 8, 9 are `partially_verified` or `unknown`. None can contribute to a published cost point until their engine contract entries in the audit register are at least `partially_verified` with explicit owner approval.
+
+---
+
+## Initial Audit Scope (original, preserved)
 
 The first repository-wide audit should cover, in order:
 
@@ -184,7 +308,9 @@ The first repository-wide audit should cover, in order:
 
 The audit produces a process/contract/evidence register before it produces new financial code.
 
-## Session Prompt
+---
+
+## Session Roles
 
 Start each session by selecting exactly one primary role. The role controls what the agent is
 allowed to change and what counts as success. A session may recommend a handoff to another role,
@@ -304,6 +430,8 @@ distinction between code that exists, code that ran, and behavior that was prove
 implementation changes.
 ```
 
+---
+
 ## Role Handoffs
 
 Use these transitions explicitly:
@@ -320,6 +448,10 @@ The default starting role for this repository is **Verification Lead**. The defa
 contract is approved is **Engine or Process Implementer**. The implementer never replaces the
 adversarial review.
 
+---
+
+## Session Start Prompt
+
 At the start of each verification session, the agent should be given:
 
 ```text
@@ -328,6 +460,7 @@ Read AGENTS.md, VERIFICATION_SESSION_PROTOCOL.md, the relevant layer README,
 CKB_LAYER_EXECUTION_MODEL.md, MEASUREMENT_AND_LOGGING.md, and the nearby code.
 State one falsifiable architecture claim and one cheap check before editing.
 Trace actual producers and consumers. Treat undocumented behavior as unknown.
+New code added without a prior verification session is not_audited, not verified.
 Do not claim a cost point or implementation maturity until the contract, consumer,
 controls, materialization, and evidence gates pass.
 ```

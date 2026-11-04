@@ -108,3 +108,97 @@ These checks cover correctness of the legacy path only. Step 2 (`standardizeAndS
 
 
 See [SUPPLIER_DIRECTORY_SNAPSHOT.md](SUPPLIER_DIRECTORY_SNAPSHOT.md). This acquisition is outside financial-engine measurement; no engine audit states are upgraded.
+
+## 2026-11-04 Steps 20 and 21 — GLPost and PermutationGenerator (Bob)
+
+Scope: CCP1 baseline steps added in the 2026-11-04 experimental architecture session. Code exists, functional tests pass. No verification session has traced the producer/consumer path, schema, memory bound, or CKB placement for either step.
+
+| Claim | State | Evidence | Remaining gap |
+|---|---|---|---|
+| `GLPost` reads `SortedJEFY*.csv`, accumulates account-keyed balances, and writes `GL20YY.csv` | `not_audited` | `GLPostSpec` 7/7 pass; step dispatch wired via `case "20"` in `LedgerApp.scala` | Accumulation field index not independently verified against CCP1 workload declaration; no declared consumer reads `GL20YY.csv` in any running step; memory bound for large corpus not declared |
+| `PermutationGenerator` reads `SortedJEFY*.csv`, accumulates `(account_key, vendor_id)` permutation counts, and writes `PERM_TBL20YY.csv` | `not_audited` | `GLPostSpec` permutation assertions pass | Same gaps as GLPost; no declared consumer; memory bound for 65K-vendor, 12-year corpus not declared |
+| Steps 20 and 21 appear in `process_metrics.csv` after a CCP1 run | `not_audited` | `RESULT step=20` and `RESULT step=21` log lines emitted; `write_canonical_evidence.sh` has **no** `append_process` case for steps 20 or 21 — their metrics are not extracted | `write_canonical_evidence.sh` must be extended before any CCP1 run counts as a valid replicate |
+
+These entries establish `not_audited` as the baseline state per `VERIFICATION_SESSION_PROTOCOL.md §Verification States`. A Contract Tester session should verify the accumulation field, a declared consumer, and the `write_canonical_evidence.sh` gap before CCP1 is run as a cost-curve point.
+
+## 2026-11-04 Adversarial audit: Steps 20/21 and evidence infrastructure (Bob)
+
+**Role:** Adversarial Architecture Reviewer
+**Scope:** `GLPost.scala`, `PermutationGenerator.scala`, `write_canonical_evidence.sh`, `TEST_DESIGN_PAPER_1.md`, `GLPostSpec.scala`, `run_c1_smoke_test.sh`
+
+### Confirmed: column indices independently verified
+
+Column indices declared in `GLPost.scala` (COL_AGENCY=12, COL_FUND=13, COL_NOMINAL_ACC=16, COL_FISCAL_YR=22, COL_AMOUNT=25, COL_DIR_FLAG=31) and `PermutationGenerator.scala` (COL_VENDOR_ID=0 plus same four account fields) match the canonical 39-column SortedJE schema declared in `standardizeAndSort.scala` lines 62–100. The `GLPostSpec.scala` test fixture at `makeJERow` also assigns the same indices. **Column contract is consistent across three independent sources.**
+
+### Confirmed: debit-only accumulation semantics
+
+Both steps filter `cols(COL_DIR_FLAG).trim == "D"` before accumulating. `TEST_DESIGN_PAPER_1.md §CCP1` does not explicitly state debit-only, but the intent — accumulate the economic amount of each transaction without double-counting the balanced debit+credit pair — is correctly implemented. The tests confirm offset ("N") rows are excluded and amounts sum correctly.
+
+### Confirmed: 7/7 unit tests pass
+
+`sbt "testOnly org.universalledger.foundation.va.ledger.GLPostSpec"` — all 7 tests pass including the explicit two-vendor one-account scenario (GL=1 row, PERM=3 rows).
+
+### FINDING 1 — CCP1 sort key and GL architecture semantics — **RESOLVED 2026-11-04**
+
+In a real legacy GL, vendor identity is **not an input to the posting step** — it is collapsed out at standardisation and never carried into the sort file. CCP1 does not need to follow CKB process rules; it replicates the GL architecture exactly: `GLPost` (Step 20) ignores `transIPID` in the accumulation key, and `PermutationGenerator` (Step 21) reads vendor identity from the original transaction stream — not from the GL output — because it is measuring the **externalised upstream cost** the GL imposes on source systems and data preparation layers, not a GL operation.
+
+The original finding was that CCP1 Step 2 uses the instrument-key sort rather than an account-key sort, invalidating the sort-cost component of the CCP1→CCP2 delta. The resolved position is:
+
+- CCP1 Step 2 uses the same SortedJE partition as CCP2 (shared input snapshot). `GLPost` is sort-order-agnostic (full-file accumulator), so the GL balance output is numerically correct regardless.
+- The shared sort introduces a **known measurement conservatism**: CCP1's Step 2 sort cost includes sorting a vendor-bearing key, which a true legacy system would never do. This makes CCP1 sort cost equal to or *higher* than a real legacy system — the CCP1→CCP2 delta is therefore a **lower bound** on the true architectural cost difference, not an overstatement.
+- `TEST_DESIGN_PAPER_1.md §CCP1` has been updated to document this conservatism explicitly, replace the "sort by account key" description, and reframe `PermutationGenerator` as measuring externalised upstream cost rather than a GL post-hoc step.
+
+| Claim | State | Evidence | Remaining gap |
+|---|---|---|---|
+| CCP1 sort-cost conservatism is documented and the CCP1→CCP2 delta is a valid lower bound | `design_accepted` | `TEST_DESIGN_PAPER_1.md §CCP1` updated 2026-11-04; `GLPost` ignores `transIPID`; conservatism is in the direction of making CCP1 cost higher, not lower | A separate account-key-only sort sensitivity run could quantify the conservatism; not required for the cost point |
+| `PermutationGenerator` measures externalised upstream materialisation cost, not a GL step | `design_accepted` | `TEST_DESIGN_PAPER_1.md §CCP1` updated 2026-11-04; reads from SortedJE (original stream), not from GL output; framing confirmed by project owner | AIM1 consumer not yet implemented |
+
+### FINDING 2 (MEDIUM) — Output filename mismatch between code and evidence script — **FIXED 2026-11-04**
+
+`GLPost.scala` wrote `GL${yearStr}.csv` (4-digit year). Fixed: now writes `GL20${shortYr}.csv`. `PermutationGenerator.scala` wrote `PERM_TBL${yearStr}.csv`. Fixed: now writes `PERM_TBL20${shortYr}.csv`. `write_canonical_evidence.sh` extended with `append_process` cases for steps 20 and 21 including partition catalog entries. RESULT/RESOURCE log lines continue to use `year=$yearStr` (4-digit) for compatibility with the evidence script's `grep -E "RESULT step=${step} year=${year}"`. 7/7 tests pass post-fix.
+
+| Claim | State | Evidence | Remaining gap |
+|---|---|---|---|
+| Output filenames for Steps 20/21 follow the two-digit year convention used by other pipeline outputs | `verified` | `GLPost.scala` now writes `GL20${shortYr}.csv`; `PermutationGenerator.scala` writes `PERM_TBL20${shortYr}.csv`; `write_canonical_evidence.sh` has `append_process` + `append_partition` cases for steps 20 and 21; 7/7 tests pass | No remaining gap for filename convention |
+
+### FINDING 3 — Memory bound scope — **RESOLVED 2026-11-04**
+
+`PermutationGenerator` is not a bounded-state CKB engine step — it is a **measurement instrument** for externalised upstream cost. Its job is to accumulate the full set of `(account_key, vendor_id)` permutations in one place, reproducing exactly the materialisation burden the GL architecture distributes across source systems. Worrying about its heap usage would be like worrying about the size of the bill being presented: the size of the map *is* the research finding. No bounded-state requirement applies to Step 21.
+
+`GLPost` (Step 20) is similarly a full-corpus accumulator replicating legacy GL behaviour. A real GL index holds the same key space; the in-process map is an equivalent representation. Memory bound is not a CKB concern for either step.
+
+The `peak_rss_bytes` RESOURCE field uses `Runtime.getRuntime.totalMemory()` (JVM heap allocated, not OS RSS). This is noted as a measurement limitation in the RESOURCE line documentation but does not affect the correctness of either step's output.
+
+| Claim | State | Evidence | Remaining gap |
+|---|---|---|---|
+| `PermutationGenerator` requires bounded per-instrument heap as a CKB engine | `not_applicable` | Step 21 is a measurement instrument, not a CKB engine; full-corpus accumulation is architecturally correct; confirmed by project owner | None — full-corpus map is the intended behaviour |
+| `GLPost` accumulation map is a valid GL replication | `design_accepted` | Full-corpus account-keyed map correctly replicates legacy GL posting; project owner confirmed GL architecture does not require bounded state | `peak_rss_bytes` via `Runtime.getRuntime.totalMemory()` is JVM heap allocated, not OS RSS — a known metric limitation |
+
+### FINDING 4 (MEDIUM) — `write_canonical_evidence.sh` scala_version is stale — **FIXED 2026-11-04**
+
+`scala_version` hardcode updated from `2.12.18` to `2.12.20` in `write_canonical_evidence.sh:128`. Verified against `02-foundation/va_pipeline/build.sbt` which declares `scalaVersion := "2.12.20"`. All future run manifests will carry the correct version. Note: previously emitted run manifests (before this fix) still carry `2.12.18` and are not retroactively corrected.
+
+| Claim | State | Evidence | Remaining gap |
+|---|---|---|---|
+| `run_manifest.csv` `scala_version` field correctly identifies the Scala version used | `verified` | `write_canonical_evidence.sh` now hardcodes `2.12.20`; confirmed against `build.sbt` | Previously emitted manifests carry `2.12.18` — not retroactively corrected |
+
+### FINDING 5 — AIM1 consumer — **DEFERRED 2026-11-04**
+
+`GL20YY.csv` and `PERM_TBL20YY.csv` are the correct terminal outputs of CCP1. They are not orphaned — they are the declared substrates for the AIM1 test family described in `TEST_DESIGN_PAPER_1.md §AIM pairing`. AIM1 is a future gate, not a current blocker. The outputs exist, are correctly named, and are catalogued in `partition_catalog.csv` by `write_canonical_evidence.sh`. No action is required until AIM1 is implemented.
+
+| Claim | State | Evidence | Remaining gap |
+|---|---|---|---|
+| `GL20YY.csv` and `PERM_TBL20YY.csv` are correctly produced terminal outputs of CCP1 | `design_accepted` | Files written by Steps 20/21; catalogued in `partition_catalog.csv`; named in `TEST_DESIGN_PAPER_1.md §AIM pairing` as AIM1 substrates | AIM1 implementation is a future gate; not a current blocker for the CCP1 cost point |
+
+### Immediate order for CCP1 gate (updated 2026-11-04)
+
+All five findings from this audit session are resolved or closed:
+
+1. ~~Fix `write_canonical_evidence.sh` `scala_version` hardcode~~ **Done** — updated to `2.12.20`.
+2. ~~Rename GLPost/PermutationGenerator output and add `append_process` cases~~ **Done** — outputs now `GL20${shortYr}.csv` and `PERM_TBL20${shortYr}.csv`; `write_canonical_evidence.sh` extended with steps 20/21 cases.
+3. ~~CCP1 sort-key gap~~ **Resolved** — documented conservatism; CCP1→CCP2 delta is a lower bound; confirmed by project owner.
+4. ~~Memory bound for PermutationGenerator~~ **Not applicable** — Step 21 is a measurement instrument, not a CKB engine; full-corpus accumulation is the correct behaviour.
+5. ~~AIM1 consumer~~ **Deferred** — `GL20YY.csv` and `PERM_TBL20YY.csv` are correct terminal outputs; AIM1 is a future gate.
+
+**Remaining CCP1 gate requirement:** Steps 20/21 must reach `partially_verified`. The only outstanding gate item is a first run against real corpus data to confirm non-zero output and emit non-empty `process_metrics.csv` rows for steps 20 and 21.
+

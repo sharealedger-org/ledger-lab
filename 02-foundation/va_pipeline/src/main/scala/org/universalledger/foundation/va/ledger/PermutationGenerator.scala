@@ -108,7 +108,7 @@ object PermutationGenerator {
     }
     println(s"  SortedJE files : ${jeFiles.map(_.getName).mkString(", ")}")
 
-    val outFile = new File(outPath, s"PERM_TBL${yearStr}.csv")
+    val outFile = new File(outPath, s"PERM_TBL20${shortYr}.csv")
     println(s"  Output file    : ${outFile.getPath}")
 
     // ── Accumulate permutation counts ─────────────────────────────────────────
