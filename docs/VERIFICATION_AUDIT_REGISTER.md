@@ -92,4 +92,19 @@ See [CORPUS_FINDINGS.md](CORPUS_FINDINGS.md), [CORPUS_SCHEMAS.md](CORPUS_SCHEMAS
 | Raw CSV column Status denotes registration type | verified | Source values Self=159,258 and State=70,870; matched registration_type against all corresponding HTML observations; actual HTML status is Active=230,068, Pending Approval=60 | Do not use raw source header as vendor active status. |
 | Current directory proves historical identities or independent PO/payment relationships | unknown | Current reference and 20 agreeing / 2 unresolved historical-candidate VLIN observations | Requires historical identity evidence and an independent payment-side transaction reference. |
 
+
+## 2026-11-04 Sub-Task 1 — transIPID fix (Bob)
+
+Scope: `transStandardize.scala` transformation-path correctness. Does not affect `standardizeAndSort` (Step 2) or `post.scala` (Step 3) — those are the live pipeline paths. This entry covers the legacy PO-path fix that enables instrument-keyed CKB posting.
+
+| Claim | State | Evidence | Remaining gap |
+|---|---|---|---|
+| `transIPID` is populated from `VENDORID` in PO path (`processPOs`) | `verified` | `sbt compile` clean (1 pre-existing deprecation warning unchanged); `sbt "testOnly org.universalledger.foundation.va.*"` 21/21 pass; change is a one-line substitution `transIPID = rec.poVendorID` | No full fixture run with `--with-po-fixture` flag yet; `transIPID` non-zero on real PO file not confirmed by test |
+| Payment path (`processPayments` Expense case) looks up `transIPID` from VendorMaster name | `partially_verified` | `loadVendorMap` helper loads `instHolderName → instID` map; `aggTrans` key now includes `tranVendorName`; unmatched vendors receive `UNMATCHED_<hex8>` key; `UNMATCHED_VENDORS.csv` written | Fixture smoke test not yet run with this path to confirm non-zero `transIPID`; Revenue path unchanged (no vendor concept) |
+| Fixture VendorMaster contains all FY03 expense fixture vendor names | `partially_verified` | 183 rows appended: all 182 vendor names present in `FY03q1exp_small.txt` plus BLACKWELLS BOOK SERVICES (→ c9545) and SUPPLY ROOM (→ c16503) from PO fixture | Synthetic instIDs (99001–99182); not validated against real eVA assignments |
+| `POSortedJE.sortspec` aligns PO sort key for Sub-Task 2 merge | `design_only` | File created at `02-foundation/sort_specs/POSortedJE.sortspec`; sort key is `(transIPID, transFiscalPeriod, transTransDate)` | Not yet used in any running step |
+
+These checks cover correctness of the legacy path only. Step 2 (`standardizeAndSort`) already had the correct VendorMaster lookup before this session; the `transIPID=0` defect in `transStandardize` did not affect the live pipeline.
+
+
 See [SUPPLIER_DIRECTORY_SNAPSHOT.md](SUPPLIER_DIRECTORY_SNAPSHOT.md). This acquisition is outside financial-engine measurement; no engine audit states are upgraded.

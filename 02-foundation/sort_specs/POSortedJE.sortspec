@@ -1,0 +1,14 @@
+# POSortedJE.sortspec — Sort specification for PO commitment SJE output (Sub-Task 1)
+#
+# PO commitment events are sorted by instrument ID (VENDORID) first, then by
+# fiscal period and transaction date.  This key aligns PO rows with the
+# SortedJE.sortspec payment key so that Sub-Task 2 can merge both streams by
+# instrument in a single k-way merge pass.
+#
+# DFSORT equivalent:
+#   SORT FIELDS=(transIPID,transFiscalPeriod,transTransDate),FORMAT=CH,ORDER=A
+#
+# field_name,                     col_index, type, order
+transIPID,                         0,        CH,   A
+transFiscalPeriod,                22,        CH,   A
+transTransDate,                   24,        CH,   A

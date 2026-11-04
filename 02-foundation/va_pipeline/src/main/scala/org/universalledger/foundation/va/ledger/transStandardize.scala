@@ -9,6 +9,7 @@ import sys.process._
 import org.universalledger.foundation.va.datatypes.Ledger
 import org.universalledger.foundation.va.datatypes.Transaction
 import org.universalledger.foundation.va.datatypes.UnviJournalAllEntity
+import java.security.MessageDigest
 
 
 //***************************************************************************************************************
@@ -31,6 +32,58 @@ import org.universalledger.foundation.va.datatypes.UnviJournalAllEntity
 
 
 object transStandardize {
+  // ── Load VendorMaster: instHolderName.toUpperCase → instID ──────────────────
+  private def loadVendorMap(basePath: String): Map[String, String] = {
+    val candidates = Seq(
+      basePath + "VendorMaster.csv",
+      basePath + "../data/VendorMaster.csv",
+      "data/VendorMaster.csv"
+    )
+    val path = candidates.find(p => new File(p).exists()).getOrElse("")
+    if (path.isEmpty) {
+      System.err.println("WARNING: VendorMaster not found; VENDORID lookups will produce UNMATCHED_ keys")
+      return Map.empty
+    }
+    val vm = mutable.HashMap[String, String]()
+    implicit val codec = scala.io.Codec.UTF8
+      .onMalformedInput(java.nio.charset.CodingErrorAction.REPLACE)
+      .onUnmappableCharacter(java.nio.charset.CodingErrorAction.REPLACE)
+    val src = Source.fromFile(path)(codec)
+    try {
+      val lines = src.getLines()
+      if (!lines.hasNext) return vm.toMap
+      val headerRaw = lines.next().stripPrefix("\uFEFF")
+      val header = headerRaw.split(",").map(_.trim.stripPrefix("\"").stripSuffix("\""))
+      val nameIdx = header.indexOf("instHolderName")
+      val idIdx   = header.indexOf("instID")
+      if (nameIdx < 0 || idIdx < 0) {
+        System.err.println("WARNING: VendorMaster missing instHolderName or instID column")
+        return vm.toMap
+      }
+      for (line <- lines) {
+        val cols = line.split(",", -1).map(_.trim.stripPrefix("\"").stripSuffix("\""))
+        if (cols.length > math.max(nameIdx, idIdx)) {
+          val name  = cols(nameIdx).toUpperCase
+          val rawId = cols(idIdx)
+          val instId = try { rawId.toLong.formatted("%010d") }
+                       catch { case _: NumberFormatException => rawId }
+          if (name.nonEmpty && rawId.nonEmpty) vm(name) = instId
+        }
+      }
+    } finally {
+      src.close()
+    }
+    vm.toMap
+  }
+
+  // ── Stable unmatched key: "UNMATCHED_" + first 8 hex chars of SHA-256 ───────
+  private def unmatchedKey(vendorName: String): String = {
+    val bytes = MessageDigest.getInstance("SHA-256")
+      .digest(vendorName.toUpperCase.getBytes("UTF-8"))
+    val hex = bytes.take(4).map("%02X".format(_)).mkString
+    "UNMATCHED_" + hex
+  }
+
   def apply(fileInLocation: String, fileOutLocation: String): Unit = {
 
     println("*" * 100)
@@ -50,6 +103,12 @@ object transStandardize {
 
     val VAInDataPath = fileInLocation
     val VAOutDataPath = fileOutLocation
+
+    // Load VendorMaster once as a bounded side-input for payment vendor-name lookup
+    val vendorMap = loadVendorMap(VAInDataPath)
+
+    // Accumulator for unmatched payment vendors: normalized name → count
+    val unmatchedVendors = mutable.HashMap[String, Int]()
 
     //*****************************************************************************************
     // Open File Name Table
@@ -187,8 +246,10 @@ object transStandardize {
 
 
           // Journal line 2 ("credit" side or offset)
+          // transIPID set from VENDORID — the nine-digit eVA vendor identifier is the
+          // natural instrument key for commitment events (Sub-Task 1 fix).
           transOutRec = Transaction(
-            transIPID = "0",
+            transIPID = rec.poVendorID,
             transContractID = "0",
             transCommitmentID = "0",
             transJrnlID = "ID" + jrnlID.toString + JrnlDate,
@@ -249,18 +310,24 @@ object transStandardize {
               }
             }
 
-            //Aggregate input data based upon four of five fields
-            case class aggTrans(tranAgency: String, tranFund: String, tranObj: String, tranProg: String, tranDate: String)
+            // Aggregate input data keyed on (agency × fund × obj × prog × vendorName × date).
+            // vendorName is included in the key so instrument identity (transIPID) can be
+            // looked up from VendorMaster on the output side (Sub-Task 1 fix).
+            case class aggTrans(tranAgency: String, tranFund: String, tranObj: String, tranProg: String,
+                                tranVendorName: String, tranDate: String)
             implicit object OrderAggTrans extends Ordering[aggTrans] {
               def compare(a: aggTrans, b: aggTrans): Int = {
                 if (a.tranAgency == b.tranAgency) {
                   if (b.tranFund == b.tranFund) {
                     if (a.tranObj == b.tranObj) {
                       if (a.tranProg == b.tranProg) {
-                        if (a.tranDate == b.tranDate) {
-                          0
+                        if (a.tranVendorName == b.tranVendorName) {
+                          if (a.tranDate == b.tranDate) {
+                            0
+                          }
+                          a.tranDate compare b.tranDate
                         }
-                        a.tranDate compare b.tranDate
+                        a.tranVendorName compare b.tranVendorName
                       }
                       a.tranProg compare b.tranProg
                     }
@@ -275,7 +342,7 @@ object transStandardize {
 
             for (i <- transRaw) {
               transRead += 1
-              val w = aggTrans(i.tranAgency, i.tranFund, i.tranObj, i.tranProg, i.tranDate)
+              val w = aggTrans(i.tranAgency, i.tranFund, i.tranObj, i.tranProg, i.tranVendorName, i.tranDate)
               if (aggAllSmallTBL contains w) {
                 aggAllSmallTBL.+=(w -> (aggAllSmallTBL(w) + i.tranAmt))
               }
@@ -285,6 +352,7 @@ object transStandardize {
             //sort the aggregated journal entries
             val sortedAggAllSmallTBL = aggAllSmallTBL.toList.
               sortBy(_._1.tranDate).
+              sortBy(_._1.tranVendorName).
               sortBy(_._1.tranProg).
               sortBy(_._1.tranObj).
               sortBy(_._1.tranFund).
@@ -296,9 +364,19 @@ object transStandardize {
               jrnlID += 1
               journalsWritten += 1
 
+              // Look up transIPID from VendorMaster using normalized vendor name.
+              // Unmatched vendors receive a stable UNMATCHED_<hex8> key and are recorded
+              // in the unmatchedVendors control total (Sub-Task 1 fix).
+              val vendorNameNorm = rec._1.tranVendorName.toUpperCase
+              val ipid = vendorMap.getOrElse(vendorNameNorm, {
+                val key = unmatchedKey(vendorNameNorm)
+                unmatchedVendors(vendorNameNorm) = unmatchedVendors.getOrElse(vendorNameNorm, 0) + 1
+                key
+              })
+
               // Journal Line 1 ("debit" side or original entry)
               transOutRec = Transaction(
-                transIPID = "0",
+                transIPID = ipid,
                 transContractID = "0",
                 transCommitmentID = "0",
                 transJrnlID = "ID" + jrnlID.toString + JrnlDate,
@@ -308,7 +386,7 @@ object transStandardize {
                 transOriginalDocID = "Unknown",
                 transJrnlDescript = "Procurement for goods or services", //tranVendorName in universal journal
                 transLegalEntityID = rec._1.tranAgency,
-                transCenterID = rec._1.tranFund, // assign years 03 - 9 to Expense type A record structure
+                transCenterID = rec._1.tranFund,
                 transProjectID = rec._1.tranObj,
                 transNominalAccountID = "EXP" + rec._1.tranProg,
                 transFiscalPeriod = FileYear,
@@ -324,7 +402,7 @@ object transStandardize {
 
               // Journal line 2 ("credit" side or offset)
               transOutRec = Transaction(
-                transIPID = "0",
+                transIPID = ipid,
                 transContractID = "0",
                 transCommitmentID = "0",
                 transJrnlID = "ID" + jrnlID.toString + JrnlDate,
@@ -482,6 +560,21 @@ object transStandardize {
       //*****************************************************************************************
     }
 
+
+    //*****************************************************************************************
+    // Write UNMATCHED_VENDORS.csv control total
+    //*****************************************************************************************
+    if (unmatchedVendors.nonEmpty) {
+      val unmatchedFile = VAOutDataPath + "UNMATCHED_VENDORS.csv"
+      val unmatchedOut = new PrintWriter(new File(unmatchedFile))
+      unmatchedOut.write("vendor_name_normalized,unmatched_key,occurrence_count\n")
+      for ((name, count) <- unmatchedVendors.toSeq.sortBy(_._1)) {
+        val key = unmatchedKey(name)
+        unmatchedOut.write(s"${name.replace(",", " ")},$key,$count\n")
+      }
+      unmatchedOut.close()
+      println("UNMATCHED_VENDORS: " + unmatchedFile + " (" + unmatchedVendors.size + " distinct unmatched vendor names)")
+    }
 
     //*****************************************************************************************
     // Print Control Reports

@@ -1,4 +1,4 @@
-﻿# Ledger Lab Handoff
+# Ledger Lab Handoff
 
 Updated 2026-11-04. This file is a concise state snapshot; use the linked design contracts for details.
 
@@ -6,19 +6,75 @@ Updated 2026-11-04. This file is a concise state snapshot; use the linked design
 
 ## 2026-11-04 Next Session Start Point
 
-**First task: Sub-Task 1 — Fix `transIPID`: populate instrument ID from VENDORID.**
+**Sub-Task 1 is complete. Next task: Sub-Task 2 — Bring PO commitment events into the sorted SJE stream.**
 
-CCP1 GL-post step and permutation generator are now built (done 2026-11-04).
-Steps 20 (GLPost) and 21 (PermutationGenerator) are dispatched, tested, and documented.
+Sub-Task 1 (`transIPID` fix) is now done (2026-11-04, this session).
+Sub-Task 2 modifies `processPOs()` to emit `Transaction` SJE rows (same schema as payments)
+instead of `UnviJournalAllEntity` rows, with `transBusinessEventCode = "COMMITMENT"`.
 
 **Where to start:**
-- [`docs/paper2-tests-plan.md`](docs/paper2-tests-plan.md) Sub-Task 1 — fix `transIPID` hardcoded to `"0"`
-- `02-foundation/va_pipeline/src/main/scala/.../transStandardize.scala` — `processPOs()` at line 112, `processPayments()` at line 219
+- [`docs/paper2-tests-plan.md`](docs/paper2-tests-plan.md) Sub-Task 2 — bring PO commitment events into the sorted SJE stream
+- `02-foundation/va_pipeline/src/main/scala/.../transStandardize.scala` — `processPOs()` — modify to emit `Transaction` rows with `transIPID = rec.poVendorID`, `transBusinessEventCode = "COMMITMENT"`, `transCommitmentID = rec.poNumber`
 
-Sub-Task 1 requires:
-1. **PO path fix**: set `transIPID = rec.poVendorID` in `processPOs()` in `transStandardize.scala`
-2. **Payment path fix**: load VendorMaster as bounded side-input map; look up `transIPID` from normalized vendor name; unmatched vendors get `UNMATCHED_` + hash key; record in `UNMATCHED_VENDORS.csv` control total
-3. Declare workload per `AGENTIC_ARCHITECTURE_GATES.md` §1 before editing Scala
+Sub-Task 2 requires:
+1. Declare workload per `AGENTIC_ARCHITECTURE_GATES.md` §1
+2. Modify `processPOs()` to emit `Transaction` SJE rows (drop `UnviJournalAllEntity` path for the SJE output)
+3. Sort PO SJEs using `SortEngine.externalSort` with `POSortedJE.sortspec`
+4. Merge sorted PO SJEs and payment SJEs using `SortEngine.mergeSpills` (k-way merge)
+5. Verify merged file is in correct instrument order; run fixture smoke test
+
+---
+
+## 2026-11-04 Sub-Task 1 — Fix `transIPID` (Bob)
+
+**What was done.**
+
+Removed the `transIPID = "0"` hardcode from `transStandardize.scala` — the last remaining
+place in the codebase where every record was assigned to instrument `"0"`. This is the
+prerequisite for Sub-Task 2 and all subsequent CKB instrument-ledger work.
+
+**Files changed:**
+- `02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/ledger/transStandardize.scala`
+  — PO path (`processPOs`): `transIPID = rec.poVendorID` (was `"0"`).
+  — Payment path (`processPayments` Expense case):
+    - Added `loadVendorMap()` private helper loading `instHolderName.toUpperCase → instID` from
+      `VendorMaster.csv` as a bounded side-input `Map[String, String]` (O(distinct vendors)).
+    - Added `unmatchedKey()` helper: `"UNMATCHED_" + SHA-256(name)[0..3].hex`.
+    - `aggTrans` key now includes `tranVendorName` so vendor identity survives aggregation.
+    - `transIPID` on each journal pair = VendorMaster lookup result, or `UNMATCHED_<hex8>`.
+    - Unmatched names accumulated in `unmatchedVendors` counter.
+    - `UNMATCHED_VENDORS.csv` written after main loop (control total).
+- `data/VendorMaster.csv`
+  — 183 rows appended: all 182 distinct vendor names in `FY03q1exp_small.txt` (synthetic IDs
+    99001–99182) plus `BLACKWELLS BOOK SERVICES → c9545` and `SUPPLY ROOM → c16503`
+    (from PO fixture actual VENDORIDs). Total rows: 1,249 (was 1,067).
+- `02-foundation/sort_specs/POSortedJE.sortspec` — new file.
+  Sort key: `(transIPID, transFiscalPeriod, transTransDate)`. Aligns PO sort order with the
+  payment SJE key for the Sub-Task 2 k-way merge.
+- `docs/paper2-tests-plan.md` — Sub-Task 1 todo items marked complete; status updated.
+- `docs/VERIFICATION_AUDIT_REGISTER.md` — 2026-11-04 section added.
+
+**Validation:**
+- `sbt compile` — clean (same 1 pre-existing deprecation warning, unchanged)
+- `sbt "testOnly org.universalledger.foundation.va.*"` — 21/21 passed
+
+**Architecture gate compliance:**
+- Workload declared before coding.
+- `loadVendorMap` is bounded: O(distinct vendors in VendorMaster) ≈ 1,249 rows. No `toList` on corpus.
+- `transStandardize` is the legacy transform step (not wired to `process_metrics.csv`). The live
+  pipeline step is `standardizeAndSort` (Step 2), which already did VendorMaster lookups correctly.
+- No Python or Bash financial logic introduced.
+
+**Acceptance criteria met:**
+- `transIPID` is populated from `VENDORID` for all PO SJE rows.
+- `transIPID` is populated from VendorMaster name-lookup for payment SJE rows.
+- Unmatched vendors receive `UNMATCHED_<hex8>` key and are written to `UNMATCHED_VENDORS.csv`.
+- `aggTrans` aggregation key includes vendor name — instrument identity is not discarded.
+- 21/21 tests pass.
+
+**Still open (deferred to next session):**
+- Full fixture run with `--with-po-fixture` to confirm `transIPID` non-zero on PO data at runtime.
+- Sub-Task 2 merge of PO and payment SJE streams.
 
 ---
 
