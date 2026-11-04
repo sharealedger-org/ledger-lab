@@ -454,7 +454,7 @@ should read files at most once per task, extracting all needed information in th
 ```bash
 bash scripts/run_pipeline.sh \
   --inPath data/ --outPath data/output/ \
-  --years 03 --steps 2,3 --curve C1 --config "post-only"
+  --years 03 --steps 2,3 --curve CCP1 --config "post-only"
 ```
 
 Then read **only**:

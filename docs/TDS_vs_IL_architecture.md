@@ -1,4 +1,4 @@
-# TDS vs IL: Transaction Store vs Instrument Ledger Architecture
+﻿# TDS vs IL: Transaction Store vs Instrument Ledger Architecture
 
 > **Status:** Documented from session discussion — flag for inclusion in the monograph
 > **Relates to:** Papers 1, 4, 5 of the monograph; VA pipeline Steps 2 and 3
@@ -129,16 +129,16 @@ This is why the minimum cost point shifts dramatically leftward: the Contract At
 
 ### The four-curve experiment as empirical proof
 
-The C1–C4 cost surface experiment in this repository measures exactly this trade-off:
+The CCP1–CCP4 cost surface experiment in this repository measures exactly this trade-off:
 
 | Curve | Configuration | What it measures |
 |---|---|---|
-| C1 | Post only | Baseline balance maintenance cost |
-| C2 | Post + CAR pivot views | Marginal cost of CAR (Contract Attributes Record) reporting (should be near-zero per new dimension) |
-| C3 | + Reval-class processes | Cost of generated-transaction processes |
-| C4 | Full pipeline | With CAR/Instrument Ledger design, C4 ≈ C3 — single-pass universality holds |
+| CCP1 | Post only | Baseline balance maintenance cost |
+| CCP2 | Post + CAR pivot views | Marginal cost of CAR (Contract Attributes Record) reporting (should be near-zero per new dimension) |
+| CCP3 | + Reval-class processes | Cost of generated-transaction processes |
+| CCP4 | Full pipeline | With CAR/Instrument Ledger design, CCP4 ≈ CCP3 — single-pass universality holds |
 
-The overlap of C3 and C4 on the cost surface is the empirical proof that the Contract Attributes Record design has collapsed the key-widening cost to zero while maintaining full reporting completeness.
+The overlap of CCP3 and CCP4 on the cost surface is the empirical proof that the Contract Attributes Record design has collapsed the key-widening cost to zero while maintaining full reporting completeness.
 
 ---
 

@@ -43,24 +43,24 @@ The tests are grouped by what they are trying to show. You don't need to run the
 
 These tests compare prediction performance between a model that only sees payment totals (Layer 2) and a model that also sees ordering data (Layer 3).
 
-#### Test 2a: Does knowing *what* an agency ordered help predict *what* it will spend next year?
+#### Test 2a (AIM2): Does knowing *what* an agency ordered help predict *what* it will spend next year?
 
 **The idea:** An agency's purchase order history — what commodity categories it bought, how often it revised orders, what mix of goods vs. services it ordered — is visible in the ordering system. None of this appears in the payment record, which only shows what was eventually paid to which vendor. If a model that uses ordering data forecasts next-year spending better than a model that uses only payment history, the ordering data carries predictive signal that the payment system discards.
 
 **Data:** ~240 agency-year pairs, FY2006–FY2016.  
 **Success:** The ordering-data model reduces forecast error by at least 5% over the payment-only model (threshold to be confirmed before running).  
-**Full spec:** [`va-corpus-ai-tests.md`](./va-corpus-ai-tests.md) — Test 2a
+**Full spec:** [`docs/TEST_DESIGN_PAPER_2.md`](./docs/TEST_DESIGN_PAPER_2.md) — Test 2a
 
 ---
 
-#### Test 2c: Does *when* an agency places orders tell you something that *when* it pays does not?
+#### Test 2c (AIM4): Does *when* an agency places orders tell you something that *when* it pays does not?
 
 **The idea:** Virginia's fiscal year ends June 30. Agencies that are about to lose unspent budget are likely to place orders in Q4 (April–June) at higher-than-normal rates. This "year-end budget rush" signal lives in order dates — not payment dates. The payment record carries the date the check was cut, which might be weeks or months later. If ordering volume shows a statistically significant Q4 spike and payment volume does not, the ordering record contains timing information that the posted payment system permanently loses.
 
 **Data:** PO files FY2006–FY2016, ~130M records, top 5 goods commodity classes.  
 **Success:** At least 3 of the top 5 goods classes show a statistically significant Q4 spike in ordering volume.  
 **Why run this first:** Cheapest test — requires no join between the PO and expenditure files.  
-**Full spec:** [`va-corpus-ai-tests.md`](./va-corpus-ai-tests.md) — Test 2c
+**Full spec:** [`docs/TEST_DESIGN_PAPER_2.md`](./docs/TEST_DESIGN_PAPER_2.md) — Test 2c
 
 ---
 
@@ -68,7 +68,7 @@ These tests compare prediction performance between a model that only sees paymen
 
 This test uses only the purchase order data — no join to expenditure records required. It tests whether the full lifecycle of a vendor relationship (how they entered, how active they were, how they changed over time, and when they left) is predictive — and, crucially, whether that lifecycle information is something that a payment-summary system could ever capture.
 
-#### Test 2b: Can we predict which vendors will stop doing business with the state?
+#### Test 2b (AIM3): Can we predict which vendors will stop doing business with the state?
 
 **The idea:** A conventional accounting system records payments. It does not record vendor relationships — it has no concept of a vendor "entering" the procurement market or "exiting" it. The purchase order data does. We have 65,000 vendors with up to 12 years of annual order history. 43% of vendors appear in only one year. The question is whether features observable in a vendor's first year of ordering — what they sold, how concentrated their business was, which agencies they served — predict whether they'll still be selling to the state three years later.
 
@@ -76,7 +76,7 @@ If those features are predictive (C-statistic > 0.65 on held-out years), it demo
 
 **Data:** 65,000 vendors × up to 12 fiscal years, FY2006–FY2016.  
 **Success:** C-statistic > 0.65 on held-out years (FY2015–2016), permutation p < 0.05.  
-**Full spec:** [`va-corpus-ai-tests.md`](./va-corpus-ai-tests.md) — Test 2b
+**Full spec:** [`docs/TEST_DESIGN_PAPER_2.md`](./docs/TEST_DESIGN_PAPER_2.md) — Test 2b
 
 ---
 
@@ -84,7 +84,7 @@ If those features are predictive (C-statistic > 0.65 on held-out years), it demo
 
 When a payment system summarizes transactions to an account code, it collapses all agency name variants to a single code. A reorganization, a renaming, a funding boundary change — all invisible. The pre-hierarchy record preserves the original name string. This test asks whether an AI model can tell the difference between "same agency, different spelling" and "actually a different legal entity."
 
-#### Test 2d: Can an AI model distinguish a spelling variant from a genuine organizational difference?
+#### Test 2d (AIM5): Can an AI model distinguish a spelling variant from a genuine organizational difference?
 
 **The idea:** 99.1% of Virginia expenditure records match agency names exactly to a reference table. 13 names (20,512 rows) don't match at all. 3 names (131,809 rows) are ambiguous — they could belong to two different reference agencies. A payment-summary system would have resolved these by picking one code and moving on, silently hiding the ambiguity. A pre-hierarchy architecture preserved the original strings, so the ambiguity is visible.
 
@@ -95,13 +95,13 @@ The test trains a classifier on the 99.1% exact-match cases (labeled: same agenc
 **Data:** `agency_alias_candidates.csv` — 16 unresolved agency names, 3 genuinely ambiguous.  
 **Success:** Precision ≥ 0.99 on held-out exact-match pairs; the 3 ambiguous cases produce confidence < 0.7 (flagged rather than force-resolved).  
 **This test also unblocks Tests 2a and 3** by producing the agency reconciliation table cross-file joins require.  
-**Full spec:** [`va-corpus-ai-tests.md`](./va-corpus-ai-tests.md) — Test 2d
+**Full spec:** [`docs/TEST_DESIGN_PAPER_2.md`](./docs/TEST_DESIGN_PAPER_2.md) — Test 2d
 
 ---
 
 ## What counts as overall success
 
-Each test has its own acceptance threshold (see [`va-corpus-ai-tests.md`](./va-corpus-ai-tests.md)). The overall claim Ledger Lab is testing is:
+Each test has its own acceptance threshold (see [`docs/TEST_DESIGN_PAPER_2.md`](./docs/TEST_DESIGN_PAPER_2.md)). The overall claim Ledger Lab is testing is:
 
 > **Pre-hierarchy data (orders, relationships, raw names) contains predictive signal that is absent from post-hierarchy data (payments, balances, account codes) — not just missing from this particular dataset, but structurally absent from any system that summarizes transactions before storing them.**
 
@@ -111,12 +111,13 @@ A single test confirming its hypothesis is evidence. Multiple tests confirming a
 
 ## Suggested run order
 
-| Step | Test | Why |
-|------|------|-----|
-| 1 | **Test 2c** (Q4 ordering seasonality) | No join required, no reconciliation required. Cheapest and fastest confirmation that ordering timing carries signal payment timing doesn't. |
-| 2 | **Test 2d** (agency entity resolution) | Produces the agency reconciliation table needed by Tests 2a and 3. Also independently confirms the "preserved names carry information" claim. |
-| 3 | **Test 2b** (vendor survival) | PO-only, no join required. Independently tests the lifecycle/relationship claim. |
-| 4 | **Test 2a** (commodity forecasting) | Requires agency reconciliation from Test 2d. Tests the Layer 3 vs Layer 2 forecasting claim directly. |
+| Step | Test | AIM ID | Why |
+|------|------|--------|-----|
+| 0 | **CCP1** (cost-curve baseline run) | — | The CKB pass produces the joined PO+payment stream that AIM1–AIM4 consume. Must complete before any AIM test. |
+| 1 | **Test 2c** (Q4 ordering seasonality) | AIM4 | No join required, no reconciliation required. Cheapest and fastest confirmation that ordering timing carries signal payment timing doesn't. |
+| 2 | **Test 2d** (spelling vs. org difference) | AIM5 | Produces the agency reconciliation table needed by Tests 2a and 3. Also independently confirms the "preserved names carry information" claim. |
+| 3 | **Test 2b** (vendor survival) | AIM3 | PO-only, no join required. Independently tests the lifecycle/relationship claim. |
+| 4 | **Test 2a** (commodity forecasting) | AIM2 | Requires agency reconciliation from Test 2d. Tests the Layer 3 vs Layer 2 forecasting claim directly. |
 
 ---
 
@@ -137,9 +138,10 @@ The VA corpus tests (this document) are the **Track B** open-data implementation
 
 Full test specifications, data paths, acceptance thresholds that must be confirmed before running, and the Test 0 feasibility findings (what cross-file joins are and aren't possible in the public corpus) are in:
 
-- **[`va-corpus-ai-tests.md`](./va-corpus-ai-tests.md)** — complete test specifications, data facts, open decisions
+- **[`docs/TEST_DESIGN_PAPER_2.md`](./docs/TEST_DESIGN_PAPER_2.md)** — complete test specifications, data facts, open decisions
+- **[`docs/RESEARCH_OBJECTIVES.md`](./docs/RESEARCH_OBJECTIVES.md)** — master map of all experiments across both papers, run order, and open decisions
 - **[`ckb-analysis.md`](./ckb-analysis.md)** — code-to-paper mapping for the GenevaERS pipeline implementation
 
 ---
 
-*This document is part of the Ledger Lab repository. Last updated: Session 69, 2026-11-03.*
+*This document is part of the Ledger Lab repository. Last updated: Session 70, 2026-11-04.*

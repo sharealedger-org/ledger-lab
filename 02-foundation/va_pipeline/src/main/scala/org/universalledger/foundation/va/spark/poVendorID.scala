@@ -1,3 +1,5 @@
+// TODO: dead Spark code — remove in a future session
+
 package org.universalledger.foundation.va.ledger
 
 /*

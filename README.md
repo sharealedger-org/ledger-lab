@@ -9,6 +9,12 @@ Full historical inputs are external to Git and must be supplied separately. A su
 run demonstrates behavior on that fixture; it does not by itself establish scale, cost, or the
 general validity of the research claims.
 
+## Start here
+
+**New to Ledger Lab?** Read [`LEDGER_LAB_OVERVIEW.md`](./LEDGER_LAB_OVERVIEW.md) — a plain-English explanation of what all the tests are trying to show and why, grouped by claim rather than by technical name. No prior knowledge of the research papers required. The Overview connects back to the papers for anyone who wants the full argument.
+
+**Already familiar with the research?** For a map of all experiments across both papers, start with [`docs/RESEARCH_OBJECTIVES.md`](docs/RESEARCH_OBJECTIVES.md). Detailed specifications are in [`docs/TEST_DESIGN_PAPER_1.md`](docs/TEST_DESIGN_PAPER_1.md) (Paper 1 cost-curve workloads CCP1–CCP4) and [`docs/TEST_DESIGN_PAPER_2.md`](docs/TEST_DESIGN_PAPER_2.md) (Paper 2 VA corpus AI model evidence tests AIM0–AIM5).
+
 ## Research Questions
 
 - How do compute, retained data, and reconciliation obligations change as capabilities and

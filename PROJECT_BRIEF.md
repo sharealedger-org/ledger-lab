@@ -2,7 +2,7 @@
 
 > **Repo:** `ledger-lab` (derived from the public `KipTwitchell/universal_ledger` POC) — **Apache 2.0**
 > **Author:** Kip M. Twitchell
-> **Document status:** Historical Universal Ledger POC brief. Its nine-FSP implementation claims, C1–C4 experiment taxonomy, and process map are not the current Ledger Lab architecture or implementation status. For the current design, read [README.md](README.md), the 01–05 layer READMEs, [99-interpretation](99-interpretation/README.md), and [MEASUREMENT_AND_LOGGING.md](docs/MEASUREMENT_AND_LOGGING.md).
+> **Document status:** Historical Universal Ledger POC brief. Its nine-FSP implementation claims, C1–C4 [now CCP1–CCP4] experiment taxonomy, and process map are not the current Ledger Lab architecture or implementation status. For the current design, read [README.md](README.md), the 01–05 layer READMEs, [99-interpretation](99-interpretation/README.md), and [MEASUREMENT_AND_LOGGING.md](docs/MEASUREMENT_AND_LOGGING.md).
 > **Monograph:** *"The Architecture of Economic State"* (Twitchell) — link will be added upon publication.
 
 ---
@@ -14,12 +14,12 @@ This brief is kept for its experiment design. The items below were checked again
 | Brief statement | What the repository shows |
 |---|---|
 | Step 2 external sort is `standardize_and_sort.py` (Python, Session 17). | `run_pipeline.sh` and `run_pipeline_orchestrator.sh` invoke Step 2 as Scala (`sbt run --step 2`, `transStandardize`). `scripts/standardize_and_sort.py` is not called by either runner. Treat it as a legacy preparation script, not the measured path. |
-| Step 5 is pending a Postgres rewrite; `data_aggregation.py` is replaced. | `run_pipeline_orchestrator.sh` still calls `scripts/data_aggregation.py` (Python) for C2/C3/C4. `run_pipeline.sh` dispatches `--step N` to Scala. README.md and the audit register say the database-backed Step 5 is not implemented and 05-perspectives is `not_implemented`. This is an open boundary issue with AGENTS.md, so a C2 measured through the orchestrator may include a Python Step 5. |
+| Step 5 is pending a Postgres rewrite; `data_aggregation.py` is replaced. | `run_pipeline_orchestrator.sh` still calls `scripts/data_aggregation.py` (Python) for C2 [now CCP2]/C3 [now CCP3]/C4 [now CCP4]. `run_pipeline.sh` dispatches `--step N` to Scala. README.md and the audit register say the database-backed Step 5 is not implemented and 05-perspectives is `not_implemented`. This is an open boundary issue with AGENTS.md, so a C2 [now CCP2] measured through the orchestrator may include a Python Step 5. |
 | Spark (`DPBSpark.scala`, Step 11) is the engine-dependency baseline; Vagrant verification is planned. | README.md excludes Spark, Vagrant, Play and Derby from the cost-curve experiment. Treat the engine-dependency test in Paper 1 §3.2a as unscheduled. |
 | `run_all_years.ps1` admission scheduler exists (Session 18). | No `.ps1` file exists in the repository. AGENTS.md forbids PowerShell for orchestration. |
 | `BOB_WORK_LOG.md` and `scripts/AGENT_INTERFACE.md` hold session history and the agent contract. | Neither file exists in the repository. Use `SESSION_HANDOFF.md` and `docs/MEASUREMENT_AND_LOGGING.md`. |
-| "Phase 0 (data foundation) is the current blocker"; "FY2003 C1/C2 baseline complete (Session 18)". | Per `SESSION_HANDOFF.md` (2026-10-31), the by-year PO extraction and `car_detect_changes.py` have run and `data/VendorUpdate.csv` is committed. The only log in the repo is one legacy run with `None` row counts, and the audit register marks cost curves `not_verified`. No replicated C1/C2 point exists yet. |
-| C3 ≈ C4 "IS the proof" of single-pass universality. | A hypothesis for the declared workload and profile only (see the sentence that follows it in the brief). |
+| "Phase 0 (data foundation) is the current blocker"; "FY2003 C1/C2 [now CCP1/CCP2] baseline complete (Session 18)". | Per `SESSION_HANDOFF.md` (2026-10-31), the by-year PO extraction and `car_detect_changes.py` have run and `data/VendorUpdate.csv` is committed. The only log in the repo is one legacy run with `None` row counts, and the audit register marks cost curves `not_verified`. No replicated C1 [now CCP1]/C2 [now CCP2] point exists yet. |
+| C3 [now CCP3] ≈ C4 [now CCP4] "IS the proof" of single-pass universality. | A hypothesis for the declared workload and profile only (see the sentence that follows it in the brief). |
 | SAL rounds 1-4 are NIGP class, size tier, geo region, contract type. | `docs/DATA_ENHANCEMENT_PLAN.md` numbers the rounds differently (Round 1 = NIGP + geo, 2 = size, 3 = contract + payment channel, 4 = risk proxies). Name the attribute, not the round number, when citing results. |
 | PO data covers FY2003-FY2016 with gaps FY2005 and FY2009 only. | See "PO coverage" in [docs/RUNTIME_DATA_LAYOUT.md](docs/RUNTIME_DATA_LAYOUT.md). Several other years are partial, and file size alone has been used to classify them. |
 
@@ -35,7 +35,7 @@ This brief is kept for its experiment design. The items below were checked again
 | **Pipeline orchestration** | **Bash** | JCL analog. `set -e`, sequential step invocations, exit codes. No runtime, no subprocess management. |
 | **Logging / metrics append only** | **Python** | Appending rows to `pipeline_log.csv`, `cost_surface.csv`, `pivot_results.csv`. Never in the mainline data flow. |
 
-**The cost surface (Experiment 1) measures the Scala CKB engine.** If any mainline step runs in Python, the timing includes Python interpreter overhead. C1 through C4 are no longer measuring the same substrate. The curves cannot be compared. The theorem cannot be proven.
+**The cost surface (Experiment 1) measures the Scala CKB engine.** If any mainline step runs in Python, the timing includes Python interpreter overhead. C1 [now CCP1] through C4 [now CCP4] are no longer measuring the same substrate. The curves cannot be compared. The theorem cannot be proven.
 
 **If you are about to write Python for mainline flow — stop. You are invalidating the proof.**
 
@@ -89,12 +89,12 @@ This is the architectural fact the cost curve experiment must demonstrate empiri
 
 | Curve | Steps active | Process layers | What it demonstrates |
 |---|---|---|---|
-| **C1 — Post only** | 2, 3 | Transform → Post | Baseline: pure transaction → balance accumulation. Leftmost, cheapest. |
-| **C2 — Post + Analysis** | 2, 3, 5 | + Analytical pivot | Marginal cost of reporting materialization (ViewSpec views). |
-| **C3 — Post + Analysis + Reval-class** | 2, 3, 5, 8, 9 | + Forecasting + Reclass | Cost of generated-transaction processes. Hypothesis: flat vs. C2 — no new master files. |
-| **C4 — Full pipeline** | 2, 3, 5, 6, 7, 8, 9, 4 | + Allocation + Consolidation | With prior-day divisor design, C4 cost point should equal C3. That equality IS the proof of single-pass universality. |
+| **C1 [now CCP1] — Post only** | 2, 3 | Transform → Post | Baseline: pure transaction → balance accumulation. Leftmost, cheapest. |
+| **C2 [now CCP2] — Post + Analysis** | 2, 3, 5 | + Analytical pivot | Marginal cost of reporting materialization (ViewSpec views). |
+| **C3 [now CCP3] — Post + Analysis + Reval-class** | 2, 3, 5, 8, 9 | + Forecasting + Reclass | Cost of generated-transaction processes. Hypothesis: flat vs. C2 [now CCP2] — no new master files. |
+| **C4 [now CCP4] — Full pipeline** | 2, 3, 5, 6, 7, 8, 9, 4 | + Allocation + Consolidation | With prior-day divisor design, C4 [now CCP4] cost point should equal C3 [now CCP3]. That equality IS the proof of single-pass universality. |
 
-**The key result:** If C3 and C4 overlap on the declared workload and materialization profile, that
+**The key result:** If C3 [now CCP3] and C4 [now CCP4] overlap on the declared workload and materialization profile, that
 supports the prior-day divisor design for that workload. It does not prove universal equality. If
 they diverge, the evidence must identify whether the cause is a required sort, materialized side
 input, generated SJE volume, report-time derivation, or reconciliation obligation. That divergence
@@ -149,7 +149,7 @@ or a downstream engine, materialize a balanced SJE and measure that cost separat
 
 Each configuration = one point. The four curves show how the minimum point shifts as process layers are added.
 
-**Engine-dependency test (Paper 1 §3.2a):** Run C1 and C4 with both `post.scala` (pure Scala) and `DPBSpark.scala` (Spark). The minimum point should shift leftward on the Scala engine. This is a direct empirical test of the engine-dependency claim.
+**Engine-dependency test (Paper 1 §3.2a):** Run C1 [now CCP1] and C4 [now CCP4] with both `post.scala` (pure Scala) and `DPBSpark.scala` (Spark). The minimum point should shift leftward on the Scala engine. This is a direct empirical test of the engine-dependency claim.
 
 ---
 
@@ -214,7 +214,7 @@ Starting from the current VendorMaster (1 SAL attribute: vendor type → EXP/REV
 
 Both experiments can be driven by an agentic AI system. The agent:
 
-1. **Selects a configuration** — chooses curve (C1–C4), materialization level, SAL attribute round, or engine
+1. **Selects a configuration** — chooses curve (C1–C4 [now CCP1–CCP4]), materialization level, SAL attribute round, or engine
 2. **Writes the config** — edits `ViewSpec.csv` (enabled flags, attribute columns) and `run_pipeline.sh` arguments
 3. **Runs the pipeline** — calls `run_pipeline.sh` with the chosen `--steps` sequence
 4. **Reads the results** — parses `pipeline_results.log` for compute time, storage bytes, master file count; reads `pivot_results.csv` for view counts and permutation ratios
@@ -232,7 +232,7 @@ The agent interface is intentionally simple: edit two CSV files, run one shell s
 - [x] **Scale-Invariant Sort Engine** — External merge-sort implemented in `standardize_and_sort.py` (Session 17). O(1) RAM, chunked spill-to-disk, k-way heapq merge. Mandate extended to `arrangementReclass.scala` reclass SJE sort (Session 19 — next session work item).
 - [x] **Memory-Aware Parallel Admission Scheduler** — WLM-style admission loop implemented in `run_all_years.ps1` (Session 18). Named Win32 semaphore, free-RAM gate, MaxConcurrent=8.
 - [x] **Purchase Order (PO) Attribute Extraction** — `scripts/extract_po_attributes.py` produces `vendor_po_attributes.csv` (69,813 vendors, 97% NIGP coverage). Static/collapsed output (modal attr across all years). **By-year output (`--by-year` flag) is next-session work item — required for SAL update cycle.**
-- [ ] **CAR Update Cycle** ← **NEXT SESSION — builds before C1 baseline run**
+- [ ] **CAR Update Cycle** ← **NEXT SESSION — builds before C1 [now CCP1] baseline run**
   - `extract_po_attributes.py --by-year` → `vendor_po_attributes_by_year.csv` (VENDORID, fiscal_year, instNIGPClass, instNIGPDesc, instGeoRegion, po_line_count)
   - `scripts/car_detect_changes.py` (new) — sorted two-pointer walk over by-year PO data + current VendorMaster → `VendorUpdate.csv` with `change_type` (`RECLASS` vs `ATTR_ONLY`), effective fiscal year; O(1) memory
   - `VendorMaster.scala` datatype — add `instNIGPClass`, `instNIGPDesc`, `instGeoRegion` fields; VendorMaster becomes a history file (multi-row per instID, sorted by instID + instEffectDate)
@@ -242,21 +242,21 @@ The agent interface is intentionally simple: edit two CSV files, run one shell s
 - [ ] **Assess USASpending.gov** — evaluate whether federal contract data provides richer instrument attributes for Rounds 2 and 4
 
 ### Phase 1 — Complete the single-curve infrastructure (Experiment 1 baseline) 🟡
-*These items make C1 and C2 fully measurable.*
+*These items make C1 [now CCP1] and C2 [now CCP2] fully measurable.*
 - [ ] **`cost_surface.csv` accumulator** — one row per pipeline run: `[run_id, curve, config_description, total_compute_s, total_storage_bytes, master_file_count, total_cost_proxy]`
 - [ ] **Reconciliation obligation counter** — add enabled=Y ViewSpec row count to `pipeline_results.log` (AHI metric)
 - [ ] **`--materialize` flag** — add to `LedgerApp.scala` and `run_pipeline.sh` to suppress intermediate files for "compute-through" configuration
-- [ ] **Engine comparison harness** — document C1 run with `post.scala` vs. `DPBSpark.scala`; log both to `pipeline_results.log`
-- [ ] **Fixture config files** — `data/AllocationRules.csv`, `data/InteragencyTransfers.csv`, `data/BudgetRules.csv` (needed for C4)
+- [ ] **Engine comparison harness** — document C1 [now CCP1] run with `post.scala` vs. `DPBSpark.scala`; log both to `pipeline_results.log`
+- [ ] **Fixture config files** — `data/AllocationRules.csv`, `data/InteragencyTransfers.csv`, `data/BudgetRules.csv` (needed for C4 [now CCP4])
 
-### Phase 2 — Complete the process layer pipeline (Curves C3 and C4) 🟡
+### Phase 2 — Complete the process layer pipeline (Curves C3 [now CCP3] and C4 [now CCP4]) 🟡
 *These items make revaluation-class and allocation passes runnable on fixture data.*
 - [ ] **`dataAggregation.scala` — Postgres query engine rewrite** ← design complete; resolve open questions before building. See `docs/step5-postgres-design.md`. Replaces multi-pass in-memory design and `data_aggregation.py` (Technology Invariant). Four open questions: Postgres as required dependency, LDGR table lifetime, per-year vs. partitioned table, JDBC driver version.
 - [ ] **`financialAllocation.scala`** — implement prior-day divisor design: read divisor balance from LDGR (partition B), join to AllocationRules.csv (partition C), generate allocated transactions in one pass
 - [ ] **`forecastingBudgeting.scala`** — implement balance-read → growth-factor → budget balance pass (no A partition input; reads B and C only)
 - [ ] **Verify `arrangementReclass.scala` + `consolidation.scala`** — confirm both run end-to-end on fixture data
-- [ ] **Full C3 run** — steps 2,3,5,8,9 on fixture data; log to `cost_surface.csv`
-- [ ] **Full C4 run** — steps 2,3,5,6,7,8,9,4 on fixture data; confirm C4 cost ≈ C3 cost
+- [ ] **Full C3 [now CCP3] run** — steps 2,3,5,8,9 on fixture data; log to `cost_surface.csv`
+- [ ] **Full C4 [now CCP4] run** — steps 2,3,5,6,7,8,9,4 on fixture data; confirm C4 [now CCP4] cost ≈ C3 [now CCP3] cost
 
 ### Phase 3 — SAL enrichment and Experiment 2 (Pivot Theorem) 🟢
 *These items make the four-round SAL expansion measurable.*
@@ -269,7 +269,7 @@ The agent interface is intentionally simple: edit two CSV files, run one shell s
 - [ ] **`scripts/AGENT_INTERFACE.md`** — API contract: what files to read/write, what commands to call, what log format means
 - [ ] **Update `QUICKSTART.md`** — reflect full pipeline, two experiments, four curves
 - [ ] **Verify compile + end-to-end run in Vagrant VM** — confirm full pipeline runs on clean environment
-- [ ] **Cost surface charts** — plot C1–C4 cost curves on same axes; the C3/C4 overlap is the single-pass universality proof
+- [ ] **Cost surface charts** — plot C1–C4 [now CCP1–CCP4] cost curves on same axes; the C3/C4 [now CCP3/CCP4] overlap is the single-pass universality proof
 
 ---
 
@@ -277,9 +277,9 @@ The agent interface is intentionally simple: edit two CSV files, run one shell s
 
 | This POC | Monograph paper | Specific claim being demonstrated |
 |---|---|---|
-| C1 cost curve | Paper 1 §§3.2, 3.2a | Interior minimum exists on the posting-only curve |
-| C1 vs. C4 engine comparison | Paper 1 §3.2a | Engine-specific minimum — Scala vs. Spark minimum points differ |
-| C3 vs. C4 cost equality | Paper 1 §3.2 | Single-pass universality — allocation collapses to single pass via prior-day divisor |
+| C1 [now CCP1] cost curve | Paper 1 §§3.2, 3.2a | Interior minimum exists on the posting-only curve |
+| C1 [now CCP1] vs. C4 [now CCP4] engine comparison | Paper 1 §3.2a | Engine-specific minimum — Scala vs. Spark minimum points differ |
+| C3 [now CCP3] vs. C4 [now CCP4] cost equality | Paper 1 §3.2 | Single-pass universality — allocation collapses to single pass via prior-day divisor |
 | Experiment 2: SAL expansion | Paper 1 §3.4 | **Instrument Pivot Theorem** — O(v^m) views at O(1) marginal balance cost |
 | Experiment 2: permutation ratio | Paper 5 §§5.0a, 5.1 | Step-up is the operational mechanism; §5.0a states the economic consequence |
 | Agentic loop | Paper 1 §7, Paper 2 §8 | Agentic AI navigates the minimum empirically, not just describes it |
@@ -306,4 +306,4 @@ The four-curve experiment produces the measured cost surface that grounds the in
 *For the monograph papers this POC supports — link will be added upon publication.*
 *For the VA data enhancement plan — GL/source-system gap demonstration, Basel bridge, phased CAR enrichment roadmap — see `docs/DATA_ENHANCEMENT_PLAN.md`.*
 *For token-efficient agentic file access on this repo's large datasets, activate the `ckb-efficiency` skill at session start (full reference: `docs/BOB_METHOD_NOTE_CKB_EFFICIENCY.md`).*
-*Current status: FY2003 C1/C2 baseline complete (Session 18). First all-years run (FY2003–FY2016) ready to execute via `run_all_years.ps1` — admission scheduler now in place. Phase 0 (data foundation) is the current blocker.*
+*Current status: FY2003 C1/C2 [now CCP1/CCP2] baseline complete (Session 18). First all-years run (FY2003–FY2016) ready to execute via `run_all_years.ps1` — admission scheduler now in place. Phase 0 (data foundation) is the current blocker.*
