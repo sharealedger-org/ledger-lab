@@ -13,7 +13,7 @@ package org.universalledger.foundation.va.ledger
 //
 //      Parameters:
 //        --step     N    Step to run: 1=poToPayMatch, 2=transStandardize, 3=post,
-//                        10=initFiles, 11=DPBSpark
+//                        10=initFiles, 11=DPBSpark, 20=GLPost (CCP1), 21=PermutationGenerator (CCP1)
 //        --inPath   path Input data directory  (default: /VAdata/data/)
 //        --outPath  path Output data directory (default: /VAdata/data/)
 //        --year     YY   Two-digit fiscal year  (default: 03)
@@ -168,6 +168,9 @@ object LedgerApp {
           year,
           params.getOrElse("sortSpec", "../sort_specs/SortedJE.sortspec")
         )
+      // CCP1 baseline steps — read SortedJE output, produce GL balances and permutation table
+      case "20" => GLPost(params + ("inPath" -> inPath, "outPath" -> outPath, "year" -> year))
+      case "21" => PermutationGenerator(params + ("inPath" -> inPath, "outPath" -> outPath, "year" -> year))
       // Steps 1, 10, 11 (poToPayMatch, initFiles, DPBSpark) require Spark and are excluded from
       // the default build. To enable: add Spark dependency to build.sbt and move sources back to
       // src/main/scala/org/universalledger/foundation/va/ledger/ from
@@ -183,7 +186,8 @@ object LedgerApp {
     println("  sbt \"run --step <N> [--inPath <path>] [--outPath <path>] [--vendormaster <path>] [--year <YYYY>] [--quarter <Q>] [--type <E|R>]\"")
     println("")
     println("  --step         N     Required. 2=standardizeAndSort, 3=post, 4=contraCreation, 5=dataAggregation,")
-    println("                                 6=financialAllocation, 7=consolidation, 8=forecastingBudgeting, 9=arrangementReclass, 12=currencyRevaluation")
+    println("                                 6=financialAllocation, 7=consolidation, 8=forecastingBudgeting, 9=arrangementReclass, 12=currencyRevaluation,")
+    println("                                 20=GLPost (CCP1 GL baseline), 21=PermutationGenerator (CCP1 permutation table)")
     println(s"  --inPath       path  Optional. Raw file directory.  Default: $DefaultInPath")
     println(s"  --outPath      path  Optional. Output directory.    Default: $DefaultOutPath")
     println( "  --vendormaster path  Optional. VendorMaster CSV.    Default: data/VendorMaster_full.csv")

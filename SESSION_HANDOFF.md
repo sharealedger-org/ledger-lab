@@ -6,18 +6,66 @@ Updated 2026-11-04. This file is a concise state snapshot; use the linked design
 
 ## 2026-11-04 Next Session Start Point
 
-**First task: design CCP1 GL-post step and permutation generator.**
+**First task: Sub-Task 1 — Fix `transIPID`: populate instrument ID from VENDORID.**
 
-`process_metrics.csv` emission for Steps 2 and 3 is now repaired (done 2026-11-04).
-Both steps now emit the expected `RESULT` and `RESOURCE` log lines; see session log below.
+CCP1 GL-post step and permutation generator are now built (done 2026-11-04).
+Steps 20 (GLPost) and 21 (PermutationGenerator) are dispatched, tested, and documented.
 
 **Where to start:**
-- [`docs/TEST_DESIGN_PAPER_1.md`](docs/TEST_DESIGN_PAPER_1.md) §CCP1 — full specification of the GL-post step and permutation generator
-- [`docs/paper2-tests-plan.md`](docs/paper2-tests-plan.md) Sub-Task 0b — architecture diagram and build steps
+- [`docs/paper2-tests-plan.md`](docs/paper2-tests-plan.md) Sub-Task 1 — fix `transIPID` hardcoded to `"0"`
+- `02-foundation/va_pipeline/src/main/scala/.../transStandardize.scala` — `processPOs()` at line 112, `processPayments()` at line 219
 
-CCP1 requires two new Scala objects (or a single dispatcher entry):
-1. **GL post step**: reads SortedJE output, summarizes to account-keyed GL (discards instrument identity), writes `GL20YY.csv`
-2. **Permutation generator**: reads original transactions, embeds all dimensions into the posting key, writes `PERM_TBL20YY.csv` — the legacy architecture's "best possible response" substrate for AIM tests
+Sub-Task 1 requires:
+1. **PO path fix**: set `transIPID = rec.poVendorID` in `processPOs()` in `transStandardize.scala`
+2. **Payment path fix**: load VendorMaster as bounded side-input map; look up `transIPID` from normalized vendor name; unmatched vendors get `UNMATCHED_` + hash key; record in `UNMATCHED_VENDORS.csv` control total
+3. Declare workload per `AGENTIC_ARCHITECTURE_GATES.md` §1 before editing Scala
+
+---
+
+## 2026-11-04 CCP1 GL Post and Permutation Generator (Bob)
+
+**What was done.**
+
+Implemented CCP1 baseline (Sub-Task 0b from `docs/paper2-tests-plan.md`):
+two new Scala steps completing the GL-architecture branch of the experimental design.
+
+**Files created:**
+- `02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/ledger/GLPost.scala`
+  — Step 20. Reads `SortedJEFY*.csv`, accumulates account-keyed balances
+  `(agency, nominal_account_id, fund, fiscal_year)` by summing debit lines only
+  (instrument identity intentionally discarded), writes `GL20YY.csv`.
+  Emits `RESULT step=20` and `RESOURCE step=20` log lines.
+- `02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/ledger/PermutationGenerator.scala`
+  — Step 21. Reads same `SortedJEFY*.csv`, accumulates `(account_key, vendor_id)` permutation
+  counts (retaining vendor identity), writes `PERM_TBL20YY.csv`.
+  Emits `RESULT step=21` and `RESOURCE step=21` log lines.
+- `02-foundation/va_pipeline/src/test/scala/org/universalledger/foundation/va/ledger/GLPostSpec.scala`
+  — 7 unit tests covering: distinct account key counts, amount accumulation, instrument-identity
+  discarding, metric log emission (GLPost and PermutationGenerator), and permutation > GL row
+  count assertion.
+
+**Files changed:**
+- `02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/ledger/LedgerApp.scala`
+  — Added `case "20"` → `GLPost(...)` and `case "21"` → `PermutationGenerator(...)` dispatch entries.
+- `docs/paper2-tests-plan.md` — Sub-Task 0b todo items marked complete; status updated.
+
+**Validation:**
+- `sbt compile` — clean (same 1 pre-existing deprecation warning, unchanged)
+- `sbt "testOnly org.universalledger.foundation.va.ledger.GLPostSpec"` — 7/7 passed
+- `sbt "testOnly org.universalledger.foundation.va.*"` — 21/21 passed (14 prior + 7 new)
+
+**Architecture gate compliance:**
+- Workload declared before coding (research question: Paper 1 §3.2 Theorem 1 empirical evidence).
+- GLPost and PermutationGenerator are analytical outputs, not canonical CKB state.
+- Memory contract: O(distinct account keys) and O(distinct account × vendor keys) — bounded.
+- No Python or Bash financial logic introduced.
+- Step IDs 20 and 21 do not collide with existing steps (2,3,4,5,6,7,8,9,12).
+
+**Acceptance criteria met:**
+- `GL20YY.csv` is produced with account-keyed balances; instrument identity absent from output.
+- `PERM_TBL20YY.csv` is produced with `(account_key, vendor_id, record_count)` rows.
+- RESULT/RESOURCE metrics are emitted for both steps, same format as steps 2 and 3.
+- permutation_rows > GL balance rows when multiple vendors share an account (verified by test).
 
 ---
 

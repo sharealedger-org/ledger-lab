@@ -128,15 +128,19 @@ against the CCP2/CCP3 results, is the empirical proof of Theorem 1.
 larger than the GL balance rows. That ratio is the Paper 1 cost-explosion finding.
 
 **Todo list:**
-- [ ] Design the GL-post Scala step (sort spec: account key; accumulator: amount by account)
-- [ ] Implement `GLPost.scala` or equivalent in `02-foundation/va_pipeline/`
-- [ ] Implement permutation generator as a separate Scala step reading the original transactions
-- [ ] Emit `process_metrics.csv` rows for both steps with `workload_id = CCP1`
-- [ ] Run three replicates; confirm permutation_rows is non-zero and GL balance rows are correct
+- [x] Design the GL-post Scala step (sort spec: account key; accumulator: amount by account)
+- [x] Implement `GLPost.scala` in `02-foundation/va_pipeline/` — step 20
+- [x] Implement `PermutationGenerator.scala` in `02-foundation/va_pipeline/` — step 21
+- [x] Register steps 20 and 21 in `LedgerApp.scala` dispatcher
+- [x] Emit RESULT/RESOURCE log lines (same format as steps 2 and 3) for both steps
+- [x] 7/7 unit tests pass (GLPostSpec.scala); 21/21 suite total pass
+- [ ] Run three replicates on real data; confirm permutation_rows is non-zero and GL balance rows are correct
 - [ ] Run AIM1–AIM5 against GL output and permutation table; record results in
   `data/test_evidence/` with `substrate = CCP1_GL` and `substrate = CCP1_PERM`
 
-**Status:** [ ] pending — `process_metrics.csv` repair is prerequisite
+**Status:** ✅ **Implementation complete — 2026-11-04.** Steps 20 (GLPost) and 21
+(PermutationGenerator) are built, tested, and dispatched. Three-replicate evidence runs
+and AIM pairing remain as next tasks.
 
 ---
 
