@@ -237,7 +237,19 @@ extra scan cost.
 - `VA_DATA_MODEL_CONTRACT.md` §Purchase Order — "The PO is a commitment or arrangement event.
   It is not a payment and must not be treated as a settled position."
 
-**Status:** [ ] pending
+**Status:** [ ] pending — **architectural correction required before implementation begins.**
+
+Previous attempts placed PO SJE emission inside `transStandardize.scala` (wrong path — legacy step,
+does not feed `post.scala`) and used an `ArrayBuffer` accumulator (wrong pattern — violates
+O(1) memory contract). Both attempts were reverted. See `SESSION_HANDOFF.md` §2026-11-04 Next
+Session Start Point and `docs/TEST_DESIGN_PAPER_2.md` §6 for the documented correction.
+
+**Correct implementation path:**
+- **Step 2p** — new `type=PO` branch in `standardizeAndSort.scala`; streams PO rows through
+  `SortEngine.externalSort` with `SortedJE.sortspec`; writes `SortedJEFY{yr}q{n}PO.csv`. No accumulation.
+- **Step 2m** — new merge dispatch in `LedgerApp`; calls `SortEngine.mergeSpills` on the sorted
+  payment and PO partitions; writes `SortedJEFY{yr}merged.csv` for `post.scala`.
+- Workload declaration (per `AGENTIC_ARCHITECTURE_GATES.md`) must be written before any code.
 
 ---
 

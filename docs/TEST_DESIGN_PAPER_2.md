@@ -317,3 +317,59 @@ Do not adjust thresholds after any test has been run.
   before any test results.
 - Acceptance thresholds must be committed to this file **before** any test run. Do not tune them
   after seeing results.
+
+---
+
+## 6. Footnote candidate — AI assistant bias toward pre-materialisation (added 2026-11-04)
+
+*For inclusion in Paper 2, likely §5 or as a methodological footnote.*
+
+During construction of this laboratory, AI coding assistants (large language models used as pair
+programmers) were observed to systematically reproduce the same architectural anti-pattern the
+papers diagnose in enterprise financial systems: **premature accumulation before a declared sort
+boundary**.
+
+On two separate occasions, an LLM assistant introduced an `ArrayBuffer` accumulator inside a
+transform step — collecting records in memory before a sort that the CKB architecture requires to
+happen as a separate bounded pass. In one instance the accumulated rows were then merged with the
+output of a different step that the assistant conflated with the transform step's output directory.
+Both attempts had to be reverted.
+
+The parallel to the minimum cost curve argument is direct:
+
+- A General Ledger pre-materialises balance structures because the immediate output (a balance row)
+  is visible and fast to produce. The long-run cost — inability to answer questions not in the
+  original posting key, accumulating reconciliation debt — is deferred and distributed.
+- An LLM trained on public code repositories has been rewarded for producing visible, working
+  output quickly. The training signal for *not* accumulating — for emitting rows to a declared
+  partition boundary and letting a downstream sort step carry the state — is sparse, because
+  almost no public code does this deliberately.
+
+The antidotes that proved effective in this lab are the same ones that make the CKB architecture
+tractable for humans:
+
+1. **Declare the process boundary in writing before coding.** The `AGENTIC_ARCHITECTURE_GATES.md`
+   protocol requires a workload declaration — input partitions, output partitions, sort contract,
+   memory bound — before any implementation begins. An LLM that fills in this declaration first
+   is forced to name the sort boundary explicitly, which makes the accumulation error visible
+   before it enters code.
+
+2. **Make the sort contract a file, not a parameter.** The `.sortspec` file discipline means there
+   is a concrete artefact — `SortedJE.sortspec` — that any step either reads or doesn't. A step
+   that accumulates and sorts internally has no `.sortspec` reference; that omission is auditable.
+
+3. **Assign the LLM a verification role, not a builder role, by default.** The
+   `VERIFICATION_SESSION_PROTOCOL.md` assigns explicit roles (Verification Lead, Process Auditor,
+   Contract Tester, Adversarial Reviewer) that start from "what does the evidence show?" rather
+   than "what should I build?". Sessions that began with a builder prompt produced the
+   accumulation errors. Sessions that began with a verification or adversarial prompt did not.
+
+4. **Keep the architecture gates in the repository rules, not in a prompt.** `AGENTS.md` encodes
+   the language boundary and the review gate as repository-level rules, not session instructions.
+   Repository rules survive context compaction; session instructions do not.
+
+The observation does not invalidate the use of AI assistants in this laboratory — the CCP1 GL-post
+step, the permutation generator, the `process_metrics.csv` repair, the adversarial audit, and the
+Sub-Task 1 `transIPID` fix were all produced correctly with AI assistance. It does suggest that
+the architectural discipline needed to keep a CKB lab honest is the same discipline needed to keep
+an AI assistant from re-introducing the anti-patterns the lab is trying to measure.

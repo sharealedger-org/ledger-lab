@@ -6,22 +6,43 @@ Updated 2026-11-04. This file is a concise state snapshot; use the linked design
 
 ## 2026-11-04 Next Session Start Point
 
-**Sub-Task 1 is complete. Next task: Sub-Task 2 — Bring PO commitment events into the sorted SJE stream.**
+**Sub-Task 1 is complete. Sub-Task 2 was attempted and reverted. See architectural correction below.**
 
-Sub-Task 1 (`transIPID` fix) is now done (2026-11-04, this session).
-Sub-Task 2 modifies `processPOs()` to emit `Transaction` SJE rows (same schema as payments)
-instead of `UnviJournalAllEntity` rows, with `transBusinessEventCode = "COMMITMENT"`.
+Sub-Task 1 (`transIPID` fix) is done (2026-11-04).
 
-**Where to start:**
-- [`docs/paper2-tests-plan.md`](docs/paper2-tests-plan.md) Sub-Task 2 — bring PO commitment events into the sorted SJE stream
-- `02-foundation/va_pipeline/src/main/scala/.../transStandardize.scala` — `processPOs()` — modify to emit `Transaction` rows with `transIPID = rec.poVendorID`, `transBusinessEventCode = "COMMITMENT"`, `transCommitmentID = rec.poNumber`
+Sub-Task 2 was **attempted twice and reverted twice** — once in an earlier session, once in this
+session — because both attempts placed the PO SJE accumulation inside a transform step rather than
+at a declared sort boundary. See `docs/TEST_DESIGN_PAPER_2.md` §6 for the documented pattern and
+antidotes.
 
-Sub-Task 2 requires:
-1. Declare workload per `AGENTIC_ARCHITECTURE_GATES.md` §1
-2. Modify `processPOs()` to emit `Transaction` SJE rows (drop `UnviJournalAllEntity` path for the SJE output)
-3. Sort PO SJEs using `SortEngine.externalSort` with `POSortedJE.sortspec`
-4. Merge sorted PO SJEs and payment SJEs using `SortEngine.mergeSpills` (k-way merge)
-5. Verify merged file is in correct instrument order; run fixture smoke test
+**Architectural correction for Sub-Task 2 (do not repeat the reverted approach):**
+
+The correct path is **not** `transStandardize.scala`. `transStandardize` is the legacy step; it
+does not feed `post.scala`. The live CKB path is:
+
+```
+standardizeAndSort (Step 2)  →  SortedJEFY{yr}{suffix}.csv  →  post.scala (Step 3)
+```
+
+Sub-Task 2 must be implemented in two declared steps:
+
+**Step 2p — PO standardize + sort** (new `type=PO` branch in `standardizeAndSort.scala`):
+- Reads a PO file (tab-delimited, same columns as `transStandardize.processPOs`).
+- Emits two balanced 39-field `Transaction` SJE rows per PO line:
+  debit: `transBusinessEventCode="COMMITMENT"`, `transCommitmentID=poNumber`, `transIPID=poVendorID`, `amount = price × qty`
+  credit: same fields, `amount = -(price × qty)`
+- Streams rows through `SortEngine.externalSort` with `SortedJE.sortspec` — **no accumulation**.
+- Writes `SortedJEFY{yr}q{n}PO.csv`.
+- Emits `RESULT step=2p` and `RESOURCE step=2p` log lines.
+
+**Step 2m — merge** (new dispatch entry in `LedgerApp`):
+- Calls `SortEngine.mergeSpills(Seq(paymentSortedJE, poSortedJE), mergedOutPath, sortSpec)`.
+- Writes `SortedJEFY{yr}merged.csv` — the declared input for `post.scala`.
+- No financial logic; pure sort-partition coordination. Bash orchestrator calls this after step 2 and step 2p.
+
+**Memory contract:** `externalSort` is O(chunkSize); `mergeSpills` is O(k open file handles). No `ArrayBuffer` of rows.
+
+**Workload declaration required** per `AGENTIC_ARCHITECTURE_GATES.md` §1 before any code is written.
 
 ---
 
