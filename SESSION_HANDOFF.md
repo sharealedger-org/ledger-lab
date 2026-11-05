@@ -1,6 +1,533 @@
 # Ledger Lab Handoff
 
-Updated 2026-11-04. This file is a concise state snapshot; use the linked design contracts for details.
+Updated 2026-11-05. This file is a concise state snapshot; use the linked design contracts for details.
+
+---
+
+## 2026-11-05 Next session charge — cross-repo reframing (Bob)
+
+**Read the Paper 2 reframing entry below before starting any edits.**
+Everything in this entry depends on the reasoning documented there.
+
+---
+
+### Scope
+
+Two repositories need updating to reflect the reframing agreed this session:
+
+**Repo 1 — ledger-lab**
+`C:\Users\0D8297897\Workspace\Sharealedger\ledger-lab`
+
+**Repo 2 — TDS-AI-Models**
+`C:\Users\0D8297897\Workspace\GHEGenevaERS\TDS-AI-Models`
+
+The papers live in `TDS-AI-Models\03-argument\`. The concept docs that feed them
+live in `TDS-AI-Models\02-concepts\`. Ledger-lab holds the experiment design and
+pipeline. Both need to tell the same story.
+
+---
+
+### TDS-AI-Models — what needs changing
+
+**`03-argument\00-monograph-introduction-and-master-framework.md`**
+
+The introduction needs to reflect the complete architecture established this session:
+- Events and the posting layer are complementary, not competing
+- The IL is the minimum-cost posting layer (Paper 1)
+- The events are the maximum-information AI training substrate (Paper 2)
+- The overriding claim: no model, trained on any substrate, can answer Net Income
+  from events alone — Net Income is a posting-layer artifact, not an economic fact
+- The bowl minimum is hardware-parameterized: laptop → IL; mainframe → TDS
+- The insurance company corpus is an open invitation for the second curve
+
+Check whether the introduction currently describes the right-wall comparator as
+"the GL" — if so, correct to "fixed-posting-key class" (GL, sub-ledger, DW, mart).
+
+**`03-argument\01-minimum-cost-curve.md`** (Paper 1)
+
+- Confirm the Mix graph description matches the corrected right-wall framing
+- Confirm CCP1 is described as "right-wall proxy for the fixed-posting-key class,"
+  not "the GL baseline every institution runs"
+- Add a note on the Engine graph: a second curve (mainframe/TDS) is possible if
+  the insurance company engages — written as an open invitation, not a gap
+
+**`03-argument\02-pre-hierarchy-event-repositories.md`** (Paper 2)
+
+This is the major reframe. Key changes:
+
+1. **Move "See Spot Run" to §1 opening.** The three-customer example is currently
+   at line 355 in §5.4. Move it to the opening of §1, sharpen to:
+   > "You take a pretrained LLM... three customers: Spotsylvania VA, Bull Run VA,
+   > Seeville somewhere... In a business event repository, one should not see Spot,
+   > or watch him run."
+
+2. **Reframe the experimental design** (currently §5) around four models:
+   - Model 1: pretrained LLM fine-tuned on posted data (what institutions do today)
+   - Model 2: pretrained LLM fine-tuned on IL (better substrate, same language prior)
+   - Model 4: structured model built from IL (no prior, no compression artifacts)
+   - Model 3 (raw events) dropped from main experiment — IL is sufficient for all
+     meaningful questions except non-injectivity
+   - Gaps: 1→2 = substrate effect; 2→4 = language prior ("See Spot Run"); 1→4 = total
+
+3. **Non-injectivity as bridge to hardware argument.** AIM1 is not just a test —
+   it is the question that motivates "what would it cost to answer everything including
+   sequence?" That cost is the TDS on z/OS. The bowl minimum is hardware-parameterized.
+
+4. **Net Income closes the paper.** One page, no statistics, logical proof:
+   ask Model 4 (best possible model from IL) "what is net income?" — it can answer
+   because the IL is the posting layer. Ask Model 3 (raw events) — it cannot, because
+   Net Income is a chart-of-accounts classification, not an economic fact in the events.
+   This closes the paper by resetting the stakes: AI completes accounting, not replaces it.
+
+5. **Check and correct** any framing that describes the comparator as "the GL"
+   rather than the fixed-posting-key class.
+
+---
+
+### ledger-lab — what needs changing
+
+**`docs/TEST_DESIGN.md`**
+
+Do not edit until Paper 2 reframe in TDS-AI-Models is agreed. Then:
+- Add a framing note to the AIM test section: AIM tests are illustrations of the
+  question space claim (Paper 2 Part 1), not the primary evidence. Primary evidence
+  is the four-model experiment.
+- AIM2 and AIM5: reduce to infrastructure/secondary status. Not primary Paper 2 results.
+- Add four-model experiment section: model selection, verbalization approach,
+  evaluation tasks, expected outputs.
+
+**`docs/COST_GRAPH_DESIGN.md`**
+
+- Engine graph: add note that a second curve (mainframe/TDS) is possible if insurance
+  company engages. Conceptual until then, written as open invitation.
+- Process graph: currently describes CCP1–CCP5. Consider whether this graph is still
+  needed given Paper 1 is now focused on Mix and Engine graphs only.
+
+**`docs/RESEARCH_OBJECTIVES.md`**
+
+- Already corrected this session (right-wall framing, CCP1 as class proxy)
+- Review whether Paper 2 objectives section needs updating to reflect four-model design
+
+---
+
+### Reading order for next session
+
+1. This entry (charge)
+2. "Paper 2 reframing — full reasoning session" entry below
+3. "Architectural framing correction" entry below
+4. `TDS-AI-Models\03-argument\02-pre-hierarchy-event-repositories.md` — read in full
+5. `TDS-AI-Models\03-argument\00-monograph-introduction-and-master-framework.md` — read in full
+6. `TDS-AI-Models\03-argument\01-minimum-cost-curve.md` — read in full
+7. Then edit, starting with Paper 2 §1 ("See Spot Run" move)
+
+---
+
+
+## 2026-11-05 Paper 2 reframing — full reasoning session (Bob)
+
+**What was reasoned through this session. Documented for use in reframing both
+ledger-lab and the TDS repo where the papers are edited.**
+
+---
+
+### The overriding claim
+
+> No model — no matter how capable, trained on any substrate — can answer Net Income
+> from events alone. Net Income is not a fact about the world. It is a fact about how
+> an organisation chose to classify and accumulate the world through its chart of
+> accounts and posting rules. That classification lives in the posting layer, not in
+> the events.
+
+This claim does three things simultaneously:
+1. Humbles the AI hype — the LLM cannot replace the accountant
+2. Clarifies what events *can* do — everything the posting layer discarded that wasn't
+   accounting: vendor lifecycle, order timing, commodity patterns, counterparty identity
+3. Frames the complete architecture — events and posting layer are complementary, not
+   competing; you need both; keeping both costs no more than keeping only one
+
+---
+
+### Paper 2 structure — two parts, one overriding claim
+
+**Part 1 — Question space (structural proof, no model training required)**
+
+The posting architecture defines the question space, and that space is smaller than
+the space of economically meaningful questions. Certain questions are not harder to
+answer from posted data — they are structurally unaskable because the required fields
+were never written there.
+
+The AIM tests (AIM1 non-injectivity, AIM3 vendor survival, AIM4 seasonality) serve
+as illustrations of this claim. They are not the primary evidence — Paper 1's
+permutation table already provides that. The AIM tests make the destruction concrete
+and specific. They can cite Paper 1 for the structural argument.
+
+**Non-injectivity (AIM1) is special:** it is the one question that even the IL cannot
+answer, because it requires the pre-accumulation event sequence. This is not a
+failure — it is deliberate and bounded. Its role in Paper 2 is to motivate the cost
+question: if you want to answer non-injectivity *and* all other questions consistently
+from one store, what does that cost? That cost is the insurance corpus / z/OS story.
+
+**Part 2 — Substrate quality and the "See Spot Run" contamination argument**
+
+Even when you give an institution the pre-hierarchy events, the way they use them
+matters. The dominant pattern today is: take a pretrained LLM, fine-tune it on
+business data. That pattern fails for structured financial events because the language
+prior survives fine-tuning.
+
+**The "See Spot Run" example** (to become the opening of Paper 2 §1):
+
+> You take a pretrained LLM — trained on the internet, which contains "See Spot run."
+> You fine-tune it on your customer transaction data. Three customers:
+> one in Spotsylvania VA, one in Bull Run VA, one in Seeville somewhere.
+> The model has already learned that Spot, Bull Run, and See are parts of a sentence.
+> It will find patterns across those three customers' transactions that have no economic
+> basis — and it will find them reliably, not as noise. Every training run reproduces
+> the spurious association. More data does not fix it. Better algorithms do not fix it.
+> The model correctly learned a fact about language that is false as economics.
+>
+> In a business event repository, one should not see Spot, or watch him run.
+
+**Connection to existing paper:** Line 355 of
+`org-members/research/02-pre-hierarchy-event-repositories.md` already contains the
+three-customer observation (Seeville, Spotville, Bull Run) buried in §5.4. Move it
+to §1 and sharpen to the form above.
+
+---
+
+### The four-model experimental design
+
+Paper 2's experiment compares four models on the same downstream tasks, same corpus:
+
+| Model | Training substrate | Prior | Can answer Net Income? | Can answer vendor survival? |
+|-------|-------------------|-------|----------------------|----------------------------|
+| 1 | Pretrained LLM fine-tuned on posted data | Language prior | From posting layer only | No — field absent |
+| 2 | Pretrained LLM fine-tuned on IL | Language prior (survives fine-tuning) | Yes | Yes |
+| 4 | Structured model built from IL | None | Yes | Yes |
+
+Model 3 (raw events) is dropped from the main experiment. The IL is sufficient for
+all meaningful questions except non-injectivity. Non-injectivity is acknowledged as
+outside IL scope by design (accumulation destroys sequence), not as a deficiency.
+
+**Gap 1→2** = substrate effect (posted vs IL, same contaminated prior)
+**Gap 2→4** = language prior effect ("See Spot Run" — same substrate, prior removed)
+**Gap 1→4** = total cost of current paradigm
+
+Model 4 is the paper's answer. Models 1 and 2 are the baseline and partial improvement.
+Net Income: Model 4 answers it from the IL. Models 1 and 2 partially answer it.
+Vendor survival: Model 4 answers it. Model 1 cannot — field absent from posted data.
+
+---
+
+### Non-injectivity as the bridge to the hardware argument
+
+Non-injectivity (the one question the IL cannot answer) motivates the cost question:
+what would it cost to answer *everything* — including sequence — from one store,
+consistently?
+
+That cost is the **TDS on z/OS** — the insurance company corpus. 25.5 billion
+versioned state-change events, not accumulated, full sequence preserved. GenevaERS
+on a z/OS mainframe makes this feasible. A laptop cannot run the VA corpus in TDS
+form — the scan cost for every question is too high for the hardware.
+
+**This means the bowl minimum is hardware-parameterized:**
+- On a laptop: the IL is the minimum. CKB streaming gets you there.
+- On a z/OS mainframe: the minimum may be further left, toward the raw event record,
+  because GenevaERS can afford a scan cost the laptop cannot.
+
+The Engine graph (Paper 1) has a single curve — VA corpus, laptop, measured. A second
+curve (mainframe, TDS) would show the hardware effect: same CKB architecture, same
+bowl shape, minimum sits further left because the hardware can hold the scan cost.
+
+**The insurance company corpus is the open invitation.** Paper 2 is written with
+this as an explicit call for collaboration: if the insurance company engages, the
+second curve becomes empirical. Until then it is conceptual, marked as future work.
+
+---
+
+### What this means for ledger-lab
+
+Ledger-lab's scope is confirmed:
+- Produce the substrates (SortedJE, CCP1 GL, CCP2 IL, CCP3 views)
+- Measure the cost points (cost_surface.csv)
+- Run the AIM structured tests (AIM1, AIM3, AIM4) as illustrations for Paper 2 Part 1
+- Run the four-model experiment (Models 1, 2, 4) for Paper 2 Part 2
+- Python for model training is appropriate here — it is post-engine, consuming
+  pipeline outputs, not substituting for engine work
+
+The AIM tests are not the primary evidence for Paper 2. They illustrate the question
+space claim. The four-model experiment is the primary evidence.
+
+**AIM2 (expenditure forecasting) and AIM5 (agency name classifier):** role reduced.
+AIM2 is subsumed by the Model 1 vs Model 4 comparison on forecasting tasks.
+AIM5 is infrastructure (data quality). Neither is a primary Paper 2 result.
+
+---
+
+### What this means for the TDS repo (papers)
+
+**Paper 1:** unchanged in substance. Mix graph and Engine graph as designed.
+Engine graph note: a second curve (mainframe, TDS) is possible if insurance company
+engages. Written as an open invitation in the paper.
+
+**Paper 2:** needs reframing. Current draft argues "training on pre-hierarchy events
+produces better models." Revised claim: "the posting layer defines a question space
+smaller than the space of economically meaningful questions; the IL answers that
+broader space; and training on the IL rather than on posted data or on verbalized
+events through a pretrained LLM produces the only uncontaminated result."
+
+The "See Spot Run" example moves to §1. The four-model experiment replaces the
+current AIM-centric experimental design. Non-injectivity becomes the bridge to
+the hardware / TDS / insurance corpus discussion. Net Income closes the paper.
+
+---
+
+### Next session — start here
+
+**For ledger-lab:**
+1. AIM tests (AIM1, AIM3, AIM4) confirmed as illustrations — no structural change
+   needed, framing note to be added
+2. Four-model experiment design — needs model selection and verbalization approach
+3. Python model training work is in scope for this repo
+
+**For TDS repo (papers):**
+1. Move "See Spot Run" example to Paper 2 §1, sharpen to the form above
+2. Reframe Paper 2 experimental design around four models, not AIM-centric
+3. Add Engine graph second curve as open invitation to insurance company
+4. Net Income closing argument — one page, no statistics, logical proof
+
+**Do not edit TEST_DESIGN.md until the Paper 2 reframe is agreed.**
+
+---
+
+
+## 2026-11-05 Architectural framing correction — right-wall comparator (Bob)
+
+**What was corrected this session.**
+
+A fundamental framing error was identified and corrected across the repository.
+Prior sessions consistently described the right wall of the cost bowl as "the GL"
+and framed the AIM two-substrate experiment as "GL vs. Instrument Ledger." This
+is wrong in a way that matters for explaining the research.
+
+### The correct comparator
+
+The right wall of the bowl is not the GL — it is the **fixed-posting-key class**:
+GL, purchasing sub-ledger, data warehouse, data mart. All share the same structural
+property: pre-computed answers to questions defined at design time, unable to answer
+unanticipated questions without returning to raw events. They differ in which
+dimensions they preserve; they do not differ in their structural position on the
+cost surface.
+
+No one would try to answer "what vendors survived?" from the GL alone — they would
+go to the purchasing sub-ledger. The AIM tests are not showing the GL can't answer
+these questions. They are showing that *any* fixed-posting-key store cannot answer
+them — because the information was discarded at design time, regardless of whether
+the store is a GL, a sub-ledger, a DW, or a mart.
+
+**CCP1 (GL) is the most collapsed instance of this class** — narrowest key, most
+information discarded. It is a valid right-wall proxy and the measured anchor for
+the cost curve. The cost gap CCP1→CCP2 is a lower bound on the true architectural
+savings for institutions whose fixed-key store preserves more dimensions.
+
+### The "any question" overclaim — corrected
+
+Prior framing stated the Instrument Ledger can answer "any question." Corrected:
+the IL answers any question formable from the dimensions it preserves — instrument
+identity, period, and CAR attributes. Questions outside those dimensions still
+require event replay. The claim is "broader than any fixed-key store at lower cost,"
+not "omniscient."
+
+### Files corrected
+
+- `docs/COST_GRAPH_DESIGN.md` — Mix graph right-wall description now names the
+  fixed-posting-key class; bowl minimum scoped correctly
+- `docs/RESEARCH_OBJECTIVES.md` — CCP1 framing corrected; class-representative
+  note added
+- `docs/TEST_DESIGN.md` — two-substrate intro and CCP1 definition corrected
+- AIM visibility artifact (`aim_visibility`) — comparator column renamed from
+  "GL (CCP1)" to "Fixed-key store (GL / sub-ledger / DW / mart)"; framing note
+  added; AIM3/AIM4 rationale updated to explain why even the purchasing sub-ledger
+  cannot answer these questions
+
+### Why this matters for the PhD conversation
+
+The research is not arguing against the GL specifically. It is arguing against a
+class of architectural decisions — "answer this question by pre-computing a balance
+for it" — that any institution has made repeatedly over decades. The GL, sub-ledger,
+DW, and mart are all instances. The audience in that room has all of them. Framing
+correctly means they recognise their own systems in the right wall, not just the
+most primitive case.
+
+---
+
+
+## 2026-11-05 Test comprehensibility — cost graph design (Bob)
+
+**What was done this session.**
+
+Design and documentation work only — no code changes.
+
+### The real problem: the tests are not understandable
+
+The session began with the observation that the CCP and AIM tests are too
+complex to explain to a group of people. The problem is not code duplication
+(though that exists — see below). The problem is that the tests reference a
+taxonomy (CCP1–CCP5, AIM1–AIM5, substrates, pipeline steps) that no one can
+hold in their head without first understanding the argument those tests are
+measuring.
+
+The tests are only understandable if you first understand what they are trying
+to show. That requires the four cost graphs — the argument comes before the
+taxonomy, and the taxonomy only makes sense once the argument is visible.
+
+**The specific code-level duplication** (secondary — deferred):
+`02-foundation/va_pipeline/src/test/` has three duplication clusters:
+- `withTempDirectory` + `deleteRecursively` copy-pasted into 5 of 8 specs
+- Two independent 39-column SJE row builders (`makeJERow` in `GLPostSpec`,
+  `makeRow` in `CKBViewsSpec`) for the same record type
+- `Source.fromFile` read-and-close repeated 12+ times
+
+Agreed fix when time permits: a shared `LedgerTestSupport` trait and
+`SjeFixture` object. Not the blocker — the graphs are the blocker.
+
+### Three cost graphs — the argument that makes the tests legible
+
+The argument of Paper 1 restructured into three graphs, each a question about
+where a design choice places you on the cost surface. Full design notes written
+to [`docs/COST_GRAPH_DESIGN.md`](docs/COST_GRAPH_DESIGN.md).
+
+**Graph 1 — The Cost Bowl (events ↔ balances)**
+U-shaped bowl. Left wall = replay cost (every transaction since inception).
+Right wall = pre-compute cost (a balance for every question, kept synchronized).
+Minimum = Instrument Ledger (movement rows + CAR join). Most institutions sit
+on the right wall.
+Footnote 1: once at the minimum, store movements not running balances — a pure
+movement vs. stored-balance graph is upward-sloping (movements always cheaper).
+This is a design principle, not a paper claim. It justifies why `LDGR20YY.csv`
+is a movement store.
+Footnote 2 (granularity — dropped as a graph): the VA source data is monthly at
+its finest. Monthly bucket storage is both necessary (to answer monthly questions)
+and sufficient (finest grain the source provides). Granularity is a one-time
+design decision, not a paper variable. The A vs. B CCP comparison remains in the
+test plan as a wiring check — not a cost-of-granularity claim.
+
+**Graph 2 — Engine pattern: trajectory down the left wall**
+Same bowl. Python naive sits high on the left wall (multiple passes, O(N) memory
+= high replay cost). Each CKB pattern introduced (sorted input, streaming merge,
+O(1) memory) descends the left wall toward the bowl bottom. Scala CKB sits at
+the bottom natively. The gap is the cost of the wrong architectural pattern —
+not the cost of Python as a language.
+Not yet drawn. Requires Python implementation of the same financial logic —
+owner approval required before writing (AGENTS.md).
+
+**Graph 3 — Process layers: CCP points on the bowl**
+Same bowl. CCP1 (GL baseline) is on the right wall. CCP2–CCP5 hug the bowl
+bottom. The architectural leap is CCP1 → CCP2, not CCP2 → CCP5. CCP5 ≈ CCP4
+is the empirical proof of single-pass universality (allocation via prior-day
+divisor adds no pre-scan pass).
+Drawn as artifact `cost_graph_4` (will be renumbered to `cost_graph_3` once
+Graph 2 is drawn).
+
+### 3. SVG rendering rule discovered
+
+Path `fill` in SVG artifacts covers any element painted before it, regardless
+of document order. Rule for all future SVG graphs:
+- Never use `fill` on `<path>` elements — use `fill="none"`, stroke only
+- Use `<rect>` for shaded bands (rectangles don't have this problem)
+- Draw dots (circles) absolutely last — after all paths and rects
+- No `transform="rotate()"` on text — use stacked plain-text lines instead
+- Use explicit `width`/`height` on `<svg>` elements, not just `viewBox`
+
+### 4. CCP/AIM one-pager
+
+A shareable HTML artifact was produced mapping the CCP cost points and AIM
+tests to the four graphs. Artifact id: `ccp_aim_overview`. Can be regenerated
+from [`docs/COST_GRAPH_DESIGN.md`] and [`docs/TEST_DESIGN.md`].
+
+**Next session — start here:**
+
+1. Decide whether Graph 2 (Python vs Scala engine pattern) is scheduled as an
+   experiment — requires owner approval for any Python mainline code (AGENTS.md).
+2. Consider implementing the shared `LedgerTestSupport` trait to reduce test
+   boilerplate (low priority vs. corpus run readiness).
+
+**Files changed this session:**
+- `docs/COST_GRAPH_DESIGN.md` — new file, full design notes for all three graphs;
+  granularity-bowl graph dropped and recorded as a footnote to Graph 1
+- `SESSION_HANDOFF.md` — this entry
+
+---
+
+
+## 2026-11-05 Cost surface wiring — three-axis schema + periodGranularity (Bob)
+
+**What was done this session.**
+
+Five open items from the cost-surface design work (2026-11-04 handoff) are now complete:
+
+1. **`--periodGranularity` parameter wired** — `run_pipeline.sh` now accepts
+   `--periodGranularity annual|monthly|quarterly` (default: `annual`). The value is passed
+   to all sbt invocations as `--periodGranularity $PERIOD_GRANULARITY`. Logged in the pipeline
+   header block alongside materialization and curve.
+
+2. **`applyAPA` monthly period key** — when `periodGranularity=monthly`, each source file's
+   `calMonth` is used to produce `transFiscalPeriod = "YYYY/MM"` (e.g. `"2003/07"` for July).
+   Default (`annual`) keeps existing behaviour: `transFiscalPeriod = "YYYY"`. Logic lives in
+   `standardizeAndSort.applyAPA`: variable `filePeriodKey` set per source file, passed to
+   `buildJEPairsAPA` replacing the former `yearStr`.
+
+3. **`applyPO` monthly period key** — when `periodGranularity=monthly`, `ORDEREDDATE`
+   (`MM/DD/YYYY`) is parsed to produce `transFiscalPeriod = "YYYY/MM"` per PO row, with
+   `yearStr` as fallback on parse failure. Variable `poPeriodKey` used in both
+   debit and credit `makePORow` calls.
+
+4. **`cost_surface.csv` three-axis schema** — `init_cost_surface` header extended with 7 new
+   columns: `capability_layer`, `period_granularity`, `materialization_scope`,
+   `ledger_row_count`, `ldgr_file_bytes`, `view_file_bytes`, `permutation_rows`.
+   `record_cost_point` accepts all 17 arguments; post-run metrics block computes each value
+   from output files, maps `CURVE` → `CAPABILITY_LAYER`, and writes the extended row.
+   `MATERIALIZATION_PROFILE` (already CLI-wired) flows through as `materialization_scope`.
+
+5. **`Ledger.scala` `ldgrTransAmount` comment** — updated to "net movement amount for this
+   (key, period) bucket — NOT a running balance; running balances are derived by query-time
+   summation over period rows".
+
+**Tests:** All VA-namespace specs pass (46/48 overall; the 2 `CurrencyRevaluationSpec` failures
+are pre-existing Windows file-locking races in `deleteRecursively`, unrelated to this work).
+
+**Files changed:**
+- `scripts/run_pipeline.sh` — `--periodGranularity` arg, pass-through to sbt, 7-column schema,
+  post-run metric computation, extended `record_cost_point` call, header log line.
+- `02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/ledger/standardizeAndSort.scala`
+  — `periodGranularity` param in `applyAPA` and `applyPO`; `filePeriodKey` and `poPeriodKey`
+  period-key derivation.
+- `02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/datatypes/Ledger.scala`
+  — `ldgrTransAmount` comment.
+
+**Next session — start here:**
+
+Stage 3: 5-year slice (FY2003–FY2007). Requires corpus data at `/VAdata/data/VARawFiles`.
+Run:
+```bash
+bash scripts/run_pipeline.sh \
+  --inPath /VAdata/data/VARawFiles \
+  --outPath data/output_validate_fy03_07 \
+  --years 03,04,05,06,07 --steps ttl,2p,3,5v \
+  --curve CCP3 --config validate-5yr \
+  --periodGranularity annual
+```
+
+After Stage 3: directional AIM1/3/4 checks; AIM2 code correctness. Each AIM script requires
+owner approval per AGENTS.md before writing Python.
+
+**Remaining open items (from prior sessions):**
+1. $6.00 ledger balance delta from 2 malformed PO rows — open data quality issue, not a blocker.
+2. `--periodGranularity` CLI accepted and passed to Scala; `applyAPA` and `applyPO` consume it.
+   `quarterly` granularity would need its own period-key logic (not yet implemented — low priority
+   until T-quarterly runs are needed).
+3. `cost_surface.csv` schema is extended. Existing rows from prior runs omit the new columns
+   (normal CSV convention: shorter rows treated as having empty trailing fields).
+4. `CurrencyRevaluationSpec` 2 Windows-only failures pre-exist this work. Fix tracked separately.
 
 ---
 

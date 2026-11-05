@@ -10,10 +10,13 @@
 
 The CCP cost measurements and the AIM model evidence tests are not two separate campaigns.
 They draw from the same pipeline run against the same corpus. CCP1 produces the GL output
-and permutation table — the substrates against which the AIM tests fail. CCP2 produces the
-instrument ledger — the substrate against which AIM1 succeeds. CCP3 adds the Step 5v views
-alongside the ledger pass — the feature tables AIM2–AIM4 consume. The delta CCP2→CCP3 is the
-measured cost of producing all AI evidence substrate. That cost is expected to be small.
+and permutation table — the substrates against which the AIM tests fail. The GL is the most
+collapsed instance of the fixed-posting-key class (sub-ledgers, data warehouses, and data
+marts are other instances — all sit on the right wall of the cost bowl for the same structural
+reason). CCP2 produces the instrument ledger — the substrate against which AIM1 succeeds.
+CCP3 adds the Step 5v views alongside the ledger pass — the feature tables AIM2–AIM4 consume.
+The delta CCP2→CCP3 is the measured cost of producing all AI evidence substrate. That cost is
+expected to be small.
 
 **The two papers are two facets of the same architectural failure, measured from the same data.**
 Paper 1 states the cost claim. Paper 2 states the AI-consequence claim. Both are proven by the
@@ -160,10 +163,13 @@ streams, 3 = CKB post → Instrument Ledger, 5v = CKB view extraction (Step 5, n
 6 = allocation, 7 = consolidation, 8 = FX revaluation, 9 = reclass, 20 = GL post (CCP1),
 21 = permutation generator (CCP1).
 
-### CCP1 — General Ledger (status quo)
+### CCP1 — General Ledger (right-wall anchor)
 
-**Architecture:** Account-keyed GL post. Vendor identity is not an input to the accumulation
-key. Steps 20 and 21 read the same SortedJE stream independently.
+**Architecture:** Account-keyed GL post — the most collapsed instance of the fixed-posting-key
+class. Vendor identity is not an input to the accumulation key. A purchasing sub-ledger, data
+warehouse, or data mart would preserve more dimensions but shares the same structural property:
+pre-computed answers to questions fixed at design time. CCP1 measures the GL as a right-wall
+proxy for this class. Steps 20 and 21 read the same SortedJE stream independently.
 
 **Step 20 — GL post:** sort by account key `(AGENCY, OBJECT_NAME)`; accumulate amounts;
 write `GL20YY.csv`. Instrument identity (`transIPID`) intentionally excluded from the key.

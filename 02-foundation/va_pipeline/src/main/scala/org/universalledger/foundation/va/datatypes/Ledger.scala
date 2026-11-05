@@ -45,7 +45,7 @@ case class Ledger (
 //                   var ldgrFiscalPeriod: String, //  Date to be posted chosen by posting program
 //                   var ldgrAcctDate: String, //  Date to be posted chosen by posting program
 //                   var ldgrTransDate: String, //  Date to be posted chosen by posting program
-                   var ldgrTransAmount: BigDecimal,  // accumulated amount from journals 20th element
+                   var ldgrTransAmount: BigDecimal,  // net movement amount for this (key, period) bucket — NOT a running balance; running balances are derived by query-time summation over period rows
                    var ldgrUnitOfMeasure: String = " ",
 //                 var   ldgrUnitPrice: BigDecimal, //  commented out fields are not passed from journal to ledger
                    var ldgrStatisticAmount: BigDecimal,  // accumulated amount from journals 22nd element

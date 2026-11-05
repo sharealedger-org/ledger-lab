@@ -378,6 +378,9 @@ object standardizeAndSort {
     val quarterStr = params.getOrElse("quarter", "1")
     val chunkSize  = params.get("chunkSize").map(_.toInt).getOrElse(DEFAULT_CHUNK)
     val dryRun     = params.getOrElse("dryRun", "false").toLowerCase == "true"
+    // Axis 2 — period granularity: "monthly" → transFiscalPeriod = "YYYY/MM" from ORDEREDDATE.
+    // "annual" (default) → transFiscalPeriod = "YYYY".
+    val periodGranularity = params.getOrElse("periodGranularity", "annual").toLowerCase
 
     val shortYr  = yearStr.takeRight(2)
     val quarter  = quarterStr.toInt
@@ -486,12 +489,21 @@ object standardizeAndSort {
 
               val jid = "ID" + jrnlID + acctDate + "PO"
 
+              // Build the fiscal period key for this PO row.
+              // monthly → parse ORDEREDDATE (MM/DD/YYYY) → "YYYY/MM"; fall back to yearStr.
+              val poPeriodKey: String = if (periodGranularity == "monthly") {
+                val dateParts = ordDate.split("/")
+                if (dateParts.length == 3 && dateParts(2).length == 4)
+                  dateParts(2) + "/" + f"${dateParts(0).toInt}%02d"
+                else yearStr
+              } else yearStr
+
               val debitRow  = makePORow(vendorId, poNumber, jid, "1", "COMMITMENT",
-                                        agency, nigpCode, yearStr, acctDate, ordDate,
+                                        agency, nigpCode, poPeriodKey, acctDate, ordDate,
                                         amt.toString(), uomCode, price.toString(), qty.toString(),
                                         commDesc)
               val creditRow = makePORow(vendorId, poNumber, jid, "2", "COMMITMENT",
-                                        agency, "0000", yearStr, acctDate, ordDate,
+                                        agency, "0000", poPeriodKey, acctDate, ordDate,
                                         (-amt).toString(), uomCode, price.toString(), qty.toString(),
                                         "COMMITMENT_OFFSET")
 
@@ -1070,6 +1082,9 @@ object standardizeAndSort {
     val dryRun    = params.getOrElse("dryRun", "false").toLowerCase == "true"
     val yearInt   = yearStr.toInt
     val shortYr   = yearStr.takeRight(2)
+    // Axis 2 — period granularity: "monthly" → transFiscalPeriod = "YYYY/MM" per source file.
+    // "annual" (default) → transFiscalPeriod = "YYYY" (one key for the whole FY).
+    val periodGranularity = params.getOrElse("periodGranularity", "annual").toLowerCase
 
     val specParam = params.getOrElse("sortspec", "")
     val specPath  = resolveSpecPath(specParam)
@@ -1146,7 +1161,13 @@ object standardizeAndSort {
 
           for ((inFile, _, calMonth) <- revFiles) {
             // For expenditures: accrue each monthly file's date to the quarter acctDate
-            // but preserve VOUCHER_DATE / DEPOSIT_DATE as transDate
+            // but preserve VOUCHER_DATE / DEPOSIT_DATE as transDate.
+            // When periodGranularity=monthly, use "YYYY/MM" as the fiscal period key so
+            // each calendar month gets its own ledger row family.
+            val filePeriodKey = if (periodGranularity == "monthly")
+              f"$yearInt%04d/$calMonth%02d"
+            else
+              yearStr
             val src = Source.fromFile(inFile)(codec)
             try {
               val lines = src.getLines()
@@ -1181,7 +1202,7 @@ object standardizeAndSort {
                         jrnlID     += 1
                         val fmt = if (recType == "R") "RA_APA" else "A_APA"
                         val pairs = buildJEPairsAPA(normalized, recType, vendorMap,
-                                                    accountingRule, yearStr, acctDate, jrnlID)
+                                                    accountingRule, filePeriodKey, acctDate, jrnlID)
                         for ((rowStr, _, _) <- pairs) {
                           chunk += rowStr
                           sjeRows += 1

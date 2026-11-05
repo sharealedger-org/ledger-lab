@@ -12,18 +12,27 @@ run order, and open decisions.
 
 This project produces two papers from a single Virginia state procurement corpus
 (FY2003–FY2016, ~133M PO lines). **Paper 1** establishes the minimum-cost curve: starting
-from CCP1 (the General Ledger baseline every institution already runs), each successive
-capability layer of the CKB instrument-ledger architecture adds a precisely measured marginal
-cost, and if the full pipeline lands at approximately the same cost as CCP2 (the instrument
-ledger baseline), that is the empirical proof of single-pass universality. **Paper 2** uses the
-same corpus to test the AI-consequence claim of Theorem 1: the posting process is lossy
-compression, and the pre-hierarchy commitment record carries signal the posted record
-permanently discards.
+from CCP1 (a General Ledger — one representative of the fixed-posting-key class that includes
+sub-ledgers, data warehouses, and data marts), each successive capability layer of the CKB
+instrument-ledger architecture adds a precisely measured marginal cost, and if the full
+pipeline lands at approximately the same cost as CCP2 (the instrument ledger baseline), that
+is the empirical proof of single-pass universality. **Paper 2** uses the same corpus to test
+the AI-consequence claim of Theorem 1: the posting process is lossy compression, and the
+pre-hierarchy commitment record carries signal the posted record permanently discards.
 
 The two papers are two facets of the same architectural failure, measured from the same data:
-CCP1 is simultaneously the cost-curve anchor (Paper 1) and the substrate against which all AIM
-tests fail (Paper 2). The CKB architecture (CCP2–CCP5) simultaneously achieves lower cost
-(Paper 1) and produces AI-ready evidence as a natural by-product (Paper 2).
+CCP1 is simultaneously the cost-curve right-wall anchor (Paper 1) and the substrate against
+which all AIM tests fail (Paper 2). The CKB architecture (CCP2–CCP5) simultaneously achieves
+lower cost (Paper 1) and produces AI-ready evidence as a natural by-product (Paper 2).
+
+**Note on CCP1 as a class representative:** The GL is the most collapsed instance of the
+fixed-posting-key class — narrowest key, most information discarded at posting time. A
+purchasing sub-ledger, data warehouse, or data mart preserves more dimensions but shares the
+same structural property: pre-computed answers to questions defined at design time, unable to
+answer unanticipated questions without returning to raw events. CCP1 measures the GL as a
+right-wall proxy for this class. The cost gap CCP1→CCP2 is a lower bound on the true
+architectural savings for institutions whose fixed-key store preserves more dimensions than
+a GL.
 
 ---
 
@@ -31,15 +40,17 @@ tests fail (Paper 2). The CKB architecture (CCP2–CCP5) simultaneously achieves
 
 ### What CCP1 and CCP2–CCP5 measure
 
-**CCP1** is not a point on the minimum cost curve — it is the status-quo baseline every
-institution already operates: sort events → post to a General Ledger (account-keyed) →
-write GL balances. The instrument identity (vendor, counterparty) is discarded at posting
-time. CCP1 measures the cost of this exactly. It also drives the permutation generator: a
-separate follow-on step reads the original transactions and computes every key-embedded
-balance permutation that a GL-based architecture would need to materialise to answer all
-the questions the instrument ledger answers for free. The permutation table size is the
-Paper 1 cost explosion evidence; the AIM test suite run against both the GL output and the
-permutation table is the Paper 2 information-loss evidence.
+**CCP1** is not a point on the minimum cost curve — it is the right-wall anchor: sort
+events → post to a General Ledger (account-keyed) → write GL balances. The GL is the most
+collapsed instance of the fixed-posting-key class (sub-ledgers, data warehouses, and data
+marts are less collapsed instances of the same class — all sit on the right wall). The
+instrument identity (vendor, counterparty) is discarded at posting time. CCP1 measures the
+cost of this exactly. It also drives the permutation generator: a separate follow-on step
+reads the original transactions and computes every key-embedded balance permutation that a
+fixed-key architecture would need to materialise to answer all the questions the instrument
+ledger answers for free. The permutation table size is the Paper 1 cost explosion evidence;
+the AIM test suite run against both the GL output and the permutation table is the Paper 2
+information-loss evidence.
 
 **CCP2–CCP5** are verified, reproducible positions on the minimum cost curve of the CKB
 instrument-ledger architecture. CCP2 is the left anchor — the irreducible minimum cost of

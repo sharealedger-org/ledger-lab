@@ -115,6 +115,7 @@ CURVE="C1"
 CONFIG_DESC="default"
 WORKLOAD_PROFILE="legacy"
 MATERIALIZATION_PROFILE="unspecified"
+PERIOD_GRANULARITY="annual"
 
 # ── arg parsing ───────────────────────────────────────────────────────────────
 while [[ $# -gt 0 ]]; do
@@ -128,6 +129,7 @@ while [[ $# -gt 0 ]]; do
     -d|--config)   CONFIG_DESC="$2"; shift 2 ;;
     --profile)     WORKLOAD_PROFILE="$2"; shift 2 ;;
     --materialization) MATERIALIZATION_PROFILE="$2"; shift 2 ;;
+    --periodGranularity) PERIOD_GRANULARITY="$2"; shift 2 ;;
     -h|--help)     grep '^#' "$0" | sed 's/^# \{0,2\}//'; exit 0 ;;
     *) echo "Unknown option: $1"; exit 1 ;;
   esac
@@ -419,17 +421,19 @@ run_step() {
     [[ -n "$ref_arg" ]] && jvm_ref_arg=" --refPath $(cygpath -m "${ref_arg#* --refPath }")"
   fi
 
+  local period_arg=" --periodGranularity $PERIOD_GRANULARITY"
+
   if [[ "$time_mode" == "macos" ]]; then
     out=$(cd "$SBT_PROJECT" && /usr/bin/time -l sbt -batch \
-      "run --step $step --inPath $jvm_in_path --outPath $jvm_out_path --year $year --quarter $quarter$jvm_vm_arg$jvm_ref_arg$allocation_rules_arg$fx_args" \
+      "run --step $step --inPath $jvm_in_path --outPath $jvm_out_path --year $year --quarter $quarter$jvm_vm_arg$jvm_ref_arg$allocation_rules_arg$fx_args$period_arg" \
       2>&1 | tee "$_tee_target")
   elif [[ "$time_mode" == "gnu" ]]; then
     out=$(cd "$SBT_PROJECT" && /usr/bin/time -v sbt -batch \
-      "run --step $step --inPath $jvm_in_path --outPath $jvm_out_path --year $year --quarter $quarter$jvm_ref_arg$allocation_rules_arg$fx_args" \
+      "run --step $step --inPath $jvm_in_path --outPath $jvm_out_path --year $year --quarter $quarter$jvm_ref_arg$allocation_rules_arg$fx_args$period_arg" \
       2>&1 | tee "$_tee_target")
   else
     out=$(cd "$SBT_PROJECT" && sbt -batch \
-      "run --step $step --inPath $jvm_in_path --outPath $jvm_out_path --year $year --quarter $quarter$jvm_vm_arg$jvm_ref_arg$allocation_rules_arg$fx_args" \
+      "run --step $step --inPath $jvm_in_path --outPath $jvm_out_path --year $year --quarter $quarter$jvm_vm_arg$jvm_ref_arg$allocation_rules_arg$fx_args$period_arg" \
       2>&1 | tee "$_tee_target")
   fi
   # Clean up temp tee file if we used one (non-stderr path)
@@ -595,14 +599,19 @@ count_enabled_views() {
 init_cost_surface() {
   local f="$1"
   if [[ ! -f "$f" ]]; then
-    echo "\"run_id\",\"run_timestamp\",\"curve\",\"config_description\",\"years\",\"steps\",total_compute_s,total_storage_bytes,master_file_count,total_cost_proxy" > "$f"
+    echo "\"run_id\",\"run_timestamp\",\"curve\",\"config_description\",\"years\",\"steps\",total_compute_s,total_storage_bytes,master_file_count,total_cost_proxy,\"capability_layer\",\"period_granularity\",\"materialization_scope\",ledger_row_count,ldgr_file_bytes,view_file_bytes,permutation_rows" > "$f"
   fi
 }
 
 # Append one row to cost_surface.csv.
+# Args: f run_id ts curve cfg years steps compute_s storage_bytes master_count
+#       capability_layer period_granularity materialization_scope
+#       ledger_row_count ldgr_file_bytes view_file_bytes permutation_rows
 record_cost_point() {
   local f="$1" run_id="$2" ts="$3" curve="$4" cfg="$5" years="$6" steps="$7"
   local compute_s="$8" storage_bytes="$9" master_count="${10}"
+  local capability_layer="${11:-}" period_granularity="${12:-}" materialization_scope="${13:-}"
+  local ledger_row_count="${14:-}" ldgr_file_bytes="${15:-}" view_file_bytes="${16:-}" permutation_rows="${17:-}"
   # total_cost_proxy: compute(s) + storage(MB) + master_files × 10
   local proxy
   if [[ "$storage_bytes" =~ ^[0-9]+$ ]]; then
@@ -612,7 +621,7 @@ record_cost_point() {
     proxy="?"
   fi
   # Quote fields that may contain spaces or commas
-  echo "\"${run_id}\",\"${ts}\",\"${curve}\",\"${cfg}\",\"${years}\",\"${steps}\",${compute_s},${storage_bytes},${master_count},${proxy}" >> "$f"
+  echo "\"${run_id}\",\"${ts}\",\"${curve}\",\"${cfg}\",\"${years}\",\"${steps}\",${compute_s},${storage_bytes},${master_count},${proxy},\"${capability_layer}\",\"${period_granularity}\",\"${materialization_scope}\",${ledger_row_count:-0},${ldgr_file_bytes:-0},${view_file_bytes:-0},${permutation_rows:-0}" >> "$f"
 }
 
 # ── main loop ─────────────────────────────────────────────────────────────────
@@ -638,10 +647,11 @@ TOTAL_COMPUTE_S=0
 
 log "======================================================================"
 log "Universal Ledger Pipeline Run  [$RUN_ID]"
-log "  curve   = $CURVE"
-log "  config  = $CONFIG_DESC"
-log "  profile = $WORKLOAD_PROFILE"
-log "  materialization = $MATERIALIZATION_PROFILE"
+log "  curve              = $CURVE"
+log "  config             = $CONFIG_DESC"
+log "  profile            = $WORKLOAD_PROFILE"
+log "  materialization    = $MATERIALIZATION_PROFILE"
+log "  period_granularity = $PERIOD_GRANULARITY"
 log "  inPath  = $IN_PATH"
 log "  outPath = $OUT_PATH"
 log "  years   = $YEARS"
@@ -687,16 +697,62 @@ fi
 
 MASTER_FILE_COUNT=$(count_enabled_views "$VIEWSPEC")
 
+# ── three-axis cost surface columns ──────────────────────────────────────────
+# Axis 1 — capability_layer: map CURVE to CCP label; fall back to CURVE itself.
+case "$CURVE" in
+  CCP1) CAPABILITY_LAYER="CCP1" ;;
+  CCP2) CAPABILITY_LAYER="CCP2" ;;
+  CCP3) CAPABILITY_LAYER="CCP3" ;;
+  CCP4) CAPABILITY_LAYER="CCP4" ;;
+  CCP5) CAPABILITY_LAYER="CCP5" ;;
+  *)    CAPABILITY_LAYER="$CURVE" ;;
+esac
+
+# Axis 2 — period_granularity: use the CLI value (default: annual).
+COST_PERIOD_GRANULARITY="$PERIOD_GRANULARITY"
+
+# Axis 3 — materialization_scope: derive from MATERIALIZATION_PROFILE or CONFIG_DESC.
+COST_MATERIALIZATION="${MATERIALIZATION_PROFILE:-movement-only}"
+
+# Per-output file metrics (0 if the step did not run or the file is absent).
+LDGR_ROW_COUNT=0
+LDGR_FILE_BYTES=0
+VIEW_FILE_BYTES=0
+PERMUTATION_ROWS=0
+for year in ${YEARS//,/ }; do
+  ldgr_file="$OUT_PATH/LDGR20${year}.csv"
+  perm_file="$OUT_PATH/PERM_TBL20${year}.csv"
+  if [[ -f "$ldgr_file" ]]; then
+    LDGR_ROW_COUNT=$(( LDGR_ROW_COUNT + $(count_data_rows "$ldgr_file") ))
+    LDGR_FILE_BYTES=$(( LDGR_FILE_BYTES + $(count_file_bytes "$ldgr_file") ))
+  fi
+  if [[ -f "$perm_file" ]]; then
+    PERMUTATION_ROWS=$(( PERMUTATION_ROWS + $(count_data_rows "$perm_file") ))
+  fi
+done
+for vf in "$OUT_PATH"/view_*.csv; do
+  [[ -f "$vf" ]] && VIEW_FILE_BYTES=$(( VIEW_FILE_BYTES + $(count_file_bytes "$vf") ))
+done
+
 log "======================================================================"
 log "Pipeline complete.  [$RUN_ID]"
 log "  total_compute_s     = $TOTAL_COMPUTE_S"
 log "  total_storage_bytes = $FINAL_STORAGE_BYTES"
 log "  master_file_count   = $MASTER_FILE_COUNT  (enabled=Y rows in ViewSpec.csv)"
+log "  capability_layer    = $CAPABILITY_LAYER"
+log "  period_granularity  = $COST_PERIOD_GRANULARITY"
+log "  materialization     = $COST_MATERIALIZATION"
+log "  ldgr_row_count      = $LDGR_ROW_COUNT"
+log "  ldgr_file_bytes     = $LDGR_FILE_BYTES"
+log "  view_file_bytes     = $VIEW_FILE_BYTES"
+log "  permutation_rows    = $PERMUTATION_ROWS"
 log "  cost_surface        = $COST_SURFACE"
 log "======================================================================"
 
 record_cost_point "$COST_SURFACE" "$RUN_ID" "$RUN_TS" "$CURVE" "$CONFIG_DESC" \
-  "$YEARS" "$STEPS" "$TOTAL_COMPUTE_S" "$FINAL_STORAGE_BYTES" "$MASTER_FILE_COUNT"
+  "$YEARS" "$STEPS" "$TOTAL_COMPUTE_S" "$FINAL_STORAGE_BYTES" "$MASTER_FILE_COUNT" \
+  "$CAPABILITY_LAYER" "$COST_PERIOD_GRANULARITY" "$COST_MATERIALIZATION" \
+  "$LDGR_ROW_COUNT" "$LDGR_FILE_BYTES" "$VIEW_FILE_BYTES" "$PERMUTATION_ROWS"
 
 log "Cost point recorded → $COST_SURFACE"
 
