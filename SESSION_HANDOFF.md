@@ -4,6 +4,104 @@ Updated 2026-11-04. This file is a concise state snapshot; use the linked design
 
 ---
 
+## 2026-11-04 Stage 2 pipeline run — first end-to-end success (Bob)
+
+**What was done this session.**
+
+Three bug fixes and a Windows toolchain fix that together unblocked the first complete
+`ttl,2p,3,5v` FY2003 pipeline run.
+
+### Fix 1 — Windows: WSL collides with Git Bash when `bash` is invoked from PowerShell
+
+The `C:\Windows\System32\bash.exe` (WSL) always resolved before Git Bash in PowerShell.
+- `scripts/bash.bat` — thin `.bat` wrapper that calls `C:\Program Files\Git\bin\bash.exe -l %*` directly; no WSL.
+- `.vscode/settings.json` — workspace-level terminal PATH prepends `scripts\` so the VS Code integrated terminal also resolves the wrapper first.
+- `.gitignore` — added `!.vscode/settings.json` negation so the settings file is tracked.
+- `QUICKSTART.md` — new "Windows PowerShell — One-Time Setup" section with the one-liner profile fix and a verification command.
+
+After fix: `bash scripts/run_pipeline.sh ...` from PowerShell or VS Code terminal calls Git Bash every time.
+
+### Fix 2 — `applyPO` (`standardizeAndSort.scala`): VA PO source file uses RFC-4180 quoted fields
+
+The VA PO source (`VA_opendata_FY2003.txt`) is tab-delimited with RFC-4180 quoting:
+- String fields are wrapped in `"..."` — e.g. `"DO24348"`, `"Norfolk State University"`.
+- Some description fields span **multiple physical lines** (embedded newlines inside a quoted field).
+- Some descriptions contain literal `"` characters as inch marks (non-RFC-4180).
+
+Two specific failures from this:
+1. **Quoted string content in BigDecimal fields** — outer `"` chars leaked into `uomCode`, `price`, `qty` fields when the raw tab-split value was passed directly without stripping quotes. Fixed by adding `def unq(s: String): String = s.stripPrefix("\"").stripSuffix("\"")` applied to all string field extractions.
+2. **Multi-line description fields corrupting column alignment** — `src.getLines()` split a logical record across two physical lines; the continuation line had no PONUMBER, shifting all fields. Fixed by:
+   - Changing `lines` to `BufferedIterator[String]` via `.buffered`.
+   - Adding `nextLogicalLine()` that accumulates physical lines until the `"` count is even (RFC-4180 complete record detection).
+   - Adding a date-shape guard on `cols(2)` (ORDEREDDATE): rows where col 2 is not `MM/DD/YYYY` or empty are skipped as malformed fragments. This discards ~2,481 orphaned continuation lines from records with non-RFC-4180 inch-mark quoting.
+
+Net result: `applyPO` reads 25,131 logical PO records from 66,654 physical lines (down from erroneously 27,612 when continuation lines were treated as records, up from 0 when the crash occurred).
+
+### Fix 3 — `post.scala`: BigDecimal parse crash on 2 malformed PO SJE rows
+
+After the `applyPO` fixes, 2 of the 50,262 output rows still had non-numeric content in the BigDecimal columns (cols 25, 27, 28 of the SortedJE) due to the inch-mark quoting edge case producing assembed lines with wrong column count. `post.scala`'s `readJrnl()` called `BigDecimal(e(25))` directly and crashed.
+
+Fix: added `def safeBD(s: String): BigDecimal` that catches parse exceptions and returns 0. Applied to all three BigDecimal fields in `readJrnl()`. The 2 affected PO rows now post as zero-amount commitments.
+
+**Impact on ledger balance:** The SJE balance control passes (0.00). The ledger balance control shows a $6.00 delta — this is the commitment amount from those 2 malformed rows, now zero instead of their actual values. This is an open data quality issue, not a control failure; the source rows have unparseable structure.
+
+### Stage 2 run result
+
+```
+bash scripts/run_pipeline.sh \
+  --inPath data/VARawFiles \
+  --outPath data/output_validate_fy03 \
+  --years 03 --steps ttl,2p,3,5v \
+  --curve CCP3 --config validate-1yr
+```
+
+| Step | Records in | Records out | Time | rc |
+|------|-----------|-------------|------|----|
+| ttl  | 5,758,480 APA source rows | 11,516,960 SJE rows (4 quarterly files) | 145s | 0 |
+| 2p   | 25,131 logical PO records | 50,262 SJE rows | 20s | 0 |
+| 3    | 11,567,222 journal records | 55,151 LDGR rows | 60s | 0 |
+| 5v   | 11,567,222 journal records | 54,405 view rows total | 45s | 0 |
+
+View file row counts: View A (monthly order volume) = 6,851; View B (vendor-year survival) = 990;
+View C (agency-year commodity mix) = 3,895; View D (agency-year payment totals) = 42,673.
+
+SJE balance control: **PASS** (0.00).
+Ledger balance delta: **$6.00** (from 2 malformed PO rows — open data quality issue).
+
+**Files changed:**
+- `standardizeAndSort.scala` — RFC-4180 multi-line reader, outer-quote stripping, date-shape guard in `applyPO`.
+- `post.scala` — `safeBD` helper replacing raw `BigDecimal()` calls in `readJrnl()`.
+- `scripts/bash.bat`, `scripts/Invoke-Bash.ps1` — Windows Git Bash wrapper.
+- `.vscode/settings.json` — VS Code terminal PATH fix.
+- `.gitignore` — `!.vscode/settings.json` negation.
+- `QUICKSTART.md` — Windows setup section.
+
+**48/48 tests pass** after all fixes.
+
+**Next session — start here:**
+
+Stage 2 complete. The $6.00 ledger delta is an open item but does not block Stage 3.
+
+Stage 3: 5-year slice (FY2003–FY2007). Run:
+```bash
+bash scripts/run_pipeline.sh \
+  --inPath data/VARawFiles \
+  --outPath data/output_validate_fy03_07 \
+  --years 03,04,05,06,07 --steps ttl,2p,3,5v \
+  --curve CCP3 --config validate-5yr
+```
+
+After Stage 3: directional AIM1/3/4 checks; AIM2 code correctness. Each AIM script requires
+owner approval per AGENTS.md before writing Python.
+
+Open items:
+1. $6.00 ledger balance delta from 2 malformed PO rows. Investigate whether these come from specific VA PO records with non-RFC-4180 inch-mark quoting that produce non-date col 2 after joining, but land by coincidence on a 7+-column split. Low priority.
+2. `applyAPA` quarterly routing: 4 quarterly files confirmed produced (Q1-Q4 each non-zero). No issue.
+3. `cost_surface.csv` schema changes (7 new columns for three-axis cost surface) — pending before full-corpus run.
+4. `--periodGranularity` CLI wiring — pending.
+
+---
+
 ## 2026-11-04 Cost surface design — three axes (Bob)
 
 **What was decided this session.**

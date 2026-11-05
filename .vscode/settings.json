@@ -1,0 +1,16 @@
+{
+  // Workspace-level terminal environment — sets PATH so scripts\bash.bat
+  // is found before C:\Windows\System32\bash.exe (WSL).
+  // This makes `bash scripts/run_pipeline.sh ...` work from the integrated
+  // terminal without requiring a PowerShell profile or WSL.
+  "terminal.integrated.env.windows": {
+    "PATH": "${workspaceFolder}\\scripts;${env:PATH}"
+  },
+  // Optional: open Git Bash directly when you want a native Bash terminal.
+  "terminal.integrated.profiles.windows": {
+    "Git Bash": {
+      "source": "Git Bash"
+    }
+  },
+  "terminal.integrated.defaultProfile.windows": "PowerShell"
+}

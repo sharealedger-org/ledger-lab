@@ -11,6 +11,7 @@ logs/
 .bob/
 .idea/
 .vscode/
+!.vscode/settings.json
 __pycache__/
 *.pyc
 

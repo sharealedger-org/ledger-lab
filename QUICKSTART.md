@@ -27,10 +27,46 @@ and [the CKB execution model](docs/CKB_LAYER_EXECUTION_MODEL.md).
 | JDK | 21 | Current locally validated toolchain; cross-platform validation is pending. |
 | sbt | 1.10.10 | Pinned in `02-foundation/va_pipeline/project/build.properties`. |
 | Scala | 2.12.18 | Configured by the VA subproject. |
+| Git for Windows | Any recent | Required for Git Bash on Windows. WSL is **not** a substitute. |
 | PostgreSQL | Not required to compile | A JDBC dependency is present; the planned database-backed Step 5 is not implemented. |
 
 Spark-dependent sources are excluded from the default build. Do not infer that an excluded path has
 a Scala replacement simply because its source files are written in Scala.
+
+---
+
+## Windows PowerShell — One-Time Setup (Git Bash, not WSL)
+
+On Windows, PowerShell's built-in `bash` resolves to WSL, not Git Bash. The pipeline scripts
+require Git Bash. Run this **once** to fix every future PowerShell session in this repo:
+
+```powershell
+# Run once from the repo root — appends the profile line permanently.
+$repoRoot = (Get-Location).Path
+$profileLine = "`$env:PATH = `"$repoRoot\scripts;`$env:PATH`"  # ledger-lab: Git Bash wins over WSL"
+Add-Content -Path $PROFILE -Value $profileLine
+```
+
+Then **reload your profile** (or open a new terminal):
+
+```powershell
+. $PROFILE
+```
+
+This prepends `scripts\` to PATH so `scripts\bash.bat` — which calls
+`C:\Program Files\Git\bin\bash.exe` directly — is found before `C:\Windows\System32\bash.exe` (WSL).
+After setup, the normal `bash scripts/run_pipeline.sh ...` syntax works from PowerShell.
+
+To verify the fix:
+
+```powershell
+bash -c "echo ok && bash --version | head -1"
+# Should print: ok
+#               GNU bash, version 5.x... (x86_64-pc-msys)
+```
+
+If you see `Windows Subsystem for Linux has no installed distributions`, the profile line
+is not active. Re-run the setup block above.
 
 ---
 

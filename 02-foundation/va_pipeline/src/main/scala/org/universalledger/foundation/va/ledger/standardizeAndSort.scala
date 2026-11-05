@@ -419,32 +419,69 @@ object standardizeAndSort {
     // handles the chunk/spill/merge cycle at O(chunkSize) peak heap.
     val rowIterator: Iterator[String] = new Iterator[String] {
       private val src   = scala.io.Source.fromFile(inFile)(codec)
-      private val lines = src.getLines()
+      private val lines: BufferedIterator[String] = src.getLines().buffered
 
-      // Consume header
+      // Consume header (first non-empty line)
       if (lines.hasNext) lines.next()
+      // Consume blank second line common in VA PO files (e.g. blank line after header)
+      while (lines.hasNext && lines.head.trim.isEmpty) lines.next()
 
       private var pending: List[String] = Nil
+
+      // RFC-4180 multi-line field handling: the PO source file uses tab-delimited
+      // RFC-4180 quoting where description fields may span multiple physical lines.
+      // A logical row starts with a `"` when PONUMBER is quoted (VA production files).
+      // Continuation lines (the embedded-newline tail of a quoted description field)
+      // do NOT start with `"` — they are joined onto the accumulated logical line.
+      // For non-quoted sources (fixtures) the quote-count check is a no-op (stays 0).
+      // We join continuation lines with a space so downstream comma-replace works.
+      // Orphaned continuation fragments that don't form a ≥7-column row are discarded
+      // by the existing `cols.length >= 7` guard in fetchNext.
+      private def nextLogicalLine(): String = {
+        if (!lines.hasNext) return ""
+        val sb = new StringBuilder(lines.next())
+        // Accumulate until all opened quotes are closed (even total `"` count).
+        // A freshly started line with 0 quotes is trivially balanced — no joining needed.
+        while (sb.count(_ == '"') % 2 != 0 && lines.hasNext) {
+          sb.append(' ')
+          sb.append(lines.next())
+        }
+        sb.toString()
+      }
 
       override def hasNext: Boolean = pending.nonEmpty || fetchNext()
 
       private def fetchNext(): Boolean = {
-        while (lines.hasNext) {
-          val raw = lines.next().trim
+        while (lines.hasNext || pending.nonEmpty) {
+          if (pending.nonEmpty) return true
+          val raw = nextLogicalLine().trim
           if (raw.nonEmpty) {
             val cols = raw.split("\t", -1).map(_.trim)
-            if (cols.length >= 7) {
+            // Accept rows with ≥ 7 columns AND a valid date-shaped ordDate (col 2 = MM/DD/YYYY).
+            // This guards against stray continuation fragments that have enough columns but
+            // land a non-date value at col 2, which is the most reliable structural anchor.
+            val colsOk = cols.length >= 7 && {
+              val d = if (cols.length > 2) cols(2) else ""
+              // Strip outer quotes from date before validation
+              val ds = d.stripPrefix("\"").stripSuffix("\"")
+              ds.matches("\\d{1,2}/\\d{1,2}/\\d{4}") || ds.isEmpty
+            }
+            if (colsOk) {
               sourceRows += 1
               jrnlID     += 1
-              val poNumber   = cols(0)
-              val agency     = cols(1)
-              val ordDate    = if (cols(2).nonEmpty) cols(2) else acctDate
-              val commDesc   = if (cols.length > 3) cols(3).replace(",", " ") else " "
+              // Tab-delimited PO source uses RFC-4180 quoting: string fields are wrapped
+              // in double-quotes.  Strip those outer quotes before use so they never
+              // appear inside the comma-delimited SortedJE output rows.
+              def unq(s: String): String = s.stripPrefix("\"").stripSuffix("\"")
+              val poNumber   = unq(cols(0))
+              val agency     = unq(cols(1))
+              val ordDate    = if (cols(2).nonEmpty) unq(cols(2)) else acctDate
+              val commDesc   = if (cols.length > 3) unq(cols(3)).replace(",", " ") else " "
               val qty        = tryBigDecimal(cols, 4, BigDecimal(1))
               val price      = tryBigDecimal(cols, 5, BigDecimal(0))
-              val vendorId   = cols(6)
-              val nigpCode   = if (cols.length > 13) cols(13) else "00000"
-              val uomCode    = if (cols.length > 15) cols(15) else " "
+              val vendorId   = unq(cols(6))
+              val nigpCode   = if (cols.length > 13) unq(cols(13)) else "00000"
+              val uomCode    = if (cols.length > 15) unq(cols(15)) else " "
               val amt        = price * qty
 
               val jid = "ID" + jrnlID + acctDate + "PO"
