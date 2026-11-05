@@ -115,7 +115,7 @@ CURVE="C1"
 CONFIG_DESC="default"
 WORKLOAD_PROFILE="legacy"
 MATERIALIZATION_PROFILE="unspecified"
-PERIOD_GRANULARITY="annual"
+PERIOD_GRANULARITY="monthly"
 
 # ── arg parsing ───────────────────────────────────────────────────────────────
 while [[ $# -gt 0 ]]; do
@@ -280,10 +280,16 @@ run_step() {
   local records_read="?" records_written="?"
   case "$step" in
     ttl)
-      # TTL step: reads the FY subdirectory tree; reports Q1 output file as representative
+      # TTL step: reads the FY subdirectory tree.
+      # Output file reference: first SortedJEFY file found (monthly or quarterly naming).
       input_file="$IN_PATH"
-      output_file="$OUT_PATH/SortedJEFY${year}q1exp.csv"
-      # Accumulate bytes across all 12 monthly files discovered under the FY directory
+      output_file=""
+      for _ttl_f in "$OUT_PATH/SortedJEFY${year}_"*"_exp.csv" \
+                    "$OUT_PATH/SortedJEFY${year}q1exp.csv"; do
+        [[ -f "$_ttl_f" ]] && { output_file="$_ttl_f"; break; }
+      done
+      [[ -n "$output_file" ]] || output_file="$OUT_PATH/SortedJEFY${year}q1exp.csv"
+      # Accumulate input bytes across all 12 monthly source files under the FY directory
       input_bytes=0
       for apa_file in "$IN_PATH/FY ${year:0:2}2${year:1:1}? Expenditure/"*.csv \
                        "$IN_PATH/All Expenditures for Fiscal Year 20${year}"*/*.csv; do
@@ -302,11 +308,21 @@ run_step() {
       records_read=$(count_data_rows "$input_file")
       ;;
     2m)
-      input_file="$OUT_PATH/SortedJEFY${year}q${quarter_number}exp.csv"
+      # Input: all payment SortedJE files (monthly or quarterly) + PO file
       output_file="$OUT_PATH/SortedJEFY${year}merged.csv"
+      # Use first available payment file as representative input_file for logging
+      input_file=""
+      for _2m_f in "$OUT_PATH/SortedJEFY${year}_"*"_exp.csv" \
+                   "$OUT_PATH/SortedJEFY${year}q"*"exp.csv"; do
+        [[ -f "$_2m_f" ]] && { input_file="$_2m_f"; break; }
+      done
+      [[ -n "$input_file" ]] || input_file="$OUT_PATH/SortedJEFY${year}q${quarter_number}exp.csv"
       records_read=0
       input_bytes=0
-      for sje_file in "$OUT_PATH/SortedJEFY${year}q"*"exp.csv" "$OUT_PATH/SortedJEFY${year}q"*"PO.csv"; do
+      for sje_file in "$OUT_PATH/SortedJEFY${year}_"*"_exp.csv" \
+                      "$OUT_PATH/SortedJEFY${year}q"*"exp.csv" \
+                      "$OUT_PATH/SortedJEFY${year}q"*"PO.csv" \
+                      "$OUT_PATH/SortedJEFY${year}_"*"PO.csv"; do
         [[ -f "$sje_file" ]] || continue
         input_bytes=$((input_bytes + $(count_file_bytes "$sje_file")))
       done
@@ -414,6 +430,12 @@ run_step() {
     fi
   fi
 
+  # Steps 20 and 21 (GLPost / PermutationGenerator) read SortedJE files from outPath,
+  # not from the raw inPath — override jvm_in_path to point at the output directory.
+  if [[ "$step" == "20" || "$step" == "21" ]]; then
+    jvm_in_path="$jvm_out_path"
+  fi
+
   # Also convert any path arguments embedded in vm_arg and ref_arg
   local jvm_vm_arg="$vm_arg" jvm_ref_arg="$ref_arg"
   if command -v cygpath >/dev/null 2>&1; then
@@ -461,9 +483,11 @@ run_step() {
       records_read=$(printf '%s\n' "$result_line_ttl" | sed -nE 's/.*records_read=([0-9]+).*/\1/p' | tail -1)
       [[ -n "$records_read" ]] || records_read="?"
       records_written=0
-      for q in 1 2 3 4; do
-        qf="$OUT_PATH/SortedJEFY${year}q${q}exp.csv"
-        [[ -f "$qf" ]] && records_written=$((records_written + $(count_file_rows "$qf")))
+      # Count rows across both monthly (SortedJEFY{yr}_{YYYY}_{MM}_exp.csv) and
+      # quarterly (SortedJEFY{yr}q{n}exp.csv) output files produced by this run.
+      for sje_f in "$OUT_PATH/SortedJEFY${year}_"*"_exp.csv" \
+                   "$OUT_PATH/SortedJEFY${year}q"*"exp.csv"; do
+        [[ -f "$sje_f" ]] && records_written=$((records_written + $(count_file_rows "$sje_f")))
       done
       [[ "$records_written" == "0" ]] && records_written=$(printf '%s\n' "$result_line_ttl" | sed -nE 's/.*records_written=([0-9]+).*/\1/p' | tail -1)
       [[ -n "$records_written" ]] || records_written="?"
@@ -771,7 +795,12 @@ bash "$SCRIPT_DIR/write_canonical_evidence.sh" \
   --compute-seconds "$TOTAL_COMPUTE_S" \
   --log-file "$LOG_FILE" \
   --workload-profile "$WORKLOAD_PROFILE" \
-  --materialization-profile "$MATERIALIZATION_PROFILE"
+  --materialization-profile "$MATERIALIZATION_PROFILE" \
+  --period-granularity "$COST_PERIOD_GRANULARITY" \
+  --ldgr-row-count "$LDGR_ROW_COUNT" \
+  --ldgr-file-bytes "$LDGR_FILE_BYTES" \
+  --view-file-bytes "$VIEW_FILE_BYTES" \
+  --permutation-rows "$PERMUTATION_ROWS"
 
 bash "$SCRIPT_DIR/interpret_run.sh" \
   "${OUT_PATH%/}/metrics" \

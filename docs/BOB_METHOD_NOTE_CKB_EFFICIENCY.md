@@ -1,4 +1,4 @@
-﻿# Method Note: Token-Efficient Agentic Work on Large Financial Datasets
+# Method Note: Token-Efficient Agentic Work on Large Financial Datasets
 
 > **Audience:** Bob (AI assistant) trainers and future Bob instances working in this repo.
 > **Purpose:** Establish the correct computational *method* for agentic work here — grounded
@@ -553,7 +553,7 @@ produces the same ratio of efficiency over naive agentic file exploration.
 
 ---
 
-*Source papers: Paper 4 (GenevaERS Architecture), Paper 2 (Pre-Hierarchy Event Repositories),*
+*Source papers: Paper 4 (GenevaERS Architecture), Paper 2 (Business Event Repositories),*
 *Paper 5 (Enterprise Financial Transformation Engines) — from the monograph*
 *"The Architecture of Economic State" (Twitchell). Link will be added upon publication.*
 *Companion documents: `PROJECT_BRIEF.md` (experiment design),

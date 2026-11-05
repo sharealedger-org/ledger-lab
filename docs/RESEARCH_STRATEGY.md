@@ -20,7 +20,7 @@ extends the prior one. A reader cannot accept paper 4 without first accepting pa
 | Paper | What it proves | Financial process | Corpus requirement |
 |-------|---------------|-------------------|--------------------|
 | 1 | Preserving instrument identity through posting costs less than the permutation explosion it avoids | GL post vs. instrument ledger (no financial processes) | Full corpus — toy ratios are not publishable |
-| 2 | Pre-hierarchy event repositories enable AI that posted records structurally cannot | Raw commitment + payment events, instrument-keyed | Full corpus — survival/seasonality models need 14 years × 65K vendors |
+| 2 | Business event repositories enable AI that posted records structurally cannot | Raw commitment + payment events, instrument-keyed | Full corpus — survival/seasonality models need 14 years × 65K vendors |
 | 3 | Cost allocations applied at instrument grain preserve analytical traceability; GL-grain allocation destroys it | Allocation (step-up, cost distribution) | Full corpus + allocation rules |
 | 4 | Multicurrency revaluation at instrument grain enables currency-adjusted AI; GL-grain FX destroys instrument identity | FX revaluation | Full corpus + rate history |
 | 5 | Intercompany eliminations at instrument grain preserve both sides of the transaction; GL eliminations do not | Intra- and inter-unit elimination | Full corpus + entity structure |

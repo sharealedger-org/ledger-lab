@@ -200,12 +200,18 @@ object LedgerApp {
   // ── Step 2m: k-way merge of payment + PO sorted SJE files ────────────────
   //
   //  Pure sort-partition coordination: no financial logic.
-  //  Calls SortEngine.mergeSpills on two already-sorted files to produce a single
+  //  Calls SortEngine.mergeSpills on all SortedJE input files to produce a single
   //  merged sorted file for post.scala.  Memory contract: O(k open file handles).
   //
+  //  Input discovery (when --payment is not explicitly supplied):
+  //    Monthly mode:   SortedJEFY{yr}_{YYYY}_{MM}_exp.csv (one per source month)
+  //    Quarterly mode: SortedJEFY{yr}q{n}exp.csv (one per quarter)
+  //    PO file:        SortedJEFY{yr}q{n}PO.csv (first match)
+  //  If --payment is supplied, that single file is used (legacy/explicit override).
+  //
   //  Params:
-  //    --payment  path to payment SortedJE file  (default: SortedJEFY{yr}q1exp.csv)
-  //    --po       path to PO SortedJE file        (default: SortedJEFY{yr}q1PO.csv)
+  //    --payment  explicit path to a single payment SortedJE file (optional — disables auto-discover)
+  //    --po       path to PO SortedJE file (default: auto-discover SortedJEFY{yr}*PO.csv)
   //    --outPath  output directory
   //    --year     4-digit year (used for default file name derivation)
   private def runMerge(params: Map[String, String]): Unit = {
@@ -213,18 +219,51 @@ object LedgerApp {
     val outPath = params.getOrElse("outPath", DefaultOutPath)
     val yearStr = params.getOrElse("year", DefaultYear)
     val shortYr = yearStr.takeRight(2)
+    val outDir  = new java.io.File(outPath.stripSuffix("/"))
+    val mergedFile = outPath.stripSuffix("/") + "/SortedJEFY" + shortYr + "merged.csv"
 
-    val paymentFile = params.getOrElse("payment",
-      outPath.stripSuffix("/") + "/SortedJEFY" + shortYr + "q1exp.csv")
-    val poFile      = params.getOrElse("po",
-      outPath.stripSuffix("/") + "/SortedJEFY" + shortYr + "q1PO.csv")
-    val mergedFile  = outPath.stripSuffix("/") + "/SortedJEFY" + shortYr + "merged.csv"
+    // Discover all payment SortedJE files from outPath (monthly or quarterly naming).
+    // If --payment is explicitly supplied, use that single file instead.
+    val paymentFiles: Seq[String] = params.get("payment") match {
+      case Some(explicit) => Seq(explicit)
+      case None =>
+        val allSortedJE = Option(outDir.listFiles()).getOrElse(Array.empty[java.io.File])
+          .filter(_.isFile)
+          .map(_.getName)
+          .filter { n =>
+            n.startsWith("SortedJEFY" + shortYr) &&
+            n.endsWith(".csv") &&
+            !n.contains("PO") &&
+            !n.contains("merged") &&
+            !n.contains("_FXR") &&
+            !n.contains("_ALLOC")
+          }
+          .sorted   // deterministic order
+          .map(n => outPath.stripSuffix("/") + "/" + n)
+          .toSeq
+        if (allSortedJE.isEmpty)
+          Seq(outPath.stripSuffix("/") + "/SortedJEFY" + shortYr + "q1exp.csv")
+        else allSortedJE
+    }
+
+    // PO file: explicit --po, or first SortedJEFY{yr}*PO.csv found.
+    val poFile: String = params.getOrElse("po", {
+      Option(outDir.listFiles()).getOrElse(Array.empty[java.io.File])
+        .filter(_.isFile)
+        .map(_.getName)
+        .filter(n => n.startsWith("SortedJEFY" + shortYr) && n.endsWith("PO.csv"))
+        .sorted
+        .headOption
+        .map(n => outPath.stripSuffix("/") + "/" + n)
+        .getOrElse(outPath.stripSuffix("/") + "/SortedJEFY" + shortYr + "q1PO.csv")
+    })
 
     println("*" * 100)
     println("                     Step 2m — Merge Payment + PO SortedJE streams")
     println("Start Time: " + java.util.Calendar.getInstance.getTime)
     println("*" * 100)
-    println(s"  Payment file : $paymentFile")
+    println(s"  Payment files: ${paymentFiles.size} file(s)")
+    paymentFiles.foreach(f => println(s"    $f"))
     println(s"  PO file      : $poFile")
     println(s"  Merged output: $mergedFile")
 
@@ -238,14 +277,14 @@ object LedgerApp {
     val sortSpec = SortEngine.loadSpec(specPath)
     println(s"  SortSpec     : $specPath  (${sortSpec.size} fields)")
 
-    Seq(paymentFile, poFile).foreach { f =>
+    (paymentFiles :+ poFile).foreach { f =>
       if (!new java.io.File(f).exists()) {
         System.err.println(s"ERROR: Merge input not found: $f")
         sys.exit(1)
       }
     }
 
-    val rowsWritten = SortEngine.mergeSpills(Seq(paymentFile, poFile), mergedFile, sortSpec)
+    val rowsWritten = SortEngine.mergeSpills(paymentFiles :+ poFile, mergedFile, sortSpec)
 
     val elapsedS  = ((System.currentTimeMillis() - t0) / 1000).max(1)
     val outBytes  = new java.io.File(mergedFile).length()

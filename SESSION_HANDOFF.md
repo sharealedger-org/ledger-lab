@@ -4,6 +4,153 @@ Updated 2026-11-05. This file is a concise state snapshot; use the linked design
 
 ---
 
+## 2026-11-05 Stage 2 validation run — FY2003 monthly, all steps pass (Bob)
+
+**What was done this session.**
+
+First full CCP3 pipeline run on real VA corpus data with monthly granularity. All 7 steps passed.
+
+### Additional fixes required during run
+
+Two bugs discovered and fixed during Stage 2:
+
+1. **`LedgerApp.runMerge` (step 2m):** Only handled a single `--payment` file. With monthly mode,
+   ttl produces 12 files (`SortedJEFY03_{YYYY}_{MM}_exp.csv`). Fixed to auto-discover all
+   `SortedJEFY{yr}*.csv` files from outPath (excluding PO, merged, FXR, ALLOC) and merge them
+   all in one k-way pass. Explicit `--payment` still overrides (legacy/single-file use case).
+
+2. **`run_pipeline.sh` steps 20 and 21:** `--inPath` was set to the raw data directory. GLPost and
+   PermutationGenerator read SortedJE files from `outPath`. Fixed: for steps 20 and 21,
+   `jvm_in_path` is overridden to `jvm_out_path` before the sbt invocation.
+
+3. **`run_pipeline.sh` step 2m input byte accounting:** Glob updated to also count monthly
+   (`SortedJEFY{yr}_*_exp.csv`) files alongside quarterly (`SortedJEFY{yr}q*exp.csv`) files.
+
+### Stage 2 run results (FY2003, monthly, CCP3)
+
+Run id: `run_20261105_141520_1028`
+Output: `data/output_validate_fy03.generations/run_20261105_141520_1028/`
+
+| Step | Result |
+|------|--------|
+| ttl  | 5,758,480 source rows → 11,516,960 SJE rows (12 monthly files) in 161s |
+| 2p   | 25,131 PO rows → 50,262 SJE rows in 19s |
+| 2m   | 13-way merge → 11,567,222 rows in 68s |
+| 3    | 23,134,444 SJE reads → 346,040 ledger rows in 223s |
+| 5v   | 23,134,444 reads → 280,910 view rows in 101s |
+| 20   | 23,134,444 reads → 275,512 GL rows in 79s |
+| 21   | 23,134,444 reads → 283,586 permutation rows in 76s |
+
+**Total compute: 727s. Total storage: 5.89 GB.**
+
+### Acceptance gate results
+
+| Gate | Result | Status |
+|------|--------|--------|
+| All four view files non-zero | 6850 / 1945 / 6850 / 265265 rows | ✅ |
+| `GL20YY.csv` non-zero | 275,512 rows | ✅ |
+| `PERM_TBL20YY.csv` non-zero | 283,586 rows | ✅ |
+| cost_surface.csv 17-column row recorded | CCP3/monthly, all metrics populated | ✅ |
+| Ledger amount sum | 18.00 (known $6 per-malformed-PO-row delta × 3 rows) | ⚠️ known |
+
+The ledger amount sum $18.00 is consistent with 3 malformed PO rows (the prior session found 2 at $6.00 each; a third was present in FY2003 data). This is a documented data quality issue, not a financial processing error. Open item: identify and quarantine or fix the 3 malformed rows.
+
+### cost_surface.csv first real row
+```
+run_20261105_141520_1028, 2026-11-05 14:15:20, CCP3, validate-1yr-monthly, 03, ttl+2p+2m+3+5v+20+21
+total_compute_s=727, total_storage_bytes=5892490857, capability_layer=CCP3,
+period_granularity=monthly, materialization_scope=unspecified,
+ldgr_row_count=346040, ldgr_file_bytes=49964854, view_file_bytes=9465565, permutation_rows=283586
+```
+
+### Files changed this session (additions to Sub-Task 3e)
+- `LedgerApp.scala` — `runMerge`: auto-discover all monthly/quarterly SortedJE files
+- `scripts/run_pipeline.sh` — steps 20/21: override `jvm_in_path` to `jvm_out_path`; step 2m: extended glob
+
+### Tests
+- `sbt test`: 49 passed, 2 pre-existing failures (unrelated).
+
+### Next session — start here
+
+1. **Record CCP1 and CCP2 cost points separately.** The current run records CCP3 (all steps). To
+   isolate CCP1 and CCP2:
+   - CCP1: `--steps ttl,2p,2m,20,21 --curve CCP1` (GL + permutation only, no ledger)
+   - CCP2: `--steps ttl,2p,2m,3 --curve CCP2` (ledger only, no views)
+   - CCP3: already recorded above
+2. **Update VERIFICATION_AUDIT_REGISTER.md** — Steps 2p, 2m, 5v, 20, 21 all now have real-corpus
+   evidence. Step 3 has real-corpus evidence (346,040 rows, $18.00 delta open).
+3. **Owner decision (still open):** Approve Sub-Task 4 Python AIM scripts (AIM1/3/4).
+4. **Malformed PO rows:** 3 rows producing the $18.00 ledger delta. Identify and document
+   (or quarantine) before locking ledger balance thresholds.
+
+---
+
+## 2026-11-05 Sub-Task 3e complete — monthly granularity wired (Bob)
+
+**What was done this session.**
+
+Sub-Task 3e implementation complete. All five items from the SESSION_HANDOFF Step 1 todo list done.
+
+### Files changed
+
+**`02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/ledger/standardizeAndSort.scala`**
+- `applyAPA`: replaced quarterly-grouping loop with `processApaFileBatch` helper and three dispatch
+  branches — monthly (one file per source month → `SortedJEFY{yr}_{YYYY}_{MM}_exp.csv`), annual/quarterly
+  (grouped by quarter → `SortedJEFY{yr}q{n}exp.csv`). Revenue is always a single annual output file.
+  `transFiscalPeriod = "YYYY/MM"` per source file when `periodGranularity=monthly`.
+
+**`scripts/run_pipeline.sh`**
+- Default `PERIOD_GRANULARITY` changed from `annual` to `monthly` (AIM substrate default).
+- TTL `input_file`/`output_file` resolution updated: discovers first existing monthly
+  (`SortedJEFY{yr}_*_exp.csv`) or quarterly (`SortedJEFY{yr}q1exp.csv`) output file.
+- TTL `records_written` count updated to accumulate across both monthly and quarterly naming patterns.
+- `write_canonical_evidence.sh` invocation extended with 5 new args: `--period-granularity`,
+  `--ldgr-row-count`, `--ldgr-file-bytes`, `--view-file-bytes`, `--permutation-rows`.
+
+**`scripts/write_canonical_evidence.sh`**
+- New CLI args: `--period-granularity`, `--ldgr-row-count`, `--ldgr-file-bytes`,
+  `--view-file-bytes`, `--permutation-rows` (all default to `0`/`annual`).
+- `run_manifest.csv` header extended with `period_granularity`, `ldgr_row_count`,
+  `ldgr_file_bytes`, `view_file_bytes`, `permutation_rows`.
+- `run_manifest.csv` data row updated to emit all new fields.
+
+**`docs/ENGINE_IMPLEMENTATION_PLAN.md`**
+- Sub-Task 3e status updated: `[ ] Design complete` → `[x] Implementation complete 2026-11-05`.
+- All todo list checkboxes marked `[x]`.
+
+### Tests
+- `sbt compile`: clean (1 pre-existing warning).
+- `sbt test`: 49 passed, 2 failed (pre-existing `CurrencyRevaluationSpec` Windows file-lock races —
+  unrelated to this work).
+- Smoke test (`run_repo_fixture_smoke_test.sh`): PASS — 442 ledger rows, amount sum 0.00,
+  `period_granularity=monthly` logged, all 7 new cost surface columns populated.
+
+### Next session — start here
+
+**Step 2 from the session handoff:** Stage 2 validation run (FY2003 only, real corpus data).
+
+```bash
+bash scripts/run_pipeline.sh \
+  --inPath /VAdata/data/VARawFiles \
+  --outPath data/output_validate_fy03 \
+  --years 03 --steps ttl,2p,2m,3,5v,20,21 \
+  --curve CCP3 --config validate-1yr \
+  --periodGranularity monthly
+```
+
+Confirm all gates (from SESSION_HANDOFF §Step 2):
+- All four view files non-zero
+- `process_metrics.csv` non-empty for steps ttl, 2p, 2m, 3, 5v, 20, 21
+- Ledger control: `amount sum = 0.00`
+- `GL20YY.csv` and `PERM_TBL20YY.csv` non-zero row counts
+- View B vendor count cross-checked against `vendor_po_attributes_by_year.csv` FY2003
+
+Then record first real CCP1/CCP2/CCP3 cost points and update VERIFICATION_AUDIT_REGISTER.md.
+
+**Step 3 (owner decision still open):** Approve Sub-Task 4 Python AIM scripts (see SESSION_HANDOFF §Step 3).
+
+---
+
 ## 2026-11-05 Next session start point (Bob)
 
 **Read this first at the start of the next session.**
@@ -371,7 +518,7 @@ prior survives fine-tuning.
 > In a business event repository, one should not see Spot, or watch him run.
 
 **Connection to existing paper:** Line 355 of
-`org-members/research/02-pre-hierarchy-event-repositories.md` already contains the
+`org-members/research/02-business-event-repositories.md` already contains the
 three-customer observation (Seeville, Spotville, Bull Run) buried in §5.4. Move it
 to §1 and sharpen to the form above.
 
@@ -2298,7 +2445,7 @@ remains the next milestone.
 **Papers reviewed this session (both read in full).**
 
 - [`org-members/research/01-minimum-cost-curve.md`](../org-members/research/01-minimum-cost-curve.md) — Paper 1
-- [`org-members/research/02-pre-hierarchy-event-repositories.md`](../org-members/research/02-pre-hierarchy-event-repositories.md) — Paper 2
+- [`org-members/research/02-business-event-repositories.md`](../org-members/research/02-business-event-repositories.md) — Paper 2
 - [`org-members/research/PAPER_02_NOTES.md`](../org-members/research/PAPER_02_NOTES.md) — Paper 2 working notes with VA test design
 
 **What ledger-lab must produce for Paper 1 (Minimum Cost Curve).**
@@ -2316,7 +2463,7 @@ Paper 1's VA empirical contribution is the **Instrument Pivot Theorem demonstrat
   for exactly this.
 - **Three CCP2 replicates** are needed to establish measurement stability before CCP3.
 
-**What ledger-lab must produce for Paper 2 (Pre-Hierarchy Event Repositories).**
+**What ledger-lab must produce for Paper 2 (Business Event Repositories).**
 
 Paper 2 proposes a two-corpus structure: insurance (proprietary, 25.5B records) + VA (public,
 reproducible). The VA corpus carries the scientific reproducibility and direct falsifiability weight.

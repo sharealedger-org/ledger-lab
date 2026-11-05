@@ -377,7 +377,7 @@ VERIFICATION_AUDIT_REGISTER update remains as a next task.
 
 ## Sub-Task 3e — Cost surface axes: time partition granularity and materialization scope
 
-**Status:** [ ] Design complete 2026-11-04. Implementation pending.
+**Status:** [x] Implementation complete 2026-11-05.
 
 **Intent:** The CCP1–CCP5 capability-layer axis is the first dimension of the cost surface.
 Two additional orthogonal axes must be explicitly varied to produce the full empirical test of
@@ -487,21 +487,21 @@ their values in `config_description` using the labels above (e.g. `"T-monthly/mo
 
 ### Implementation todo list
 
-- [ ] Add `--periodGranularity annual|quarterly|monthly` to `run_pipeline.sh`
-- [ ] Thread `periodGranularity` through `LedgerApp` dispatcher to `applyAPA` and `applyPO`
-- [ ] In `applyAPA`: replace quarterly loop with per-source-file loop; derive period from
+- [x] Add `--periodGranularity annual|quarterly|monthly` to `run_pipeline.sh` (default: monthly)
+- [x] Thread `periodGranularity` through `LedgerApp` dispatcher to `applyAPA` and `applyPO`
+- [x] In `applyAPA`: replace quarterly loop with per-source-file loop; derive period from
       calendar month already available from `discoverApaFiles`; name output file
-      `SortedJEFY03_YYYY_MM_exp.csv`; set `transFiscalPeriod = "YYYY/MM"`
-- [ ] In `applyPO`: derive `transFiscalPeriod` per-row from `ORDEREDDATE` when
+      `SortedJEFY{yr}_{YYYY}_{MM}_exp.csv`; set `transFiscalPeriod = "YYYY/MM"`
+- [x] In `applyPO`: derive `transFiscalPeriod` per-row from `ORDEREDDATE` when
       `periodGranularity = monthly` (already available in `transTransDate`; just promote to col 22)
-- [ ] Update `cost_surface.csv` init to new schema
-- [ ] Update `record_cost_point` to emit new columns
-- [ ] Update `write_canonical_evidence.sh` to capture `ledger_row_count`, `ldgr_file_bytes`,
-      `view_file_bytes`, `permutation_rows`
-- [ ] Add `period_granularity` and `materialization_scope` as labelled `--curve` sub-fields in
-      the pipeline run header (no structural change; just make them explicit in log output)
-- [ ] Update `Ledger.scala` comment on `ldgrTransAmount`: clarify it is a period movement total,
-      not a balance — `"sum of journal movements for this key in this period"`
+- [x] Update `cost_surface.csv` init to new schema (17 columns)
+- [x] Update `record_cost_point` to emit new columns
+- [x] Update `write_canonical_evidence.sh` to capture `ledger_row_count`, `ldgr_file_bytes`,
+      `view_file_bytes`, `permutation_rows`, `period_granularity` in `run_manifest.csv`
+- [x] Add `period_granularity` and `materialization_scope` as labelled fields in the pipeline
+      run header log
+- [x] Update `Ledger.scala` comment on `ldgrTransAmount`: clarify it is a period movement total,
+      not a balance — `"net movement amount for this (key, period) bucket — NOT a running balance"`
 
 **Note:** `post.scala` requires **no changes** for monthly granularity. With distinct period
 keys per month, the match-merge loop naturally produces period-isolated movement rows. The

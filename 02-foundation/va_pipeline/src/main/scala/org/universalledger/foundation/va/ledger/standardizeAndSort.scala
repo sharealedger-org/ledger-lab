@@ -1121,136 +1121,150 @@ object standardizeAndSort {
         println(s"  Discovered ${files.size} ${recType} files for FY$yearInt")
       }
 
-      // Group files by quarter; process one quarter at a time to produce one output file each
-      val byQuarter = files.groupBy { case (_, q, _) => q }
+      // ── Dispatch: per-source-file loop (monthly) vs. quarterly grouping (annual/quarterly) ──
+      //
+      // monthly: one output file per discovered source file.
+      //   Expenditure output name: SortedJEFY{yr}_{YYYY}_{MM}_exp.csv
+      //   Revenue output name:     SortedJEFY{yr}_rev.csv  (revenue is always a single annual file)
+      //   transFiscalPeriod = "YYYY/MM" per source file.
+      //
+      // annual / quarterly (default): group files by quarter, one output per quarter.
+      //   Expenditure output name: SortedJEFY{yr}q{n}exp.csv
+      //   Revenue output name:     SortedJEFY{yr}rev.csv
+      //   transFiscalPeriod = "YYYY" (annual) or "YYYY/Q{n}" (quarterly — not yet implemented).
 
-      for (quarter <- 1 to 4) {
-        val suffix  = if (recType == "R") "rev" else s"q${quarter}exp"
-        val outFile = outPath.stripSuffix("/") + "/SortedJEFY" + shortYr + suffix + ".csv"
-        val acctDate = quarterToDate(yearStr, quarter)
-        val filesForQ = byQuarter.getOrElse(quarter, Seq.empty)
+      // ── Helper: process a batch of APA files into a single SortedJE output file ──
+      def processApaFileBatch(
+          batchFiles:  Seq[(File, Int, Int)],
+          batchLabel:  String,
+          outFile:     String,
+          acctDate:    String,
+          granularity: String
+      ): Unit = {
+        println(s"\n  Processing ${recType} $batchLabel → $outFile  (${batchFiles.size} file(s))")
 
-        if (recType == "R" && quarter > 1) {
-          // Revenue is a single annual file; produce it once (quarter=1 sentinel)
-        } else if (recType == "R" || filesForQ.nonEmpty) {
-          val revFiles = if (recType == "R") files else filesForQ  // revenue: all files in one pass
+        val tmpDir = outPath.stripSuffix("/") + "/.apa_spill_" + recType + "_" +
+                     batchLabel.replace("/", "_") + "_" + System.currentTimeMillis()
+        new File(tmpDir).mkdirs()
+        val spills = mutable.ArrayBuffer[String]()
+        val chunk  = mutable.ArrayBuffer[String]()
+        var sourceRows   = 0L
+        var sjeRows      = 0L
+        var unmatchedRef = 0L
+        var jrnlID       = 0
 
-          println(s"\n  Processing ${recType} Q$quarter → $outFile  (${revFiles.size} file(s))")
-
-          val tmpDir = outPath.stripSuffix("/") + "/.apa_spill_" + recType + quarter + "_" + System.currentTimeMillis()
-          new File(tmpDir).mkdirs()
-          val spills = mutable.ArrayBuffer[String]()
-          val chunk  = mutable.ArrayBuffer[String]()
-          var sourceRows   = 0L
-          var sjeRows      = 0L
-          var unmatchedRef = 0L
-          var jrnlID       = 0
-
-          def flushChunk(): Unit = {
-            if (chunk.nonEmpty) {
-              val spillPath = SortEngine.spillChunk(SortEngine.sortChunk(chunk.toSeq, sortSpec), tmpDir, spills.size)
-              spills += spillPath
-              chunk.clear()
-              print(s"  Spilled chunk ${spills.size}  ($sjeRows SJE rows so far)\r")
-            }
-          }
-
-          implicit val codec = scala.io.Codec.UTF8
-            .onMalformedInput(java.nio.charset.CodingErrorAction.REPLACE)
-            .onUnmappableCharacter(java.nio.charset.CodingErrorAction.REPLACE)
-
-          for ((inFile, _, calMonth) <- revFiles) {
-            // For expenditures: accrue each monthly file's date to the quarter acctDate
-            // but preserve VOUCHER_DATE / DEPOSIT_DATE as transDate.
-            // When periodGranularity=monthly, use "YYYY/MM" as the fiscal period key so
-            // each calendar month gets its own ledger row family.
-            val filePeriodKey = if (periodGranularity == "monthly")
-              f"$yearInt%04d/$calMonth%02d"
-            else
-              yearStr
-            val src = Source.fromFile(inFile)(codec)
-            try {
-              val lines = src.getLines()
-              if (!lines.hasNext) { /* empty file */ }
-              else {
-                val headerLine = lines.next()  // consume BOM + header
-                var rowNum = 1
-                for (line <- lines) {
-                  val raw = line.trim
-                  if (raw.nonEmpty) {
-                    rowNum += 1
-                    val cols = splitAndStrip(raw, ",")
-                    val resolved = if (recType == "R")
-                      resolveApaRevRow(cols, ref, rowNum).map { case (agk, fnk, srck, amt, td) =>
-                        // Build format-RA equivalent: agencyKey, fundKey, sourceKey, amount
-                        // transDate passed through acctDate override: use file date if present
-                        val transDate = if (td.nonEmpty) td else acctDate
-                        Array(agk, fnk, srck, amt, transDate)
-                      }
-                    else
-                      resolveApaExpRow(cols, ref, rowNum).map { case (agk, fnk, obk, prk, vnd, amt, td) =>
-                        // Build format-A equivalent: agencyKey, fundKey, objKey, progKey, vendorName, amount
-                        // Plus optional transDate as col 6 (like format-B)
-                        val transDate = if (td.nonEmpty) td else acctDate
-                        Array(agk, fnk, obk, prk, vnd, amt, transDate)
-                      }
-
-                    resolved match {
-                      case None => unmatchedRef += 1
-                      case Some(normalized) =>
-                        sourceRows += 1
-                        jrnlID     += 1
-                        val fmt = if (recType == "R") "RA_APA" else "A_APA"
-                        val pairs = buildJEPairsAPA(normalized, recType, vendorMap,
-                                                    accountingRule, filePeriodKey, acctDate, jrnlID)
-                        for ((rowStr, _, _) <- pairs) {
-                          chunk += rowStr
-                          sjeRows += 1
-                          if (chunk.size >= chunkSize) flushChunk()
-                        }
-                    }
-                  }
-                }
-              }
-            } finally src.close()
-          }
-
-          flushChunk()
-
-          println(s"\n  Q$quarter: source=$sourceRows sje=$sjeRows unresolved_ref=$unmatchedRef spills=${spills.size}")
-
-          if (!dryRun && sjeRows > 0) {
-            println(s"  Merging ${spills.size} spill(s) → $outFile ...")
-            val rowsWritten = SortEngine.mergeSpills(spills.toSeq, outFile, sortSpec)
-            println(f"  Written: $outFile ($rowsWritten%,d rows)")
-          } else if (dryRun) {
-            println(s"  --dryRun: no output written for Q$quarter")
-          } else {
-            println(s"  No rows produced for Q$quarter — output file not written")
-          }
-
-          spills.foreach(p => new File(p).delete())
-          new File(tmpDir).delete()
-
-          totalSourceRows += sourceRows
-          totalSjeRows    += sjeRows
-          totalUnresolved += unmatchedRef
-
-          if (recType == "R") {
-            // Revenue is a single annual file — break after first pass
-            val elapsedS  = ((System.currentTimeMillis() - t0) / 1000).max(1)
-            val inBytes   = revFiles.foldLeft(0L) { case (acc, (f, _, _)) => acc + f.length() }
-            val outBytes  = new File(outFile).length()
-            val peakRss   = Runtime.getRuntime.totalMemory()
-            println(s"\nRESULT step=ttl year=$yearStr rc=0 records_read=$totalSourceRows records_written=$totalSjeRows elapsed_s=$elapsedS input_bytes=$inBytes output_bytes=$outBytes")
-            println(s"RESOURCE step=ttl year=$yearStr peak_rss_bytes=$peakRss")
+        def flushChunk(): Unit = {
+          if (chunk.nonEmpty) {
+            val spillPath = SortEngine.spillChunk(SortEngine.sortChunk(chunk.toSeq, sortSpec), tmpDir, spills.size)
+            spills += spillPath
+            chunk.clear()
+            print(s"  Spilled chunk ${spills.size}  ($sjeRows SJE rows so far)\r")
           }
         }
 
-        if (recType == "R") {
-          // produced the single rev file above; skip quarters 2-4
-          //noinspection ScalaUnusedExpression
-          () // nothing
+        implicit val codec = scala.io.Codec.UTF8
+          .onMalformedInput(java.nio.charset.CodingErrorAction.REPLACE)
+          .onUnmappableCharacter(java.nio.charset.CodingErrorAction.REPLACE)
+
+        for ((inFile, _, calMonth) <- batchFiles) {
+          // Period key: for monthly granularity use "YYYY/MM" per source file;
+          // for annual use yearStr; quarterly not yet implemented (falls back to yearStr).
+          val filePeriodKey = if (granularity == "monthly")
+            f"$yearInt%04d/$calMonth%02d"
+          else
+            yearStr
+          val src = Source.fromFile(inFile)(codec)
+          try {
+            val lines = src.getLines()
+            if (!lines.hasNext) { /* empty file */ }
+            else {
+              val headerLine = lines.next()  // consume BOM + header
+              var rowNum = 1
+              for (line <- lines) {
+                val raw = line.trim
+                if (raw.nonEmpty) {
+                  rowNum += 1
+                  val cols = splitAndStrip(raw, ",")
+                  val resolved = if (recType == "R")
+                    resolveApaRevRow(cols, ref, rowNum).map { case (agk, fnk, srck, amt, td) =>
+                      val transDate = if (td.nonEmpty) td else acctDate
+                      Array(agk, fnk, srck, amt, transDate)
+                    }
+                  else
+                    resolveApaExpRow(cols, ref, rowNum).map { case (agk, fnk, obk, prk, vnd, amt, td) =>
+                      val transDate = if (td.nonEmpty) td else acctDate
+                      Array(agk, fnk, obk, prk, vnd, amt, transDate)
+                    }
+
+                  resolved match {
+                    case None => unmatchedRef += 1
+                    case Some(normalized) =>
+                      sourceRows += 1
+                      jrnlID     += 1
+                      val pairs = buildJEPairsAPA(normalized, recType, vendorMap,
+                                                  accountingRule, filePeriodKey, acctDate, jrnlID)
+                      for ((rowStr, _, _) <- pairs) {
+                        chunk += rowStr
+                        sjeRows += 1
+                        if (chunk.size >= chunkSize) flushChunk()
+                      }
+                  }
+                }
+              }
+            }
+          } finally src.close()
+        }
+
+        flushChunk()
+
+        println(s"\n  $batchLabel: source=$sourceRows sje=$sjeRows unresolved_ref=$unmatchedRef spills=${spills.size}")
+
+        if (!dryRun && sjeRows > 0) {
+          println(s"  Merging ${spills.size} spill(s) → $outFile ...")
+          val rowsWritten = SortEngine.mergeSpills(spills.toSeq, outFile, sortSpec)
+          println(f"  Written: $outFile ($rowsWritten%,d rows)")
+        } else if (dryRun) {
+          println(s"  --dryRun: no output written for $batchLabel")
+        } else {
+          println(s"  No rows produced for $batchLabel — output file not written")
+        }
+
+        spills.foreach(p => new File(p).delete())
+        new File(tmpDir).delete()
+
+        totalSourceRows += sourceRows
+        totalSjeRows    += sjeRows
+        totalUnresolved += unmatchedRef
+      }
+
+      if (recType == "R") {
+        // Revenue: always a single annual output file regardless of granularity.
+        val outFile  = outPath.stripSuffix("/") + "/SortedJEFY" + shortYr + "rev.csv"
+        val acctDate = quarterToDate(yearStr, 1)
+        processApaFileBatch(files, "rev", outFile, acctDate, periodGranularity)
+        val elapsedS = ((System.currentTimeMillis() - t0) / 1000).max(1)
+        val inBytes  = files.foldLeft(0L) { case (acc, (f, _, _)) => acc + f.length() }
+        val outBytes = new File(outFile).length()
+        val peakRss  = Runtime.getRuntime.totalMemory()
+        println(s"\nRESULT step=ttl year=$yearStr rc=0 records_read=$totalSourceRows records_written=$totalSjeRows elapsed_s=$elapsedS input_bytes=$inBytes output_bytes=$outBytes")
+        println(s"RESOURCE step=ttl year=$yearStr peak_rss_bytes=$peakRss")
+      } else if (periodGranularity == "monthly") {
+        // Expenditure monthly: one output file per discovered source month.
+        for ((inFile, quarter, calMonth) <- files) {
+          val outFile  = outPath.stripSuffix("/") + f"/SortedJEFY${shortYr}_${yearInt}%04d_${calMonth}%02d_exp.csv"
+          val acctDate = quarterToDate(yearStr, quarter)
+          processApaFileBatch(Seq((inFile, quarter, calMonth)), f"${yearInt}%04d/${calMonth}%02d", outFile, acctDate, periodGranularity)
+        }
+      } else {
+        // Expenditure annual/quarterly: group by quarter, one output per quarter.
+        val byQuarter = files.groupBy { case (_, q, _) => q }
+        for (quarter <- 1 to 4) {
+          val filesForQ = byQuarter.getOrElse(quarter, Seq.empty)
+          if (filesForQ.nonEmpty) {
+            val outFile  = outPath.stripSuffix("/") + "/SortedJEFY" + shortYr + s"q${quarter}exp.csv"
+            val acctDate = quarterToDate(yearStr, quarter)
+            processApaFileBatch(filesForQ, s"Q$quarter", outFile, acctDate, periodGranularity)
+          }
         }
       }
 

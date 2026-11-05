@@ -32,3 +32,13 @@ zenodo_upload_progress.json
 
 # Local test data directories
 data/POTest/
+
+# Pipeline generation run archives (large output data — regenerate with run_pipeline.sh)
+data/*.generations/
+data/stage2*.log
+
+# Scratch / ad-hoc check scripts
+scripts/check_stage2.sh
+
+# Leftover symlink-swap staging dirs inside tracked output dirs
+data/output_validate_fy03/output_validate_fy03.next*/
