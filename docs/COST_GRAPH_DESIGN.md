@@ -112,6 +112,17 @@ all three dials interact.
 two engine substrates, CKB patterns introduced incrementally. Requires owner approval before
 writing any Python mainline code (see AGENTS.md).
 
+**Second curve — mainframe / TDS (open invitation):** The Engine graph currently shows one
+curve — VA corpus, laptop, measured. A second curve representing a z/OS mainframe running
+GenevaERS on the insurance company's TDS (25.5 billion versioned state-change events) would
+show the hardware effect: same CKB architecture, same bowl shape, but the minimum sits
+further left. On z/OS, the scan cost per question is low enough that preserving full event
+sequence (no accumulation) becomes feasible — the bowl minimum migrates leftward toward the
+raw event record. The two curves together make the hardware-parameterization of the bowl
+minimum empirically visible: same architecture, different hardware, different minimum. This
+remains conceptual until the insurance company engages. It is recorded here as an open
+invitation for collaboration, not a gap in the current experiment.
+
 ---
 
 ## Process Graph — CCP Layers: CCP1 → CCP5

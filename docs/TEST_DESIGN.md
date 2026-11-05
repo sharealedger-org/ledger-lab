@@ -1,58 +1,90 @@
-# VA Corpus — Unified Test Design (CCP Cost Points + AIM Model Evidence)
+# VA Corpus — Unified Test Design (CCP Cost Points + Paper 2 Model Evidence)
 
-**Status:** Authoritative. Supersedes `TEST_DESIGN_PAPER_1.md` and `TEST_DESIGN_PAPER_2.md`.  
-**Prepared:** 2026-11-04  
+**Status:** Authoritative. Supersedes `TEST_DESIGN_PAPER_1.md` and `TEST_DESIGN_PAPER_2.md`.
+**Prepared:** 2026-11-04. **Revised:** 2026-11-05 — four-model experiment replaces AIM-centric Paper 2 design.
 **Companion:** [`docs/RESEARCH_OBJECTIVES.md`](RESEARCH_OBJECTIVES.md) — master objectives and run-order map
 
 ---
 
-## 1. One Corpus. One Run. Two Facets of One Finding.
+## 1. One Corpus. One Run. Two Papers. Two Kinds of Evidence.
 
-The CCP cost measurements and the AIM model evidence tests are not two separate campaigns.
-They draw from the same pipeline run against the same corpus. CCP1 produces the GL output
-and permutation table — the substrates against which the AIM tests fail. The GL is the most
-collapsed instance of the fixed-posting-key class (sub-ledgers, data warehouses, and data
-marts are other instances — all sit on the right wall of the cost bowl for the same structural
-reason). CCP2 produces the instrument ledger — the substrate against which AIM1 succeeds.
-CCP3 adds the Step 5v views alongside the ledger pass — the feature tables AIM2–AIM4 consume.
-The delta CCP2→CCP3 is the measured cost of producing all AI evidence substrate. That cost is
-expected to be small.
+The CCP cost measurements and the Paper 2 model experiment draw from the same pipeline run
+against the same corpus. They are not two separate campaigns. But they produce two different
+kinds of evidence:
+
+**Paper 1 — Cost evidence:** CCP1 (GL baseline) vs CCP2–CCP5 (CKB instrument-ledger
+architecture). The delta CCP1→CCP2 is the architectural cost gap. The delta CCP2→CCP5 tests
+single-pass universality. Measured in compute time, storage, and peak memory.
+
+**Paper 2 — AI consequence evidence:** Two parts, one overriding claim.
+
+*Part 1 — Question space (structural proof):* The posting architecture defines a question
+space smaller than the space of economically meaningful questions. AIM1, AIM3, and AIM4
+illustrate this by running the same model against two substrates — the CCP1 posted output
+and the CCP2/CCP3 instrument ledger — and showing the gap. These are illustrations of a
+claim Paper 1's permutation table already proves structurally. They are not the primary
+Paper 2 evidence.
+
+*Part 2 — Substrate quality (the three-model experiment):* The primary Paper 2 evidence.
+Three models, same corpus, same downstream tasks. The gaps between models measure the cost
+of today's institution pattern — fine-tuning a pretrained LLM on posted data.
 
 **The two papers are two facets of the same architectural failure, measured from the same data.**
-Paper 1 states the cost claim. Paper 2 states the AI-consequence claim. Both are proven by the
-same run.
+Paper 1 states the cost claim. Paper 2 states the AI-consequence claim.
 
 ---
 
-## 2. The Two-Substrate Design
+## 2. The Three-Model Experiment (primary Paper 2 Part 2 evidence)
 
-Every AIM test (except AIM0, which is closed) runs **twice** against outputs of the same pipeline:
+Paper 2's primary experiment trains three models on the same VA corpus and evaluates them on
+the same downstream tasks. The models differ only in training substrate and whether a language
+prior is present:
+
+| # | Model name | Training substrate | Language prior | Can answer Net Income? | Can answer vendor survival? |
+|---|------------|-------------------|---------------|----------------------|----------------------------|
+| 1 | **Posted-FineTune** | Pretrained LLM fine-tuned on posted data (`GL20YY.csv`) | Yes — survives fine-tuning | From posting layer only | No — field absent |
+| 2 | **IL-FineTune** | Pretrained LLM fine-tuned on Instrument Ledger (`LDGR20YY.csv`) | Yes — survives fine-tuning | Yes | Yes |
+| 3 | **IL-Native** | Structured model built directly from Instrument Ledger — no pretrained LLM | None | Yes | Yes |
+
+**Gap 1→2** = substrate effect: same contaminated language prior, better data
+**Gap 2→3** = language prior effect: same data (IL), prior removed ("See Spot Run")
+**Gap 1→3** = total cost of the current institution paradigm
+
+**Net Income closes the experiment:** IL-Native answers it (IL is the posting layer). Posted-FineTune
+cannot answer it from events alone — Net Income is a chart-of-accounts classification, not an
+economic fact in the raw data. This demonstrates that AI completes accounting; it does not replace it.
+
+**Pipeline inputs:**
+
+| Model | Pipeline output consumed |
+|-------|-------------------------|
+| Posted-FineTune | `GL20YY.csv` (CCP1 step 20) |
+| IL-FineTune | `LDGR20YY.csv` (CCP2 step 3) |
+| IL-Native | `LDGR20YY.csv` + Step 5v views (CCP2 + CCP3) |
+
+**Output:** `data/test_evidence/three_model_experiment_results.csv`
+
+**Status:** Design agreed 2026-11-05. Python model training scripts not yet written —
+owner approval required before implementation (AGENTS.md).
+
+---
+
+## 3. The Two-Substrate Design (AIM tests — Paper 2 Part 1 illustrations)
+
+AIM1, AIM3, and AIM4 each run **twice** against outputs of the same pipeline — once against
+the CCP1 posted substrates, once against the CCP2/CCP3 instrument ledger outputs. The gap
+illustrates the information the posting process permanently destroys. AIM2 and AIM5 have
+reduced status (see §5).
 
 | Substrate | Produced by | Architecture | Expected AIM result |
 |-----------|------------|--------------|---------------------|
-| GL output (`GL20YY.csv`) | CCP1 step 20 | Account-keyed; instrument identity discarded | All AIM tests miss — vendor identity gone |
-| Permutation table (`PERM_TBL20YY.csv`) | CCP1 step 21 | All key-embedded permutations from original transactions | All AIM tests still miss — event sequence unrecoverable |
+| GL output (`GL20YY.csv`) | CCP1 step 20 | Account-keyed; instrument identity discarded | AIM1/3/4 miss — vendor identity and order dates gone |
+| Permutation table (`PERM_TBL20YY.csv`) | CCP1 step 21 | All key-embedded permutations from original transactions | AIM1/3/4 still miss — event sequence unrecoverable |
 | Instrument Ledger (`LDGR20YY.csv`) | CCP2 step 3 | Instrument-keyed; vendor identity preserved | AIM1 succeeds |
-| Step 5v views (`view_*.csv`) | CCP3 step 5v | Bounded aggregation views of the CKB stream | AIM2, AIM3, AIM4 succeed |
+| Step 5v views (`view_*.csv`) | CCP3 step 5v | Bounded aggregation views of the CKB stream | AIM3, AIM4 succeed |
 
-The gap between the CCP1-substrate results and the CCP2/CCP3-substrate results is the
-empirical proof of Theorem 1: the posting process is lossy compression, and the information
-it destroys is predictively useful.
-
----
-
-## 3. The Three-Layer Framework
-
-From Paper 2 §5.3:
-
-| Layer | Training data | Cannot see |
-|-------|--------------|------------|
-| Layer 1 | Text descriptions of transactions (verbalized records) | Event structure, field-level values, temporal sequence |
-| Layer 2 | Pre-computed balance totals from posted accounting records | Any attribute discarded at posting time |
-| Layer 3 | Raw pre-hierarchy events before any posting or aggregation | Nothing — this is the full record |
-
-AIM2 is specifically the Layer 2 vs. Layer 3 comparison: does adding pre-hierarchy commitment
-features to a posted-layer baseline improve expenditure forecasting?
+The gap between the two substrates is not a comparison of algorithms — the same algorithm
+runs against both. The difference is what survived posting.
 
 ---
 
@@ -229,6 +261,20 @@ CCP5 (clean agency keys for allocation).
 
 ## 5. AIM Test Specifications
 
+**Role of AIM tests in the research (2026-11-05 reframe):**
+
+AIM tests are illustrations of the Paper 2 Part 1 claim — they make the information
+destruction caused by posting concrete and specific. They are *not* the primary evidence
+for Paper 2. The primary evidence is Paper 1's permutation table (structural proof) for
+Part 1, and the four-model experiment (§5a below) for Part 2.
+
+- **AIM1, AIM3, AIM4** — primary Part 1 illustrations. Run against both substrates;
+  the gap between CCP1 and CCP2/CCP3 results demonstrates structural information loss.
+- **AIM2** — secondary. Subsumed by the Model 1 vs. Model 4 forecasting comparison in
+  the four-model experiment. Remains in the test plan; not a standalone primary result.
+- **AIM5** — secondary infrastructure. Unblocks AIM2 and CCP5 (data quality step).
+  Not a primary Paper 2 result.
+
 ### AIM0 — CLOSED 2026-11-01
 
 No deterministic PO-to-payment link exists in the public corpus. AIM1–AIM5 are designed
@@ -252,7 +298,11 @@ is evidence. A large gap is strong evidence of structural information loss.
 
 **Output:** `data/test_evidence/AIM1_noninjectivity_distribution.csv`
 
-### AIM2 — Agency expenditure forecasting (Layer 2 vs Layer 3)
+### AIM2 — Agency expenditure forecasting (Layer 2 vs Layer 3) *(secondary)*
+
+**Role:** Secondary. Subsumed by the Model 1 vs. Model 4 forecasting comparison in the
+four-model experiment (§5a). Remains in the test plan as a standalone check; not a
+primary Paper 2 result.
 
 **Paper 2 claim (§5.3):** Commitment-layer features carry predictive signal for future
 expenditure invisible in posted records. Layer 3 model outperforms Layer 2.
@@ -316,7 +366,11 @@ Also produces `budget_execution_risk_flag` per agency-year → fed into AIM2 as 
 
 **Can run immediately after CCP3 corpus run. No agency join required.**
 
-### AIM5 — Agency name classifier
+### AIM5 — Agency name classifier *(secondary — infrastructure)*
+
+**Role:** Secondary infrastructure. Unblocks AIM2 (agency join) and CCP5 (allocation
+step). Not a primary Paper 2 result. Can run before the corpus pipeline — no pipeline
+dependency.
 
 **Paper 2 claim (§3.3):** A pre-hierarchy architecture preserves name strings that a
 balance-posting system discards into account codes. An AI model can distinguish spelling
@@ -337,6 +391,40 @@ and top reference candidate per name.
 cases with confidence < 0.70 flagged as genuine ambiguity, not force-resolved.
 
 **Output:** `data/corpus_profile/agency_reconciliation_table.csv` → unblocks AIM2 and CCP5.
+
+---
+
+## 5a. Three-Model Experiment (primary Paper 2 Part 2 evidence)
+
+This section expands the model table introduced in §2. See §2 for the full model definitions,
+pipeline inputs, and output file. Key details repeated here for completeness:
+
+**Models:** Posted-FineTune (1), IL-FineTune (2), IL-Native (3)
+
+**Gaps:**
+- Gap 1→2 = substrate effect (same language prior, better data)
+- Gap 2→3 = language prior effect ("See Spot Run" — same IL data, prior removed)
+- Gap 1→3 = total cost of the current institution paradigm
+
+### Downstream evaluation tasks (same tasks, all three models)
+
+- Vendor survival prediction (AIM3 question — does the model answer it from its substrate?)
+- Expenditure forecasting (AIM2 question — supersedes standalone AIM2 as primary result)
+- Net Income derivation (logical proof — IL-Native answers it via the posting layer;
+  Posted-FineTune cannot, because Net Income is a chart-of-accounts classification, not an
+  economic fact in the events)
+
+### Verbalization approach
+
+Posted-FineTune and IL-FineTune consume verbalized records (structured fields →
+natural-language descriptions) for fine-tuning the pretrained LLM. IL-Native consumes the
+IL directly as structured tabular input — no verbalization. The verbalization schema is to
+be defined when Python training scripts are written.
+
+### Output
+
+`data/test_evidence/three_model_experiment_results.csv` — per-model, per-task performance
+metrics; gap columns computed across model pairs.
 
 ---
 

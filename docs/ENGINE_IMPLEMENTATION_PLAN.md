@@ -1,14 +1,21 @@
 # Engine Implementation Plan — CKB Pipeline (Papers 1 & 2)
 
 **Status:** In progress
-**Revised:** 2026-11-04
+**Revised:** 2026-11-05
 **Scope:** Implement and verify all Scala engine sub-tasks required for the Paper 1 cost curve
-experiment (CCP1–CCP5) and the Paper 2 AI evidence test suite (AIM1–AIM5). Covers instrument
-ID fix, PO stream ingestion, CKB view emission, cost surface axis design, and Python fitting
-scripts.
+experiment (CCP1–CCP5) and the Paper 2 AI evidence suite. Paper 2 has two parts:
+- **Part 1 (AIM illustrations):** AIM1, AIM3, AIM4 run against two substrates; gap illustrates
+  information destruction. AIM2 and AIM5 are secondary (AIM5 is already complete).
+- **Part 2 (primary Paper 2 evidence):** Three-model experiment — Posted-FineTune, IL-FineTune,
+  IL-Native — trained on the pipeline's outputs, evaluated on the same downstream tasks.
+
+Covers instrument ID fix, PO stream ingestion, CKB view emission, cost surface axis design,
+Python AIM statistical scripts (Sub-Task 4), and Python three-model experiment (Sub-Task 4b).
 
 **Language:** Scala for all financial and feature extraction work (AGENTS.md §Language Boundaries).
-Python only for bounded post-processing of the small summary tables the Scala pass emits.
+Python only for post-engine work: bounded statistical fitting on small summary tables (Sub-Task 4)
+and ML model training on pipeline outputs (Sub-Task 4b). Both require owner approval before
+writing any Python (AGENTS.md).
 
 ---
 
@@ -43,41 +50,49 @@ The experiment has two parallel tracks that run against the same input snapshot:
 ```
 Original transactions
     │
-    ├──► GL post (sort by account key) ──► GL balances
-    │                                          │
-    │                                          └──► AIM1–AIM5 against GL [all miss]
+    ├──► GL post ──► GL balances (GL20YY.csv)
+    │                    │
+    │                    ├──► AIM1/3/4 against GL [all miss — Part 1 illustrations]
+    │                    └──► Posted-FineTune training substrate [three-model experiment]
     │
-    └──► Permutation generator ──► Key-embedded permutation table
+    └──► Permutation generator ──► Key-embedded permutation table (PERM_TBL20YY.csv)
                                         │
-                                        └──► AIM1–AIM5 against permutations [all miss]
+                                        └──► AIM1/3/4 against permutations [all miss]
 ```
 
 CCP1 measures the cost of today's systems. The permutation table is the legacy architecture's
 best possible response to the information-loss problem — all dimensions expanded, but event
-sequence still gone. Both substrates fail the AIM tests for different and instructive reasons.
+sequence still gone. Both substrates fail the AIM Part 1 tests for different and instructive
+reasons. GL20YY.csv is also the Posted-FineTune training substrate.
 
 **Track 2 — CCP2–CCP5: CKB instrument-ledger architecture**
 
 ```
 PO events (sorted by VENDORID, fiscal_year, ORDEREDDATE)  ──┐
-                                                             ├──► CKB pass (CCP2) ──► Instrument Ledger
+                                                             ├──► CKB pass (CCP2) ──► Instrument Ledger (LDGR20YY.csv)
 Payment events (sorted by VENDORID, fiscal_period)        ──┘                              │
-                                                                                            └──► AIM1 [succeeds]
+                                                                                            ├──► AIM1 [succeeds — Part 1]
+                                                                                            ├──► IL-FineTune training substrate
+                                                                                            └──► IL-Native training substrate
 
-CCP3: same pass + Step 5 views ──► View A: monthly order volume    ──► AIM4
-                                ──► View B: vendor-year survival    ──► AIM3
-                                ──► View C: agency-year commodity   ──► AIM2
-                                ──► View D: agency-year payments    ──► AIM2 baseline
+CCP3: same pass + Step 5v views ──► View A: monthly order volume    ──► AIM4 [Part 1]
+                                 ──► View B: vendor-year survival    ──► AIM3 [Part 1]; IL-Native eval
+                                 ──► View C: agency-year commodity   ──► AIM2 [secondary]; IL-Native eval
+                                 ──► View D: agency-year payments    ──► AIM2 baseline [secondary]
 ```
 
-Views A–D are bounded summary tables (thousands of rows, not millions). Python fits statistical
-models on those tables — not on 133M raw records. The delta CCP2→CCP3 is the measured cost of
-producing all AI evidence substrate.
+Views A–D are bounded summary tables (thousands of rows, not millions). The delta CCP2→CCP3
+is the measured cost of producing all Paper 2 substrate — both the AIM illustration tables and
+the IL-Native evaluation inputs.
 
-The research tests are not a separate Python analysis project. They are a natural by-product of
-the engine working correctly. The missing step that currently blocks everything is
-**`transIPID` hardcoded to `"0"`** — fix that, bring POs into the sorted stream, and the CKB
-pass produces all four view tables as it always should have.
+**Paper 2 evidence hierarchy:**
+- **Primary (Part 2):** Three-model experiment (Sub-Task 4b) — Posted-FineTune vs IL-FineTune
+  vs IL-Native; gaps 1→2, 2→3, 1→3; Net Income closing argument.
+- **Primary (Part 1):** AIM1, AIM3, AIM4 against both substrates — same algorithm, gap shows
+  what survived posting.
+- **Secondary:** AIM2 (subsumed by three-model forecasting comparison); AIM5 (complete ✅).
+
+The Scala pipeline produces all required substrates. Python consumes them post-engine.
 
 ---
 
@@ -497,44 +512,85 @@ rows independent by construction.
 
 ---
 
-## Sub-Task 4 — Python: fit statistical models on the four view tables
+## Sub-Task 4 — Python: AIM statistical tests (Paper 2 Part 1 illustrations)
 
-**Intent:** With four small bounded summary tables produced by the Scala CKB pass, the four
-research questions can now be answered by Python statistical fitting on those tables. This is
-the only Python work in the plan, and it operates on hundreds or thousands of rows — not on
-133M raw records.
+**Intent:** Three primary AIM tests (AIM1, AIM3, AIM4) and two secondary tests (AIM2, AIM5)
+run against the Scala-produced view tables. All Python scripts operate on small bounded
+summary tables — hundreds to thousands of rows — not on 133M raw records.
 
-**Expected outcomes:**
-- Four Python scripts, one per research question, each reading one or two view CSVs:
-  - `scripts/fit_ordering_seasonality.py` — reads `view_monthly_order_volume.csv`; runs STL
-    decomposition; reports Q4 significance per commodity class
-  - `scripts/fit_vendor_survival.py` — reads `view_vendor_year_survival.csv`; fits discrete-time
-    survival model; reports C-statistic and permutation p-value
-  - `scripts/fit_agency_forecasting.py` — reads `view_agency_year_commodity_mix.csv` and
-    `view_agency_year_payment_totals.csv`; trains L2 and L3 models; reports RMSE improvement
-  - `scripts/fit_agency_name_classifier.py` — reads `data/corpus_profile/agency_alias_candidates.csv`;
-    trains similarity classifier; produces `data/corpus_profile/agency_reconciliation_table.csv`
-- Each script writes a structured evidence file to `data/test_evidence/` with: inputs used,
-  method, key metric, threshold, pass/fail verdict, and run timestamp.
-- No script reads raw PO `.txt` files or APA expenditure CSVs. All input data comes from the
-  Scala-produced view tables.
+**Primary AIM tests (Paper 2 Part 1 — run these first):**
+- `scripts/fit_noninjectivity.py` — reads `LDGR20YY.csv` and GL output; counts distinct PO
+  patterns per posted key; reports CCP1-vs-CCP2 gap. **AIM1.**
+- `scripts/fit_vendor_survival.py` — reads `view_vendor_year_survival.csv`; fits discrete-time
+  survival model; reports C-statistic and permutation p-value. **AIM3.**
+- `scripts/fit_ordering_seasonality.py` — reads `view_monthly_order_volume.csv`; runs STL
+  decomposition; reports Q4 significance per commodity class. **AIM4.**
+
+**Secondary tests (run after primary AIM tests):**
+- `scripts/fit_agency_name_classifier.py` — reads `data/corpus_profile/agency_alias_candidates.csv`;
+  trains similarity classifier; produces `agency_reconciliation_table.csv`. **AIM5 — infrastructure.**
+- `scripts/fit_agency_forecasting.py` — reads `view_agency_year_commodity_mix.csv` and
+  `view_agency_year_payment_totals.csv`; trains posted-layer baseline and commitment-layer model;
+  reports RMSE improvement. **AIM2 — secondary, subsumed by Sub-Task 4b.**
+
+Each script writes a structured evidence file to `data/test_evidence/` with: inputs used,
+method, key metric, threshold, pass/fail verdict, and run timestamp. No script reads raw
+PO `.txt` files or APA expenditure CSVs.
 
 **Todo list:**
 - [ ] Confirm Sub-Task 3 view tables are available before writing any Python
 - [ ] Set up `.venv` with required libraries: `statsmodels`, `scikit-learn`, `scipy`
-  (no `pandas` required — the view tables are small enough for stdlib `csv` reads)
-- [ ] Write and run `scripts/fit_ordering_seasonality.py`
-- [ ] Write and run `scripts/fit_vendor_survival.py`
-- [ ] Write and run `scripts/fit_agency_forecasting.py` (requires Sub-Task 5 agency reconciliation)
-- [ ] Write and run `scripts/fit_agency_name_classifier.py`
+- [ ] Write and run `scripts/fit_noninjectivity.py` (AIM1 — primary)
+- [ ] Write and run `scripts/fit_vendor_survival.py` (AIM3 — primary)
+- [ ] Write and run `scripts/fit_ordering_seasonality.py` (AIM4 — primary)
+- [ ] Write and run `scripts/fit_agency_name_classifier.py` (AIM5 — infrastructure, unblocks AIM2)
+- [ ] Write and run `scripts/fit_agency_forecasting.py` (AIM2 — secondary)
 - [ ] Write evidence files to `data/test_evidence/`
 
-**Relevant context:**
-- View tables from Sub-Task 3 (small CSVs in `data/output/`)
-- `data/corpus_profile/agency_alias_candidates.csv` for the name classifier (already built)
-- All scripts operate on summary tables only — O(1) memory relative to source volume
-
 **Status:** [ ] pending
+
+---
+
+## Sub-Task 4b — Python: three-model experiment (Paper 2 Part 2 — primary evidence)
+
+**Intent:** Train and evaluate three models (Posted-FineTune, IL-FineTune, IL-Native) on
+the same downstream tasks from the same VA corpus. This is the primary Paper 2 Part 2
+evidence. Owner approval required before writing any Python (AGENTS.md).
+
+**Models:**
+
+| # | Name | Training substrate | Input file |
+|---|------|--------------------|------------|
+| 1 | Posted-FineTune | Pretrained LLM fine-tuned on posted data | `GL20YY.csv` (CCP1 step 20) |
+| 2 | IL-FineTune | Pretrained LLM fine-tuned on Instrument Ledger | `LDGR20YY.csv` (CCP2 step 3) |
+| 3 | IL-Native | Structured model built directly from IL — no LLM | `LDGR20YY.csv` + Step 5v views |
+
+**Downstream evaluation tasks (same for all three models):**
+- Vendor survival prediction (AIM3 question)
+- Expenditure forecasting (supersedes standalone AIM2 as primary result)
+- Net Income derivation (logical proof — IL-Native answers it; Posted-FineTune cannot)
+
+**Verbalization:** Posted-FineTune and IL-FineTune require verbalized records (structured
+fields → natural-language descriptions). IL-Native consumes the IL as structured tabular
+input. Verbalization schema to be defined when scripts are written.
+
+**Expected outcomes:**
+- `scripts/train_posted_finetune.py` — fine-tunes pretrained LLM on `GL20YY.csv`
+- `scripts/train_il_finetune.py` — fine-tunes pretrained LLM on `LDGR20YY.csv`
+- `scripts/train_il_native.py` — trains structured model on IL + views
+- `scripts/evaluate_models.py` — runs all three on downstream tasks, computes gaps 1→2, 2→3, 1→3
+- Output: `data/test_evidence/three_model_experiment_results.csv`
+
+**Todo list (blocked on owner approval):**
+- [ ] Owner approves Python model training work (AGENTS.md gate)
+- [ ] Define verbalization schema for Posted-FineTune and IL-FineTune
+- [ ] Select pretrained LLM base model
+- [ ] Write training scripts for all three models
+- [ ] Write evaluation harness
+- [ ] Run on Stage 3 slice (FY2003–FY2007) for directional check
+- [ ] Run on full 14-year corpus for final evidence
+
+**Status:** [ ] blocked — owner approval required
 
 ---
 
@@ -560,9 +616,12 @@ and update `SESSION_HANDOFF.md`.
   existing `02-foundation/va_pipeline/` path.
 - It does not use Python for any file reading of the 133M-record PO corpus.
 - It does not create a separate "AI pipeline" outside the CKB flow.
-- It does not compare runs using different substrates.
-- The four research questions are the *justification* for bringing PO data into the engine
-  correctly, not a separate project that happens alongside it.
+- The three-model experiment (Sub-Task 4b) **does** compare runs using different training
+  substrates (GL output vs IL vs IL + views) — that comparison is the primary Paper 2 Part 2
+  evidence. This is intentional and by design; it is not engine cross-contamination.
+- The AIM tests and the three-model experiment are the *justification* for bringing PO data
+  into the engine correctly, not a separate project that happens alongside it. The Scala pass
+  produces the substrates; Python consumes them post-engine without touching the 133M raw records.
 
 ---
 
@@ -571,10 +630,13 @@ and update `SESSION_HANDOFF.md`.
 | File | Produced by | Consumed by |
 |---|---|---|
 | `SortedJEFY*.csv` (PO + payment merged) | Sub-Task 2 | Sub-Task 3 CKB pass |
-| `view_monthly_order_volume.csv` | Sub-Task 3 | `fit_ordering_seasonality.py` |
-| `view_vendor_year_survival.csv` | Sub-Task 3 | `fit_vendor_survival.py` |
-| `view_agency_year_commodity_mix.csv` | Sub-Task 3 | `fit_agency_forecasting.py` |
-| `view_agency_year_payment_totals.csv` | Sub-Task 3 | `fit_agency_forecasting.py` |
-| `agency_alias_candidates.csv` | Already built | `fit_agency_name_classifier.py` |
-| `agency_reconciliation_table.csv` | `fit_agency_name_classifier.py` | `fit_agency_forecasting.py` |
-| `data/test_evidence/*.json` | Sub-Task 4 Python scripts | Sub-Task 5 documentation |
+| `GL20YY.csv` | Sub-Task 3 step 20 (CCP1) | Sub-Task 4b Posted-FineTune training |
+| `LDGR20YY.csv` | Sub-Task 3 step 3 (CCP2) | Sub-Task 4 AIM1; Sub-Task 4b IL-FineTune + IL-Native training |
+| `view_monthly_order_volume.csv` | Sub-Task 3 step 5v | Sub-Task 4 `fit_ordering_seasonality.py` (AIM4) |
+| `view_vendor_year_survival.csv` | Sub-Task 3 step 5v | Sub-Task 4 `fit_vendor_survival.py` (AIM3); Sub-Task 4b IL-Native eval |
+| `view_agency_year_commodity_mix.csv` | Sub-Task 3 step 5v | Sub-Task 4 `fit_agency_forecasting.py` (AIM2); Sub-Task 4b IL-Native eval |
+| `view_agency_year_payment_totals.csv` | Sub-Task 3 step 5v | Sub-Task 4 `fit_agency_forecasting.py` (AIM2) |
+| `agency_alias_candidates.csv` | Already built | Sub-Task 4 `fit_agency_name_classifier.py` (AIM5) |
+| `agency_reconciliation_table.csv` | Sub-Task 4 AIM5 script | Sub-Task 4 `fit_agency_forecasting.py` (AIM2) |
+| `data/test_evidence/AIM*.csv` | Sub-Task 4 scripts | Sub-Task 5 documentation |
+| `data/test_evidence/three_model_experiment_results.csv` | Sub-Task 4b `evaluate_models.py` | Sub-Task 5 documentation |

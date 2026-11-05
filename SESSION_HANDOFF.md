@@ -4,6 +4,189 @@ Updated 2026-11-05. This file is a concise state snapshot; use the linked design
 
 ---
 
+## 2026-11-05 Next session start point (Bob)
+
+**Read this first at the start of the next session.**
+
+### Reading order
+
+1. This entry
+2. The "ledger-lab reframe complete" entry below (model names, files changed)
+3. [`docs/ENGINE_IMPLEMENTATION_PLAN.md`](docs/ENGINE_IMPLEMENTATION_PLAN.md) §Sub-Task 3e (exact todo list)
+4. `docs/AGENTIC_ARCHITECTURE_GATES.md` (required before touching any Scala)
+5. Then open `run_pipeline.sh` and `standardizeAndSort.scala`
+
+### What is done (this session)
+
+- All Scala engine steps complete and tested at fixture scale (Steps ttl, 2, 2p, 2m, 3, 5v, 20, 21)
+- AIM5 agency name classifier: **PASS** (precision = 1.0000, `agency_reconciliation_table.csv` written)
+- All acceptance thresholds locked; all architectural decisions confirmed
+- `ENGINE_IMPLEMENTATION_PLAN.md` updated to reflect two-part Paper 2 structure
+- Model names established: **Posted-FineTune (1) / IL-FineTune (2) / IL-Native (3)**
+- All ledger-lab docs structurally updated; TDS repo verified already up to date
+
+### Critical path to first measured results
+
+```
+Sub-Task 3e wiring  →  Stage 2 run (FY2003)  →  approve Python AIM scripts  →  AIM smoke on 1-year outputs
+```
+
+Nothing has run on real corpus data yet. That is the only remaining blocker.
+
+### Step 1 — Wire Sub-Task 3e (one session of Scala work)
+
+Full todo list is in [`docs/ENGINE_IMPLEMENTATION_PLAN.md`](docs/ENGINE_IMPLEMENTATION_PLAN.md) §Sub-Task 3e.
+Summary of the work:
+
+1. Add `--periodGranularity annual|monthly|quarterly` to `run_pipeline.sh` — default `monthly`
+   (AIM substrate default); pass through to all `sbt` invocations
+2. In `applyAPA`: replace quarterly loop with per-source-file loop; derive `transFiscalPeriod`
+   from calendar month in filename; name output `SortedJEFY03_YYYY_MM_exp.csv`
+3. In `applyPO`: derive `transFiscalPeriod` per-row from `ORDEREDDATE` when `periodGranularity=monthly`
+4. Update `cost_surface.csv` init and `record_cost_point` to emit new schema columns:
+   `capability_layer`, `period_granularity`, `materialization_scope`, `ledger_row_count`,
+   `ldgr_file_bytes`, `view_file_bytes`, `permutation_rows`
+5. Extend `write_canonical_evidence.sh` to capture those new columns
+
+**Note:** `post.scala` requires no changes — monthly period keys make each pass's rows
+independent by construction (documented in Sub-Task 3e).
+
+**Gate:** Read `AGENTIC_ARCHITECTURE_GATES.md` and declare the workload before editing Scala.
+
+### Step 2 — Stage 2 validation run (FY2003 only)
+
+Once 3e is wired:
+
+```bash
+bash scripts/run_pipeline.sh --year 2003 --periodGranularity monthly
+```
+
+Confirm all gates pass:
+- All four view files non-zero (`view_monthly_order_volume.csv`, `view_vendor_year_survival.csv`,
+  `view_agency_year_commodity_mix.csv`, `view_agency_year_payment_totals.csv`)
+- `process_metrics.csv` non-empty for steps `ttl`, `2p`, `2m`, `3`, `5v`, `20`, `21`
+- Ledger control: `amount sum = 0.00`
+- `GL20YY.csv` and `PERM_TBL20YY.csv` non-zero row counts
+- View B vendor count cross-checked against `vendor_po_attributes_by_year.csv` FY2003 (sanity)
+
+Record first real CCP1 and CCP2 cost points in `cost_surface.csv`.
+Update `VERIFICATION_AUDIT_REGISTER.md` (Steps 2p, 2m, 5v, 20, 21 all have real-corpus run
+as their remaining gap).
+
+### Step 3 — Owner decision: approve Sub-Task 4 Python AIM scripts
+
+Before writing any Python, state the request explicitly (AGENTS.md gate):
+
+> Three Python scripts — AIM1 non-injectivity count, AIM3 vendor survival model, AIM4
+> ordering seasonality — reading small bounded view CSVs from the Scala pipeline. No script
+> reads 133M raw records. All input is Scala-produced summary tables of hundreds to thousands
+> of rows. AIM1 is a count and gap measurement, not an ML fit.
+
+Owner approves → write scripts → run against Stage 2 (1-year) outputs for syntax/execution
+check only (not against locked thresholds — 1 year is too little data).
+
+### What is explicitly NOT next
+
+- Sub-Task 4b (three-model LLM experiment) — needs Stage 3/4 corpus output + separate approval
+  for LLM base model selection and verbalization schema design
+- CCP4/CCP5 — blocked on CCP3 corpus run completing
+- Stage 3 (FY2003–FY2007) — not until Stage 2 validation passes cleanly
+- VERIFICATION_AUDIT_REGISTER housekeeping for older sub-tasks — do alongside Stage 2 run,
+  not as a blocking prerequisite
+
+---
+
+## 2026-11-05 ledger-lab reframe complete — TDS work deferred (Bob)
+
+**What was done this session.**
+
+The ledger-lab docs have been structurally rewritten to reflect the Paper 2 reframe agreed
+last session. Three models named. Organizing logic of the repo's primary documents replaced.
+TDS-AI-Models repo work deferred to a separate session.
+
+### Model names (established this session — use everywhere)
+
+| # | Name | Description |
+|---|------|-------------|
+| 1 | **Posted-FineTune** | Pretrained LLM fine-tuned on posted data (`GL20YY.csv`) |
+| 2 | **IL-FineTune** | Pretrained LLM fine-tuned on Instrument Ledger (`LDGR20YY.csv`) |
+| 3 | **IL-Native** | Structured model built directly from IL — no pretrained LLM, no language prior |
+
+Gap 1→2 = substrate effect. Gap 2→3 = language prior effect ("See Spot Run"). Gap 1→3 = total.
+These are now the canonical names. Use them in TDS papers when editing that repo.
+
+### Files changed
+
+**`LEDGER_LAB_OVERVIEW.md`** — structural rewrite
+- "Three-layer picture" (Layer 1/2/3) replaced with "two substrates: what survives posting"
+- "The tests" section replaced with Paper 1 cost experiment summary + Paper 2 two-part structure
+- AIM tests now appear as Part 1 illustrations in a compact table (AIM1/3/4), not as the
+  primary Paper 2 evidence
+- Three-model experiment table (Posted-FineTune / IL-FineTune / IL-Native) introduced as
+  primary Paper 2 Part 2 evidence with IL-Native Net Income closing argument
+- "What counts as overall success" rewritten with separate Paper 1 / Paper 2 Part 1 / Part 2 criteria
+- Run order rewritten: AIM5 moved to step 0 (no corpus needed); three-model experiment added as step 10
+
+**`docs/TEST_DESIGN.md`** — structural rewrite
+- Title updated: "AIM Model Evidence" → "Paper 2 Model Evidence"
+- Status line updated to record 2026-11-05 revision
+- §1 rewritten: "One Corpus. One Run. Two Papers. Two Kinds of Evidence." — separate Paper 1
+  and Paper 2 descriptions; Paper 2 split into Part 1 (AIM illustrations) and Part 2 (three-model)
+- §2 replaced: "Two-Substrate Design" (AIM-centric table) → "Three-Model Experiment" (primary
+  Paper 2 evidence) — full model table with names, gap definitions, Net Income closing argument,
+  pipeline inputs, output file
+- §3 replaced: "Three-Layer Framework" (Layer 1/2/3) → "Two-Substrate Design" (AIM illustrations
+  only, reduced role stated)
+- §5a updated: "Four-Model Experiment" → "Three-Model Experiment" with names, cleaned of
+  now-duplicate content that lives in §2
+
+**`docs/RESEARCH_OBJECTIVES.md`** — model names applied throughout
+- Four-model table → three-model table with Posted-FineTune / IL-FineTune / IL-Native names
+- Gap references updated: 1→2, 2→3, 1→3 (was 1→4)
+- "done" criteria updated to use model names
+- AIM2 note updated: "Model 1 vs Model 4" → "Posted-FineTune vs IL-Native"
+- AIM table role-clarification note updated to reference three-model experiment by name
+
+**`docs/COST_GRAPH_DESIGN.md`**
+- Engine Graph: added "Second curve — mainframe / TDS (open invitation)" paragraph
+
+**`docs/ENGINE_IMPLEMENTATION_PLAN.md`**
+- Sub-Task 4 rescoped: "fit statistical models on the four view tables" → "AIM statistical
+  tests (Paper 2 Part 1 illustrations)"; ordered primary (AIM1/3/4) before secondary (AIM2/AIM5);
+  `fit_noninjectivity.py` added as new AIM1 script
+- Sub-Task 4b (new): Three-model experiment — model table with names, downstream tasks,
+  verbalization note, expected script names, todo list gated on owner approval
+- Data dependency map updated: `GL20YY.csv` and `LDGR20YY.csv` rows added; Sub-Task 4b
+  outputs added; three_model_experiment_results.csv in map
+
+### TDS-AI-Models repo — verified complete (2026-11-05)
+
+All three TDS files were inspected and confirmed up to date. No edits required.
+
+**`03-argument/02-pre-hierarchy-event-repositories.md` (Paper 2) — verified ✅**
+- "See Spot Run" is already in §1 (lines 68–73), sharp, in the right place
+- Three-model table with Posted-FineTune / IL-FineTune / IL-Native already in §5.3 with correct
+  numbers (1/2/3) and gap definitions (1→2, 2→3, 1→3)
+- Non-injectivity → hardware bridge already in §5.3a (insurance corpus / z/OS / second curve)
+- Net Income closing argument already in §7 ("The Net Income Test") — clean logical proof,
+  "AI completes accounting, it does not replace it"
+- No stray "the GL" comparator framing issues found
+
+**`03-argument/01-minimum-cost-curve.md` (Paper 1) — verified ✅**
+- Engine graph second-curve note already in §3.3 (line 269): "The Engine graph has a second
+  curve — open invitation" — insurance corpus, z/OS, minimum further left, written as open
+  invitation
+- Mix/right-wall framing not applicable in this paper — it uses the cost surface model directly
+
+**`03-argument/00-monograph-introduction-and-master-framework.md` — verified ✅**
+- Complementary framing already in Paper 2 overview (line 114): "The two are complementary,
+  not competing. Keeping both costs no more than keeping only one."
+- Hardware-parameterized bowl minimum already stated (line 115)
+- Fixed-posting-key class already in shared lab section (line 125): "the most collapsed
+  instance of the fixed-posting-key class"
+
+---
+
 ## 2026-11-05 Next session charge — cross-repo reframing (Bob)
 
 **Read the Paper 2 reframing entry below before starting any edits.**

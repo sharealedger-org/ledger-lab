@@ -1,4 +1,4 @@
-﻿# Research Objectives — Master Experimental Map
+# Research Objectives — Master Experimental Map
 
 **Prepared:** 2026-11-04  
 **Status:** Authoritative. Supersedes `docs/next-session-plan.md` and
@@ -95,42 +95,88 @@ comparison is published. A single run is not a cost point.*
 
 ## 4 — Paper 2 Objectives: AI Consequence of Posting as Lossy Compression
 
-### The two-substrate experiment design
+### Overriding claim (2026-11-05 reframe)
+
+> No model — no matter how capable, trained on any substrate — can answer Net Income from
+> events alone. Net Income is not a fact about the world. It is a fact about how an
+> organisation chose to classify and accumulate the world through its chart of accounts and
+> posting rules. That classification lives in the posting layer, not in the events.
+
+Paper 2 is structured in two parts:
+
+**Part 1 — Question space (structural proof):** The posting architecture defines a question
+space smaller than the space of economically meaningful questions. The AIM tests (AIM1, AIM3,
+AIM4) illustrate this claim concretely — they are not the primary evidence. Paper 1's
+permutation table provides the structural argument; AIM tests make the information destruction
+specific and observable. AIM1 (non-injectivity) is special: it motivates the hardware cost
+question (see Engine Graph second-curve note in `COST_GRAPH_DESIGN.md`).
+
+**Part 2 — Substrate quality and the three-model experiment:** The primary evidence for Paper 2.
+The dominant institution pattern — pretrained LLM fine-tuned on posted data — fails because
+the language prior survives fine-tuning and introduces spurious correlations into financial
+structure. The three-model experiment measures this directly.
+
+### The three-model experiment (primary Paper 2 evidence)
+
+| # | Model name | Training substrate | Language prior | Can answer Net Income? | Can answer vendor survival? |
+|---|------------|-------------------|---------------|----------------------|----------------------------|
+| 1 | **Posted-FineTune** | Pretrained LLM fine-tuned on posted data (`GL20YY.csv`) | Yes — survives | From posting layer only | No — field absent |
+| 2 | **IL-FineTune** | Pretrained LLM fine-tuned on Instrument Ledger | Yes — survives | Yes | Yes |
+| 3 | **IL-Native** | Structured model built directly from IL — no pretrained LLM | None | Yes | Yes |
+
+**Gap 1→2** = substrate effect (same contaminated language prior, better data)
+**Gap 2→3** = language prior effect (same IL data, prior removed — "See Spot Run")
+**Gap 1→3** = total cost of the current institution paradigm
+
+The three-model experiment requires Python model training code. This is post-engine work
+consuming pipeline outputs — it does not substitute for the Scala engine. Owner approval
+required before writing Python scripts (AGENTS.md).
+
+### The two-substrate design (AIM tests — Part 1 illustration)
 
 Every AIM test (except AIM0, which is closed) is run **twice**:
 
 1. **Against the CCP1 substrates** (GL output and permutation table): the legacy architecture's
-   best effort. The GL is too collapsed to answer the question. The permutation table has more
-   dimensions but still cannot recover event-level signal, because permutations multiply posting
-   keys but do not restore the original event sequence. Both substrates fail — for different and
-   instructive reasons.
+   best effort. Both substrates fail — for different and instructive reasons.
 
 2. **Against the CCP2–CCP5 outputs** (instrument ledger and CCP3 views): the CKB architecture.
    Each AIM test succeeds or produces a meaningful result.
 
-The gap between the two substrates is the empirical proof of Theorem 1. It is not a comparison
-of algorithms — the same algorithm runs against both. The difference is what survived posting.
+The gap between the two substrates illustrates the information-destruction claim. It is not a
+comparison of algorithms — the same algorithm runs against both. The difference is what
+survived posting.
 
 ### What "done" looks like for Paper 2
 
-Paper 2 is done when each AIM test has been run against both substrates (CCP1 and CCP2/CCP3),
-the results reported side by side, and the gap documented. AIM1 has no pass/fail threshold —
-it is a measurement; any non-zero gap between the CCP1 and CCP2 counts is evidence. AIM2–AIM5
-must each meet their confirmed acceptance thresholds on the CCP2/CCP3 substrate while failing
-to meet them on the CCP1 substrate.
+Paper 2 (Part 1) is done when AIM1, AIM3, and AIM4 have been run against both substrates and
+the gap documented. AIM1 has no pass/fail threshold — any non-zero gap is evidence.
+
+Paper 2 (Part 2) is done when the three-model experiment has been run: Posted-FineTune,
+IL-FineTune, and IL-Native trained on their respective substrates, evaluated on the same
+downstream tasks, gap between models quantified, and Net Income closing argument demonstrated.
+
+**Note on AIM2 and AIM5:** AIM2 (expenditure forecasting) is subsumed by the Posted-FineTune
+vs IL-Native comparison on forecasting tasks — it remains in the test plan but is not a primary
+Paper 2 result. AIM5 (agency name classifier) is infrastructure (data quality); it unblocks
+AIM2 and CCP5 but is not a primary Paper 2 result.
 
 ---
 
 ## 5 — AIM0–AIM5 Table
 
-| ID | Question | Paper 2 claim tested | CCP1 result | CCP2/3 result | Status |
-|----|----------|---------------------|------------|--------------|--------|
+**Role clarification (2026-11-05):** AIM1, AIM3, and AIM4 are the primary Paper 2 Part 1
+illustrations — they make the information-destruction claim concrete. AIM2 and AIM5 have
+reduced primary-result status (see §4 above). The three-model experiment — Posted-FineTune,
+IL-FineTune, IL-Native (§4) — is the primary Paper 2 Part 2 evidence.
+
+| ID | Question | Paper 2 role | CCP1 result | CCP2/3 result | Status |
+|----|----------|-------------|------------|--------------|--------|
 | **AIM0** | Can PO orders be linked to payments? | Feasibility gate. | **CLOSED 2026-11-01** — aggregate `(AGENCY, fiscal_year)` join available; direct PONUMBER join is not. | — | Closed |
-| **AIM1** | How many distinct PO patterns collapse to the same posted key? | Theorem 1, §2.1 — direct non-injectivity count; no ML required. Run as a post-hoc step reading aggregated output. | Run against GL output: counts highly collapsed (many-to-one). Run against permutation table: counts appear to improve but event sequence still unrecoverable. | Run against Instrument Ledger: non-injectivity directly measurable; revision sequence preserved. | Not yet run |
-| **AIM2** | Does knowing *what* an agency ordered improve expenditure forecasting? | §5.3 "Does adding pre-hierarchy event features improve on that ceiling?" | Run against permutation table: no commodity sequence; dimensional explosion without event recovery. | CCP3 view C (agency-year commodity mix) enables direct Layer 3 vs. Layer 2 comparison. | Not yet run |
-| **AIM3** | Can we predict which vendors will stop doing business with the state? | §5.3 "Does the event stream contain patterns no balance-derived feature can surface?" | Run against GL: no vendor lifecycle concept exists in GL balances. | CCP3 view B (vendor-year survival panel) enables survival model. | Not yet run |
-| **AIM4** | Does *when* an agency orders carry information that *when* it pays does not? | §1.1 and §5.1 Track B — ordering seasonality. | Run against GL: only payment dates survive; order dates discarded at posting. | CCP3 view A (monthly order volume) enables STL seasonality test. | Not yet run |
-| **AIM5** | Can an AI model tell the difference between "same agency, different spelling" and "actually a different entity"? | §3.3 "The Data-Type Navigation Problem" — preserved names carry information account codes erase. | GL collapses all name variants to one account code; ambiguity silently hidden. | Pre-hierarchy strings preserved; model can flag genuine ambiguity. Also unblocks AIM2 and CCP5. | Not yet run |
+| **AIM1** | How many distinct PO patterns collapse to the same posted key? | **Primary — Part 1 illustration.** Direct non-injectivity count; no ML required. Also motivates the hardware cost question (bridge to TDS/z/OS). | Run against GL output: counts highly collapsed (many-to-one). Run against permutation table: counts appear to improve but event sequence still unrecoverable. | Run against Instrument Ledger: non-injectivity directly measurable; revision sequence preserved. | Not yet run |
+| **AIM2** | Does knowing *what* an agency ordered improve expenditure forecasting? | **Secondary.** Subsumed by Posted-FineTune vs IL-Native forecasting comparison in the three-model experiment. Remains in test plan; not a standalone primary result. | Run against permutation table: no commodity sequence; dimensional explosion without event recovery. | CCP3 view C (agency-year commodity mix) enables direct comparison. | Not yet run |
+| **AIM3** | Can we predict which vendors will stop doing business with the state? | **Primary — Part 1 illustration.** Demonstrates information present in pre-hierarchy events and absent from any fixed-posting-key store. | Run against GL: no vendor lifecycle concept exists in GL balances. | CCP3 view B (vendor-year survival panel) enables survival model. | Not yet run |
+| **AIM4** | Does *when* an agency orders carry information that *when* it pays does not? | **Primary — Part 1 illustration.** Ordering seasonality invisible in payment records — demonstrates temporal destruction. | Run against GL: only payment dates survive; order dates discarded at posting. | CCP3 view A (monthly order volume) enables STL seasonality test. | Not yet run |
+| **AIM5** | Can an AI model tell the difference between "same agency, different spelling" and "actually a different entity"? | **Secondary — infrastructure.** Data quality step; unblocks AIM2 and CCP5. Not a primary Paper 2 result. | GL collapses all name variants to one account code; ambiguity silently hidden. | Pre-hierarchy strings preserved; model can flag genuine ambiguity. | Not yet run |
 
 ---
 
