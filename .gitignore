@@ -42,3 +42,10 @@ scripts/check_stage2.sh
 
 # Leftover symlink-swap staging dirs inside tracked output dirs
 data/output_validate_fy03/output_validate_fy03.next*/
+
+# Pipeline run outputs (multi-GB; never commit)
+data/output_validate_fy03/
+data/output_validate_fy03.generations/
+data/output_validate_fy03_step3only/
+data/output_validate_fy03_step3only.generations/
+
