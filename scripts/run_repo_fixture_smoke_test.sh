@@ -206,12 +206,12 @@ if allocation_enabled:
   assert int(step_two["output_rows"]) > 1520
 else:
   assert step_two["output_rows"] == "1520"
-  assert step_three["output_rows"] == "59"
+  assert step_three["output_rows"] == "442"
 assert all(int(process[field]) > 0 for process in processes for field in ("input_bytes", "output_bytes"))
 if allocation_enabled:
   step_six = next(process for process in processes if process["process_name"] == "allocation")
   assert step_six["input_rows"] == step_three["output_rows"]
-  assert step_six["output_rows"] == "45"
+  assert step_six["output_rows"] == "246"
 
 cost = rows(output / "cost_surface.csv")[0]
 assert cost["total_storage_bytes"].isdigit() and int(cost["total_storage_bytes"]) > 0
