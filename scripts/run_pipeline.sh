@@ -245,7 +245,9 @@ run_step() {
     for vm_candidate in \
       "$IN_PATH/VendorMaster_full.csv" \
       "$IN_PATH/VendorMaster_enriched.csv" \
-      "$IN_PATH/VendorMaster.csv"; do
+      "$IN_PATH/VendorMaster.csv" \
+      "$REPO_ROOT/data/VendorMaster_full.csv" \
+      "$REPO_ROOT/data/VendorMaster.csv"; do
       if [[ -f "$vm_candidate" ]]; then
         vm_arg=" --vendormaster $vm_candidate"
         break
@@ -432,10 +434,9 @@ run_step() {
       "run --step $step --inPath $jvm_in_path --outPath $jvm_out_path --year $year --quarter $quarter$jvm_vm_arg$jvm_ref_arg$allocation_rules_arg$fx_args" \
       2>&1 | tee "$_tee_target")
   fi
+  local rc=$?
   # Clean up temp tee file if we used one (non-stderr path)
   [[ "$_tee_target" != /dev/stderr ]] && rm -f "$_tee_target"
-
-  local rc=$?
   local end_epoch
   end_epoch=$(date +%s)
   local elapsed=$(( end_epoch - start_epoch ))

@@ -432,19 +432,19 @@ object standardizeAndSort {
         while (lines.hasNext) {
           val raw = lines.next().trim
           if (raw.nonEmpty) {
-            val cols = raw.split("\t", -1).map(_.trim)
+            val cols = raw.split("\t", -1).map(_.trim.stripPrefix("\"").stripSuffix("\""))
             if (cols.length >= 7) {
               sourceRows += 1
               jrnlID     += 1
-              val poNumber   = cols(0)
-              val agency     = cols(1)
-              val ordDate    = if (cols(2).nonEmpty) cols(2) else acctDate
-              val commDesc   = if (cols.length > 3) cols(3).replace(",", " ") else " "
+              val poNumber   = cols(0).replace(",", " ").replace("\"", "")
+              val agency     = cols(1).replace(",", " ").replace("\"", "")
+              val ordDate    = if (cols(2).nonEmpty) cols(2).replace(",", " ").replace("\"", "") else acctDate
+              val commDesc   = if (cols.length > 3) cols(3).replace(",", " ").replace("\"", "") else " "
               val qty        = tryBigDecimal(cols, 4, BigDecimal(1))
               val price      = tryBigDecimal(cols, 5, BigDecimal(0))
-              val vendorId   = cols(6)
-              val nigpCode   = if (cols.length > 13) cols(13) else "00000"
-              val uomCode    = if (cols.length > 15) cols(15) else " "
+              val vendorId   = cols(6).replace(",", " ").replace("\"", "")
+              val nigpCode   = if (cols.length > 13) cols(13).replace(",", " ").replace("\"", "") else "00000"
+              val uomCode    = if (cols.length > 15) cols(15).replace(",", " ").replace("\"", "") else " "
               val amt        = price * qty
 
               val jid = "ID" + jrnlID + acctDate + "PO"
@@ -507,7 +507,7 @@ object standardizeAndSort {
 
   // ── Helper: safely read a BigDecimal from a column, returning default on failure ──
   private def tryBigDecimal(cols: Array[String], idx: Int, default: BigDecimal): BigDecimal =
-    if (idx < cols.length) try BigDecimal(cols(idx).replace(",", "")) catch { case _: Exception => default }
+    if (idx < cols.length) try BigDecimal(cols(idx).replace("\"", "").replace(",", "").trim) catch { case _: Exception => default }
     else default
 
   // ── PO SJE row builder — 39-field comma-joined string ────────────────────────
@@ -537,13 +537,19 @@ object standardizeAndSort {
       qty:       String,
       descript:  String
   ): String = {
+    val cleanInst   = instId.replace(",", " ").replace("\"", "").trim
+    val cleanPo     = poNumber.replace(",", " ").replace("\"", "").trim
+    val cleanDesc   = descript.replace(",", " ").replace("\"", "").trim
+    val cleanAgency = agency.replace(",", " ").replace("\"", "").trim
+    val cleanNigp   = nigpCode.replace(",", " ").replace("\"", "").trim
+    val cleanUom    = uomCode.replace(",", " ").replace("\"", "").trim
     Seq(
-      instId, "0", poNumber, jrnlId, lineId, bizEvent, "PO Sys", "Unknown", descript,
+      cleanInst, "0", cleanPo, jrnlId, lineId, bizEvent, "PO Sys", "Unknown", cleanDesc,
       LEDGER_ID, JRNL_TYPE, BOOK_CODE,
-      agency, "0000", nigpCode, PRODUCT_ID, if (lineId == "1") "COMMIT" else "0000", ALT_ACCOUNT,
+      cleanAgency, "0000", cleanNigp, PRODUCT_ID, if (lineId == "1") "COMMIT" else "0000", ALT_ACCOUNT,
       CCY_SRC, CCY_TYPE_SRC, CCY_TGT, CCY_TYPE_TGT,
       year, acctDate, transDate, amount,
-      uomCode, price, qty, " ", " ", "D", "N", "N", " ", " ", " ", " ", " "
+      cleanUom, price, qty, " ", " ", "D", "N", "N", " ", " ", " ", " ", " "
     ).mkString(",")
   }
 
