@@ -1,6 +1,6 @@
 # AIM4 seasonality evidence — summary
 test,verdict,n_significant_classes,threshold,total_periods,fiscal_years,total_nigp_classes,note,run_timestamp,view_path
-AIM4,n/a,0,>= 3 of top 5 with q4_ratio > 1.5 or p < 0.05,14,2,226,2 fiscal year(s) (14 monthly periods); 0 of top 5 classes directional — acceptance deferred until >= 5 fiscal years,2026-11-06 05:42:35,data/output_validate_fy03.generations/run_20261106_044703_1190/view_monthly_order_volume.csv
+AIM4,n/a,0,>= 3 of top 5 with q4_ratio > 1.5 or p < 0.05,14,2,226,2 fiscal year(s) (14 monthly periods); 0 of top 5 classes directional — acceptance deferred until >= 5 fiscal years,2026-11-06 09:04:42,data/output_validate_fy03.generations/run_20261106_044703_1190/view_monthly_order_volume.csv
 
 # Per-class results (top 5 NIGP)
 nigp_class_3digit,q4_period_count,nonq4_period_count,q4_avg_monthly_vol,nonq4_avg_monthly_vol,q4_ratio,p_value,test_method,q4_spike_detected,significant

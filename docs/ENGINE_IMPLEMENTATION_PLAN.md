@@ -570,21 +570,52 @@ evidence. Owner approval required before writing any Python (AGENTS.md).
 - Expenditure forecasting (supersedes standalone AIM2 as primary result)
 - Net Income derivation (logical proof — IL-Native answers it; Posted-FineTune cannot)
 
-**Verbalization:** Posted-FineTune and IL-FineTune require verbalized records (structured
-fields → natural-language descriptions). IL-Native consumes the IL as structured tabular
-input. Verbalization schema to be defined when scripts are written.
+### Verbalization Schemas (Field-to-Sentence Template Rules)
+
+Posted-FineTune and IL-FineTune require verbalized text sequences (structured fields → natural-language narrative) for fine-tuning the base language model. IL-Native consumes structured tabular inputs directly (no verbalization / tokenization overhead).
+
+1. **GL Verbalization Template (`GL20YY.csv` $\to$ Posted-FineTune):**
+   * Fields: `agency, fund_id, nominal_account_id, fiscal_year, total_amount`
+   * Template:
+     `"In fiscal year {fiscal_year}, Commonwealth Agency {agency} recorded general ledger activity under Fund {fund_id} and Nominal Account {nominal_account_id} with an accumulated transaction balance of ${total_amount:.2f}."`
+   * Property: Vendor identity and order/commitment lineage are completely destroyed.
+
+2. **IL Verbalization Template (`LDGR20YY.csv` $\to$ IL-FineTune):**
+   * Fields: `ldgrIPID (vendor), ldgrCommitmentID (PO/doc), ldgrLegalEntityID (agency), ldgrCenterID (fund), ldgrNominalAccountID (account), ldgrFiscalPeriod (period), ldgrTransAmount (amount)`
+   * Template:
+     `"In period {ldgrFiscalPeriod}, Vendor {ldgrIPID} executed transaction {ldgrCommitmentID} with Commonwealth Agency {ldgrLegalEntityID} under Fund {ldgrCenterID} and Account {ldgrNominalAccountID} for amount ${ldgrTransAmount:.2f}."`
+   * Property: Full instrument identity, event lineage, and period granularity are preserved in natural language.
+
+3. **IL-Native Direct Tabular Consumption:**
+   * Consumes `LDGR20YY.csv` along with Step 5v summary views (`view_vendor_year_survival.csv`, `view_agency_year_commodity_mix.csv`, `view_monthly_order_volume.csv`).
+   * No NLP/text prior: Uses tabular Gradient Boosted Trees / regularized linear estimators.
+
+### Deterministic Data Splitting via Surrogate Key
+
+To prevent registration-wave bias from `VENDORID`, data splitting across all tasks is anchored on the Scala-generated `vendor_surrogate_key` (`SHA-256(vendor_id)[0:8]`):
+* **Train Set (60%):** `hash_int(vendor_surrogate_key) % 5 in (0, 1, 2)`
+* **Validation Set (20%):** `hash_int(vendor_surrogate_key) % 5 == 3`
+* **Test Set (20%):** `hash_int(vendor_surrogate_key) % 5 == 4`
+
+### Downstream Evaluation Tasks
+
+| Task | Objective | Input Substrate | Evaluation Metric | Posted-FineTune | IL-FineTune | IL-Native |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **1. Vendor Survival (AIM3)** | Predict if vendor is active in FY $t+1$ | Prior FY history | ROC-AUC (C-stat), Brier | ❌ Fails (no vendor ID in GL) | ✅ Predicts from text | ✅ Direct tabular C-stat |
+| **2. Expenditure Forecast (AIM2)** | Forecast agency expenditure in $t+1$ | Prior spending & PO mix | RMSE, MAPE | ⚠️ Coarse GL only | ✅ Text fine-tuned | ✅ High-precision tabular |
+| **3. Net Income Derivation** | Compute exact Net Position / Balance | Full ledger balances | Exact balance matching (%) | ❌ Cannot classify events | ⚠️ Approximate/hallucinates | ✅ Exact ($100\%$ accounting) |
 
 **Expected outcomes:**
-- `scripts/train_posted_finetune.py` — fine-tunes pretrained LLM on `GL20YY.csv`
-- `scripts/train_il_finetune.py` — fine-tunes pretrained LLM on `LDGR20YY.csv`
-- `scripts/train_il_native.py` — trains structured model on IL + views
-- `scripts/evaluate_models.py` — runs all three on downstream tasks, computes gaps 1→2, 2→3, 1→3
+- `scripts/train_posted_finetune.py` — fine-tunes pretrained LLM on verbalized `GL20YY.csv`
+- `scripts/train_il_finetune.py` — fine-tunes pretrained LLM on verbalized `LDGR20YY.csv`
+- `scripts/train_il_native.py` — trains structured tabular models on IL + views
+- `scripts/evaluate_models.py` — evaluates all three models on the common tasks, computes gaps 1→2, 2→3, 1→3
 - Output: `data/test_evidence/three_model_experiment_results.csv`
 
-**Todo list (blocked on owner approval):**
+**Todo list (blocked on owner approval for script authoring):**
 - [ ] Owner approves Python model training work (AGENTS.md gate)
-- [ ] Define verbalization schema for Posted-FineTune and IL-FineTune
-- [ ] Select pretrained LLM base model
+- [x] Define verbalization schema for Posted-FineTune and IL-FineTune
+- [ ] Select pretrained LLM base model (e.g. `distilroberta-base` or lightweight compact transformer)
 - [ ] Write training scripts for all three models
 - [ ] Write evaluation harness
 - [ ] Run on Stage 3 slice (FY2003–FY2007) for directional check

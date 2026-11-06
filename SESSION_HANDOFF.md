@@ -3,7 +3,23 @@
 Updated 2026-11-06. This file is a concise state snapshot; use the linked design contracts for details.
 
 ---
-## 2026-11-06 (latest) Windows symlinks, AIM deps, AIM1 GL framing (Bob)
+## 2026-11-06 (latest) $0.00 balance verified, backup branch pruned, Sub-Task 4b design (Bob)
+
+### $0.00 exact balance verified on seedless posting
+- **SJE stream balance:** `SortedJEFY03merged.csv` has 11,567,184 rows and its net `transTransAmount` sum across all rows is **`0E-22` ($0.00 exact)**.
+- **Step 3 seedless posting:** Posting on clean input produces 290,877 ledger records with `ldgrTransAmount` sum of **`1.0E-21` ($0.00 exact)**.
+- **Residual source:** Confirmed that the prior $18.00 / $6.00 residual was solely caused by `post.scala` replaying the stale quarterly seed `data/output_validate_fy03/LDGR2003.csv` (55,151 rows) present in the uncleaned output directory.
+
+### AIM dependencies & execution verified
+- Virtual environment `.venv` verified with `scikit-learn` 1.9.1, `scipy` 1.18.1, `statsmodels` 0.15.0, `numpy` 2.5.4.
+- All three scripts (`fit_noninjectivity.py` [AIM1], `fit_vendor_survival.py` [AIM3], `fit_ordering_seasonality.py` [AIM4]) executed cleanly against `run_20261106_044703_1190` outputs. Evidence files updated.
+
+### Local backup branch deleted
+- Local Git branch `backup/pre-rewrite-20261106` deleted after verifying `main` branch history integrity.
+
+---
+
+## 2026-11-06 Windows symlinks, AIM deps, AIM1 GL framing (Bob)
 
 ### Windows `commit_attempt` — fixed
 Cause: Git Bash (MSYS) `ln -s` silently copies the target unless `MSYS=winsymlinks:nativestrict`. The copies left `data/output_validate_fy03/output_validate_fy03.next.*` directories (~5.6 GB each, ignored by git, still on disk — safe to delete). [`scripts/run_pipeline.sh`](scripts/run_pipeline.sh) now exports that setting under MINGW/MSYS/CYGWIN, and `commit_attempt` fails (instead of copying) if `ln -s` does not yield a real symlink. Native symlinks work on this machine (Developer Mode). Also fixed `prune_old_generations`: `(( removed++ ))` returned 1 under `set -e` and aborted the run on the first prune; the "current symlink" safety check now derives its path from `$attempt_root` instead of a hardcoded `output_validate_fy03`. Evidence: ad hoc 4-commit test (links, keeps newest 2, cleans legacy) and `scripts/test_run_failure_isolation.sh` → PASS.
@@ -12,11 +28,9 @@ Cause: Git Bash (MSYS) `ln -s` silently copies the target unless `MSYS=winsymlin
 `.venv/` (git-ignored) now has scikit-learn, scipy, statsmodels, numpy; [`scripts/requirements.txt`](scripts/requirements.txt) updated. A first re-run on `run_20261106_044703_1190` printed AIM3 PASS and AIM4 FAIL, both invalid: since monthly granularity (Sub-Task 3e) the views' `fiscal_year` column holds monthly periods (e.g. `2002/04`), so `year_count` = 14, the "< 5 years" guard never fired, and "present next year" meant "present next month".
 
 Fix: [`fit_vendor_survival.py`](scripts/fit_vendor_survival.py) now rolls monthly rows up to Virginia fiscal years (Jul-Jun), derives `present_next_year` from presence in FY+1, and drops the last (right-censored) FY from the model. [`fit_ordering_seasonality.py`](scripts/fit_ordering_seasonality.py) counts fiscal years (new `fiscal_years` evidence column) instead of months for the 5-year guard. Re-run on the same run (2 FYs: an FY2002 stub plus FY2003): both report `n/a`, deferred until >= 5 fiscal years; evidence CSVs regenerated. Synthetic 6-FY check (temp data, deleted): AIM4 detects a planted Q4 spike (PASS 5/5); AIM3 returns FAIL (C=0.51) on random persistence, so the pipeline discriminates. Caveat: annual `agency_count` and `distinct_nigp_classes` are the max over months (a lower bound; monthly distincts cannot be summed). The real verdict needs the Stage 3 corpus.
+
 ### AIM1 GL framing — done
 `fit_noninjectivity.py` GL section now counts distinct vendors per GL balance row `(account_key, fiscal_year)` using PERM as the answer key. Result on the same run: 275,510 GL rows, 994 (0.36%) merge >1 vendor, max 138; IL 990 keys all multi-pattern; PERM 276; gap 714 unchanged. Evidence file regenerated.
-
-### Not done
-`backup/pre-rewrite-20261106` left in place (deletion is irreversible; owner call). Plan checklist in ENGINE_IMPLEMENTATION_PLAN.md already had the AIM scripts ticked. Items 1, 2 and 5 from the previous list remain open.
 
 ---
 
