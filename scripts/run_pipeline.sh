@@ -115,6 +115,7 @@ CURVE="C1"
 CONFIG_DESC="default"
 WORKLOAD_PROFILE="legacy"
 MATERIALIZATION_PROFILE="unspecified"
+PERIOD_GRANULARITY="monthly"
 
 # ── arg parsing ───────────────────────────────────────────────────────────────
 while [[ $# -gt 0 ]]; do
@@ -128,6 +129,7 @@ while [[ $# -gt 0 ]]; do
     -d|--config)   CONFIG_DESC="$2"; shift 2 ;;
     --profile)     WORKLOAD_PROFILE="$2"; shift 2 ;;
     --materialization) MATERIALIZATION_PROFILE="$2"; shift 2 ;;
+    --periodGranularity) PERIOD_GRANULARITY="$2"; shift 2 ;;
     -h|--help)     grep '^#' "$0" | sed 's/^# \{0,2\}//'; exit 0 ;;
     *) echo "Unknown option: $1"; exit 1 ;;
   esac
@@ -154,6 +156,13 @@ cleanup_failed_attempt() {
   fi
 }
 
+# Git Bash (MSYS) makes `ln -s` silently COPY the target unless native symlinks
+# are requested. Native symlinks need Windows Developer Mode (or admin); if they
+# are unavailable, fail rather than copy multi-GB run directories.
+case "$(uname -s 2>/dev/null)" in
+  MINGW*|MSYS*|CYGWIN*) export MSYS=winsymlinks:nativestrict ;;
+esac
+
 commit_attempt() {
   local final_dir="$1"
   local attempt_dir="$2"
@@ -166,6 +175,11 @@ commit_attempt() {
   fi
   local next_link="${final_dir}.next.$$"
   ln -s "$attempt_dir" "$next_link"
+  if [[ ! -L "$next_link" ]]; then
+    echo "commit_attempt: ln -s did not create a symlink at $next_link (enable Windows Developer Mode for native symlinks)" >&2
+    rm -rf "$next_link"
+    return 1
+  fi
   if [[ -L "$final_dir" ]]; then
     if [[ "$(uname -s)" == "Darwin" ]]; then
       mv -fh "$next_link" "$final_dir"
@@ -175,6 +189,62 @@ commit_attempt() {
   else
     mv "$next_link" "$final_dir"
   fi
+  # Prune old generations after a successful commit (keep last 2).
+  prune_old_generations "$ATTEMPT_ROOT" 2
+}
+
+# Prune old generations — keep the two most recent run_* directories plus the
+# one currently symlinked from the committed path.  Legacy.* directories older
+# than the retained run_* dirs are also removed.
+# Called automatically at the end of commit_attempt.
+prune_old_generations() {
+  local attempt_root="$1"
+  local keep="${2:-2}"        # number of run_* dirs to keep (default: 2)
+  [[ -d "$attempt_root" ]] || return 0
+
+  # Collect all run_* dirs sorted newest-first (by last-modification time).
+  local dirs=()
+  while IFS= read -r d; do
+    dirs+=("$d")
+  done < <(find "$attempt_root" -maxdepth 1 -type d -name 'run_*' \
+             | xargs -d '\n' ls -dt 2>/dev/null)
+
+  local n=${#dirs[@]}
+  if [[ $n -le $keep ]]; then
+    return 0
+  fi
+
+  # Remove all beyond the most-recent $keep entries.
+  local removed=0
+  for (( i=keep; i<n; i++ )); do
+    local dir="${dirs[$i]}"
+    # Safety check: never remove the directory currently pointed to by a symlink.
+    local resolved
+    resolved="$(readlink -f "${attempt_root%.generations}" 2>/dev/null || true)"
+    [[ "$resolved" == "$dir" ]] && continue
+    echo "[prune_generations] Removing old run dir: $dir"
+    rm -rf "$dir"
+    removed=$((removed + 1))
+  done
+
+  # Also prune legacy.* directories that are no longer referenced by any symlink.
+  while IFS= read -r ldir; do
+    # Check if any symlink in attempt_root points to this legacy dir.
+    local referenced=0
+    while IFS= read -r lnk; do
+      if [[ "$(readlink -f "$lnk" 2>/dev/null)" == "$ldir" ]]; then
+        referenced=1; break
+      fi
+    done < <(find "$attempt_root" -maxdepth 1 -type l 2>/dev/null)
+    if [[ $referenced -eq 0 ]]; then
+      echo "[prune_generations] Removing unreferenced legacy dir: $ldir"
+      rm -rf "$ldir"
+      removed=$((removed + 1))
+    fi
+  done < <(find "$attempt_root" -maxdepth 1 -type d -name 'legacy.*' 2>/dev/null)
+
+  [[ $removed -gt 0 ]] && echo "[prune_generations] Pruned $removed old generation(s) from $attempt_root"
+  return 0
 }
 
 # The engine now lives below the repository root. Normalize relative data paths
@@ -280,10 +350,16 @@ run_step() {
   local records_read="?" records_written="?"
   case "$step" in
     ttl)
-      # TTL step: reads the FY subdirectory tree; reports Q1 output file as representative
+      # TTL step: reads the FY subdirectory tree.
+      # Output file reference: first SortedJEFY file found (monthly or quarterly naming).
       input_file="$IN_PATH"
-      output_file="$OUT_PATH/SortedJEFY${year}q1exp.csv"
-      # Accumulate bytes across all 12 monthly files discovered under the FY directory
+      output_file=""
+      for _ttl_f in "$OUT_PATH/SortedJEFY${year}_"*"_exp.csv" \
+                    "$OUT_PATH/SortedJEFY${year}q1exp.csv"; do
+        [[ -f "$_ttl_f" ]] && { output_file="$_ttl_f"; break; }
+      done
+      [[ -n "$output_file" ]] || output_file="$OUT_PATH/SortedJEFY${year}q1exp.csv"
+      # Accumulate input bytes across all 12 monthly source files under the FY directory
       input_bytes=0
       for apa_file in "$IN_PATH/FY ${year:0:2}2${year:1:1}? Expenditure/"*.csv \
                        "$IN_PATH/All Expenditures for Fiscal Year 20${year}"*/*.csv; do
@@ -302,11 +378,21 @@ run_step() {
       records_read=$(count_data_rows "$input_file")
       ;;
     2m)
-      input_file="$OUT_PATH/SortedJEFY${year}q${quarter_number}exp.csv"
+      # Input: all payment SortedJE files (monthly or quarterly) + PO file
       output_file="$OUT_PATH/SortedJEFY${year}merged.csv"
+      # Use first available payment file as representative input_file for logging
+      input_file=""
+      for _2m_f in "$OUT_PATH/SortedJEFY${year}_"*"_exp.csv" \
+                   "$OUT_PATH/SortedJEFY${year}q"*"exp.csv"; do
+        [[ -f "$_2m_f" ]] && { input_file="$_2m_f"; break; }
+      done
+      [[ -n "$input_file" ]] || input_file="$OUT_PATH/SortedJEFY${year}q${quarter_number}exp.csv"
       records_read=0
       input_bytes=0
-      for sje_file in "$OUT_PATH/SortedJEFY${year}q"*"exp.csv" "$OUT_PATH/SortedJEFY${year}q"*"PO.csv"; do
+      for sje_file in "$OUT_PATH/SortedJEFY${year}_"*"_exp.csv" \
+                      "$OUT_PATH/SortedJEFY${year}q"*"exp.csv" \
+                      "$OUT_PATH/SortedJEFY${year}q"*"PO.csv" \
+                      "$OUT_PATH/SortedJEFY${year}_"*"PO.csv"; do
         [[ -f "$sje_file" ]] || continue
         input_bytes=$((input_bytes + $(count_file_bytes "$sje_file")))
       done
@@ -414,6 +500,12 @@ run_step() {
     fi
   fi
 
+  # Steps 20 and 21 (GLPost / PermutationGenerator) read SortedJE files from outPath,
+  # not from the raw inPath — override jvm_in_path to point at the output directory.
+  if [[ "$step" == "20" || "$step" == "21" ]]; then
+    jvm_in_path="$jvm_out_path"
+  fi
+
   # Also convert any path arguments embedded in vm_arg and ref_arg
   local jvm_vm_arg="$vm_arg" jvm_ref_arg="$ref_arg"
   if command -v cygpath >/dev/null 2>&1; then
@@ -421,17 +513,19 @@ run_step() {
     [[ -n "$ref_arg" ]] && jvm_ref_arg=" --refPath $(cygpath -m "${ref_arg#* --refPath }")"
   fi
 
+  local period_arg=" --periodGranularity $PERIOD_GRANULARITY"
+
   if [[ "$time_mode" == "macos" ]]; then
     out=$(cd "$SBT_PROJECT" && /usr/bin/time -l sbt -batch \
-      "run --step $step --inPath $jvm_in_path --outPath $jvm_out_path --year $year --quarter $quarter$jvm_vm_arg$jvm_ref_arg$allocation_rules_arg$fx_args" \
+      "run --step $step --inPath $jvm_in_path --outPath $jvm_out_path --year $year --quarter $quarter$jvm_vm_arg$jvm_ref_arg$allocation_rules_arg$fx_args$period_arg" \
       2>&1 | tee "$_tee_target")
   elif [[ "$time_mode" == "gnu" ]]; then
     out=$(cd "$SBT_PROJECT" && /usr/bin/time -v sbt -batch \
-      "run --step $step --inPath $jvm_in_path --outPath $jvm_out_path --year $year --quarter $quarter$jvm_ref_arg$allocation_rules_arg$fx_args" \
+      "run --step $step --inPath $jvm_in_path --outPath $jvm_out_path --year $year --quarter $quarter$jvm_ref_arg$allocation_rules_arg$fx_args$period_arg" \
       2>&1 | tee "$_tee_target")
   else
     out=$(cd "$SBT_PROJECT" && sbt -batch \
-      "run --step $step --inPath $jvm_in_path --outPath $jvm_out_path --year $year --quarter $quarter$jvm_vm_arg$jvm_ref_arg$allocation_rules_arg$fx_args" \
+      "run --step $step --inPath $jvm_in_path --outPath $jvm_out_path --year $year --quarter $quarter$jvm_vm_arg$jvm_ref_arg$allocation_rules_arg$fx_args$period_arg" \
       2>&1 | tee "$_tee_target")
   fi
   local rc=$?
@@ -449,6 +543,14 @@ run_step() {
     rss_kb=$(printf '%s\n' "$out" | awk -F': ' '/Maximum resident set size/ { print $2; exit }' | awk '{print $1}')
     [[ "$rss_kb" =~ ^[0-9]+$ ]] && LAST_PEAK_RSS_BYTES=$((rss_kb * 1024))
   fi
+  # Fallback: parse the JVM-emitted RESOURCE line from sbt stdout (available on all platforms).
+  # The Scala code emits: RESOURCE step=N year=YYYY peak_rss_bytes=<jvm_heap_bytes>
+  if [[ -z "$LAST_PEAK_RSS_BYTES" ]]; then
+    local jvm_rss
+    jvm_rss=$(printf '%s\n' "$out" | grep -E "RESOURCE step=${step} " | \
+      sed -nE 's/.*peak_rss_bytes=([0-9]+).*/\1/p' | tail -1)
+    [[ "$jvm_rss" =~ ^[0-9]+$ ]] && LAST_PEAK_RSS_BYTES="$jvm_rss"
+  fi
 
   local records_written
   case "$step" in
@@ -458,9 +560,11 @@ run_step() {
       records_read=$(printf '%s\n' "$result_line_ttl" | sed -nE 's/.*records_read=([0-9]+).*/\1/p' | tail -1)
       [[ -n "$records_read" ]] || records_read="?"
       records_written=0
-      for q in 1 2 3 4; do
-        qf="$OUT_PATH/SortedJEFY${year}q${q}exp.csv"
-        [[ -f "$qf" ]] && records_written=$((records_written + $(count_file_rows "$qf")))
+      # Count rows across both monthly (SortedJEFY{yr}_{YYYY}_{MM}_exp.csv) and
+      # quarterly (SortedJEFY{yr}q{n}exp.csv) output files produced by this run.
+      for sje_f in "$OUT_PATH/SortedJEFY${year}_"*"_exp.csv" \
+                   "$OUT_PATH/SortedJEFY${year}q"*"exp.csv"; do
+        [[ -f "$sje_f" ]] && records_written=$((records_written + $(count_file_rows "$sje_f")))
       done
       [[ "$records_written" == "0" ]] && records_written=$(printf '%s\n' "$result_line_ttl" | sed -nE 's/.*records_written=([0-9]+).*/\1/p' | tail -1)
       [[ -n "$records_written" ]] || records_written="?"
@@ -596,14 +700,19 @@ count_enabled_views() {
 init_cost_surface() {
   local f="$1"
   if [[ ! -f "$f" ]]; then
-    echo "\"run_id\",\"run_timestamp\",\"curve\",\"config_description\",\"years\",\"steps\",total_compute_s,total_storage_bytes,master_file_count,total_cost_proxy" > "$f"
+    echo "\"run_id\",\"run_timestamp\",\"curve\",\"config_description\",\"years\",\"steps\",total_compute_s,total_storage_bytes,master_file_count,total_cost_proxy,\"capability_layer\",\"period_granularity\",\"materialization_scope\",ledger_row_count,ldgr_file_bytes,view_file_bytes,permutation_rows" > "$f"
   fi
 }
 
 # Append one row to cost_surface.csv.
+# Args: f run_id ts curve cfg years steps compute_s storage_bytes master_count
+#       capability_layer period_granularity materialization_scope
+#       ledger_row_count ldgr_file_bytes view_file_bytes permutation_rows
 record_cost_point() {
   local f="$1" run_id="$2" ts="$3" curve="$4" cfg="$5" years="$6" steps="$7"
   local compute_s="$8" storage_bytes="$9" master_count="${10}"
+  local capability_layer="${11:-}" period_granularity="${12:-}" materialization_scope="${13:-}"
+  local ledger_row_count="${14:-}" ldgr_file_bytes="${15:-}" view_file_bytes="${16:-}" permutation_rows="${17:-}"
   # total_cost_proxy: compute(s) + storage(MB) + master_files × 10
   local proxy
   if [[ "$storage_bytes" =~ ^[0-9]+$ ]]; then
@@ -613,7 +722,7 @@ record_cost_point() {
     proxy="?"
   fi
   # Quote fields that may contain spaces or commas
-  echo "\"${run_id}\",\"${ts}\",\"${curve}\",\"${cfg}\",\"${years}\",\"${steps}\",${compute_s},${storage_bytes},${master_count},${proxy}" >> "$f"
+  echo "\"${run_id}\",\"${ts}\",\"${curve}\",\"${cfg}\",\"${years}\",\"${steps}\",${compute_s},${storage_bytes},${master_count},${proxy},\"${capability_layer}\",\"${period_granularity}\",\"${materialization_scope}\",${ledger_row_count:-0},${ldgr_file_bytes:-0},${view_file_bytes:-0},${permutation_rows:-0}" >> "$f"
 }
 
 # ── main loop ─────────────────────────────────────────────────────────────────
@@ -639,10 +748,11 @@ TOTAL_COMPUTE_S=0
 
 log "======================================================================"
 log "Universal Ledger Pipeline Run  [$RUN_ID]"
-log "  curve   = $CURVE"
-log "  config  = $CONFIG_DESC"
-log "  profile = $WORKLOAD_PROFILE"
-log "  materialization = $MATERIALIZATION_PROFILE"
+log "  curve              = $CURVE"
+log "  config             = $CONFIG_DESC"
+log "  profile            = $WORKLOAD_PROFILE"
+log "  materialization    = $MATERIALIZATION_PROFILE"
+log "  period_granularity = $PERIOD_GRANULARITY"
 log "  inPath  = $IN_PATH"
 log "  outPath = $OUT_PATH"
 log "  years   = $YEARS"
@@ -688,16 +798,62 @@ fi
 
 MASTER_FILE_COUNT=$(count_enabled_views "$VIEWSPEC")
 
+# ── three-axis cost surface columns ──────────────────────────────────────────
+# Axis 1 — capability_layer: map CURVE to CCP label; fall back to CURVE itself.
+case "$CURVE" in
+  CCP1) CAPABILITY_LAYER="CCP1" ;;
+  CCP2) CAPABILITY_LAYER="CCP2" ;;
+  CCP3) CAPABILITY_LAYER="CCP3" ;;
+  CCP4) CAPABILITY_LAYER="CCP4" ;;
+  CCP5) CAPABILITY_LAYER="CCP5" ;;
+  *)    CAPABILITY_LAYER="$CURVE" ;;
+esac
+
+# Axis 2 — period_granularity: use the CLI value (default: annual).
+COST_PERIOD_GRANULARITY="$PERIOD_GRANULARITY"
+
+# Axis 3 — materialization_scope: derive from MATERIALIZATION_PROFILE or CONFIG_DESC.
+COST_MATERIALIZATION="${MATERIALIZATION_PROFILE:-movement-only}"
+
+# Per-output file metrics (0 if the step did not run or the file is absent).
+LDGR_ROW_COUNT=0
+LDGR_FILE_BYTES=0
+VIEW_FILE_BYTES=0
+PERMUTATION_ROWS=0
+for year in ${YEARS//,/ }; do
+  ldgr_file="$OUT_PATH/LDGR20${year}.csv"
+  perm_file="$OUT_PATH/PERM_TBL20${year}.csv"
+  if [[ -f "$ldgr_file" ]]; then
+    LDGR_ROW_COUNT=$(( LDGR_ROW_COUNT + $(count_data_rows "$ldgr_file") ))
+    LDGR_FILE_BYTES=$(( LDGR_FILE_BYTES + $(count_file_bytes "$ldgr_file") ))
+  fi
+  if [[ -f "$perm_file" ]]; then
+    PERMUTATION_ROWS=$(( PERMUTATION_ROWS + $(count_data_rows "$perm_file") ))
+  fi
+done
+for vf in "$OUT_PATH"/view_*.csv; do
+  [[ -f "$vf" ]] && VIEW_FILE_BYTES=$(( VIEW_FILE_BYTES + $(count_file_bytes "$vf") ))
+done
+
 log "======================================================================"
 log "Pipeline complete.  [$RUN_ID]"
 log "  total_compute_s     = $TOTAL_COMPUTE_S"
 log "  total_storage_bytes = $FINAL_STORAGE_BYTES"
 log "  master_file_count   = $MASTER_FILE_COUNT  (enabled=Y rows in ViewSpec.csv)"
+log "  capability_layer    = $CAPABILITY_LAYER"
+log "  period_granularity  = $COST_PERIOD_GRANULARITY"
+log "  materialization     = $COST_MATERIALIZATION"
+log "  ldgr_row_count      = $LDGR_ROW_COUNT"
+log "  ldgr_file_bytes     = $LDGR_FILE_BYTES"
+log "  view_file_bytes     = $VIEW_FILE_BYTES"
+log "  permutation_rows    = $PERMUTATION_ROWS"
 log "  cost_surface        = $COST_SURFACE"
 log "======================================================================"
 
 record_cost_point "$COST_SURFACE" "$RUN_ID" "$RUN_TS" "$CURVE" "$CONFIG_DESC" \
-  "$YEARS" "$STEPS" "$TOTAL_COMPUTE_S" "$FINAL_STORAGE_BYTES" "$MASTER_FILE_COUNT"
+  "$YEARS" "$STEPS" "$TOTAL_COMPUTE_S" "$FINAL_STORAGE_BYTES" "$MASTER_FILE_COUNT" \
+  "$CAPABILITY_LAYER" "$COST_PERIOD_GRANULARITY" "$COST_MATERIALIZATION" \
+  "$LDGR_ROW_COUNT" "$LDGR_FILE_BYTES" "$VIEW_FILE_BYTES" "$PERMUTATION_ROWS"
 
 log "Cost point recorded → $COST_SURFACE"
 
@@ -716,7 +872,12 @@ bash "$SCRIPT_DIR/write_canonical_evidence.sh" \
   --compute-seconds "$TOTAL_COMPUTE_S" \
   --log-file "$LOG_FILE" \
   --workload-profile "$WORKLOAD_PROFILE" \
-  --materialization-profile "$MATERIALIZATION_PROFILE"
+  --materialization-profile "$MATERIALIZATION_PROFILE" \
+  --period-granularity "$COST_PERIOD_GRANULARITY" \
+  --ldgr-row-count "$LDGR_ROW_COUNT" \
+  --ldgr-file-bytes "$LDGR_FILE_BYTES" \
+  --view-file-bytes "$VIEW_FILE_BYTES" \
+  --permutation-rows "$PERMUTATION_ROWS"
 
 bash "$SCRIPT_DIR/interpret_run.sh" \
   "${OUT_PATH%/}/metrics" \

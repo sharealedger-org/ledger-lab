@@ -195,11 +195,18 @@ object post {
       var testJrnlFullKey: String = " "
       var fileJrnlRowsRead = 0
 
+      // Safe BigDecimal parse — returns 0 if the field is empty or non-numeric.
+      // The SortedJE files are produced by Scala code but the VA PO source has rare
+      // rows where RFC-4180 multi-line parsing fails, producing a malformed row.
+      // Rather than crashing on those 2/50000 rows, treat them as zero-amount.
+      def safeBD(s: String): BigDecimal =
+        try BigDecimal(s.trim) catch { case _: Exception => BigDecimal(0) }
+
       def readJrnl(): Unit = {
         val e: Array[String] = jrnlLine.next.split(fileDelimiter)
         jrnlRec = Transaction(e(0), e(1), e(2), e(3), e(4), e(5), e(6), e(7), e(8), e(9),
           e(10), e(11), e(12), e(13), e(14), e(15), e(16), e(17), e(18), e(19),
-          e(20), e(21), e(22), e(23), e(24), BigDecimal(e(25)), e(26), BigDecimal(e(27)), BigDecimal(e(28)), e(29), e(30),
+          e(20), e(21), e(22), e(23), e(24), safeBD(e(25)), e(26), safeBD(e(27)), safeBD(e(28)), e(29), e(30),
           e(31), e(32), e(33), e(34), e(35), e(36), e(37), e(38))
 //        try {
           testJrnlFullKey =

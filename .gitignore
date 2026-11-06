@@ -11,6 +11,7 @@ logs/
 .bob/
 .idea/
 .vscode/
+!.vscode/settings.json
 __pycache__/
 *.pyc
 
@@ -31,3 +32,22 @@ zenodo_upload_progress.json
 
 # Local test data directories
 data/POTest/
+
+# Pipeline generation run archives (large output data — regenerate with run_pipeline.sh)
+data/*.generations/
+data/stage2*.log
+
+# Scratch / ad-hoc check scripts
+scripts/check_stage2.sh
+
+# Leftover symlink-swap staging dirs inside tracked output dirs
+data/output_validate_fy03/output_validate_fy03.next*/
+
+# Pipeline run outputs (multi-GB; never commit)
+data/output_validate_fy03/
+data/output_validate_fy03.generations/
+data/output_validate_fy03_step3only/
+data/output_validate_fy03_step3only.generations/
+
+
+.venv/

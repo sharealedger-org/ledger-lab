@@ -17,7 +17,12 @@ TOTAL_COMPUTE_S=""
 LOG_FILE=""
 WORKLOAD_PROFILE="legacy"
 MATERIALIZATION_PROFILE="unspecified"
+PERIOD_GRANULARITY="annual"
 STATUS="complete"
+LDGR_ROW_COUNT="0"
+LDGR_FILE_BYTES="0"
+VIEW_FILE_BYTES="0"
+PERMUTATION_ROWS="0"
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -35,6 +40,11 @@ while [[ $# -gt 0 ]]; do
     --log-file) LOG_FILE="$2"; shift 2 ;;
     --workload-profile) WORKLOAD_PROFILE="$2"; shift 2 ;;
     --materialization-profile) MATERIALIZATION_PROFILE="$2"; shift 2 ;;
+    --period-granularity) PERIOD_GRANULARITY="$2"; shift 2 ;;
+    --ldgr-row-count) LDGR_ROW_COUNT="$2"; shift 2 ;;
+    --ldgr-file-bytes) LDGR_FILE_BYTES="$2"; shift 2 ;;
+    --view-file-bytes) VIEW_FILE_BYTES="$2"; shift 2 ;;
+    --permutation-rows) PERMUTATION_ROWS="$2"; shift 2 ;;
     --status) STATUS="$2"; shift 2 ;;
     *) echo "Unknown option: $1" >&2; exit 1 ;;
   esac
@@ -114,7 +124,7 @@ RECONCILIATIONS="$METRICS_ROOT/reconciliation_results.csv"
 SORT_EVENTS="$METRICS_ROOT/sort_events.csv"
 SJE_ENGINE_METRICS="$METRICS_ROOT/sje_engine_metrics.csv"
 
-init_file "$RUN_MANIFEST" 'run_id,experiment_id,experiment_version,point_id,workload_profile,materialization_profile,curve,configuration_hash,rules_hash,viewspec_hash,input_snapshot_id,git_revision,engine_version,host_id,os_version,java_version,scala_version,start_time,end_time,wall_seconds,status,replicate_number'
+init_file "$RUN_MANIFEST" 'run_id,experiment_id,experiment_version,point_id,workload_profile,materialization_profile,period_granularity,curve,configuration_hash,rules_hash,viewspec_hash,input_snapshot_id,git_revision,engine_version,host_id,os_version,java_version,scala_version,start_time,end_time,wall_seconds,status,replicate_number,ldgr_row_count,ldgr_file_bytes,view_file_bytes,permutation_rows'
 init_file "$PROCESS_METRICS" 'run_id,process_id,parent_process_id,layer,process_name,engine_name,input_partition_ids,output_partition_ids,ckb_process_id,pass_id,start_time,end_time,wall_seconds,cpu_user_seconds,cpu_system_seconds,cpu_total_seconds,peak_rss_bytes,peak_jvm_heap_bytes,pageins,context_switches,input_rows,input_bytes,output_rows,output_bytes,spill_bytes,status'
 init_file "$PARTITION_CATALOG" 'run_id,partition_id,partition_type,logical_layer,producer_process_id,parent_partition_ids,path,row_count,byte_count,checksum,sorted,sort_spec_id,first_key,last_key,min_period,max_period,created_at'
 init_file "$RECONCILIATIONS" 'run_id,check_id,scope,partition_id,expected_value,actual_value,delta,rows_checked,status,failure_reason'
@@ -124,9 +134,11 @@ fi
 init_file "$SORT_EVENTS" 'run_id,sort_id,process_id,pass_id,input_partition_id,output_partition_id,sort_spec_id,sort_spec_hash,sort_key,input_rows,output_rows,input_bytes,output_bytes,chunk_size,spill_file_count,spill_bytes,peak_memory_bytes,elapsed_seconds,status'
 
 append_csv_row "$RUN_MANIFEST" \
-  "$RUN_ID" "legacy-va" "1" "$CURVE-$CONFIG_DESC" "$WORKLOAD_PROFILE" "$MATERIALIZATION_PROFILE" "$CURVE" "" "" "" "" \
+  "$RUN_ID" "legacy-va" "1" "$CURVE-$CONFIG_DESC" "$WORKLOAD_PROFILE" "$MATERIALIZATION_PROFILE" \
+  "$PERIOD_GRANULARITY" "$CURVE" "" "" "" "" \
   "$GIT_REVISION" "" "$HOST_ID" "$OS_VERSION" "" "2.12.20" "$RUN_TIMESTAMP" \
-  "$RUN_END_TIMESTAMP" "$WALL_SECONDS" "$STATUS" "1"
+  "$RUN_END_TIMESTAMP" "$WALL_SECONDS" "$STATUS" "1" \
+  "$LDGR_ROW_COUNT" "$LDGR_FILE_BYTES" "$VIEW_FILE_BYTES" "$PERMUTATION_ROWS"
 
 append_partition() {
   local partition_id="$1" partition_type="$2" logical_layer="$3"
@@ -157,6 +169,20 @@ append_process() {
   local input_rows="" output_rows="" input_bytes="" output_bytes=""
   local divisor_file="" divisor_partition=""
   case "$step" in
+    ttl)
+      # TTL writes multiple monthly SortedJE files; no single input/output file
+      input_partition="raw_apa_fy${short_year}"
+      output_partition="sje_apa_fy${short_year}"
+      # Sum rows and bytes across all monthly output files
+      output_rows=0
+      output_bytes=0
+      for sje_f in "$OUT_PATH/SortedJEFY${short_year}_"*"_exp.csv" \
+                   "$OUT_PATH/SortedJEFY${short_year}q"*"exp.csv"; do
+        [[ -f "$sje_f" ]] || continue
+        output_rows=$(( output_rows + $(file_data_rows "$sje_f") ))
+        output_bytes=$(( output_bytes + $(file_bytes "$sje_f") ))
+      done
+      ;;
     2)
       input_file="$IN_PATH/FY${short_year}q1exp.txt"
       output_file="$OUT_PATH/SortedJEFY${short_year}q1exp.csv"
@@ -246,8 +272,9 @@ append_process() {
       ;;
     *) return 0 ;;
   esac
-  input_bytes="$(file_bytes "$input_file")"
-  output_bytes="$(file_bytes "$output_file")"
+  # Only overwrite bytes from files when they are set; ttl pre-computes its own totals.
+  [[ -n "$input_file" ]]  && input_bytes="$(file_bytes "$input_file")"
+  [[ -n "$output_file" ]] && output_bytes="$(file_bytes "$output_file")"
   step_result="$(grep -E "RESULT step=${step} year=${year} " "$LOG_FILE" | tail -1 || true)"
   step_elapsed="$(result_value "$step_result" elapsed_s)"
   reported_input_rows="$(result_value "$step_result" records_read)"
@@ -296,7 +323,16 @@ append_process() {
     "$process_name" "$engine_name" "$input_partition" "$output_partition" "" "$step" \
     "$RUN_TIMESTAMP" "$RUN_END_TIMESTAMP" "$step_elapsed" "" "" "" "$peak_rss_bytes" "" "" "" \
     "$input_rows" "$input_bytes" "$output_rows" "$output_bytes" "" "complete"
-  if [[ "$step" == "2" ]]; then
+  if [[ "$step" == "ttl" ]]; then
+    for sje_f in "$OUT_PATH/SortedJEFY${short_year}_"*"_exp.csv" \
+                 "$OUT_PATH/SortedJEFY${short_year}q"*"exp.csv"; do
+      [[ -f "$sje_f" ]] || continue
+      local sje_name
+      sje_name="sje_apa_fy${short_year}_$(basename "${sje_f%.csv}")"
+      append_partition "$sje_name" "sje" "01-transformation" "$process_id" \
+        "$input_partition" "$sje_f" "$(file_data_rows "$sje_f")" "Y" "SortedJE"
+    done
+  elif [[ "$step" == "2" ]]; then
     append_partition "$input_partition" "raw_source" "01-transformation" "$process_id" "" \
       "$input_file" "$input_rows" "" ""
     append_partition "$output_partition" "sje" "02-foundation" "$process_id" "$input_partition" \
