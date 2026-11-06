@@ -413,6 +413,7 @@ object standardizeAndSort {
     new File(tmpDir).mkdirs()
 
     var sourceRows    = 0L
+    var skippedRows   = 0L   // address-fragment column-shift quarantine count
     var totalRows     = 0L
     var totalAmt      = BigDecimal(0)
     var jrnlID        = 0
@@ -470,13 +471,23 @@ object standardizeAndSort {
               ds.matches("\\d{1,2}/\\d{1,2}/\\d{4}") || ds.isEmpty
             }
             if (colsOk) {
-              sourceRows += 1
-              jrnlID     += 1
               // Tab-delimited PO source uses RFC-4180 quoting: string fields are wrapped
               // in double-quotes.  Strip those outer quotes before use so they never
               // appear inside the comma-delimited SortedJE output rows.
               def unq(s: String): String = s.stripPrefix("\"").stripSuffix("\"")
               val poNumber   = unq(cols(0))
+              // Pre-SJE address-fragment guard: multi-line vendor addresses (city/state/ZIP
+              // on a separate physical line) survive RFC-4180 reassembly but cause a column
+              // shift that places the state+ZIP fragment in the PONUMBER field.
+              // Pattern: optional whitespace, two uppercase letters, whitespace, five digits.
+              // Rows matching this pattern are quarantined here — no SJE rows emitted.
+              if (poNumber.matches("\\s*[A-Z]{2}\\s+\\d{5}.*")) {
+                skippedRows += 1
+                Console.err.println(s"[applyPO] QUARANTINE address-fragment in PONUMBER field" +
+                  s" (row ~${sourceRows + skippedRows}): '$poNumber' — skipping row")
+              } else {
+              sourceRows += 1
+              jrnlID     += 1
               val agency     = unq(cols(1))
               val ordDate    = if (cols(2).nonEmpty) unq(cols(2)) else acctDate
               val commDesc   = if (cols.length > 3) unq(cols(3)).replace(",", " ") else " "
@@ -511,6 +522,7 @@ object standardizeAndSort {
               totalAmt  += amt + (-amt)   // always 0; tracked for control assertion
               pending = debitRow :: creditRow :: Nil
               return true
+              } // end address-fragment else branch
             }
           }
         }
@@ -543,10 +555,11 @@ object standardizeAndSort {
 
     println(f"\nControl totals:")
     println(f"  PO source rows read : $sourceRows%,d")
+    println(f"  Address-frag skipped: $skippedRows%,d  (MULTILINE_ADDRESS_FIELD_SHIFT quarantine)")
     println(f"  SJE rows produced   : $rowsWritten%,d  (= 2 × source rows)")
     println(f"  Spill files used    : $spillCount%d")
     println(f"  Sum of all amounts  : $totalAmt%.2f  (should be 0.00)")
-    println(s"\nRESULT step=2p year=$yearStr rc=0 records_read=$sourceRows records_written=$rowsWritten elapsed_s=$elapsedS input_bytes=$inBytes output_bytes=$outBytes")
+    println(s"\nRESULT step=2p year=$yearStr rc=0 records_read=$sourceRows records_written=$rowsWritten skipped_address_fragment=$skippedRows elapsed_s=$elapsedS input_bytes=$inBytes output_bytes=$outBytes")
     println(s"RESOURCE step=2p year=$yearStr peak_rss_bytes=$peakRss")
     println("STATUS: COMPLETE")
     println("*" * 100)

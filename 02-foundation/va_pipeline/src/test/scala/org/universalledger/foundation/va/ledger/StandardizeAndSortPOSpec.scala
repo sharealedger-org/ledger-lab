@@ -172,7 +172,72 @@ class StandardizeAndSortPOSpec extends AnyFunSuite {
     }
   }
 
-  // ── Test 6: Step 2m merges payment + PO files in sort order ─────────────────
+  // ── Test 6: address-fragment rows are quarantined — no SJE emitted ──────────
+  //  A malformed PO row whose PONUMBER field contains a state+ZIP fragment
+  //  (e.g. " CT 06511") caused by a multi-line vendor address must be dropped
+  //  at ingestion.  The output file must be empty; sourceRows = 0.
+  test("Step 2p: address-fragment PONUMBER is quarantined, produces 0 SJE rows") {
+    withTempDirectory("po-2p-addrfrag-") { tempDir =>
+      val inDir  = Files.createDirectory(tempDir.resolve("in"))
+      val outDir = Files.createDirectory(tempDir.resolve("out"))
+      // Simulate a column-shifted row where state+ZIP lands in PONUMBER position.
+      // After RFC-4180 reassembly the PONUMBER tab-field contains " CT 06511".
+      val malformedRow =
+        " CT 06511\tVirginia Department of General Services\t10/08/2002\t" +
+        "Internal Standard\t1\t0\tBAD_VENDOR\t" +
+        "AccuStandard\t25 Science Park\tNew Haven\tCT\t06511\t\t39382\t\tEA\teach\t\t"
+      writePOFile(inDir, malformedRow)
+
+      val errOut = new java.io.ByteArrayOutputStream()
+      Console.withErr(new java.io.PrintStream(errOut)) {
+        standardizeAndSort.applyPO(Map(
+          "inPath"  -> inDir.toString,
+          "outPath" -> outDir.toString,
+          "year"    -> "2003",
+          "quarter" -> "1"
+        ))
+      }
+
+      val outFile = outDir.resolve("SortedJEFY03q1PO.csv")
+      val src  = scala.io.Source.fromFile(outFile.toFile, "UTF-8")
+      val rows = try src.getLines().filter(_.trim.nonEmpty).toVector finally src.close()
+
+      assert(rows.isEmpty, s"Expected 0 SJE rows for quarantined address-fragment row; got ${rows.length}")
+      val errMsg = errOut.toString("UTF-8")
+      assert(errMsg.contains("QUARANTINE"), s"Expected QUARANTINE log in stderr; got: $errMsg")
+    }
+  }
+
+  // ── Test 7: address-fragment row is skipped but sibling rows still emit ──────
+  test("Step 2p: address-fragment row is skipped; adjacent well-formed rows still emit") {
+    withTempDirectory("po-2p-addrfrag-mixed-") { tempDir =>
+      val inDir  = Files.createDirectory(tempDir.resolve("in"))
+      val outDir = Files.createDirectory(tempDir.resolve("out"))
+      val malformedRow =
+        " PA 16823\tVirginia Department of General Services\t10/08/2002\t" +
+        "Capillary Ferrules\t1\t0\tBAD_VENDOR\t" +
+        "Restek\t110 Benner Circle\tBellefonte\tPA\t16823\t\t08015\t\tEA\teach\t\t"
+      writePOFile(inDir, poRow1, malformedRow, poRow2)
+
+      standardizeAndSort.applyPO(Map(
+        "inPath"  -> inDir.toString,
+        "outPath" -> outDir.toString,
+        "year"    -> "2003",
+        "quarter" -> "1"
+      ))
+
+      val src  = scala.io.Source.fromFile(outDir.resolve("SortedJEFY03q1PO.csv").toFile, "UTF-8")
+      val rows = try src.getLines().filter(_.trim.nonEmpty).toVector finally src.close()
+
+      // poRow1 + poRow2 produce 4 SJE rows; malformedRow is quarantined → 4 rows total
+      assert(rows.length == 4, s"Expected 4 rows (2 well-formed × 2 SJE); got ${rows.length}")
+      // Amounts must still sum to 0
+      val amounts = rows.map(r => BigDecimal(r.split(",", -1)(25)))
+      assert(amounts.sum == BigDecimal(0), s"Amounts should sum to 0; got ${amounts.sum}")
+    }
+  }
+
+  // ── Test 8: Step 2m merges payment + PO files in sort order ─────────────────
   test("Step 2m: mergeSpills produces a merged file with all rows in sort order") {
     withTempDirectory("po-2m-merge-") { tempDir =>
       val inDir  = Files.createDirectory(tempDir.resolve("in"))
