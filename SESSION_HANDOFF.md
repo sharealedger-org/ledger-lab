@@ -2942,3 +2942,11 @@ Open decisions for the owner:
 1. Remove or rebuild the stale seed ledger before monthly runs (a seedless CCP3 run should confirm 0.00).
 2. Should an empty PRICE be quarantined, or only a non-empty non-numeric one? Identify the 8 unexplained quarantined rows first.
 3. On Windows, `commit_attempt` appears to copy instead of symlink; consider a different retention approach.
+
+## 2026-11-06 (end of session) History rewrite and push (Bob)
+
+Push was rejected by GitHub (GH001, files over 100 MB). Cause: earlier unpushed commits had added run outputs under `data/output_validate_fy03*` (several 660-770 MB CSVs). Rewrote the 9 unpushed commits with `git filter-branch` (done in a bare clone) to drop `data/output_validate_fy03`, `data/output_validate_fy03.generations`, `data/output_validate_fy03_step3only` and `data/output_validate_fy03_step3only.generations`. `origin/main` had none of those paths, so no published history changed. Added those four directories to `.gitignore`. Pushed: `d48f584..de8bbb2`.
+
+- Branch `backup/pre-rewrite-20261106` still holds the original commits with the large blobs. Do NOT push it. Delete when no longer needed.
+- Local run output directories remain on disk, untracked and ignored.
+- Still open (see entries above): stale seed ledger gives ledger sum 6.00; PRICE guard quarantines 17 rows, not 4 (empty-price rows); Windows `commit_attempt` copies instead of symlinking.
