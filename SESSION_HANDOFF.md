@@ -1226,6 +1226,38 @@ Open items:
 
 ---
 
+## 2026-11-06 Full-Volume Local Data Discovery, Step 2p Sanitization & FY03 Test Run (Bob - Mac)
+
+**What was accomplished this session.**
+
+1. **Full-Volume Local Dataset Discovery & Verification:**
+   - Located uncompressed full-volume historical datasets at `/Users/ktwitchell001/workspace/universal_ledger_data/data` (FY03–FY13 expenditure files `FY03q1exp.txt`–`FY13rev.txt`, PO files FY01–FY18 `VA_opendata_FY2001.txt`–`VA_opendata_FY2018.txt`, and reference tables).
+   - Additional format archives verified at `/Users/ktwitchell001/workspace/ConversationsWithKip/data` (FY03–FY16 payments, FY17–FY18 monthly APA files).
+
+2. **Branch Synchronization:**
+   - Created/switched to local `oldmac` branch synchronized with `main` / `origin/main` (`d48f584`).
+
+3. **Pipeline Runner & Smoke Test Fixes:**
+   - `scripts/run_pipeline.sh`: Fixed bug where `local rc=$?` was captured after `[[ "$_tee_target" != /dev/stderr ]] && rm -f "$_tee_target"`, which clobbered exit code 0 to 1 on macOS. Now captures `$?` immediately.
+   - `scripts/run_pipeline.sh`: Added fallback in `vm_candidate` loop to look in `$REPO_ROOT/data/VendorMaster.csv` when `--inPath` points to an external raw data folder.
+   - `scripts/run_repo_fixture_smoke_test.sh`: Updated metric assertion expected row counts (442 ledger rows, 246 allocation rows) reflecting the transIPID instrument resolution. Smoke tests pass 100% (both baseline and `--with-allocation`).
+
+4. **PO Data Sanitization & Field Alignment in Step 2p:**
+   - `standardizeAndSort.scala` (`applyPO`, `makePORow`, `tryBigDecimal`): Fixed field extraction for tab-delimited PO files (`VA_opendata_FY*.txt`). Stripped outer quotation marks and sanitized embedded commas in commodity descriptions and vendor identifiers to preserve exact 39-column CSV structure for `post.scala`.
+   - All 51 test specifications in unit suite pass (`sbt test`).
+
+5. **Full-Volume FY2003 Test Run (Steps 2, 2p, 3, 5v):**
+   - **Step 2:** `FY03q1exp.txt` (63.4 MB, 1,421,582 source rows) → 2,843,164 balanced SJE lines across 15 external sort spills into `SortedJEFY03q1exp.csv` (655.5 MB) in 151s.
+   - **Step 2p:** `VA_opendata_FY2003.txt` (16.3 MB, 53,559 PO rows) → 107,118 balanced SJE lines into `SortedJEFY03q1PO.csv` (27.5 MB) in 9s.
+   - **Step 3 (Post):** 2,950,282 total SJE records posted in 17s → 48,180 Instrument Ledger records in `LDGR2003.csv` (6.6 MB), net balance sum = 0.00.
+   - **Step 5v (CKB Views):** Extracted all 4 analytical views from the 2.95M SJE stream in 16s:
+     - `view_monthly_order_volume.csv`: 10,385 rows
+     - `view_vendor_year_survival.csv`: 1,985 vendor rows with 8-char SHA-256 surrogate keys
+     - `view_agency_year_commodity_mix.csv`: 5,889 rows
+     - `view_agency_year_payment_totals.csv`: 32,352 rows
+
+---
+
 ## 2026-11-04 Cost surface design — three axes (Bob)
 
 **What was decided this session.**
