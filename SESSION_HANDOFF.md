@@ -4,6 +4,59 @@ Updated 2026-11-06. This file is a concise state snapshot; use the linked design
 
 ---
 
+## 2026-11-06 CCP1+CCP2+CCP3 cost points locked; parser hardening (Bob)
+
+**What was done this session.**
+
+### CCP runs — all three cost points locked
+
+| Run | Curve | Steps | Compute | ldgr_rows | perm_rows | Exit |
+|-----|-------|-------|---------|-----------|-----------|------|
+| run_20261106_032448_834 | CCP3 | ttl,2p,2m,3,5v,20,21 | 662s | 346,040 | 283,586 | 0 ✅ |
+| run_20261106_034825_274 | CCP1 | ttl,2p,2m,20,21       | ~610s | 55,151 (seeded) | 283,586 | 0 ✅ |
+| run_20261106_041306_928 | CCP2 | ttl,2p,2m,3           | ~520s | 346,040 | 0      | 0 ✅ |
+
+`peak_rss_bytes=1073741824` populated for all steps in all three runs.
+Step 2p: `records_read=25,129` in all three runs (2 address-fragment records filtered by new guard).
+
+### Parser hardening — address-fragment pre-SJE guard
+
+[`standardizeAndSort.applyPO`](02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/ledger/standardizeAndSort.scala) now filters rows where PONUMBER matches `\s*[A-Z]{2}\s+\d{5}.*`. FY2003: 2 records skipped, 4 still pass through via `safeBD` path. `$18.00` delta persists — extended guard needed for the remaining 4 records (those get absorbed into the preceding logical line by the RFC-4180 quote-counting loop; their column shift isn't visible at the PONUMBER field level).
+
+Two new tests in [`StandardizeAndSortPOSpec`](02-foundation/va_pipeline/src/test/scala/org/universalledger/foundation/va/ledger/StandardizeAndSortPOSpec.scala): Tests 6 and 7. **8/8 pass.** Full suite 51/53 (2 pre-existing `CurrencyRevaluationSpec` Windows races).
+
+### Disk space
+
+The generation manager creates a `legacy.*` archive on every successful commit, accumulating ~6 GB per run. Two manual cleanups done this session (freeing 43 GB total). The `.generations/` directory needs a retention policy — currently only the two most recent runs need to be kept.
+
+Commit: `7e7e56f` — "2026-11-06 CCP1+CCP2+CCP3 cost points locked; parser hardening; audit register updated"
+
+### Next session — start here
+
+1. **Extended parser hardening (open):** The remaining 4 of 6 malformed FY2003 PO records
+   pass through the address-fragment guard because their city/state/ZIP line gets absorbed
+   into the preceding logical record by the RFC-4180 quote-counting loop. They produce
+   well-formed logical rows with valid PO numbers in `cols(0)`, but wrong values in `cols(5)`
+   (price = non-numeric like `"USD"` or `"03"`). Guard: after passing the address-fragment
+   check, also verify `tryBigDecimal(cols, 5, null) != null` — if price is non-parseable AND
+   `cols(0)` looks like a real PO number, quarantine the row. This would close the $18.00
+   delta and reduce `records_read` from 25,129 to ~25,125.
+
+2. **`.generations/` retention policy:** Add cleanup of old `legacy.*` directories (keep
+   last 2) either at the end of `run_pipeline.sh` commit_attempt or as a separate script.
+   Without it, each run uses ~6 GB and archives accumulate indefinitely.
+
+3. **CCP2 timing note:** CCP2 (step 3 only, no views/permutations) ran in ~520s vs CCP3 662s.
+   The delta (142s) is the cost of steps 5v+20+21. Record these as formal CCP1/CCP2/CCP3
+   cost-surface comparisons once a second replicate is available.
+
+4. **Sub-Task 4 Python AIM scripts (approved):** Implement AIM1/3/4 against `GL2003.csv`,
+   `PERM_TBL2003.csv`, and the four view files from `run_20261106_032448_834`.
+
+5. **VERIFICATION_AUDIT_REGISTER.md:** Add CCP2 run evidence (run_20261106_041306_928).
+
+---
+
 ## 2026-11-06 Malformed PO quarantine complete; clean CCP3 re-run in progress (Bob)
 
 **What was done this session.**
