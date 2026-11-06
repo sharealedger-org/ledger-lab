@@ -485,6 +485,17 @@ object standardizeAndSort {
                 skippedRows += 1
                 Console.err.println(s"[applyPO] QUARANTINE address-fragment in PONUMBER field" +
                   s" (row ~${sourceRows + skippedRows}): '$poNumber' — skipping row")
+              } else if (tryBigDecimal(cols, 5, null.asInstanceOf[BigDecimal]) == null && poNumber.matches(".*\\d.*")) {
+                // Extended guard: price field (col 5) is non-numeric AND poNumber contains
+                // digits — row survived RFC-4180 reassembly as a well-formed logical record
+                // but the column-shift from a multi-line vendor address placed garbage in the
+                // price field.  These rows produce safeBD-zeroed SJE pairs that are not
+                // balanced (debit and credit map to different commitment keys) and contribute
+                // to the $18.00 ledger delta.  Quarantine here — no SJE rows emitted.
+                skippedRows += 1
+                Console.err.println(s"[applyPO] QUARANTINE non-numeric price field" +
+                  s" (row ~${sourceRows + skippedRows}): poNumber='$poNumber'" +
+                  s" price='${if (cols.length > 5) cols(5) else "missing"}' — skipping row")
               } else {
               sourceRows += 1
               jrnlID     += 1
@@ -555,11 +566,11 @@ object standardizeAndSort {
 
     println(f"\nControl totals:")
     println(f"  PO source rows read : $sourceRows%,d")
-    println(f"  Address-frag skipped: $skippedRows%,d  (MULTILINE_ADDRESS_FIELD_SHIFT quarantine)")
+    println(f"  Rows quarantined    : $skippedRows%,d  (address-fragment + non-numeric-price guards)")
     println(f"  SJE rows produced   : $rowsWritten%,d  (= 2 × source rows)")
     println(f"  Spill files used    : $spillCount%d")
     println(f"  Sum of all amounts  : $totalAmt%.2f  (should be 0.00)")
-    println(s"\nRESULT step=2p year=$yearStr rc=0 records_read=$sourceRows records_written=$rowsWritten skipped_address_fragment=$skippedRows elapsed_s=$elapsedS input_bytes=$inBytes output_bytes=$outBytes")
+    println(s"\nRESULT step=2p year=$yearStr rc=0 records_read=$sourceRows records_written=$rowsWritten skipped_quarantine=$skippedRows elapsed_s=$elapsedS input_bytes=$inBytes output_bytes=$outBytes")
     println(s"RESOURCE step=2p year=$yearStr peak_rss_bytes=$peakRss")
     println("STATUS: COMPLETE")
     println("*" * 100)

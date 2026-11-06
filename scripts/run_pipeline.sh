@@ -177,6 +177,62 @@ commit_attempt() {
   else
     mv "$next_link" "$final_dir"
   fi
+  # Prune old generations after a successful commit (keep last 2).
+  prune_old_generations "$ATTEMPT_ROOT" 2
+}
+
+# Prune old generations — keep the two most recent run_* directories plus the
+# one currently symlinked from the committed path.  Legacy.* directories older
+# than the retained run_* dirs are also removed.
+# Called automatically at the end of commit_attempt.
+prune_old_generations() {
+  local attempt_root="$1"
+  local keep="${2:-2}"        # number of run_* dirs to keep (default: 2)
+  [[ -d "$attempt_root" ]] || return 0
+
+  # Collect all run_* dirs sorted newest-first (by last-modification time).
+  local dirs=()
+  while IFS= read -r d; do
+    dirs+=("$d")
+  done < <(find "$attempt_root" -maxdepth 1 -type d -name 'run_*' \
+             | xargs -d '\n' ls -dt 2>/dev/null)
+
+  local n=${#dirs[@]}
+  if [[ $n -le $keep ]]; then
+    return 0
+  fi
+
+  # Remove all beyond the most-recent $keep entries.
+  local removed=0
+  for (( i=keep; i<n; i++ )); do
+    local dir="${dirs[$i]}"
+    # Safety check: never remove the directory currently pointed to by a symlink.
+    local resolved
+    resolved="$(readlink -f "$attempt_root/../output_validate_fy03" 2>/dev/null || true)"
+    [[ "$resolved" == "$dir" ]] && continue
+    echo "[prune_generations] Removing old run dir: $dir"
+    rm -rf "$dir"
+    (( removed++ ))
+  done
+
+  # Also prune legacy.* directories that are no longer referenced by any symlink.
+  while IFS= read -r ldir; do
+    # Check if any symlink in attempt_root points to this legacy dir.
+    local referenced=0
+    while IFS= read -r lnk; do
+      if [[ "$(readlink -f "$lnk" 2>/dev/null)" == "$ldir" ]]; then
+        referenced=1; break
+      fi
+    done < <(find "$attempt_root" -maxdepth 1 -type l 2>/dev/null)
+    if [[ $referenced -eq 0 ]]; then
+      echo "[prune_generations] Removing unreferenced legacy dir: $ldir"
+      rm -rf "$ldir"
+      (( removed++ ))
+    fi
+  done < <(find "$attempt_root" -maxdepth 1 -type d -name 'legacy.*' 2>/dev/null)
+
+  [[ $removed -gt 0 ]] && echo "[prune_generations] Pruned $removed old generation(s) from $attempt_root"
+  return 0
 }
 
 # The engine now lives below the repository root. Normalize relative data paths

@@ -237,7 +237,72 @@ class StandardizeAndSortPOSpec extends AnyFunSuite {
     }
   }
 
-  // ── Test 8: Step 2m merges payment + PO files in sort order ─────────────────
+  // ── Test 8: non-numeric price field (column-shift variant) is quarantined ────
+  //  Rows where the PONUMBER looks like a valid PO number but cols(5) (PRICE)
+  //  contains non-numeric content (e.g. "USD", "03") are column-shifted artifacts
+  //  from RFC-4180 multi-line address absorption.  They must be quarantined at
+  //  ingestion — no SJE rows emitted.
+  test("Step 2p: non-numeric price field is quarantined, produces 0 SJE rows") {
+    withTempDirectory("po-2p-badprice-") { tempDir =>
+      val inDir  = Files.createDirectory(tempDir.resolve("in"))
+      val outDir = Files.createDirectory(tempDir.resolve("out"))
+      // Simulate the column-shift that leaves a non-numeric value in the PRICE
+      // column: poNumber is valid, but price contains "USD" (column-shifted text).
+      val badPriceRow =
+        "DO38861\tVirginia Department of General Services\t10/08/2002\t" +
+        "Analyte Standard\t1\tUSD\tBAD_VENDOR\t" +
+        "AccuStandard\t25 Science Park\tNew Haven\tCT\t06511\t\t08015\t\tEA\teach\t\t"
+      writePOFile(inDir, badPriceRow)
+
+      val errOut = new java.io.ByteArrayOutputStream()
+      Console.withErr(new java.io.PrintStream(errOut)) {
+        standardizeAndSort.applyPO(Map(
+          "inPath"  -> inDir.toString,
+          "outPath" -> outDir.toString,
+          "year"    -> "2003",
+          "quarter" -> "1"
+        ))
+      }
+
+      val outFile = outDir.resolve("SortedJEFY03q1PO.csv")
+      val src  = scala.io.Source.fromFile(outFile.toFile, "UTF-8")
+      val rows = try src.getLines().filter(_.trim.nonEmpty).toVector finally src.close()
+
+      assert(rows.isEmpty, s"Expected 0 SJE rows for quarantined bad-price row; got ${rows.length}")
+      val errMsg = errOut.toString("UTF-8")
+      assert(errMsg.contains("QUARANTINE"), s"Expected QUARANTINE log in stderr; got: $errMsg")
+    }
+  }
+
+  // ── Test 9: bad-price row skipped; adjacent well-formed rows still emit ───────
+  test("Step 2p: non-numeric price row is skipped; adjacent well-formed rows still emit") {
+    withTempDirectory("po-2p-badprice-mixed-") { tempDir =>
+      val inDir  = Files.createDirectory(tempDir.resolve("in"))
+      val outDir = Files.createDirectory(tempDir.resolve("out"))
+      val badPriceRow =
+        "DO38798\tVirginia Department of General Services\t10/08/2002\t" +
+        "Capillary Ferrules\t1\tUSD\tBAD_VENDOR\t" +
+        "Restek\t110 Benner Circle\tBellefonte\tPA\t16823\t\t08015\t\tEA\teach\t\t"
+      writePOFile(inDir, poRow1, badPriceRow, poRow2)
+
+      standardizeAndSort.applyPO(Map(
+        "inPath"  -> inDir.toString,
+        "outPath" -> outDir.toString,
+        "year"    -> "2003",
+        "quarter" -> "1"
+      ))
+
+      val src  = scala.io.Source.fromFile(outDir.resolve("SortedJEFY03q1PO.csv").toFile, "UTF-8")
+      val rows = try src.getLines().filter(_.trim.nonEmpty).toVector finally src.close()
+
+      // poRow1 + poRow2 produce 4 SJE rows; badPriceRow is quarantined → 4 rows total
+      assert(rows.length == 4, s"Expected 4 rows (2 well-formed × 2 SJE); got ${rows.length}")
+      val amounts = rows.map(r => BigDecimal(r.split(",", -1)(25)))
+      assert(amounts.sum == BigDecimal(0), s"Amounts should sum to 0; got ${amounts.sum}")
+    }
+  }
+
+  // ── Test 10: Step 2m merges payment + PO files in sort order ─────────────────
   test("Step 2m: mergeSpills produces a merged file with all rows in sort order") {
     withTempDirectory("po-2m-merge-") { tempDir =>
       val inDir  = Files.createDirectory(tempDir.resolve("in"))

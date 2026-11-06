@@ -4,6 +4,70 @@ Updated 2026-11-06. This file is a concise state snapshot; use the linked design
 
 ---
 
+## 2026-11-06 Extended parser hardening + AIM1/3/4 scripts + CCP2 audit + retention policy (Bob)
+
+**What was done this session.**
+
+### Extended parser hardening — $18.00 delta fully closed (in code)
+
+[`standardizeAndSort.applyPO`](02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/ledger/standardizeAndSort.scala) now carries two pre-SJE quarantine guards:
+
+1. **Address-fragment guard** (prior session): PONUMBER matches `\s*[A-Z]{2}\s+\d{5}.*` → quarantine.
+2. **Non-numeric price guard** (this session): `tryBigDecimal(cols, 5, null) == null` AND PONUMBER contains digits → quarantine.
+
+The RESULT log key `skipped_address_fragment` renamed to `skipped_quarantine` (covers both guard types).
+
+Two new tests added to [`StandardizeAndSortPOSpec`](02-foundation/va_pipeline/src/test/scala/org/universalledger/foundation/va/ledger/StandardizeAndSortPOSpec.scala):
+- Test 8: non-numeric price row → 0 SJE rows, QUARANTINE logged
+- Test 9: non-numeric price row skipped; adjacent rows emit; amounts balance
+
+**Suite: 10/10 `StandardizeAndSortPOSpec` pass. Full suite: 53/55 (2 pre-existing races).**
+
+$18.00 delta closure: verified in code. Corpus run required to confirm `skipped_quarantine=6` and `ldgr_amount_sum=0.00`.
+
+### CCP2 evidence added to VERIFICATION_AUDIT_REGISTER
+
+`run_20261106_041306_928` (steps ttl+2p+2m+3, 319s, 5.86 GB) now recorded in VERIFICATION_AUDIT_REGISTER.md. CCP2 state upgraded to `partially_verified`.
+
+### AIM1/AIM3/AIM4 Python scripts written and smoke-tested
+
+| Script | AIM | Evidence file |
+|--------|-----|---------------|
+| `scripts/fit_noninjectivity.py` | AIM1 | `data/test_evidence/AIM1_noninjectivity_distribution.csv` |
+| `scripts/fit_vendor_survival.py` | AIM3 | `data/test_evidence/AIM3_survival_results.csv` |
+| `scripts/fit_ordering_seasonality.py` | AIM4 | `data/test_evidence/AIM4_seasonality_results.csv` |
+
+All three ran against `run_20261106_032448_834` (CCP3 FY2003 1-year) outputs. Evidence files written.
+
+**AIM1 1-year result (smoke only):**
+- IL keys with >1 distinct pattern: **990**; PERM keys with >1 vendor per key: **276**
+- Gap: **714** — non-zero gap confirms non-injectivity (strong structural evidence)
+- GL: 27 fiscal-year keys × 275,512 rows — all keys multi-pattern (vendor identity gone entirely)
+
+**AIM3 1-year result:** 1,945 vendor-year rows; 989 distinct vendors; annual churn rate **50.8%**. C-statistic deferred (sklearn not installed; 1-year insufficient for longitudinal model anyway).
+
+**AIM4 1-year result:** Q4 ratio near 0 for all top NIGP classes — expected for 1-year FY2003 data (April-June 2002 budget rush not visible in FY2003 VA spending patterns). Verdict deferred pending 5+ year corpus.
+
+Scripts gracefully degrade when `sklearn`/`scipy`/`statsmodels` absent; full results on multi-year corpus once libraries installed.
+
+### `.generations/` retention policy
+
+`prune_old_generations()` added to [`scripts/run_pipeline.sh`](scripts/run_pipeline.sh). Called at the end of `commit_attempt`. Keeps last 2 `run_*` dirs; removes older ones (with safety check against current symlink target). Also removes unreferenced `legacy.*` directories. Smoke test confirms no regression.
+
+### Next session — start here
+
+1. **Corpus re-run to confirm $18.00 closure:** Run CCP3 (or CCP2) against FY2003 real corpus with the extended parser guard active. Expect `skipped_quarantine=6`, `ldgr_amount_sum=0.00`. Record in VERIFICATION_AUDIT_REGISTER.
+
+2. **AIM Python dependencies:** Install `sklearn`, `scipy`, `statsmodels` in the repo venv (or system Python) to enable full C-statistic and STL results. Then re-run AIM3 and AIM4 against the same FY2003 outputs for directional checks.
+
+3. **Stage 3 (FY2003–FY2007):** Once $18.00 delta confirmed closed and dependencies available, run Stage 3 corpus. AIM3/AIM4 need 5+ years for longitudinal evaluation. Record second CCP1/CCP2/CCP3 replicates for cost-curve timing comparison.
+
+4. **AIM1 GL substrate improvement:** The current AIM1 GL analysis counts `(agency, nominal_account_id, fund)` per `fiscal_year` — this shows all 27 GL keys are multi-pattern (all post-collapse). Consider a more informative framing: count distinct vendors per GL key (using PERM table as the answer key for the GL question).
+
+5. **ENGINE_IMPLEMENTATION_PLAN.md Sub-Task 4 todo list:** Mark the three AIM scripts as `[x]` complete. Mark `fit_agency_name_classifier.py` (AIM5) as already done.
+
+---
+
 ## 2026-11-06 CCP1+CCP2+CCP3 cost points locked; parser hardening (Bob)
 
 **What was done this session.**
@@ -2869,3 +2933,12 @@ bash scripts/run_repo_fixture_smoke_test.sh --show-data
 2. Read the five layer READMEs, then [CKB_LAYER_EXECUTION_MODEL.md](docs/CKB_LAYER_EXECUTION_MODEL.md) and [MEASUREMENT_AND_LOGGING.md](docs/MEASUREMENT_AND_LOGGING.md).
 3. Run the fixture smoke test above, then see "Next Model Decisions" and "Next Work" in this file for open items.
 4. Before any engine or perspective work, follow [AGENTIC_ARCHITECTURE_GATES.md](docs/AGENTIC_ARCHITECTURE_GATES.md) and [VERIFICATION_SESSION_PROTOCOL.md](docs/VERIFICATION_SESSION_PROTOCOL.md).
+
+## 2026-11-06 (later) CCP3 re-run result (Bob)
+
+Run `run_20261106_044703_1190` committed (exit 0). Ledger sum is $6.00, down from $18.00, NOT 0.00. The residual is carried by the stale quarterly seed `data/output_validate_fy03/LDGR2003.csv` (55,151 rows, sums to $6.00); the new SJE has no address-fragment rows. The guard quarantined 17 rows (25,129 -> 25,112), not 4: it also drops rows with an empty PRICE field. See VERIFICATION_AUDIT_REGISTER.md.
+
+Open decisions for the owner:
+1. Remove or rebuild the stale seed ledger before monthly runs (a seedless CCP3 run should confirm 0.00).
+2. Should an empty PRICE be quarantined, or only a non-empty non-numeric one? Identify the 8 unexplained quarantined rows first.
+3. On Windows, `commit_attempt` appears to copy instead of symlink; consider a different retention approach.

@@ -538,16 +538,16 @@ method, key metric, threshold, pass/fail verdict, and run timestamp. No script r
 PO `.txt` files or APA expenditure CSVs.
 
 **Todo list:**
-- [ ] Confirm Sub-Task 3 view tables are available before writing any Python
-- [ ] Set up `.venv` with required libraries: `statsmodels`, `scikit-learn`, `scipy`
-- [ ] Write and run `scripts/fit_noninjectivity.py` (AIM1 — primary)
-- [ ] Write and run `scripts/fit_vendor_survival.py` (AIM3 — primary)
-- [ ] Write and run `scripts/fit_ordering_seasonality.py` (AIM4 — primary)
-- [ ] Write and run `scripts/fit_agency_name_classifier.py` (AIM5 — infrastructure, unblocks AIM2)
+- [x] Confirm Sub-Task 3 view tables are available before writing any Python
+- [ ] Set up `.venv` with required libraries: `statsmodels`, `scikit-learn`, `scipy` (deferred — scripts degrade gracefully)
+- [x] Write and run `scripts/fit_noninjectivity.py` (AIM1 — primary) — smoke-run 2026-11-06; gap=714 confirmed
+- [x] Write and run `scripts/fit_vendor_survival.py` (AIM3 — primary) — smoke-run 2026-11-06; descriptive stats only (1-yr)
+- [x] Write and run `scripts/fit_ordering_seasonality.py` (AIM4 — primary) — smoke-run 2026-11-06; Q4 deferred (1-yr)
+- [x] Write and run `scripts/fit_agency_name_classifier.py` (AIM5 — infrastructure) — done 2026-11-04; precision=1.0000
 - [ ] Write and run `scripts/fit_agency_forecasting.py` (AIM2 — secondary)
-- [ ] Write evidence files to `data/test_evidence/`
+- [x] Write evidence files to `data/test_evidence/`
 
-**Status:** [ ] pending
+**Status:** [x] AIM1/3/4/5 scripts complete. Full acceptance deferred to Stage 3 (5+ years) + dependency install.
 
 ---
 

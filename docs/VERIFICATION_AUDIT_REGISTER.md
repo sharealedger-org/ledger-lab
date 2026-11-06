@@ -480,3 +480,99 @@ Two new tests added to `StandardizeAndSortPOSpec`:
 | Ledger amount sum = $18.00 after address-fragment guard | Low | **Partially addressed** — 2 of 6 malformed records now filtered at ingestion; remaining 4 pass through `safeBD` path; $18.00 confirmed in `run_20261106_032448_834` | Extended guard (non-numeric price field check) required for full closure |
 
 ---
+
+## 2026-11-06 CCP2 baseline — `run_20261106_041306_928` (Bob)
+
+**Role:** Verification Lead
+**Run id:** `run_20261106_041306_928` (exit code 0)
+**Steps:** ttl, 2p, 2m, 3 (ledger only — no views, no permutation)
+**Curve:** CCP2
+**Config:** validate-1yr-monthly
+
+### Step-level evidence
+
+| Step | input_rows | output_rows | wall_s | peak_rss_bytes | status |
+|------|-----------|-------------|--------|----------------|--------|
+| ttl  | 5,758,480 | 11,516,960  | 143    | 1073741824     | complete |
+| 2p   | 25,129    | 50,258      | 18     | 1073741824     | complete |
+| 2m   | 0 (bytes: 222,335,441) | 11,567,218 | 58 | 1073741824 | complete |
+| 3    | 23,134,436 | 346,040    | 100    | 1073741824     | complete |
+
+Total compute: **319s**. Total storage: **5.86 GB**.
+Ledger amount sum: **$18.00** (same 6-record malformed PO delta — parser hardening not yet active in this run).
+
+### Audit state upgrades
+
+| Claim | Previous state | New state | Evidence | Remaining gap |
+|---|---|---|---|---|
+| CCP2 (steps ttl+2p+2m+3) produces a valid ledger from real FY2003 corpus; `process_metrics.csv` complete for all 4 active steps | `not_verified` | `partially_verified` | All 4 steps complete; non-zero output_rows; `peak_rss_bytes=1073741824`; cost_surface row recorded with `capability_layer=CCP2`, `ldgr_row_count=346040` | Ledger amount sum $18.00 (known malformed PO delta — not yet closed in this run); CCP1→CCP2 delta comparison deferred until at least one more replicate |
+| CCP1→CCP2 timing delta is measurable | `not_verified` | `partially_verified` | CCP1 (run_20261106_034825_274): ~610s; CCP2 (this run): 319s. CCP2 excludes steps 5v, 20, 21 relative to CCP3 (662s) | One replicate each; delta not yet formally measured; second replicate needed to bound measurement noise |
+
+### Cost-surface row
+
+```
+run_20261106_041306_928, 2026-11-06 04:13:06, CCP2, validate-1yr-monthly, 03, ttl,2p,2m,3
+total_compute_s=319, total_storage_bytes=5862913792, capability_layer=CCP2,
+period_granularity=monthly, materialization_scope=unspecified,
+ldgr_row_count=346040, ldgr_file_bytes=49964854, view_file_bytes=0, permutation_rows=0
+```
+
+---
+
+## 2026-11-06 Extended parser hardening — non-numeric price field guard (Bob)
+
+**Scope:** `standardizeAndSort.applyPO` — second pre-SJE quarantine guard. Extends the address-fragment guard added in the prior session.
+
+### Root cause of remaining $18.00 delta
+
+The 2-record address-fragment guard (prior session) only caught rows where the column shift placed a state+ZIP fragment directly in the PONUMBER field (tab-field col 0). The remaining 4 of 6 malformed records were absorbed into the preceding logical line by the RFC-4180 quote-counting loop. They emerge from `nextLogicalLine()` as well-formed rows with valid PO numbers in `cols(0)` — but with garbage (e.g. `"USD"`, `"AccuStandard"`, address text) in the PRICE field (`cols(5)`).
+
+### Guard logic
+
+After passing the address-fragment check, `applyPO` now checks:
+```scala
+tryBigDecimal(cols, 5, null.asInstanceOf[BigDecimal]) == null && poNumber.matches(".*\\d.*")
+```
+If the price field is non-parseable AND the PO number contains digits (i.e. looks like a real PO, not another fragment), the row is quarantined — `skippedRows` incremented, `[applyPO] QUARANTINE non-numeric price field` logged to stderr, no SJE rows emitted.
+
+The RESULT log line metric key renamed from `skipped_address_fragment` to `skipped_quarantine` to cover both guard types.
+
+### New tests
+
+Two tests added to [`StandardizeAndSortPOSpec`](02-foundation/va_pipeline/src/test/scala/org/universalledger/foundation/va/ledger/StandardizeAndSortPOSpec.scala):
+- **Test 8:** non-numeric price field row → 0 SJE rows, QUARANTINE logged to stderr
+- **Test 9:** non-numeric price row skipped; adjacent well-formed rows still emit; amounts balance
+
+**Suite result: 10/10 pass** (full suite: 53/55; 2 pre-existing `CurrencyRevaluationSpec` Windows races).
+
+| Claim | State | Evidence | Remaining gap |
+|---|---|---|---|
+| Extended price-field guard quarantines rows where PONUMBER is numeric-PO-shaped and PRICE is non-parseable | `verified` | `StandardizeAndSortPOSpec` Tests 8 and 9 pass; stderr confirms `QUARANTINE non-numeric price field` fires on fixture rows with `price='USD'` | Guard catches rows with non-parseable price only; column-shifted rows producing a numeric but wrong price (e.g. adjacent address digit sequence) are not caught — a known residual |
+| `skipped_quarantine` metric key replaces `skipped_address_fragment` in RESULT log line | `verified` | RESULT line now: `skipped_quarantine=$skippedRows`; confirmed in test output | `write_canonical_evidence.sh` and `run_pipeline.sh` do not parse this metric field — no orchestration impact |
+| $18.00 delta is fully closed by both guards combined | `not_yet_verified` | Guard logic in place; corpus run required to confirm `skipped_quarantine=6` and `ldgr_amount_sum=0.00` | Next corpus run (CCP3 or CCP2 re-run) will confirm; expected result: 6 rows quarantined, ledger sum = 0.00 |
+
+---
+
+## 2026-11-06 CCP3 re-run with extended PO guard - `run_20261106_044703_1190` (Bob)
+
+**Steps:** ttl,2p,2m,3,5v,20,21, CCP3, validate-1yr-monthly, exit 0. Total compute 560s, storage 5,892,467,057 B. `peak_rss_bytes=1073741824` on all steps (JVM heap, not OS RSS).
+
+| Step | input_rows | output_rows | wall_s |
+|------|-----------|-------------|--------|
+| ttl | 5,758,480 | 11,516,960 | 157 |
+| 2p | 25,112 | 50,224 | 21 |
+| 2m | 0 (bytes) | 11,567,184 | 63 |
+| 3 | 23,134,368 | 346,028 | 99 |
+| 5v | 23,134,368 | 280,878 | 79 |
+| 20 | 23,134,368 | 275,510 | 71 |
+| 21 | 23,134,368 | 283,572 | 70 |
+
+| Claim | State | Evidence | Remaining gap |
+|---|---|---|---|
+| Extended guard closes the $18.00 ledger delta to 0.00 | `contradicted` (partial) | Ledger sum is $6.00, not 0.00 (computed from column 19 of LDGR2003.csv, 346,028 rows). Sum fell from $18.00 to $6.00. | See seed finding below. |
+| Residual $6.00 comes from the stale seed ledger, not from this run's SJE | `partially_verified` | The seed `data/output_validate_fy03/LDGR2003.csv` (55,151 rows, old quarterly run) sums to exactly $6.00. The new run's SJE PO file has 0 rows with the Bellefonte/New Haven fragments. Seed rows with those fragments are carried into the new ledger by the step-3 match-merge. | Not proven by a seedless run. A run with the seed removed should give 0.00. |
+| Guard drops exactly the 4 intended records | `contradicted` | 2p records_read fell 25,129 -> 25,112, i.e. 17 more rows quarantined, not 4. | Source scan finds rows with an EMPTY price field (e.g. DO26006, DO26008 with vendor field '$399.00'; DO36898, DO42604 with blank price and vendor). The guard treats an empty price as non-numeric. Only 9 such rows were found by a physical-line scan; the other 8 are unidentified. Whether legitimately blank-priced POs are now being dropped is unverified. |
+
+Not verified: `skipped_quarantine` count in the step 2p log (the value is not in the pipeline log line), the 8 unidentified quarantined rows, and the tradeoff of dropping empty-price rows that previously produced balanced $0 pairs.
+
+Disk note: on this Windows/Git Bash setup, `ln -s` in `commit_attempt` appears to create real copies (`data/output_validate_fy03/*.next.*` are ~5.5 GB each, no LinkType). This explains the multi-GB growth. `prune_old_generations` removed run_..834 and run_..274 from `.generations/`; the `.next.834` and `.next.274` copies remain under `data/output_validate_fy03/`.
