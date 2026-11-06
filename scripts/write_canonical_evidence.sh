@@ -169,6 +169,20 @@ append_process() {
   local input_rows="" output_rows="" input_bytes="" output_bytes=""
   local divisor_file="" divisor_partition=""
   case "$step" in
+    ttl)
+      # TTL writes multiple monthly SortedJE files; no single input/output file
+      input_partition="raw_apa_fy${short_year}"
+      output_partition="sje_apa_fy${short_year}"
+      # Sum rows and bytes across all monthly output files
+      output_rows=0
+      output_bytes=0
+      for sje_f in "$OUT_PATH/SortedJEFY${short_year}_"*"_exp.csv" \
+                   "$OUT_PATH/SortedJEFY${short_year}q"*"exp.csv"; do
+        [[ -f "$sje_f" ]] || continue
+        output_rows=$(( output_rows + $(file_data_rows "$sje_f") ))
+        output_bytes=$(( output_bytes + $(file_bytes "$sje_f") ))
+      done
+      ;;
     2)
       input_file="$IN_PATH/FY${short_year}q1exp.txt"
       output_file="$OUT_PATH/SortedJEFY${short_year}q1exp.csv"
@@ -258,8 +272,9 @@ append_process() {
       ;;
     *) return 0 ;;
   esac
-  input_bytes="$(file_bytes "$input_file")"
-  output_bytes="$(file_bytes "$output_file")"
+  # Only overwrite bytes from files when they are set; ttl pre-computes its own totals.
+  [[ -n "$input_file" ]]  && input_bytes="$(file_bytes "$input_file")"
+  [[ -n "$output_file" ]] && output_bytes="$(file_bytes "$output_file")"
   step_result="$(grep -E "RESULT step=${step} year=${year} " "$LOG_FILE" | tail -1 || true)"
   step_elapsed="$(result_value "$step_result" elapsed_s)"
   reported_input_rows="$(result_value "$step_result" records_read)"
@@ -308,7 +323,16 @@ append_process() {
     "$process_name" "$engine_name" "$input_partition" "$output_partition" "" "$step" \
     "$RUN_TIMESTAMP" "$RUN_END_TIMESTAMP" "$step_elapsed" "" "" "" "$peak_rss_bytes" "" "" "" \
     "$input_rows" "$input_bytes" "$output_rows" "$output_bytes" "" "complete"
-  if [[ "$step" == "2" ]]; then
+  if [[ "$step" == "ttl" ]]; then
+    for sje_f in "$OUT_PATH/SortedJEFY${short_year}_"*"_exp.csv" \
+                 "$OUT_PATH/SortedJEFY${short_year}q"*"exp.csv"; do
+      [[ -f "$sje_f" ]] || continue
+      local sje_name
+      sje_name="sje_apa_fy${short_year}_$(basename "${sje_f%.csv}")"
+      append_partition "$sje_name" "sje" "01-transformation" "$process_id" \
+        "$input_partition" "$sje_f" "$(file_data_rows "$sje_f")" "Y" "SortedJE"
+    done
+  elif [[ "$step" == "2" ]]; then
     append_partition "$input_partition" "raw_source" "01-transformation" "$process_id" "" \
       "$input_file" "$input_rows" "" ""
     append_partition "$output_partition" "sje" "02-foundation" "$process_id" "$input_partition" \

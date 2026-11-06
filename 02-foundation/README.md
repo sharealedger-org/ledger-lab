@@ -17,7 +17,7 @@ The repository is intentionally retaining its existing paths while the fresh pro
 | External sorting and sort specifications | `scripts/standardize_and_sort.py`, `02-foundation/sort_specs/` |
 | Public and fixture inputs | `data/` |
 | Runtime data contract | `docs/RUNTIME_DATA_LAYOUT.md` |
-| Cost and control metrics | `data/cost_surface.csv`, `data/pipeline_log.csv`, `scripts/data_aggregation.py` |
+| Cost and control metrics | `data/pipeline_log.csv`, `scripts/data_aggregation.py` |
 
 These paths are the current physical implementation of the Foundation Layer. They are not yet moved because the build files, shell runners, documentation, and relative data paths still depend on them.
 

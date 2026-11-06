@@ -474,6 +474,14 @@ run_step() {
     rss_kb=$(printf '%s\n' "$out" | awk -F': ' '/Maximum resident set size/ { print $2; exit }' | awk '{print $1}')
     [[ "$rss_kb" =~ ^[0-9]+$ ]] && LAST_PEAK_RSS_BYTES=$((rss_kb * 1024))
   fi
+  # Fallback: parse the JVM-emitted RESOURCE line from sbt stdout (available on all platforms).
+  # The Scala code emits: RESOURCE step=N year=YYYY peak_rss_bytes=<jvm_heap_bytes>
+  if [[ -z "$LAST_PEAK_RSS_BYTES" ]]; then
+    local jvm_rss
+    jvm_rss=$(printf '%s\n' "$out" | grep -E "RESOURCE step=${step} " | \
+      sed -nE 's/.*peak_rss_bytes=([0-9]+).*/\1/p' | tail -1)
+    [[ "$jvm_rss" =~ ^[0-9]+$ ]] && LAST_PEAK_RSS_BYTES="$jvm_rss"
+  fi
 
   local records_written
   case "$step" in

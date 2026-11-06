@@ -171,7 +171,6 @@ The legacy VA runner may write compatibility outputs such as:
 | File | Contents |
 |---|---|
 | `data/output/LDGR{year}.csv` | Instrument Ledger — one balance row per vendor per period |
-| `data/cost_surface.csv` | Compatibility run summary; not the complete canonical metrics record |
 | `data/pivot_results.csv` | Legacy pivot experiment calculations |
 | `data/pipeline_log.csv` | Compatibility per-step log |
 

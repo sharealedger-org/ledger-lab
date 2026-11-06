@@ -460,7 +460,6 @@ bash scripts/run_pipeline.sh \
 Then read **only**:
 ```
 read_file path: "data/output/pipeline_results.log"   # always small — control report
-read_file path: "data/cost_surface.csv"              # grows by one row per run
 ```
 
 Never read LDGR, SortedJE, or balance files to evaluate a run result. The pipeline
