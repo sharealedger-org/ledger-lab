@@ -156,6 +156,13 @@ cleanup_failed_attempt() {
   fi
 }
 
+# Git Bash (MSYS) makes `ln -s` silently COPY the target unless native symlinks
+# are requested. Native symlinks need Windows Developer Mode (or admin); if they
+# are unavailable, fail rather than copy multi-GB run directories.
+case "$(uname -s 2>/dev/null)" in
+  MINGW*|MSYS*|CYGWIN*) export MSYS=winsymlinks:nativestrict ;;
+esac
+
 commit_attempt() {
   local final_dir="$1"
   local attempt_dir="$2"
@@ -168,6 +175,11 @@ commit_attempt() {
   fi
   local next_link="${final_dir}.next.$$"
   ln -s "$attempt_dir" "$next_link"
+  if [[ ! -L "$next_link" ]]; then
+    echo "commit_attempt: ln -s did not create a symlink at $next_link (enable Windows Developer Mode for native symlinks)" >&2
+    rm -rf "$next_link"
+    return 1
+  fi
   if [[ -L "$final_dir" ]]; then
     if [[ "$(uname -s)" == "Darwin" ]]; then
       mv -fh "$next_link" "$final_dir"
@@ -208,11 +220,11 @@ prune_old_generations() {
     local dir="${dirs[$i]}"
     # Safety check: never remove the directory currently pointed to by a symlink.
     local resolved
-    resolved="$(readlink -f "$attempt_root/../output_validate_fy03" 2>/dev/null || true)"
+    resolved="$(readlink -f "${attempt_root%.generations}" 2>/dev/null || true)"
     [[ "$resolved" == "$dir" ]] && continue
     echo "[prune_generations] Removing old run dir: $dir"
     rm -rf "$dir"
-    (( removed++ ))
+    removed=$((removed + 1))
   done
 
   # Also prune legacy.* directories that are no longer referenced by any symlink.
@@ -227,7 +239,7 @@ prune_old_generations() {
     if [[ $referenced -eq 0 ]]; then
       echo "[prune_generations] Removing unreferenced legacy dir: $ldir"
       rm -rf "$ldir"
-      (( removed++ ))
+      removed=$((removed + 1))
     fi
   done < <(find "$attempt_root" -maxdepth 1 -type d -name 'legacy.*' 2>/dev/null)
 

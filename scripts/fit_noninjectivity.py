@@ -132,23 +132,35 @@ else:
     results.append({"label": "CCP2_LDGR", "key_count": 0, "note": "file not found"})
 
 # CCP1 substrate A: GL output
-# Key: (agency, nominal_account_id, fund, fiscal_year)
-# The GL accumulates a single total_amount per key — vendor identity is gone.
-# Non-injectivity at GL = we can only count keys that must have come from multiple
-# patterns by inspecting the permutation table.
-print(f"\n[2] CCP1 GL output: {GL_PATH}")
-if os.path.isfile(GL_PATH):
-    gl_counts = count_distinct_patterns(
-        GL_PATH,
-        key_col="fiscal_year",
-        pattern_cols=["agency", "nominal_account_id", "fund"]
-    )
+# GL key: (agency|nominal_account_id|fund, fiscal_year) -- one balance row per key.
+# The GL accumulates a single total_amount per key, so vendor identity is gone.
+# The PERM table is the answer key: it records which vendors fed each
+# (account_key, fiscal_year).  Pattern = vendor_id.  A GL balance row with >1
+# distinct vendor in PERM is a row where distinct pre-hierarchy patterns were
+# collapsed into one posted number.
+print(f"\n[2] CCP1 GL output (vendors per GL balance row, via PERM): {GL_PATH}")
+if os.path.isfile(GL_PATH) and os.path.isfile(PERM_PATH):
+    from collections import defaultdict
+    gl_keys = set()
+    with open_csv(GL_PATH) as fh:
+        for row in csv.DictReader(fh):
+            gl_keys.add((row["agency"] + "|" + row["nominal_account_id"] + "|" + row["fund"],
+                         row["fiscal_year"]))
+    gl_vendors = defaultdict(set)
+    with open_csv(PERM_PATH) as fh:
+        for row in csv.DictReader(fh):
+            k = (row["account_key"], row["fiscal_year"])
+            if k in gl_keys:
+                gl_vendors[k].add(row["vendor_id"])
+    # GL keys with no PERM rows have 0 vendors; count them as 0 so key_count is the GL row count.
+    gl_counts = {k: len(gl_vendors.get(k, ())) for k in gl_keys}
     gl_summary = summarise(gl_counts, "CCP1_GL")
+    print(f"  GL rows with no PERM vendor: {sum(1 for v in gl_counts.values() if v == 0)}")
     for k, v in gl_summary.items():
         print(f"  {k}: {v}")
     results.append(gl_summary)
 else:
-    print(f"  SKIP — file not found: {GL_PATH}", file=sys.stderr)
+    print(f"  SKIP — file not found: {GL_PATH} or {PERM_PATH}", file=sys.stderr)
     results.append({"label": "CCP1_GL", "key_count": 0, "note": "file not found"})
 
 # CCP1 substrate B: Permutation table

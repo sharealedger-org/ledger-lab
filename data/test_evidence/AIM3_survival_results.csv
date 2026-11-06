@@ -1,2 +1,2 @@
 test,verdict,method,c_statistic,permutation_p,n_permutations,total_vendor_years,distinct_vendors,year_count,annual_churn_rate,threshold_c_stat,threshold_perm_p,note,run_timestamp,view_path
-AIM3,n/a,descriptive_only,n/a,n/a,n/a,1945,989,15,0.5085,> 0.65,< 0.05,sklearn/scipy not available; install to compute C-statistic,2026-11-06 04:39:14,data/output_validate_fy03/output_validate_fy03.next.834/view_vendor_year_survival.csv
+AIM3,n/a,descriptive_only,n/a,n/a,n/a,18,984,2,0.0556,> 0.65,< 0.05,2 fiscal year(s); C-statistic deferred until >= 5 fiscal years,2026-11-06 05:42:30,data/output_validate_fy03.generations/run_20261106_044703_1190/view_vendor_year_survival.csv

@@ -114,6 +114,15 @@ def is_q4(fiscal_period):
             pass
     return False
 
+def fiscal_year_of_period(fiscal_period):
+    """'YYYY/MM' (calendar year/month) -> Virginia fiscal year (Jul-Jun; FY2003 = Jul 2002-Jun 2003)."""
+    parts = fiscal_period.split("/")
+    try:
+        year = int(parts[0])
+        return year + 1 if len(parts) == 2 and int(parts[1]) >= 7 else year
+    except ValueError:
+        return None
+
 def safe_float(s, default=0.0):
     try: return float(s)
     except (ValueError, TypeError): return default
@@ -141,7 +150,10 @@ for r in rows:
 
 distinct_periods = sorted(distinct_periods)
 period_count = len(distinct_periods)
+fiscal_years = sorted({fy for fy in (fiscal_year_of_period(p) for p in distinct_periods) if fy is not None})
+fy_count = len(fiscal_years)
 print(f"\n  Distinct fiscal periods : {period_count}")
+print(f"  Distinct fiscal years   : {fy_count}  ({', '.join('FY%d' % y for y in fiscal_years[:5])}{'...' if fy_count > 5 else ''})")
 print(f"  Distinct NIGP classes   : {len(nigp_counts)}")
 
 # ---------------------------------------------------------------------------
@@ -207,9 +219,10 @@ for r in class_results:
 
 # Verdict
 n_significant = sum(1 for r in class_results if r["significant"] in ("yes", "directional"))
-if period_count < 5:
-    verdict = "n/a (1yr)"
-    note = f"1-year smoke run ({period_count} periods); directional result only — acceptance deferred"
+if fy_count < 5:
+    verdict = "n/a"
+    note = (f"{fy_count} fiscal year(s) ({period_count} monthly periods); {n_significant} of top 5 "
+            f"classes directional — acceptance deferred until >= 5 fiscal years")
 else:
     verdict = "PASS" if n_significant >= 3 else "FAIL"
     note    = f"{n_significant} of top 5 classes show Q4 spike (threshold: >= 3)"
@@ -234,9 +247,10 @@ for agency, period_vols in agency_period_vol.items():
     q4_vol    = sum(v for p, v in period_vols.items() if is_q4(p))
     q4_share  = q4_vol / total_vol if total_vol > 0 else 0.0
     risk_flag = 1 if q4_share > 0.4 else 0  # > 40% of orders in Q4
-    # Derive fiscal year from max period
+    # Fiscal year of the agency's latest period
     periods_present = sorted(period_vols.keys())
-    fiscal_year = periods_present[-1].split("/")[0] if periods_present else ""
+    fy = fiscal_year_of_period(periods_present[-1]) if periods_present else None
+    fiscal_year = fy if fy is not None else ""
     risk_rows.append({
         "agency":       agency,
         "fiscal_year":  fiscal_year,
@@ -265,6 +279,7 @@ summary_row = {
     "n_significant_classes": n_significant,
     "threshold":             ">= 3 of top 5 with q4_ratio > 1.5 or p < 0.05",
     "total_periods":         period_count,
+    "fiscal_years":          fy_count,
     "total_nigp_classes":    len(nigp_counts),
     "note":                  note,
     "run_timestamp":         ts,

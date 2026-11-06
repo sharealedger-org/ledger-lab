@@ -101,42 +101,95 @@ def safe_float(s, default=0.0):
     try: return float(s)
     except (ValueError, TypeError): return default
 
-# Count vendors, churn rate
-total_vendor_years = len(rows)
-present_next       = sum(1 for r in rows if safe_int(r.get("present_next_year", "0")) == 1)
-churn_count        = total_vendor_years - present_next
-churn_rate         = churn_count / total_vendor_years if total_vendor_years > 0 else 0.0
+# The view's fiscal_year column may hold monthly periods ("YYYY/MM", calendar year/month)
+# since monthly granularity.  Roll up to Virginia fiscal years (Jul-Jun; FY2003 =
+# Jul 2002 - Jun 2003) so "present next year" means the next FISCAL YEAR, not the next month.
+def fiscal_year_of(period):
+    """'YYYY/MM' -> Virginia fiscal year (int); a bare 'YYYY' is taken as the fiscal year."""
+    parts = period.split("/")
+    try:
+        year = int(parts[0])
+        if len(parts) == 2:
+            return year + 1 if int(parts[1]) >= 7 else year
+        return year
+    except ValueError:
+        return None
 
-distinct_vendors   = len(set(r.get("vendor_id", "") for r in rows))
-distinct_years     = sorted(set(r.get("fiscal_year", "") for r in rows))
-year_count         = len(distinct_years)
+by_vendor_fy = {}   # (vendor_id, fy) -> annual row
+for r in rows:
+    fy = fiscal_year_of(r.get("fiscal_year", ""))
+    if fy is None:
+        continue
+    key = (r.get("vendor_id", ""), fy)
+    a = by_vendor_fy.get(key)
+    if a is None:
+        a = by_vendor_fy[key] = {
+            "vendor_id": key[0], "fiscal_year": fy, "po_count": 0.0, "total_amount": 0.0,
+            "agency_count": 0.0, "distinct_nigp_classes": 0.0,
+            "nigp_class_modal": r.get("nigp_class_modal", ""), "_modal_po": -1.0,
+            "first_order_year": fiscal_year_of(r.get("first_order_year", "")),
+        }
+    pc = safe_float(r.get("po_count", 0))
+    a["po_count"] += pc
+    a["total_amount"] += safe_float(r.get("total_amount", 0))
+    # Monthly distinct counts cannot be summed; the max is a lower bound for the year.
+    a["agency_count"] = max(a["agency_count"], safe_float(r.get("agency_count", 0)))
+    a["distinct_nigp_classes"] = max(a["distinct_nigp_classes"], safe_float(r.get("distinct_nigp_classes", 0)))
+    if pc > a["_modal_po"]:
+        a["_modal_po"], a["nigp_class_modal"] = pc, r.get("nigp_class_modal", "")
+    foy = fiscal_year_of(r.get("first_order_year", ""))
+    if foy is not None and (a["first_order_year"] is None or foy < a["first_order_year"]):
+        a["first_order_year"] = foy
+
+distinct_years = sorted({fy for (_, fy) in by_vendor_fy})
+year_count     = len(distinct_years)
+last_fy        = distinct_years[-1] if distinct_years else None
+
+# present_next_year is derived from the data: vendor has a row in fiscal year + 1.
+# The last fiscal year is right-censored (next year unobserved) and excluded from the model.
+all_annual = list(by_vendor_fy.values())
+for a in all_annual:
+    a["present_next_year"] = 1 if (a["vendor_id"], a["fiscal_year"] + 1) in by_vendor_fy else 0
+    a["first_order_year"] = a["first_order_year"] if a["first_order_year"] is not None else a["fiscal_year"]
+rows = [a for a in all_annual if a["fiscal_year"] != last_fy]
+
+# Count vendors, churn rate (observed, non-censored vendor-years only)
+total_vendor_years = len(rows)
+present_next       = sum(1 for r in rows if r["present_next_year"] == 1)
+churn_count        = total_vendor_years - present_next
+churn_rate         = churn_count / total_vendor_years if total_vendor_years > 0 else None
+
+distinct_vendors   = len(set(r["vendor_id"] for r in all_annual))
 
 # Feature availability
 feature_cols = ["po_count", "nigp_class_modal", "agency_count", "distinct_nigp_classes",
                 "total_amount", "first_order_year"]
-available_features = [c for c in feature_cols if c in (rows[0].keys() if rows else [])]
+available_features = [c for c in feature_cols if c in (all_annual[0].keys() if all_annual else [])]
 
 print(f"\nDescriptive statistics:")
-print(f"  Total vendor-year observations : {total_vendor_years}")
+print(f"  Total vendor-year observations : {total_vendor_years}  (excl. censored FY{last_fy})")
 print(f"  Distinct vendors               : {distinct_vendors}")
-print(f"  Fiscal years in data           : {year_count}  ({', '.join(distinct_years[:5])}{'...' if year_count > 5 else ''})")
+print(f"  Fiscal years in data           : {year_count}  ({', '.join('FY%d' % y for y in distinct_years[:5])}{'...' if year_count > 5 else ''})")
 print(f"  Present next year              : {present_next}")
 print(f"  Churned (not present next yr)  : {churn_count}")
-print(f"  Annual churn rate              : {churn_rate:.3f}  ({churn_rate * 100:.1f}%)")
+if churn_rate is None:
+    print(f"  Annual churn rate              : n/a (needs >= 2 fiscal years)")
+else:
+    print(f"  Annual churn rate              : {churn_rate:.3f}  ({churn_rate * 100:.1f}%)")
 print(f"  Available features             : {available_features}")
 
 # Churn by first_order_year cohort
 cohort_churn = defaultdict(lambda: [0, 0])
 for r in rows:
-    foy = r.get("first_order_year", "unknown")
+    foy = r["first_order_year"]
     cohort_churn[foy][0] += 1
-    if safe_int(r.get("present_next_year", "0")) == 0:
+    if r["present_next_year"] == 0:
         cohort_churn[foy][1] += 1
 
 print(f"\n  Churn by entry cohort (first 5):")
 for cohort in sorted(cohort_churn)[:5]:
     total_c, churned_c = cohort_churn[cohort]
-    print(f"    {cohort}: {churned_c}/{total_c} churned ({churned_c/total_c*100:.0f}%)")
+    print(f"    FY{cohort}: {churned_c}/{total_c} churned ({churned_c/total_c*100:.0f}%)")
 
 # ---------------------------------------------------------------------------
 # C-statistic via sklearn (if available and multi-year data)
@@ -149,7 +202,7 @@ verdict  = "n/a"
 note     = ""
 
 if year_count < 5:
-    note = f"1-year smoke run ({year_count} year(s)); C-statistic deferred until >= 5 years"
+    note = f"{year_count} fiscal year(s); C-statistic deferred until >= 5 fiscal years"
     print(f"\nINFO: {note}")
 elif not HAS_SKLEARN:
     note = "sklearn/scipy not available; install to compute C-statistic"
@@ -214,10 +267,10 @@ if not note:
 # ---------------------------------------------------------------------------
 health_rows = []
 for r in rows:
-    vid = r.get("vendor_id", "")
-    fyr = r.get("fiscal_year", "")
-    pc  = safe_float(r.get("po_count", 0))
-    pny = safe_int(r.get("present_next_year", 0))
+    vid = r["vendor_id"]
+    fyr = r["fiscal_year"]
+    pc  = r["po_count"]
+    pny = r["present_next_year"]
     # Health score: log(po_count + 1) × 2 × present_next_year (simple proxy)
     import math
     hs = round(math.log(pc + 1) * 2 * pny, 4)
@@ -247,7 +300,7 @@ evidence = {
     "total_vendor_years":      total_vendor_years,
     "distinct_vendors":        distinct_vendors,
     "year_count":              year_count,
-    "annual_churn_rate":       round(churn_rate, 4),
+    "annual_churn_rate":       round(churn_rate, 4) if churn_rate is not None else "n/a",
     "threshold_c_stat":        "> 0.65",
     "threshold_perm_p":        "< 0.05",
     "note":                    note,

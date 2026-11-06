@@ -49,3 +49,5 @@ data/output_validate_fy03.generations/
 data/output_validate_fy03_step3only/
 data/output_validate_fy03_step3only.generations/
 
+
+.venv/
