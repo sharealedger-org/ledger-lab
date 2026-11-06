@@ -7,10 +7,14 @@ Usage (from ledger-lab/):
 
 Requires:
     ZENODO_TOKEN environment variable set to a valid Zenodo personal access token.
-    data/corpus_profile/source_catalog.csv (produced by scripts/profile_corpus.sh)
-    data/VARawFiles/   (APA expenditure/revenue files, git-ignored)
-    data/VAPOData/     (eVA PO files)
-    data/VendorDownload/supplier_snapshot_2026-10-31/  (supplier snapshot, git-ignored)
+    All paths below are relative to the data root (--data-root, else UL_DATA_ROOT, else
+    ~/OneDrive/vaData, else ~/Library/CloudStorage/OneDrive-Personal/vaData, else data/):
+    corpus_profile/source_catalog.csv (produced by scripts/profile_corpus.sh)
+    VARawFiles/   (APA expenditure/revenue files, git-ignored)
+    VAPOData/     (eVA PO files)
+    VendorDownload/supplier_snapshot_2026-10-31/  (supplier snapshot, git-ignored)
+Before any upload (including --dry-run) every APA and snapshot file must exist locally and
+APA files must match the byte size recorded in source_catalog.csv.
 
 What this script does:
     1. Creates a new draft version of the existing eVA/PO record (23846362) and corrects
@@ -49,8 +53,8 @@ ZENODO_BASE = "https://zenodo.org"
 EXISTING_RECORD_ID = "23846362"
 PROGRESS_FILE = pathlib.Path("zenodo_upload_progress.json")
 
-# Supplier snapshot files to upload (relative to the snapshot dir)
-SNAPSHOT_DIR = pathlib.Path("data/VendorDownload/supplier_snapshot_2026-10-31")
+# Supplier snapshot files to upload (relative to the snapshot dir, which is under the data root)
+SNAPSHOT_REL = pathlib.Path("VendorDownload/supplier_snapshot_2026-10-31")
 SNAPSHOT_FILES = [
     "suppliers.csv",
     "audit.json",
@@ -94,8 +98,12 @@ quantity, unit price, and unit of measure. Vendor business contact information (
 postal addresses) is included as published in the original government source.</p>
 
 <p><strong>Known data gaps:</strong> FY2005 eVA file contains 1,037 parsed records (not a stub). \
+FY2004 eVA file is nearly empty: 75 KB, 338 lines, of which about 180 are well-formed 19-column \
+rows (most dated 2002&ndash;2003; the source export appears damaged). The 2004 Combined.xlsx file is \
+also only 10.9 KB. \
 FY2009 has no .txt file; only a zero-byte placeholder exists locally. FY2003 and FY2018 are partial \
-years ending in February 2003 and January 2018 respectively. FY2017 extended-price total is \
+years ending in February 2003 and January 2018 respectively (FY2003 rows are concentrated in \
+July&ndash;October 2002). FY2017 extended-price total is \
 anomalously large due to six repeated lines; do not quote PO dollar totals without checking \
 extremes. 325,843 PO records are quarantined due to embedded line breaks in free-text fields.</p>
 
@@ -288,12 +296,32 @@ def save_progress(prog):
     PROGRESS_FILE.write_text(json.dumps(prog, indent=2), encoding="utf-8")
 
 
-def load_catalog():
+def default_data_root():
+    env_root = os.environ.get("UL_DATA_ROOT")
+    if env_root:
+        return pathlib.Path(env_root).expanduser().resolve()
+
+    onedrive_root = pathlib.Path.home() / "OneDrive" / "vaData"
+    if onedrive_root.exists():
+        return onedrive_root
+
+    alt_onedrive_root = pathlib.Path.home() / "Library" / "CloudStorage" / "OneDrive-Personal" / "vaData"
+    if alt_onedrive_root.exists():
+        return alt_onedrive_root
+
+    return pathlib.Path("data")
+
+
+def load_catalog(data_root=pathlib.Path("data")):
     """Return source_catalog rows as a list of dicts."""
-    cat_path = pathlib.Path("data/corpus_profile/source_catalog.csv")
+    cat_path = data_root / "corpus_profile" / "source_catalog.csv"
     if not cat_path.exists():
-        print(f"ERROR: {cat_path} not found. Run scripts/profile_corpus.sh first.", file=sys.stderr)
-        sys.exit(1)
+        fallback = pathlib.Path(__file__).resolve().parent.parent / "data" / "corpus_profile" / "source_catalog.csv"
+        if fallback.exists():
+            cat_path = fallback
+        else:
+            print(f"ERROR: {cat_path} not found. Run scripts/profile_corpus.sh first.", file=sys.stderr)
+            sys.exit(1)
     return list(csv.DictReader(open(cat_path, encoding="utf-8-sig")))
 
 
@@ -335,6 +363,65 @@ def apa_groups(catalog):
          desc(APA_REV_DESCRIPTION_TEMPLATE, rev_late,  "FY2010\u2013FY2016", "FY2010 through FY2016"),
          rev_late),
     ]
+
+
+# ── draft file upload helpers ─────────────────────────────────────────────────
+
+def get_draft_file_entry(rec_id, token, filename):
+    """Return a draft file entry for filename, creating it if needed."""
+    status, files = api("GET", f"/api/records/{rec_id}/draft/files", token)
+    if status != 200:
+        raise RuntimeError(f"Could not list draft files for record {rec_id}: {status} {files}")
+    entries = files.get("entries", [])
+    for entry in entries:
+        if entry.get("key") == filename:
+            return entry
+
+    status, resp = api("POST", f"/api/records/{rec_id}/draft/files",
+                       token, data=[{"key": filename}])
+    if status not in (200, 201):
+        # A second attempt after a stale GET can still hit the duplicate-file case.
+        if status == 400 and "already exists" in str(resp):
+            status, files = api("GET", f"/api/records/{rec_id}/draft/files", token)
+            if status == 200:
+                for entry in files.get("entries", []):
+                    if entry.get("key") == filename:
+                        return entry
+        raise RuntimeError(f"Could not register {filename}: {status} {resp}")
+
+    if isinstance(resp, dict):
+        entries = resp.get("entries", [])
+        for entry in entries:
+            if entry.get("key") == filename:
+                return entry
+    return get_draft_file_entry(rec_id, token, filename)
+
+
+def upload_and_commit_file(rec_id, token, local_path, filename):
+    """Upload a file to a draft record and commit it, retrying stale 404s."""
+    last_error = None
+    for attempt in range(3):
+        try:
+            entry = get_draft_file_entry(rec_id, token, filename)
+            content_path = entry["links"]["content"].replace(ZENODO_BASE, "")
+            commit_path = entry["links"]["commit"].replace(ZENODO_BASE, "")
+
+            status, resp = api("PUT", content_path, token, filepath=str(local_path))
+            if status not in (200, 201):
+                raise RuntimeError(f"Upload failed for {filename}: {status} {resp}")
+
+            status2, resp2 = api("POST", commit_path, token)
+            if status2 in (200, 201):
+                return
+            if status2 != 404:
+                raise RuntimeError(f"Commit failed for {filename}: {status2} {resp2}")
+            last_error = RuntimeError(f"Commit not found for {filename}: {status2} {resp2}")
+        except RuntimeError as exc:
+            last_error = exc
+        # Refresh metadata and retry on stale/expired draft file URLs.
+        time.sleep(2)
+
+    raise last_error or RuntimeError(f"Upload/commit failed for {filename}")
 
 
 # ── step 1: new version of existing record ────────────────────────────────────
@@ -461,39 +548,10 @@ def create_apa_record(label, title, description, rows, token, prog, dry_run,
             save_progress(prog)
             continue
 
-        # Step 1: register the filename slot (idempotent — skip if already registered)
-        status0, reg = api("POST", f"/api/records/{rec_id}/draft/files",
-                           token, data=[{"key": filename}])
-        if status0 == 400 and "already exists" in str(reg):
-            # Slot exists from a prior interrupted run — fetch its links directly
-            status0, reg = api("GET", f"/api/records/{rec_id}/draft/files", token)
-            if status0 != 200:
-                print(f"\n  ERROR fetching file list: {status0} {reg}", file=sys.stderr)
-                sys.exit(1)
-            matches = [e for e in reg.get("entries", []) if e["key"] == filename]
-            if not matches:
-                print(f"\n  ERROR: {filename} not found in existing file list", file=sys.stderr)
-                sys.exit(1)
-            entry = matches[0]
-        elif status0 not in (200, 201):
-            print(f"\n  ERROR registering {filename}: {status0} {reg}", file=sys.stderr)
-            sys.exit(1)
-        else:
-            entry = reg["entries"][0]
-
-        content_path = entry["links"]["content"].replace(ZENODO_BASE, "")
-        commit_path  = entry["links"]["commit"].replace(ZENODO_BASE, "")
-
-        # Step 2: upload content
-        status, resp = api("PUT", content_path, token, filepath=str(local_path))
-        if status not in (200, 201):
-            print(f"\n  ERROR uploading {filename}: {status} {resp}", file=sys.stderr)
-            sys.exit(1)
-
-        # Step 3: commit
-        status2, _ = api("POST", commit_path, token)
-        if status2 not in (200, 201):
-            print(f"\n  ERROR committing {filename}: {status2}", file=sys.stderr)
+        try:
+            upload_and_commit_file(rec_id, token, local_path, filename)
+        except RuntimeError as exc:
+            print(f"\n  ERROR uploading/committing {filename}: {exc}", file=sys.stderr)
             sys.exit(1)
 
         uploaded.add(filename)
@@ -506,8 +564,9 @@ def create_apa_record(label, title, description, rows, token, prog, dry_run,
 
 # ── step 3: supplier snapshot record ─────────────────────────────────────────
 
-def create_supplier_record(token, prog, dry_run):
+def create_supplier_record(token, prog, dry_run, data_root=pathlib.Path("data")):
     print("\n=== Step 3: eVA supplier directory snapshot record ===")
+    snapshot_dir = data_root / SNAPSHOT_REL
     label = "supplier_snapshot"
     prog_key_id = f"{label}_record_id"
     prog_key_pub = f"{label}_published"
@@ -545,7 +604,7 @@ def create_supplier_record(token, prog, dry_run):
     uploaded = set(prog.get(f"{label}_uploaded", []))
 
     for rel in SNAPSHOT_FILES:
-        local_path = SNAPSHOT_DIR / rel
+        local_path = snapshot_dir / rel
         filename = pathlib.Path(rel).name
         # Prefix subdirectory files to keep names unique
         if "/" in rel:
@@ -568,38 +627,10 @@ def create_supplier_record(token, prog, dry_run):
             save_progress(prog)
             continue
 
-        # Step 1: register slot (idempotent)
-        status0, reg = api("POST", f"/api/records/{rec_id}/draft/files",
-                           token, data=[{"key": filename}])
-        if status0 == 400 and "already exists" in str(reg):
-            status0, reg = api("GET", f"/api/records/{rec_id}/draft/files", token)
-            if status0 != 200:
-                print(f"\n  ERROR fetching file list: {status0} {reg}", file=sys.stderr)
-                sys.exit(1)
-            matches = [e for e in reg.get("entries", []) if e["key"] == filename]
-            if not matches:
-                print(f"\n  ERROR: {filename} not found in file list", file=sys.stderr)
-                sys.exit(1)
-            entry = matches[0]
-        elif status0 not in (200, 201):
-            print(f"\n  ERROR registering {filename}: {status0} {reg}", file=sys.stderr)
-            sys.exit(1)
-        else:
-            entry = reg["entries"][0]
-
-        content_path = entry["links"]["content"].replace(ZENODO_BASE, "")
-        commit_path  = entry["links"]["commit"].replace(ZENODO_BASE, "")
-
-        # Step 2: upload content
-        status, resp = api("PUT", content_path, token, filepath=str(local_path))
-        if status not in (200, 201):
-            print(f"\n  ERROR uploading {filename}: {status} {resp}", file=sys.stderr)
-            sys.exit(1)
-
-        # Step 3: commit
-        status2, _ = api("POST", commit_path, token)
-        if status2 not in (200, 201):
-            print(f"\n  ERROR committing {filename}: {status2}", file=sys.stderr)
+        try:
+            upload_and_commit_file(rec_id, token, local_path, filename)
+        except RuntimeError as exc:
+            print(f"\n  ERROR uploading/committing {filename}: {exc}", file=sys.stderr)
             sys.exit(1)
 
         uploaded.add(filename)
@@ -706,40 +737,49 @@ def main():
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--dry-run", action="store_true",
                     help="Print what would be done without making any API calls.")
-    ap.add_argument("--data-root", type=pathlib.Path, default=pathlib.Path("data"),
-                    help="Root directory for corpus data (default: data/).")
+    ap.add_argument("--data-root", type=pathlib.Path, default=default_data_root(),
+                    help="Root directory for corpus data (default: UL_DATA_ROOT or ~/OneDrive/vaData or data/).")
     ap.add_argument("--step", choices=["1", "2", "3", "4", "all"], default="all",
                     help="Run only the specified step (default: all).")
     args = ap.parse_args()
 
     token = get_token()
     prog = load_progress()
-    catalog = load_catalog()
+    if not args.dry_run and any(str(v).startswith("DRY_RUN") for v in prog.values()):
+        print(f"ERROR: {PROGRESS_FILE} contains DRY_RUN placeholders from an earlier --dry-run; "
+              "a real run would treat them as real records and skip uploads. "
+              "Delete or move that file and rerun.", file=sys.stderr)
+        sys.exit(1)
+    if not args.data_root.exists():
+        print(f"WARNING: data root {args.data_root} does not exist; continuing with the resolved path.", file=sys.stderr)
+    catalog = load_catalog(args.data_root)
     apa = apa_groups(catalog)
 
-    # Validate all local APA files exist before starting
-    if not args.dry_run:
-        missing = []
-        for _, _, _, rows in apa:
-            for row in rows:
-                p = args.data_root / row["rel_path"]
-                if not p.exists():
-                    missing.append(str(p))
-        if missing:
-            print("ERROR: Missing local files (run scripts/profile_corpus.sh to verify):")
-            for m in missing[:10]:
+    # Validate local files before starting (also in --dry-run): existence and catalog byte size.
+    missing, wrong_size = [], []
+    for _, _, _, rows in apa:
+        for row in rows:
+            p = args.data_root / row["rel_path"]
+            if not p.exists():
+                missing.append(str(p))
+            elif row["bytes"].isdigit() and p.stat().st_size != int(row["bytes"]):
+                wrong_size.append(f"{p} (catalog {row['bytes']}, local {p.stat().st_size})")
+    snapshot_dir = args.data_root / SNAPSHOT_REL
+    snap_missing = [str(snapshot_dir / f) for f in SNAPSHOT_FILES
+                    if not (snapshot_dir / f).exists()]
+    for heading, items in (
+        ("Missing local APA files (run scripts/profile_corpus.sh to verify)", missing),
+        ("APA files whose size differs from source_catalog.csv", wrong_size),
+        ("Missing supplier snapshot files", snap_missing),
+    ):
+        if items:
+            print(f"ERROR: {heading}:")
+            for m in items[:10]:
                 print(f"  {m}")
-            if len(missing) > 10:
-                print(f"  ... and {len(missing)-10} more")
-            sys.exit(1)
-
-        snap_missing = [str(SNAPSHOT_DIR / f) for f in SNAPSHOT_FILES
-                        if not (SNAPSHOT_DIR / f).exists()]
-        if snap_missing:
-            print("ERROR: Missing supplier snapshot files:")
-            for m in snap_missing:
-                print(f"  {m}")
-            sys.exit(1)
+            if len(items) > 10:
+                print(f"  ... and {len(items)-10} more")
+    if missing or wrong_size or snap_missing:
+        sys.exit(1)
 
     epo_draft_id = None
     apa_ids = []
@@ -755,7 +795,7 @@ def main():
             apa_ids.append(rec_id)
 
     if args.step in ("3", "all"):
-        supplier_id = create_supplier_record(token, prog, args.dry_run)
+        supplier_id = create_supplier_record(token, prog, args.dry_run, args.data_root)
 
     if args.step in ("4", "all"):
         if epo_draft_id is None:
