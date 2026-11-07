@@ -11,6 +11,11 @@
 #
 #  OPTIONS:
 #    -i, --inPath   DIR    Input data root  (default: /VAdata/data/)
+#        --poPath   DIR    Directory holding VA_opendata_FY20YY.txt for step 2p.
+#                          Default: first of IN_PATH/poData, IN_PATH/../VAPOData,
+#                          IN_PATH/VAPOData, IN_PATH that contains the file.
+#        --paymentPath DIR Directory holding FY<YY>q<Q>exp.txt for step 2.
+#                          Default: IN_PATH, else IN_PATH/payment when it has the file.
 #    -o, --outPath  DIR    Output data root (default: /VAdata/data/)
 #    -y, --years    LIST   Comma-separated two-digit fiscal years (default: 03)
 #                          e.g.  --years 03,04,05
@@ -116,6 +121,8 @@ CONFIG_DESC="default"
 WORKLOAD_PROFILE="legacy"
 MATERIALIZATION_PROFILE="unspecified"
 PERIOD_GRANULARITY="monthly"
+PO_PATH=""
+PAYMENT_PATH=""
 
 # ── arg parsing ───────────────────────────────────────────────────────────────
 while [[ $# -gt 0 ]]; do
@@ -130,6 +137,8 @@ while [[ $# -gt 0 ]]; do
     --profile)     WORKLOAD_PROFILE="$2"; shift 2 ;;
     --materialization) MATERIALIZATION_PROFILE="$2"; shift 2 ;;
     --periodGranularity) PERIOD_GRANULARITY="$2"; shift 2 ;;
+    --poPath)      PO_PATH="$2";      shift 2 ;;
+    --paymentPath) PAYMENT_PATH="$2"; shift 2 ;;
     -h|--help)     grep '^#' "$0" | sed 's/^# \{0,2\}//'; exit 0 ;;
     *) echo "Unknown option: $1"; exit 1 ;;
   esac
@@ -254,6 +263,8 @@ is_absolute_path() {
 }
 
 is_absolute_path "$IN_PATH" || IN_PATH="$REPO_ROOT/$IN_PATH"
+[[ -z "$PO_PATH" ]]      || is_absolute_path "$PO_PATH"      || PO_PATH="$REPO_ROOT/$PO_PATH"
+[[ -z "$PAYMENT_PATH" ]] || is_absolute_path "$PAYMENT_PATH" || PAYMENT_PATH="$REPO_ROOT/$PAYMENT_PATH"
 is_absolute_path "$COMMITTED_OUT_PATH" || COMMITTED_OUT_PATH="$REPO_ROOT/$COMMITTED_OUT_PATH"
 is_absolute_path "$OUT_PATH" || OUT_PATH="$REPO_ROOT/$OUT_PATH"
 ATTEMPT_ROOT="${COMMITTED_OUT_PATH%/}.generations"
@@ -296,6 +307,30 @@ count_data_rows() {
 count_file_bytes() {
   local file="$1"
   [[ -f "$file" ]] && wc -c < "$file" | tr -d ' ' || printf '0\n'
+}
+
+# Directory that holds the step-2 payment file FY<YY>q<Q>exp.txt (explicit --paymentPath wins).
+resolve_payment_dir() {
+  local year="$1" quarter_number="$2" d
+  if [[ -n "$PAYMENT_PATH" ]]; then printf '%s\n' "${PAYMENT_PATH%/}"; return; fi
+  for d in "${IN_PATH%/}" "${IN_PATH%/}/payment"; do
+    [[ -f "$d/FY${year}q${quarter_number}exp.txt" ]] && { printf '%s\n' "$d"; return; }
+  done
+  printf '%s\n' "${IN_PATH%/}"
+}
+
+# Directory that holds the step-2p PO file VA_opendata_FY20<YY>.txt (explicit --poPath wins).
+resolve_po_dir() {
+  local year="$1" d
+  if [[ -n "$PO_PATH" ]]; then printf '%s\n' "${PO_PATH%/}"; return; fi
+  for d in "${IN_PATH%/}/poData" "$(dirname "${IN_PATH%/}")/VAPOData" \
+           "${IN_PATH%/}/VAPOData" "${IN_PATH%/}"; do
+    [[ -f "$d/VA_opendata_FY20${year}.txt" ]] && { printf '%s\n' "$d"; return; }
+  done
+  # Nothing has the file: keep the historic behaviour (an existing sibling VAPOData dir, else
+  # IN_PATH) so the engine reports the missing file itself.
+  d="$(dirname "${IN_PATH%/}")/VAPOData"
+  if [[ -d "$d" ]]; then printf '%s\n' "$d"; else printf '%s\n' "${IN_PATH%/}"; fi
 }
 
 directory_bytes() {
@@ -368,12 +403,12 @@ run_step() {
       done
       ;;
     2)
-      input_file="$IN_PATH/FY${year}q${quarter_number}exp.txt"
+      input_file="$(resolve_payment_dir "$year" "$quarter_number")/FY${year}q${quarter_number}exp.txt"
       output_file="$OUT_PATH/SortedJEFY${year}q${quarter_number}exp.csv"
       records_read=$(count_data_rows "$input_file")
       ;;
     2p)
-      input_file="$IN_PATH/poData/VA_opendata_FY20${year}.txt"
+      input_file="$(resolve_po_dir "$year")/VA_opendata_FY20${year}.txt"
       output_file="$OUT_PATH/SortedJEFY${year}q${quarter_number}PO.csv"
       records_read=$(count_data_rows "$input_file")
       ;;
@@ -482,22 +517,12 @@ run_step() {
   jvm_in_path="$(to_jvm_path "$IN_PATH")"
   jvm_out_path="$(to_jvm_path "$OUT_PATH")"
 
-  # Step 2p needs --inPath pointing at the VAPOData directory, not VARawFiles.
-  # Resolve by looking for VAPOData as a sibling of IN_PATH (or IN_PATH/../VAPOData).
-  if [[ "$step" == "2p" ]]; then
-    local po_dir=""
-    for po_candidate in \
-      "$(dirname "${IN_PATH%/}")/VAPOData" \
-      "${IN_PATH%/}/../VAPOData" \
-      "${IN_PATH%/}/VAPOData"; do
-      if [[ -d "$po_candidate" ]]; then
-        po_dir="$po_candidate"
-        break
-      fi
-    done
-    if [[ -n "$po_dir" ]]; then
-      jvm_in_path="$(to_jvm_path "$po_dir")"
-    fi
+  # Step 2 reads the payment file and step 2p the PO file from their own directories
+  # (--paymentPath / --poPath, else resolved from the layout under IN_PATH).
+  if [[ "$step" == "2" ]]; then
+    jvm_in_path="$(to_jvm_path "$(resolve_payment_dir "$year" "$quarter_number")")"
+  elif [[ "$step" == "2p" ]]; then
+    jvm_in_path="$(to_jvm_path "$(resolve_po_dir "$year")")"
   fi
 
   # Steps 20 and 21 (GLPost / PermutationGenerator) read SortedJE files from outPath,
