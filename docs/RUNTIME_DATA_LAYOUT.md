@@ -35,12 +35,22 @@ checks both extensions for Step 2 input files.
 
 ## Zenodo archive (Virginia APA + eVA data, FY2003–FY2016)
 
+Start from a clean repository checkout and a clean external data root. Do not mix older
+raw-data directories or previously downloaded archive trees into the same working copy.
+The project is designed to run from a reproducible external data root, not from a
+repository-managed copy of the historical archive.
+
 All Virginia source data used by this project is archived on Zenodo as Virginia
 public-domain government records:
 
-> **Zenodo archive:** https://doi.org/10.5281/zenodo.23846362
+> **Canonical archive reference:** https://doi.org/10.5281/zenodo.23846362
 
-The archive contains two datasets in a single Zenodo record:
+This is the authoritative parent record for the project. Some later Zenodo uploads contain
+duplicated early-expenditure files for the same logical dataset family; those are not the
+canonical baseline for a fresh repo setup. Use the parent DOI and the repo documentation as the
+source of truth when restoring the external runtime data set.
+
+The parent archive contains the downstream dataset bundle for the project:
 
 | Directory | Source | Years | Status on original site |
 |-----------|--------|-------|--------------------------|

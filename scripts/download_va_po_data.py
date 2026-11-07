@@ -5,6 +5,16 @@ download_va_po_data.py — Downloader for Virginia eVA Procurement / Purchase-Or
 Downloads eVA procurement data from the Virginia Open Data Portal (data.virginia.gov)
 and records a manifest of every attempt.
 
+Repository start state:
+  Start from a clean repository checkout and a clean external data root. Do not mix
+  a previous downloaded dataset tree, older generated outputs, or duplicate raw-data
+  copies into the same workspace. Historical source data is intentionally external to Git.
+
+Canonical archive reference:
+  The authoritative parent archive for the project is DOI 10.5281/zenodo.23846362.
+  Later Zenodo records with the same early-expenditure title are duplicated public
+  copies of the same logical family and are not the canonical baseline for a fresh repo.
+
 Coverage by source:
   FY2003–FY2015  Not publicly accessible via the Virginia Open Data Portal.
                  These files are Virginia public-domain government records archived
@@ -138,9 +148,9 @@ def download_year(year: int, dest_dir: str, dry_run: bool) -> dict:
     if slug is None:
         msg = (
             "Not available on data.virginia.gov. "
-            "FY2003-FY2015 files are archived on Zenodo (public domain): "
-            "https://doi.org/10.5281/zenodo.23846362 — "
-            "see docs/RUNTIME_DATA_LAYOUT.md for instructions."
+            "FY2003-FY2015 files are archived on Zenodo (public domain) under the "
+            "canonical parent DOI 10.5281/zenodo.23846362 — "
+            "see docs/RUNTIME_DATA_LAYOUT.md for clean-start and archive instructions."
         )
         print(f"  FY{year}: SKIPPED — {msg}")
         return {

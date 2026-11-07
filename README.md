@@ -9,6 +9,21 @@ Full historical inputs are external to Git and must be supplied separately. A su
 run demonstrates behavior on that fixture; it does not by itself establish scale, cost, or the
 general validity of the research claims.
 
+## Clean repo / canonical archive start state
+
+New users should start from a clean repository checkout and a clean external data root. Do not mix
+an old generated `data/` tree, a previous download directory, or a partially populated raw-data
+workspace with a fresh clone. The historical source archive is deliberately external to Git; the
+repository is a reproducible measurement environment, not a place where downloaded raw files are
+stored as project content.
+
+The project’s canonical archive reference is the parent record:
+[10.5281/zenodo.23846362](https://doi.org/10.5281/zenodo.23846362). Later Zenodo records with the
+same early-expenditure title represent duplicated public copies of the same logical dataset family
+and should not be treated as the authoritative baseline for a clean new repository setup. Use the
+parent DOI and the repo documentation as the source-of-truth reference when creating a fresh local
+copy of the archive.
+
 ## Start here
 
 **New to Ledger Lab?** Read [`LEDGER_LAB_OVERVIEW.md`](./LEDGER_LAB_OVERVIEW.md) — a plain-English explanation of what all the tests are trying to show and why, grouped by claim rather than by technical name. No prior knowledge of the research papers required. The Overview connects back to the papers for anyone who wants the full argument.

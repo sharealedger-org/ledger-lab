@@ -7,6 +7,18 @@ Downloads and extracts:
   - Revenues (FY2003 - FY2016)
   - Budget (FY2003 - FY2016)
 
+Repository start state:
+  Start from a clean clone of the repo and a clean external data root. Do not mix multiple
+  generated copies of the same raw files into the same working tree. Historical source data is
+  intentionally external to Git; the repository should be treated as a fresh, reproducible starting
+  point before any download or run.
+
+Canonical archive reference:
+  The authoritative parent archive for the project is DOI 10.5281/zenodo.23846362.
+  Several later Zenodo records contain duplicated early expenditure files for the same logical
+  data family; they are not the canonical baseline for a clean new repository. Use the parent
+  DOI and the project documentation as the source-of-truth reference when setting up a fresh run.
+
 All years FY2003-FY2016 are currently available on datapoint.apa.virginia.gov.
 As a permanent backup, the full dataset is also archived on Zenodo (public domain):
   https://doi.org/10.5281/zenodo.23846362  (see docs/RUNTIME_DATA_LAYOUT.md)
@@ -116,6 +128,8 @@ def main():
 
     print("=" * 70)
     print("Virginia APA Open Data Downloader")
+    print("  Clean repo note: start from a clean clone and clean external data root.")
+    print("  Canonical archive reference: DOI 10.5281/zenodo.23846362")
     print(f"  Destination: {args.dest}")
     print(f"  Years:       {', '.join(years)}")
     print(f"  Types:       {', '.join(selected_types)}")

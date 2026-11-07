@@ -199,7 +199,40 @@ COMMON_METADATA_FIELDS = {
     "license": {"id": "other-pd"},
     "access_right": "open",
     "resource_type": {"id": "dataset"},
+    "publication_date": time.strftime("%Y-%m-%d"),
 }
+
+
+def normalize_related_identifiers(related):
+    """Zenodo requires relation_type at publish time, not relation."""
+    normalized = []
+    for item in related or []:
+        relation = item.get("relation_type") or item.get("relation")
+        if not relation:
+            continue
+        normalized.append({
+            "identifier": item["identifier"],
+            "relation_type": relation,
+        })
+    return normalized
+
+
+def ensure_publish_metadata(meta):
+    """Ensure the base metadata still satisfies Zenodo's publish-time schema."""
+    meta = dict(meta or {})
+    if not meta.get("creators"):
+        meta["creators"] = [{"name": "Commonwealth of Virginia"}]
+    if not meta.get("resource_type"):
+        meta["resource_type"] = {"id": "dataset"}
+    elif isinstance(meta["resource_type"], str):
+        meta["resource_type"] = {"id": meta["resource_type"]}
+    if not meta.get("license"):
+        meta["license"] = {"id": "other-pd"}
+    if not meta.get("access_right"):
+        meta["access_right"] = "open"
+    if not meta.get("publication_date"):
+        meta["publication_date"] = time.strftime("%Y-%m-%d")
+    return meta
 
 
 # ── helpers ───────────────────────────────────────────────────────────────────
@@ -398,28 +431,55 @@ def get_draft_file_entry(rec_id, token, filename):
 
 
 def upload_and_commit_file(rec_id, token, local_path, filename):
-    """Upload a file to a draft record and commit it, retrying stale 404s."""
+    """Upload a file to a draft record and commit it, retrying stale/timeout file states."""
     last_error = None
-    for attempt in range(3):
+    for attempt in range(5):
         try:
+            # Refresh the draft file entry before each upload attempt; Zenodo can drop stale file state mid-batch.
             entry = get_draft_file_entry(rec_id, token, filename)
             content_path = entry["links"]["content"].replace(ZENODO_BASE, "")
             commit_path = entry["links"]["commit"].replace(ZENODO_BASE, "")
 
             status, resp = api("PUT", content_path, token, filepath=str(local_path))
-            if status not in (200, 201):
+            if status in (200, 201):
+                status2, resp2 = api("POST", commit_path, token)
+                if status2 in (200, 201):
+                    return
+                if status2 == 404 and "has no file" in str(resp2):
+                    # Draft entry disappeared; rebuild it and retry the same file.
+                    time.sleep(2)
+                    entry = get_draft_file_entry(rec_id, token, filename)
+                    content_path = entry["links"]["content"].replace(ZENODO_BASE, "")
+                    commit_path = entry["links"]["commit"].replace(ZENODO_BASE, "")
+                    status2, resp2 = api("POST", commit_path, token)
+                    if status2 in (200, 201):
+                        return
+                if status2 == 404:
+                    last_error = RuntimeError(f"Commit not found for {filename}: {status2} {resp2}")
+                elif status2 == 400 and "already being uploaded" in str(resp2):
+                    last_error = RuntimeError(f"Upload still in progress for {filename}: {status2} {resp2}")
+                else:
+                    raise RuntimeError(f"Commit failed for {filename}: {status2} {resp2}")
+            elif status == 404 and "has no file" in str(resp):
+                # Draft state dropped the file registration. Re-create it and retry.
+                time.sleep(2)
+                entry = get_draft_file_entry(rec_id, token, filename)
+                content_path = entry["links"]["content"].replace(ZENODO_BASE, "")
+                status, resp = api("PUT", content_path, token, filepath=str(local_path))
+                if status in (200, 201):
+                    status2, resp2 = api("POST", entry["links"]["commit"].replace(ZENODO_BASE, ""), token)
+                    if status2 in (200, 201):
+                        return
+                if status not in (200, 201):
+                    raise RuntimeError(f"Upload failed for {filename}: {status} {resp}")
+            elif status == 400 and "already being uploaded" in str(resp):
+                last_error = RuntimeError(f"Upload still in progress for {filename}: {status} {resp}")
+            else:
                 raise RuntimeError(f"Upload failed for {filename}: {status} {resp}")
-
-            status2, resp2 = api("POST", commit_path, token)
-            if status2 in (200, 201):
-                return
-            if status2 != 404:
-                raise RuntimeError(f"Commit failed for {filename}: {status2} {resp2}")
-            last_error = RuntimeError(f"Commit not found for {filename}: {status2} {resp2}")
         except RuntimeError as exc:
             last_error = exc
-        # Refresh metadata and retry on stale/expired draft file URLs.
-        time.sleep(2)
+        print(f"  [retry {attempt + 1}/5 after upload state issue for {filename}]", flush=True)
+        time.sleep(10)
 
     raise last_error or RuntimeError(f"Upload/commit failed for {filename}")
 
@@ -654,8 +714,7 @@ def crosslink_and_publish(epo_draft_id, apa_ids, supplier_id, token, prog, dry_r
 
     # For the main eVA record: hasPart = all 4 APA records + supplier snapshot
     related_for_epo = [
-        {"identifier": f"https://zenodo.org/record/{rid}", "relation": "hasPart",
-         "resource_type": "dataset"}
+        {"identifier": f"https://zenodo.org/record/{rid}", "relation_type": "hasPart"}
         for rid in apa_ids + [supplier_id]
     ]
     # For each APA record: isPartOf eVA record + references siblings
@@ -665,13 +724,13 @@ def crosslink_and_publish(epo_draft_id, apa_ids, supplier_id, token, prog, dry_r
         if dry_run:
             print(f"  [dry-run] PATCH related_identifiers for draft {draft_id}")
             return
-        # Read current metadata
+        # Read current metadata, preserve required fields, and update related identifiers
         status, rec = api("GET", f"/api/records/{draft_id}/draft", token)
         if status != 200:
             print(f"  ERROR reading draft {draft_id}: {status}", file=sys.stderr)
             return
-        meta = rec.get("metadata", {})
-        meta["related_identifiers"] = related
+        meta = ensure_publish_metadata(rec.get("metadata", {}))
+        meta["related_identifiers"] = normalize_related_identifiers(related)
         status2, resp2 = api("PUT", f"/api/records/{draft_id}/draft",
                              token, data={"metadata": meta})
         if status2 not in (200, 201):
@@ -707,7 +766,7 @@ def crosslink_and_publish(epo_draft_id, apa_ids, supplier_id, token, prog, dry_r
     for label, rec_id in zip(apa_labels, apa_ids):
         related = [
             {"identifier": f"https://zenodo.org/doi/{epo_doi}" if epo_doi else f"https://zenodo.org/record/{epo_draft_id}",
-             "relation": "isPartOf", "resource_type": "dataset"},
+             "relation_type": "isPartOf"},
         ]
         patch_related(rec_id, related)
         doi = publish_draft(rec_id, label)
@@ -717,7 +776,7 @@ def crosslink_and_publish(epo_draft_id, apa_ids, supplier_id, token, prog, dry_r
     # Publish supplier record
     supplier_related = [
         {"identifier": f"https://zenodo.org/doi/{epo_doi}" if epo_doi else f"https://zenodo.org/record/{epo_draft_id}",
-         "relation": "references", "resource_type": "dataset"},
+         "relation_type": "references"},
     ]
     patch_related(supplier_id, supplier_related)
     supplier_doi = publish_draft(supplier_id, "supplier_snapshot")
