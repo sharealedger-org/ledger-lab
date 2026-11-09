@@ -26,6 +26,7 @@ descriptions; Order of Processing diagram converted to Mermaid)
 9. [Instrument Reclass](#9-instrument-reclass)
 10. [Order of Processing](#10-order-of-processing)
 11. [Subsequent Reporting](#11-subsequent-reporting)
+12. [Part B — Engine Functional Requirements](#part-b--engine-functional-requirements-safr-on-spark-functional-definition-march-2017) (merged from the March 2017 SAFR on Spark draft; sections B.1–B.4)
 
 ---
 
@@ -547,5 +548,87 @@ all enabled ViewSpec views simultaneously in a single pass (O(M) — not O(V×M)
 
 ---
 
-*Converted from `POC VA Data Layouts and Specs.docx` (April 2018, updated May 2021, Kip Twitchell).*  
-*Original document archived externally. This markdown file is the authoritative reference in the repo.*
+# Part B — Engine Functional Requirements (SAFR on Spark Functional Definition, March 2017)
+
+Part A above works six processes through with numbers. Part B states the engine requirements
+behind them, from the March 2017 "SAFR on Spark — Functional Definition" (Kip Twitchell), merged
+here from a separate draft. It is also the clearest statement in this repository of the
+**financial systems patterns (FSPs)**: the repeatable processes that read transactions and
+balances and generate further transactions. `PROJECT_BRIEF.md` refers to nine FSPs but is
+historical and does not define them. Part B defines the processing steps, not the full list.
+
+> **Status column.** "Found" means a file or document in this repository addresses the
+> requirement; it does not mean the behavior was tested against the 2017 wording. "Not found"
+> means a keyword search of `docs/`, the top-level Markdown files and the Scala sources found
+> nothing; it is not proof of absence. Nothing in this table is evidence under
+> `VERIFICATION_AUDIT_REGISTER.md`.
+
+## B.1 Data structures and processing model
+
+- **Transactions** (business events) are records of individual interactions. The unique ID is a
+  generated transaction ID.
+- **Balances** are accumulated movements for a period (day, month, and so on), not stored
+  point-in-time totals. A balance on demand is an opening balance plus movements. This lets a
+  backdated process correct a prior period without recalculating every intermediate balance. A
+  balance is an aggregation over a subset of transaction attributes; if the key includes a
+  timestamp, nothing aggregates and the balance equals the transaction.
+- **Instrument (customer, vendor or contract) records** hold static descriptive data. Their
+  identifier is the instrument ID.
+- **Processing model:** the simplest model that scales is sequential. All tables are kept sorted
+  by instrument ID, and every process works on the set of records for one instrument at a time.
+  Storage access (database, message queue, in-memory) is a separate pluggable design.
+
+## B.2 Optional transformation step (accounting rules engine)
+
+If events already arrive as balanced universal journal records, no transformation is needed. If
+they arrive as raw source records, this step turns them into booked journal rows (a single
+event becomes multiple rows, for example a debit and a credit). For the later steps to run in a
+single pass, input must be in instrument order; otherwise this step runs first as a stand-alone
+pre-sort when volume exceeds compute capacity.
+
+Required functions: joins and lookups, tests on input fields, constants, arithmetic, summation
+and ID assignment.
+
+| Function | Requirement | Status in this repository |
+|---|---|---|
+| ID assignment | Given a system ID and a local customer/vendor ID, return the instrument ID, assigning and recording a new one when none exists. Blocks of IDs (journal ID) and line counters (journal line number) are also needed. | Found: gap `GERS-001` in [`GENEVAERS_CAPABILITY_GAP_REGISTER.md`](GENEVAERS_CAPABILITY_GAP_REGISTER.md). |
+| Constants | A process may know all input is, for example, actuals: `Ledger = Actuals`, `Jrnl Type = FIN`. | Found: `VAAccountingRules.csv` and `transStandardize.scala`. Not verified field by field. |
+| Table lookups | Binary-search lookups from an input value to an output value. | Found: sorted-merge reference join, gap `GERS-002`. |
+| **Wildcard keys** | Collapse long mapping tables by allowing a wildcard in the key. Search for the full value first (`AAAA`); if not found, retry with wildcards (`A***`). The retry rule, such as whether only a single first-character wildcard is searched, needs to be confirmed. | **Not found.** Candidate for the gap register. |
+| **Table-based record spawning** | Rule tables need not have unique keys. When two rows share a key, the input record is duplicated and each copy takes the table's values. Example: one transaction code spawns a direct row (`1083100001`, Loan Principal, DB) and its offset (`1023100001`, Cash, CR). | Found in effect: `VAAccountingRules.csv` states that "both legs are emitted as SJE rows and must balance". The non-unique-key mechanism itself was not checked. |
+| Logic rules | Logic where a table is awkward: for example, multiply the amount by -1 when the DB/CR indicator is CR. String tests, `if` statements, and percentage calculations (such as a loan-loss reserve) were suggested as further types. | Found in part: rule expressions in `VAAccountingRules.csv`. Not verified beyond that. |
+
+## B.3 The processing steps
+
+| Step | What it must do | Related process in Part A | Status in this repository |
+|---|---|---|---|
+| **1. Post transactions to balances; detect attribute changes** | Match transaction, balance and attribute records on key. Inputs: transactions (required), reconciliation balances, attribute updates, historical balances and attribute history (all optional). Outputs: updated balance history (required), updated attribute history and reconciliation reports (optional). The first run builds balances from transactions alone. | 4. Posting | Found: `post.scala`, CKB execution model. |
+| 1a. Balance key and period | A configurable choice of key attributes, including the balance period (annual, monthly or daily) and the calendar (calendar, fiscal or other). Key attributes can be constants, assigned keys, mapped values or function results; a missing balance triggers a new key. | 4. Posting | Partly found: the `--periodGranularity` axis in `ENGINE_IMPLEMENTATION_PLAN.md` Sub-Task 3e. Not verified as implemented. |
+| **1b. Attribute precedence** | When two transactions in one run carry different attribute values (morning and afternoon changes), a rule must decide which value is applied to the balance. | 9. Instrument Reclass | **Not found.** Candidate for the gap register. |
+| **1c. Set processing** | Native control over sets of records so transactions and historical balances aggregate into new or updated balances. The 2017 text calls the older tool record-oriented and says common key buffering "began to explore" set processing; it adds that this section needs more detail. | 4. Posting | **Not found** as a stated requirement. CKB is described in `CKB_LAYER_EXECUTION_MODEL.md`. |
+| 1d. Aggregation | Sum (or another calculation) over several fields. A backdated transaction may affect a prior-period balance in the same set. Further calculations: days outstanding, average period balance. | 4. Posting, 8. Walk Forward | Found: posting; walk-forward is not implemented (see `04-engines/calculation_engines/README.md`). |
+| 1e. Reconciliation comparison | Select two records, compare them and act on the result. The common case compares a source-system balance with the result of posting, to keep multiple posting files in sync. It must run after posting finishes. | none | Partly found: zero-balance and control-total checks (`VERIFICATION_AUDIT_REGISTER.md`). Comparison to an external source balance was not verified. |
+| 1f. Order of operations | The unit of controlled work is from record selection to output record. A comparison cannot run before the posting it checks. | 10. Order of Processing | Found: Part A section 10. |
+| **2. Generate and apply new transactions from updated balances** | Examples: interest and multi-currency revaluation. New transactions are created with the step-B.2 functions, then applied to balances with the step-1 functions. The process graph must have no cycles: no chain of processes may produce output consumed by a process that feeds the first. Tools would be needed to detect this. | 5. Currency Conversion, 6. Contra, 7. Revaluation, 9. Reclass | Found: `CurrencyRevaluation.scala`, `contraCreation.scala`, `arrangementReclass.scala`. Cycle detection not checked. |
+| **3. Create the allocation divisor** | Accumulate total units (the divisor) across like activities. If all transactions fit in the common-key buffer a second pass over the buffer can divide; otherwise a two-pass design is needed, with the divisor records becoming a lookup table. | none | Found: `financialAllocation.scala`, `AllocationDivisors_FY02_fixture.csv`. `PROJECT_BRIEF.md` (historical) argues the divisor is a prior-period balance, so a single pass suffices. That claim is not verified here. |
+| **4. Apply the divisor and generate multiple outputs** | Multiply each transaction's share by the aggregated balance to produce individual balances. Needs a looping construct so each transaction can see the balance, or a lookup to it. | none | Found: `financialAllocation.scala`. Not verified against this text. |
+| **5. Produce reports and extracts** | Not a separate step: extracts occur throughout. Required: calculations other than sums at extract-time summarization; dynamic sort at extract time; calculations at multiple subtotals on sort breaks; hierarchy subtotaling and selection. | 11. Subsequent Reporting | Partly found: `dataAggregation.scala` and `05-perspectives`. Not checked against these four items. |
+
+## B.4 Candidate gaps (not yet in the gap register)
+
+These come from the "Not found" rows above. They have **not** been added to
+[`GENEVAERS_CAPABILITY_GAP_REGISTER.md`](GENEVAERS_CAPABILITY_GAP_REGISTER.md), because a gap
+entry is an owner decision and each would need the register's template filled in:
+
+1. Wildcard fallback in table lookups (B.2).
+2. Attribute precedence among same-run transactions (1b).
+3. Set-oriented processing and cycle detection across generating processes (1c, step 2).
+
+The 2017 text contains unfinished notes (for example, "[Can add more types of logic…]") that are
+omitted here. Source: the March 2017 draft, kept outside this repository.
+
+
+---
+
+*Part A (sections 1–11) was converted from `POC VA Data Layouts and Specs.docx` (April 2018, updated May 2021, Kip Twitchell). Part B was merged from the March 2017 "SAFR on Spark — Functional Definition" draft (2026-11-09).*
+*This markdown file is the reference in this repo. Copies of the March 2017 draft and companion workbooks are kept outside the repository, not in git.*
