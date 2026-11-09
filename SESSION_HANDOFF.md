@@ -5,7 +5,7 @@ Updated 2026-11-09. This file is a concise state snapshot; use the linked design
 ---
 ## 2026-11-09 (latest) Zenodo corpus fixed and published; canonical download script; AIM data-scarcity assessment (Bob, Mac)
 
-**Nothing from this session is committed.** `docs/zenodo_metadata/` and `scripts/download_corpus_zenodo.sh` are untracked.
+**Committed and pushed to `origin/main` (head `1dd9a09`, 2026-11-09).** Local `main` equals `origin/main`; the working tree was clean at the merge. The `track-c-berka-paper2` branch was fast-forward merged and deleted. `oldmac`, `OldMacInitial` and `origin/oldmac` still exist; all their commits are on `main`.
 
 ### Zenodo corpus is five records plus a supplier snapshot, not one
 - Parent `23846362` holds 47 files (PO `.txt`, 14 `Budget FY20NN.csv`, xlsx, derived files). It is **not** the whole corpus.
@@ -30,13 +30,28 @@ Updated 2026-11-09. This file is a concise state snapshot; use the linked design
 - **applyPO fixed.** `nextLogicalLine` now starts a record at a physical line whose third tab field is a date (not quote parity). FY2003 dry run: 52,430 records / 104,860 SJE rows (was 25,129 / 50,258). `StandardizeAndSortPOSpec` 11/11 pass (new regression test for unmatched `"` and embedded newline). **The locked CCP1–CCP3 PO figures are now a different workload; re-measure before any comparison.** Steps 2p+2m+3 and the zero balance on the new reader are not yet re-run.
 - **AIM dates shifted.** Eligible years FY2006–08 and FY2010–FY2017 (`--eligible-fy` in `fit_vendor_survival.py` and `fit_ordering_seasonality.py`); gap-adjacent years are censored, not churn. Stage 3 slice is FY2010–FY2014. §7 thresholds unchanged. Recorded in `VERIFICATION_AUDIT_REGISTER.md` and `RESEARCH_OBJECTIVES.md`. Still open: locked 7-window / hold-out protocol and STL / majority-of-agencies rule are not implemented in the scripts.
 
+### Python approval pending: Track C (Berka) scripts
+- `main` contains `scripts/berka/build_berka_substrates.py`, `fetch_berka_data.py` and `fit_track_c_models.py` (746 lines with `scripts/run_track_c_berka.sh`), added in commit `8d2b235`. They read the Berka retail-bank tables and fit models (numpy, no Spark or timing code). They do not read or write the VA pipeline data. Evidence file: `data/test_evidence/TRACK_C_BERKA_EVIDENCE.json`.
+- **AGENTS.md requires owner approval before Python is written.** On 2026-11-09 the owner said the Python is acceptable because the files are small and Track C has no performance evaluation, and that **another session will approve it**. That approval is **not yet recorded**; treat the scripts as **pending approval** until that session logs it here.
+- Scope stated by the owner: Track C only, no performance or cost-curve measurement. Nothing in the Berka scripts should be cited as a measured engine result.
+
+### Other housekeeping done 2026-11-09 (all local, outside git)
+- Berka data copied into the private members repo `org-members` (`content/examples/banking-berka/`, commit `fbd72d2`, pushed). The scripts above read it from `../org-members/content/examples/banking-berka/data_berka`.
+- Deleted after verifying public/duplicate copies: `workspace/data`, `universal_ledger_data_zip`, `VAPostAnalysisRSCDemo`, `IBMSAFR-Spark`, `universal_ledger`, `ConversationsWithKip` (16 GB). Four files from the last (the 2017 SAFR on Spark draft, two workbooks, the IBM-confidential mockups deck) are archived in `~/workspace/reference_data/ConversationsWithKip_docs_archive/` and are **not in any repo**. Unpushed work in `universal_ledger` is saved as `reference_data/universal_ledger_uncommitted_2020.patch`.
+- The HSBC Word spec was judged redundant with `docs/VA_Data_Layouts_and_Specs.md` (HSBC production volumes in its diagram were not carried over). The March 2017 SAFR on Spark draft is now Part B of that spec; its three "not found" requirements (wildcard lookup, attribute precedence, set processing/cycle detection) are **not** in `GENEVAERS_CAPABILITY_GAP_REGISTER.md` and need an owner decision.
+- Not deleted, needs owner decision: `cdscVADataDemoSys` (8 unpushed commits, 4 stashes), `ngsafr` (2 unpushed), `jzosSpark`, `ulscalatra`, and the folders with no remote (`SAFRSpark`, `SparkScratchPad`, `smallprojects`, `AdeProject`, `V2=3Geveva`, `working directory`, `FPEMDemo`, `Lonepeak`, `tokenized`, `vagrant-ofbiz`).
+
+### Fresh full download (in progress at time of writing)
+- Started 2026-11-09 about 12:50 local, `scripts/download_corpus_zenodo.sh --data-root $HOME/workspace/va_fresh_root`, log `$HOME/workspace/va_fresh_logs/download_run1.log`. At 216 of 385 files, about 15 GB of 27.84 GB, no SHA-256 mismatches; connection resets recover by resuming `.part` files. Rate is about 0.5-0.7 MB/s. **Not finished: none of the pass criteria below are yet checked.**
+- Pass criteria: all 385 catalog rows accounted for (383 downloaded + 2 zero-byte placeholders), SHA-256 mismatches = 0, an immediate rerun is a no-op, root outside the repo.
+
 ### Next session — start here
-1. Run the fresh full download: `scripts/download_corpus_zenodo.sh --data-root $HOME/workspace/va_fresh_root` (about 165 GB free; corpus 27.84 GB). State pass criteria first: 385 files accounted for, SHA-256 mismatches = 0, rerun is a no-op.
-2. Run `ttl` on FY2003 from the fresh root and compare to the locked FY2003 figures.
-3. **Owner decision:** record an eligible-year rule (FY2006–08, FY2010–FY2017) in the audit register before any result is seen. Python guard/verdict edits need approval.
-4. **Owner decision:** `applyPO` quote-parity record reader drops about half of FY2003 PO records. A fix affects the locked CCP1–CCP3 PO figures.
-5. Unverified: parent description's "only public copy" claim for FY2003–FY2015 PO files; Zenodo MD5 vs local files for APA records; whether the PO reader also drops records in later years.
-6. Do not rerun `scripts/zenodo_upload.py` (historical). Do not mix `universal_ledger_data` or `ConversationsWithKip` with the fresh root.
+1. Check the download finished (`pgrep -f download_corpus_zenodo.sh`; last line of the log). Verify the pass criteria above, then rerun the script once to confirm it is a no-op.
+2. Run `ttl` on FY2003 from the fresh root. The `applyPO` fix means PO counts differ from the locked CCP1-CCP3 figures: re-run steps 2p, 2m and 3 and the zero balance on the new reader and record it as a **new baseline**, not a replicate.
+3. Re-measure CCP1-CCP3 with the new reader before comparing anything to the 2026-11-06 locked values.
+4. Run AIM3/AIM4 on real view output with `--eligible-fy`; implement the locked 7-window/hold-out protocol and STL/majority-of-agencies rule only with owner approval (Python).
+5. Unverified: parent Zenodo description's "only public copy" claim for FY2003-FY2015 PO files; Zenodo MD5 vs local files for APA records; whether the new PO reader reads all records in FY2006+; the 9-record gap between emitted+quarantined and dated lines in FY2003.
+6. Do not rerun `scripts/zenodo_upload.py` (historical). `universal_ledger_data` (15 GB) is the old local corpus: keep it until the fresh root passes its checks, then it is redundant. Do not mix it with the fresh root.
 
 ---
 ## 2026-11-06 $0.00 balance verified, backup branch pruned, Sub-Task 4b design (Bob)
