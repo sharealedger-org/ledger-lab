@@ -96,4 +96,6 @@ Preserves the full multi-dimensional event tuple $e_i = \langle t_i, \Delta t_i,
 
 * **Substrate Extractor**: `scripts/berka/build_berka_substrates.py`
 * **Model Trainer & Evaluator**: `scripts/berka/fit_track_c_models.py`
+* **Pipeline Runner**: `scripts/run_track_c_berka.sh`
 * **Evidence Output**: `data/test_evidence/TRACK_C_BERKA_EVIDENCE.json`
+* **Monograph Paper 2 Draft Text**: [`docs/PAPER_2_TRACK_C_INSERTION_DRAFT.md`](PAPER_2_TRACK_C_INSERTION_DRAFT.md)
