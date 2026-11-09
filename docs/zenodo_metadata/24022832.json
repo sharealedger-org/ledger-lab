@@ -1,0 +1,30 @@
+{
+  "metadata": {
+    "title": "Virginia APA Revenue Data FY2010–FY2016 (Ledger Lab Research Archive)",
+    "upload_type": "dataset",
+    "publication_date": "2026-11-06",
+    "description": "<p>Monthly CSV files of Virginia state agency revenue transactions, FY2010&ndash;FY2016 (July 2009 to June 2016), from the Virginia Auditor of Public Accounts (datapoint.apa.virginia.gov). 84 files, one per month (for example &ldquo;Revenues Jul 2014.csv&rdquo;), about 1.6 GB.</p>\n<p>Format: comma-delimited, double-quoted, UTF-8 with byte-order mark, dates MM-DD-YY. Seven fields: AGENCY_NAME, AMOUNT, FUND_NAME, LOCALITY, SOURCE_TYPE, SOURCE, DEPOSIT_DATE. Every chart field is a name; there are no codes, and there is no payer field. AMOUNT is signed.</p>\n<p>Zenodo stores files without folders. The State&rsquo;s archive used one folder per fiscal year (for example &ldquo;FY 2012 Revenue&rdquo; and, from FY2014, &ldquo;All Revenues for Fiscal Year 2014&rdquo;). The original path and SHA-256 of every file are in <code>data/corpus_profile/source_catalog.csv</code> in the repository <a href=\"https://github.com/sharealedger-org/ledger-lab\">sharealedger-org/ledger-lab</a>, whose <code>scripts/download_corpus_zenodo.sh</code> restores the layout and verifies the files.</p>\n<p>Part of the Virginia corpus for <em>The Architecture of Economic State</em> (Twitchell). The parent record (10.5281/zenodo.23846362) holds the eVA procurement data and annual budget files and describes known data gaps. Companion records: Revenue FY2003&ndash;FY2009 (10.5281/zenodo.24022681); Expenditure FY2003&ndash;FY2009 (10.5281/zenodo.24015791); Expenditure FY2010&ndash;FY2016 (10.5281/zenodo.24021539).</p>\n<p>Released government data, public domain. No license was provided by the source; public-domain status is asserted by the depositor and is not a legal finding.</p>",
+    "access_right": "open",
+    "license": "other-pd",
+    "creators": [
+      {
+        "name": "Commonwealth of Virginia"
+      }
+    ],
+    "imprint_publisher": "Commonwealth of Virginia",
+    "related_identifiers": [
+      {
+        "identifier": "10.5281/zenodo.23846362",
+        "relation": "ispartof",
+        "scheme": "doi",
+        "resource_type": "dataset"
+      },
+      {
+        "identifier": "10.5281/zenodo.24022681",
+        "relation": "continues",
+        "scheme": "doi",
+        "resource_type": "dataset"
+      }
+    ]
+  }
+}

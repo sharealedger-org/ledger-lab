@@ -39,11 +39,24 @@ from collections import defaultdict
 VIEW_PATH    = "data/output_validate_fy03/output_validate_fy03.next.834/view_vendor_year_survival.csv"
 EVIDENCE_OUT = "data/test_evidence/AIM3_survival_results.csv"
 HEALTH_OUT   = None   # optional: vendor_health_score output path
+# Eligible fiscal years (owner decision 2026-11-09): PO files are usable only for
+# FY2006-08 and FY2010 onward (FY2001-05 are stubs/partial; FY2009 has no file).
+ELIGIBLE_FY_SPEC = "2006-2008,2010-2017"
+
+def parse_fy_spec(spec):
+    """'2006-2008,2010-2017' -> {2006, 2007, 2008, 2010, ..., 2017}."""
+    out = set()
+    for part in spec.split(","):
+        lo, _, hi = part.strip().partition("-")
+        out.update(range(int(lo), int(hi or lo) + 1))
+    return out
 
 i = 1
 while i < len(sys.argv):
     if sys.argv[i] == "--view" and i + 1 < len(sys.argv):
         VIEW_PATH = sys.argv[i + 1]; i += 2
+    elif sys.argv[i] == "--eligible-fy" and i + 1 < len(sys.argv):
+        ELIGIBLE_FY_SPEC = sys.argv[i + 1]; i += 2
     elif sys.argv[i] == "--evidence-out" and i + 1 < len(sys.argv):
         EVIDENCE_OUT = sys.argv[i + 1]; i += 2
     elif sys.argv[i] == "--health-out" and i + 1 < len(sys.argv):
@@ -141,17 +154,23 @@ for r in rows:
     if foy is not None and (a["first_order_year"] is None or foy < a["first_order_year"]):
         a["first_order_year"] = foy
 
+# Keep only eligible fiscal years; others are source gaps, not vendor churn.
+ELIGIBLE_FY = parse_fy_spec(ELIGIBLE_FY_SPEC)
+by_vendor_fy = {k: v for k, v in by_vendor_fy.items() if k[1] in ELIGIBLE_FY}
+
 distinct_years = sorted({fy for (_, fy) in by_vendor_fy})
 year_count     = len(distinct_years)
 last_fy        = distinct_years[-1] if distinct_years else None
+print(f"  Eligible fiscal years          : {ELIGIBLE_FY_SPEC}")
 
 # present_next_year is derived from the data: vendor has a row in fiscal year + 1.
-# The last fiscal year is right-censored (next year unobserved) and excluded from the model.
+# A vendor-year is observable only if fiscal year + 1 is also eligible; otherwise the
+# outcome is right-censored (last year, or the year before a source gap) and excluded.
 all_annual = list(by_vendor_fy.values())
 for a in all_annual:
     a["present_next_year"] = 1 if (a["vendor_id"], a["fiscal_year"] + 1) in by_vendor_fy else 0
     a["first_order_year"] = a["first_order_year"] if a["first_order_year"] is not None else a["fiscal_year"]
-rows = [a for a in all_annual if a["fiscal_year"] != last_fy]
+rows = [a for a in all_annual if (a["fiscal_year"] + 1) in ELIGIBLE_FY]
 
 # Count vendors, churn rate (observed, non-censored vendor-years only)
 total_vendor_years = len(rows)

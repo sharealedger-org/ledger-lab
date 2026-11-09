@@ -1,0 +1,73 @@
+{
+  "metadata": {
+    "title": "Virginia APA Expenditure/Revenue/Budget and eVA Procurement Data FY2001–FY2018 (Ledger Lab Research Archive)",
+    "upload_type": "dataset",
+    "publication_date": "2026-10-31",
+    "description": "<p>This archive contains Virginia state government financial and procurement data used as the empirical basis for <em>The Architecture of Economic State</em> (Twitchell), a nine-paper monograph examining minimum-cost accounting architectures for financial systems.</p>\n<p><strong>This record holds 47 files</strong>: the eVA purchase-order files (FY2001&ndash;FY2018), the 14 annual APA budget files (FY2003&ndash;FY2016), and supporting files. The 336 monthly APA expenditure and revenue files (21.8 GB) are published in four companion records listed below. Together the five records hold 383 files.</p>\n<p><strong>1. Virginia eVA Procurement / Purchase Order Data (FY2001&ndash;FY2018)</strong><br>Source: Virginia Department of General Services, eVA electronic procurement system, data.virginia.gov.<br>17 tab-delimited files, <code>VA_opendata_FY2001.txt</code> to <code>VA_opendata_FY2018.txt</code> (no FY2009 file exists), one row per purchase-order line, 19 columns: PONUMBER, AGENCY, ORDEREDDATE, VENDORCOMMODITYDESC, QUANTITYORDERED, PRICE, VENDORID, VENDORNAME, VENDORADDRESS, VENDORCITY, VENDORSTATE, VENDORPOSTALCODE, VENDORLOC_EMAILADDRESS, NIGPCODE, NIGPDESCRIPTION, UOMCode, UOMDesc, VENDORPARTNUMBER, MANPARTNUMBER. Dates are MM/DD/YYYY and each file begins with a blank line before the header. VENDORID is documented as a DUNS number in the data dictionary but also holds alphanumeric identifiers and a 12-nines placeholder; read it, and postal codes, as strings. Vendor business contact information (email addresses, postal addresses) is included as published in the original government source. NIGP commodity code descriptions are reproduced only as embedded fields in transaction rows, not as a standalone code table.</p>\n<p><strong>2. Virginia APA annual budget files (FY2003&ndash;FY2016)</strong><br>Source: Virginia Auditor of Public Accounts, datapoint.apa.virginia.gov.<br>14 comma-delimited files, <code>Budget FY2003.csv</code> to <code>Budget FY2016.csv</code>, 8 columns: AGENCY_NAME, AMOUNT, FUND_NAME, LOCALITY, GROUPING_CODE, PROGRAM_NAME, TRANSACTION_TYPE, BATCH_DATE. Rows are budget transactions, not balances. GROUPING_CODE keeps leading zeros and must be read as a string.</p>\n<p><strong>3. Supporting and derived files</strong>: 12 <code>20NN Combined.xlsx</code> workbooks (2003, 2004, 2006&ndash;2008, 2010&ndash;2016; not parsed, and their relationship to the .txt files is unverified), <code>data-dictionary.xlsx</code>, <code>StateContractList.xlsx</code>, <code>po_attributes_by_year_summary.txt</code>, and <code>vendor_po_attributes_by_year.csv</code>. The last two are derived, not source data. <code>vendor_po_attributes_by_year.csv</code> has known defects (8,101 column-shifted rows from embedded line breaks, no provenance header); do not treat it as ground truth for vendor identity.</p>\n<p><strong>Companion records (APA monthly files, 84 files each):</strong> Expenditure FY2003&ndash;FY2009 (10.5281/zenodo.24015791); Expenditure FY2010&ndash;FY2016 (10.5281/zenodo.24021539); Revenue FY2003&ndash;FY2009 (10.5281/zenodo.24022681); Revenue FY2010&ndash;FY2016 (10.5281/zenodo.24022832). A related record holds a dated snapshot of the public eVA supplier directory (10.5281/zenodo.24023167).</p>\n<p><strong>Known data gaps in the purchase-order files.</strong> Parsed records per file: FY2001 312; FY2002 64,743; FY2003 52,666; FY2004 227; FY2005 1,037; FY2006&ndash;FY2008 1.2&ndash;1.6 million each; FY2010&ndash;FY2017 1.55&ndash;1.73 million each; FY2018 881,262. There is no FY2009 file: the source published only a zero-byte placeholder, which is not included in this record, and a zero-byte FY2005 placeholder (&ldquo;2005 Combined Empty File.csv&rdquo;) is likewise not included. FY2004 is nearly empty (75 KB, 338 lines, about 180 well-formed rows; the source export appears damaged) and <code>2004 Combined.xlsx</code> is also only 10.9 KB. FY2003 ends 2003-02-06, with its rows concentrated in July&ndash;October 2002. FY2018 is a partial year ending 2018-01-09. Files contain order dates outside the fiscal year in their name in every year from FY2002, so a file name is not a filter on order date. FY2017 contains six repeated lines with an extended price of about 5.14 billion dollars each; do not quote PO dollar totals without checking extremes. 325,843 PO records could not be split into 19 columns by the depositor&rsquo;s profiler (embedded tabs or line breaks, unbalanced quotes) and are left unchanged in the files. Presence of a file does not show that the State&rsquo;s source was complete.</p>\n<p>FY2003&ndash;FY2015 eVA files are no longer available on data.virginia.gov as of 2026; this archive is the only public copy. FY2003&ndash;FY2016 APA files remain on datapoint.apa.virginia.gov but are archived here for long-term reproducibility.</p>\n<p><strong>Restoring the corpus.</strong> The repository <a href=\"https://github.com/sharealedger-org/ledger-lab\">sharealedger-org/ledger-lab</a> contains <code>scripts/download_corpus_zenodo.sh</code>, which downloads all five records into the original folder layout and checks every file against the SHA-256 values in <code>data/corpus_profile/source_catalog.csv</code>.</p>\n<p><strong>License:</strong> Released government data, public domain. These are Virginia state government records. No license was provided by the source; public-domain status is asserted by the depositor and is not a legal finding.</p>",
+    "access_right": "open",
+    "license": "other-pd",
+    "creators": [
+      {
+        "name": "Commonwealth of Virginia"
+      }
+    ],
+    "keywords": [
+      "Financial Data",
+      "Virginia",
+      "government accounting",
+      "procurement",
+      "expenditure",
+      "purchase orders",
+      "eVA",
+      "APA",
+      "fiscal data",
+      "public domain",
+      "ledger",
+      "financial systems research"
+    ],
+    "language": "eng",
+    "imprint_publisher": "Zenodo",
+    "conference_url": "https://sharealedger.org/index.html",
+    "custom": {
+      "code:codeRepository": "https://github.com/sharealedger-org/ledger-lab",
+      "code:developmentStatus": {
+        "id": "active",
+        "title": {
+          "en": "Active"
+        }
+      }
+    },
+    "related_identifiers": [
+      {
+        "identifier": "10.5281/zenodo.24015791",
+        "relation": "haspart",
+        "scheme": "doi",
+        "resource_type": "dataset"
+      },
+      {
+        "identifier": "10.5281/zenodo.24021539",
+        "relation": "haspart",
+        "scheme": "doi",
+        "resource_type": "dataset"
+      },
+      {
+        "identifier": "10.5281/zenodo.24022681",
+        "relation": "haspart",
+        "scheme": "doi",
+        "resource_type": "dataset"
+      },
+      {
+        "identifier": "10.5281/zenodo.24022832",
+        "relation": "haspart",
+        "scheme": "doi",
+        "resource_type": "dataset"
+      },
+      {
+        "identifier": "10.5281/zenodo.24023167",
+        "relation": "isreferencedby",
+        "scheme": "doi",
+        "resource_type": "dataset"
+      }
+    ]
+  }
+}

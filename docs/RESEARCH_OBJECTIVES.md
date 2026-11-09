@@ -200,7 +200,7 @@ Stage 2 — 1-year validation run (FY2003 only)
     confirm code executes and produces plausible output
     (not against locked thresholds — 1 year is too little data)
 
-Stage 3 — 3–5 year slice (FY2003–FY2007)
+Stage 3 — 5 year slice (FY2010–FY2014)   [moved from FY2003–FY2007, owner decision 2026-11-09]
   Run pipeline on 5 years.
   Run AIM1, AIM3, AIM4 against slice outputs:
     AIM1: verify non-zero non-injectivity gap (directional check)
@@ -220,8 +220,9 @@ Stage 4 — Full 14-year corpus (FY2003–FY2016), 3 replicates each CCP
 | **AIM5 first** | No corpus run needed; unblocks AIM2 and CCP5; cheapest possible first result. |
 | **1-year validation before any slice** | Confirms pipeline correctness before investing compute. |
 | **Fixture for model smoke** | Use existing `FY03q1exp_small.txt` + `VA_opendata_FY2003_small.txt` to confirm script syntax/execution only; too few rows for any statistical result. |
-| **FY2003–FY2007 slice for directional check** | AIM3 survival needs ≥4 years of `present_next_year` signal; AIM4 STL needs ≥3 years of monthly volume; 5 years covers both. |
-| **Full 14 years for locked thresholds** | AIM2 7-window protocol requires FY2003–FY2016; AIM3/AIM4 thresholds were set against the full corpus. |
+| **FY2010–FY2014 slice for directional check** | AIM3 survival needs ≥4 years of `present_next_year` signal; AIM4 STL needs ≥3 years of monthly volume; 5 contiguous years covers both. FY2003–FY2007 is not usable: PO files for FY2001–FY2005 are stubs or partial, so absence there is source gap, not vendor churn (see `VERIFICATION_AUDIT_REGISTER.md`, 2026-11-09). |
+| **Eligible-year rule for AIM3/AIM4 (2026-11-09)** | PO-derived AIM tests use only FY2006–08 and FY2010–FY2017 (FY2009 has no PO file; FY2018 is partial). A vendor-year whose next year is ineligible is right-censored, not churn. The §7 thresholds are unchanged. AIM2/AIM3 7-window protocol over FY2003–FY2016 must be re-specified on the longest contiguous eligible run (FY2010–FY2017); not yet done. |
+| **Full eligible corpus for locked thresholds** | Thresholds were set against the full corpus; they now apply to the eligible years above. |
 | **AIM5 before AIM2** | AIM2 requires clean agency keys from AIM5 reconciliation table. |
 | **AIM5 before CCP5** | Allocation (Step 6) requires clean agency keys. |
 | **CCP2 before CCP3, CCP4, CCP5** | Each layers capability onto the prior CKB pass output. |

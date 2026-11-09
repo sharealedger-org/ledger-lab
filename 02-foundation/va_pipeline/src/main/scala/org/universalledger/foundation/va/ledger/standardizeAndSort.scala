@@ -432,21 +432,29 @@ object standardizeAndSort {
 
       private var pending: List[String] = Nil
 
-      // RFC-4180 multi-line field handling: the PO source file uses tab-delimited
-      // RFC-4180 quoting where description fields may span multiple physical lines.
-      // A logical row starts with a `"` when PONUMBER is quoted (VA production files).
-      // Continuation lines (the embedded-newline tail of a quoted description field)
-      // do NOT start with `"` — they are joined onto the accumulated logical line.
-      // For non-quoted sources (fixtures) the quote-count check is a no-op (stays 0).
-      // We join continuation lines with a space so downstream comma-replace works.
-      // Orphaned continuation fragments that don't form a ≥7-column row are discarded
-      // by the existing `cols.length >= 7` guard in fetchNext.
+      // Multi-line field handling: description and vendor-address fields may contain
+      // embedded newlines, so one PO record can span several physical lines.
+      // Record boundary = a physical line whose third tab field (ORDEREDDATE) is
+      // MM/DD/YYYY, or empty with at least 6 tabs (a full-width row). Every physical
+      // line that is NOT a record start is a continuation and is joined onto the
+      // preceding record with a space (so the downstream comma-replace still works).
+      // This replaces the earlier quote-parity join, which absorbed every following
+      // record whenever a description held an unmatched `"` (e.g. `18" x 225 ft.`).
+      // Orphaned fragments that don't form a ≥7-column row are discarded by the
+      // existing `cols.length >= 7` guard in fetchNext.
+      private val dateField = "\\d{1,2}/\\d{1,2}/\\d{4}"
+      private def isRecordStart(line: String): Boolean = {
+        val f = line.split("\t", 4)
+        if (f.length < 4) false
+        else {
+          val d = f(2).trim.stripPrefix("\"").stripSuffix("\"")
+          d.matches(dateField) || (d.isEmpty && line.count(_ == '\t') >= 6)
+        }
+      }
       private def nextLogicalLine(): String = {
         if (!lines.hasNext) return ""
         val sb = new StringBuilder(lines.next())
-        // Accumulate until all opened quotes are closed (even total `"` count).
-        // A freshly started line with 0 quotes is trivially balanced — no joining needed.
-        while (sb.count(_ == '"') % 2 != 0 && lines.hasNext) {
+        while (lines.hasNext && !isRecordStart(lines.head)) {
           sb.append(' ')
           sb.append(lines.next())
         }

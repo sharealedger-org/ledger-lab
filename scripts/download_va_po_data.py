@@ -10,23 +10,23 @@ Repository start state:
   a previous downloaded dataset tree, older generated outputs, or duplicate raw-data
   copies into the same workspace. Historical source data is intentionally external to Git.
 
-Canonical archive reference:
-  The authoritative parent archive for the project is DOI 10.5281/zenodo.23846362.
-  Later Zenodo records with the same early-expenditure title are duplicated public
-  copies of the same logical family and are not the canonical baseline for a fresh repo.
+Canonical clean-start download is scripts/download_corpus_zenodo.sh, not this script.
+  The PO files the pipeline reads (tab-delimited VA_opendata_FY2001-FY2018.txt) are in the
+  parent Zenodo record 10.5281/zenodo.23846362 and are restored with SHA-256 verification
+  into <root>/VAPOData/. This script's CKAN output (eVA_procurement_YYYY.csv) is a different
+  format and is NOT a drop-in replacement for those files; its schema has not been compared.
 
 Coverage by source:
   FY2003–FY2015  Not publicly accessible via the Virginia Open Data Portal.
-                 These files are Virginia public-domain government records archived
-                 on Zenodo: https://doi.org/10.5281/zenodo.23846362
-                 (see docs/RUNTIME_DATA_LAYOUT.md)
-                 Download the archive, extract into data/VAPOData/, then re-run.
-                 This script will record a manifest entry for each missing year.
+                 Restore them with scripts/download_corpus_zenodo.sh (see
+                 docs/RUNTIME_DATA_LAYOUT.md). This script records a manifest entry
+                 for each year it skips.
 
-                 Known data gaps in the eVA source (no procurement data published):
-                   FY2005 — "2005 Combined Empty File.csv" (zero rows)
-                   FY2009 — "2009 Combined no VA Data.csv" (zero rows)
-                 extract_po_attributes.py skips these automatically (< 0.5 MB).
+                 Known source gaps (docs/RUNTIME_DATA_LAYOUT.md "PO coverage"):
+                   FY2005 — small but not empty (1,037 records); the zero-byte
+                            "2005 Combined Empty File.csv" is a separate file
+                   FY2009 — no VA_opendata_FY2009.txt exists; only the zero-byte
+                            "2009 Combined no VA Data.csv"
 
   FY2016         Available on data.virginia.gov (CKAN slug: eva-procurement-data-2016).
                  Schema matches the FY2003-FY2015 dictionary fields.
@@ -148,9 +148,9 @@ def download_year(year: int, dest_dir: str, dry_run: bool) -> dict:
     if slug is None:
         msg = (
             "Not available on data.virginia.gov. "
-            "FY2003-FY2015 files are archived on Zenodo (public domain) under the "
-            "canonical parent DOI 10.5281/zenodo.23846362 — "
-            "see docs/RUNTIME_DATA_LAYOUT.md for clean-start and archive instructions."
+            "FY2003-FY2015 files are archived on Zenodo (parent record 10.5281/zenodo.23846362). "
+            "Restore them with scripts/download_corpus_zenodo.sh — "
+            "see docs/RUNTIME_DATA_LAYOUT.md."
         )
         print(f"  FY{year}: SKIPPED — {msg}")
         return {
@@ -347,7 +347,7 @@ def main():
     print("=" * 70)
     print()
     print("Note: FY2003–FY2015 are not on data.virginia.gov.")
-    print("      Those files are pre-bundled in data/VAPOData/ in this repo.")
+    print("      Restore them with scripts/download_corpus_zenodo.sh (Zenodo, SHA-256 verified).")
     print()
 
     manifest_rows = []

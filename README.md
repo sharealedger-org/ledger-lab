@@ -17,12 +17,13 @@ workspace with a fresh clone. The historical source archive is deliberately exte
 repository is a reproducible measurement environment, not a place where downloaded raw files are
 stored as project content.
 
-The project’s canonical archive reference is the parent record:
-[10.5281/zenodo.23846362](https://doi.org/10.5281/zenodo.23846362). Later Zenodo records with the
-same early-expenditure title represent duplicated public copies of the same logical dataset family
-and should not be treated as the authoritative baseline for a clean new repository setup. Use the
-parent DOI and the repo documentation as the source-of-truth reference when creating a fresh local
-copy of the archive.
+The corpus is archived on Zenodo in five records: the parent
+[10.5281/zenodo.23846362](https://doi.org/10.5281/zenodo.23846362) (eVA PO, budget, metadata; 47
+files) and four APA records (expenditure and revenue, FY2003–FY2009 and FY2010–FY2016; 84 files
+each). The parent alone lacks the monthly APA files. To restore a clean external data root with
+SHA-256 verification, run `bash scripts/download_corpus_zenodo.sh --data-root <dir outside the
+repo>`; record IDs and test status are in
+[`docs/RUNTIME_DATA_LAYOUT.md`](docs/RUNTIME_DATA_LAYOUT.md).
 
 ## Start here
 

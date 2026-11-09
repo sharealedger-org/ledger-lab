@@ -301,6 +301,39 @@ class StandardizeAndSortPOSpec extends AnyFunSuite {
       assert(amounts.sum == BigDecimal(0), s"Amounts should sum to 0; got ${amounts.sum}")
     }
   }
+  // ── Test 9b: record boundary is the date field, not quote parity ─────────────
+  //  A description with an unmatched `"` (e.g. `18" x 225 ft.`) used to leave the
+  //  quote count odd and absorb every following record.  A description with an
+  //  embedded newline must still be joined into one record.
+  test("Step 2p: unmatched quote in description does not absorb following records; embedded newline is joined") {
+    withTempDirectory("po-2p-boundary-") { tempDir =>
+      val inDir  = Files.createDirectory(tempDir.resolve("in"))
+      val outDir = Files.createDirectory(tempDir.resolve("out"))
+      val unmatchedQuote =
+        "\"DO1\"\t\"Agency A\"\t\"09/23/2002\"\t\"Tape 18\" x 225 ft\"\t1\t10.00\t\"v1\"\t\"Vendor 1\"\t\"ADDR\"\t\"CITY\"\t\"VA\"\t\"00000\"\t\"\"\t\"08015\"\t\"d\"\t\"EA\"\t\"each\"\t\"\"\t\"\""
+      val embeddedNewline =
+        "\"DO2\"\t\"Agency B\"\t\"09/24/2002\"\t\"Line one\ncontinues here\"\t2\t5.00\t\"v2\"\t\"Vendor 2\"\t\"ADDR\"\t\"CITY\"\t\"VA\"\t\"00000\"\t\"\"\t\"08015\"\t\"d\"\t\"EA\"\t\"each\"\t\"\"\t\"\""
+      val lastRow =
+        "\"DO3\"\t\"Agency C\"\t\"09/25/2002\"\t\"Pen\"\t3\t1.00\t\"v3\"\t\"Vendor 3\"\t\"ADDR\"\t\"CITY\"\t\"VA\"\t\"00000\"\t\"\"\t\"08015\"\t\"d\"\t\"EA\"\t\"each\"\t\"\"\t\"\""
+      writePOFile(inDir, unmatchedQuote, embeddedNewline, lastRow)
+
+      standardizeAndSort.applyPO(Map(
+        "inPath"  -> inDir.toString,
+        "outPath" -> outDir.toString,
+        "year"    -> "2003",
+        "quarter" -> "1"
+      ))
+
+      val src  = scala.io.Source.fromFile(outDir.resolve("SortedJEFY03q1PO.csv").toFile, "UTF-8")
+      val rows = try src.getLines().filter(_.trim.nonEmpty).toVector finally src.close()
+
+      assert(rows.length == 6, s"Expected 6 rows (3 records × 2 SJE); got ${rows.length}")
+      val poNumbers = rows.map(_.split(",", -1)(2)).distinct.sorted
+      assert(poNumbers == Vector("DO1", "DO2", "DO3"), s"Expected DO1,DO2,DO3; got $poNumbers")
+    }
+  }
+
+
 
   // ── Test 10: Step 2m merges payment + PO files in sort order ─────────────────
   test("Step 2m: mergeSpills produces a merged file with all rows in sort order") {

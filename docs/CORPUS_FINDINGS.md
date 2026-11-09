@@ -208,6 +208,6 @@ Detail and join cautions are in [CORPUS_SCHEMAS.md](CORPUS_SCHEMAS.md#reference-
 - Why PO files hold dates outside their fiscal year (active versus ordered).
 - Whether `.xlsx` PO copies match the `.txt` files. They are cataloged but not parsed.
 - What the FY2017 5.14-billion-dollar PO prices represent (the lines are identified above; their meaning is not).
-- Zenodo `10.5281/zenodo.23846362` was checked through its public API (see `CORPUS_ACCESS.md`): published; its 47 files match local copies by size and MD5; the 336 monthly APA expenditure/revenue files are **not** in it.
+- Zenodo `10.5281/zenodo.23846362` was checked through its public API (see `CORPUS_ACCESS.md`): published; its 47 files match local copies by size and MD5; the 336 monthly APA expenditure/revenue files are **not** in it. They are in four separate records published 2026-11-06 (24015791, 24021539, 24022681, 24022832); see `RUNTIME_DATA_LAYOUT.md`.
 - Stability of results across reruns on the real corpus. Determinism is unit-tested on a fixture;
   a second full run was not compared byte for byte.

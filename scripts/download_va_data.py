@@ -13,15 +13,17 @@ Repository start state:
   intentionally external to Git; the repository should be treated as a fresh, reproducible starting
   point before any download or run.
 
-Canonical archive reference:
-  The authoritative parent archive for the project is DOI 10.5281/zenodo.23846362.
-  Several later Zenodo records contain duplicated early expenditure files for the same logical
-  data family; they are not the canonical baseline for a clean new repository. Use the parent
-  DOI and the project documentation as the source-of-truth reference when setting up a fresh run.
+Canonical clean-start download is scripts/download_corpus_zenodo.sh, not this script.
+  It restores all 385 files and verifies SHA-256 against data/corpus_profile/source_catalog.csv.
+  The Zenodo corpus is six records: parent 10.5281/zenodo.23846362 (eVA PO, Budget, metadata)
+  plus four APA records (expenditure/revenue, FY2003-FY2009 and FY2010-FY2016):
+  24015791, 24021539, 24022681, 24022832. See docs/RUNTIME_DATA_LAYOUT.md.
 
+This script is the direct-from-source alternative for APA files only (no PO data). Use it to
+check whether the State still serves byte-identical files, then compare against the catalog.
+It does not verify checksums and writes the State's folder names, which match the catalog
+layout (checked 2026-11-09 for FY2003 revenue and budget).
 All years FY2003-FY2016 are currently available on datapoint.apa.virginia.gov.
-As a permanent backup, the full dataset is also archived on Zenodo (public domain):
-  https://doi.org/10.5281/zenodo.23846362  (see docs/RUNTIME_DATA_LAYOUT.md)
 
 Usage:
   python scripts/download_va_data.py --dest data/VARawFiles --years 2003,2004 --types exp,rev
@@ -129,7 +131,7 @@ def main():
     print("=" * 70)
     print("Virginia APA Open Data Downloader")
     print("  Clean repo note: start from a clean clone and clean external data root.")
-    print("  Canonical archive reference: DOI 10.5281/zenodo.23846362")
+    print("  Canonical clean-start download: scripts/download_corpus_zenodo.sh (this is the direct-from-source path)")
     print(f"  Destination: {args.dest}")
     print(f"  Years:       {', '.join(years)}")
     print(f"  Types:       {', '.join(selected_types)}")

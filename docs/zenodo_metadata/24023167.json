@@ -1,0 +1,24 @@
+{
+  "metadata": {
+    "title": "Virginia eVA Supplier Directory Snapshot 2026-10-31 (Ledger Lab Research Archive)",
+    "upload_type": "dataset",
+    "publication_date": "2026-11-06",
+    "description": "<p>A dated snapshot of the Virginia eVA public supplier directory, captured 2026-10-31. Source: logi.cgieva.com/External/rdPage.aspx (Report9001_Data public report).</p>\n<p><strong>Files in this record</strong> (Zenodo stores files without folders; a double underscore stands for a folder separator):</p>\n<ul>\n<li><code>suppliers.csv</code> &mdash; 230,128 canonical supplier/location observations with rich HTML fields and source provenance. Includes eVA supplier ID (not a DUNS or Cardinal vendor ID), supplier name, location name, address, registration type (Self/State), active status from HTML (Active=230,068; Pending Approval=60), SWaM classifications, and payment capability flags. Two records have missing supplier IDs and are retained with quality flags.</li>\n<li><code>audit.json</code> &mdash; integrity audit: 230,128 observations, 230,126 nonblank IDs, 2,912 retained source pages, data_integrity_verified=true.</li>\n<li><code>manifest.json</code> &mdash; acquisition scope, counts, completion basis, checksums.</li>\n<li><code>source_export__suppliers_source.csv</code> &mdash; unchanged full source CSV export (UTF-8 BOM, 230,128 rows). The column named &ldquo;Status&rdquo; in this file holds Self/State registration type, not Active/Pending status.</li>\n<li><code>source_export__manifest.json</code> &mdash; exact request, headers, encoding, SHA-256.</li>\n<li><code>source_export__reconciliation.json</code> &mdash; complete field coverage reconciliation.</li>\n<li><code>historical_candidate_details__historical_candidate_vlin_verification.csv</code> &mdash; 22 VLIN verification rows covering 21 distinct legacy vendor IDs from historical purchase orders: 20 rows agree with the current directory and 2 are unresolved.</li>\n</ul>\n<p>Import supplier IDs and postal codes as strings. This snapshot covers the public main-directory report only; it does not cover the separate inactive directory or every Commonwealth payee. Current directory observations do not establish historical FY2003&ndash;FY2016 identities.</p>\n<p>Acquisition interval: 2026-11-01T00:34&ndash;01:56 UTC. Not an atomic source-system snapshot.</p>\n<p>Part of the Virginia corpus for <em>The Architecture of Economic State</em> (Twitchell). Related to the eVA procurement record (10.5281/zenodo.23846362). This snapshot is a reference file and is not an input to the corpus restore script.</p>\n<p>Released government data, public domain. No license was provided by the source; public-domain status is asserted by the depositor and is not a legal finding.</p>",
+    "access_right": "open",
+    "license": "other-pd",
+    "creators": [
+      {
+        "name": "Commonwealth of Virginia"
+      }
+    ],
+    "imprint_publisher": "Commonwealth of Virginia",
+    "related_identifiers": [
+      {
+        "identifier": "10.5281/zenodo.23846362",
+        "relation": "references",
+        "scheme": "doi",
+        "resource_type": "dataset"
+      }
+    ]
+  }
+}

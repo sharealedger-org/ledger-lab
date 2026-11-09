@@ -164,9 +164,11 @@ against this machine's files by name, size and MD5:
 - `vendor_po_attributes_by_year.csv` is archived as if it were source data. It is a derived file with the
   defects listed in CORPUS_FINDINGS.md and no provenance header.
 
-Correcting the above probably requires a new Zenodo version (the record exposes a file-modification request link; its rules were not checked). Do not
-describe the archive as a complete copy of the corpus until that is done. I did not modify the
-record.
+**Update 2026-11-09:** the 336 APA files were published in four separate records on 2026-11-06, and the
+parent's metadata was corrected in place on 2026-11-09 (no new version was needed). The paragraph above
+describes the parent as found on 2026-10-31. The corpus is complete across five records, not within the
+parent alone; see [ZENODO_ARCHIVE_PLAN.md](ZENODO_ARCHIVE_PLAN.md) and
+[RUNTIME_DATA_LAYOUT.md](RUNTIME_DATA_LAYOUT.md).
 
 Zenodo limits the number of files per record (the owner reports 100), and the corpus has 385 files, so
 completing the archive needs several records. The measured split, the list of record defects and the

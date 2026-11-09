@@ -1,9 +1,45 @@
 # Ledger Lab Handoff
 
-Updated 2026-11-06. This file is a concise state snapshot; use the linked design contracts for details.
+Updated 2026-11-09. This file is a concise state snapshot; use the linked design contracts for details.
 
 ---
-## 2026-11-06 (latest) $0.00 balance verified, backup branch pruned, Sub-Task 4b design (Bob)
+## 2026-11-09 (latest) Zenodo corpus fixed and published; canonical download script; AIM data-scarcity assessment (Bob, Mac)
+
+**Nothing from this session is committed.** `docs/zenodo_metadata/` and `scripts/download_corpus_zenodo.sh` are untracked.
+
+### Zenodo corpus is five records plus a supplier snapshot, not one
+- Parent `23846362` holds 47 files (PO `.txt`, 14 `Budget FY20NN.csv`, xlsx, derived files). It is **not** the whole corpus.
+- The 336 monthly APA files are in four records (84 files each): `24015791` expenditure FY03–09, `24021539` expenditure FY10–16, `24022681` revenue FY03–09, `24022832` revenue FY10–16.
+- Supplier snapshot `24023167` (7 files) is not a pipeline input.
+- Names and sizes match `data/corpus_profile/source_catalog.csv` (385 rows = 383 on Zenodo + 2 zero-byte placeholders).
+- Five partial duplicate records were deleted via the API (`23851758`, `24014676`, `24014839`, `24014938`, `24015422`). The six canonical records were re-read intact.
+- Corrected metadata was published in place on all six (license `other-pd`, links present, file counts/bytes unchanged, all still version 1). Source JSON is in `docs/zenodo_metadata/`.
+
+### Canonical downloader
+- `scripts/download_corpus_zenodo.sh` (Bash orchestration only; verifies SHA-256 against the catalog).
+- Tested on FY2003 only (14 files): clean download, no-op rerun, same-size corruption replaced, truncated `.part` resumed, wrong catalog hash gives exit 1 with no file left. Dry run totals 385 files / 27.84 GB. A root inside the repo is refused; exit 2 without `--data-root`.
+- `scripts/downloadVAdata.sh` deleted. `scripts/download_va_data.py` and `scripts/download_va_po_data.py` had docstring/print text only edited (no logic).
+- Docs updated: `README.md`, `docs/RUNTIME_DATA_LAYOUT.md`, `docs/ZENODO_ARCHIVE_PLAN.md`, `docs/CORPUS_ACCESS.md`, `docs/CORPUS_FINDINGS.md`, `docs/VERIFICATION_AUDIT_REGISTER.md` (new `partially_verified` rows: 14 of 385 files SHA-256 verified; State still serves identical FY2003 APA files, 13 files).
+
+### AIM3/AIM4 data-scarcity finding
+- Usable PO fiscal years are only FY2006–08 and FY2010 onward. FY2001–05 are stubs or partial (FY2003 ends 2003-02-06; FY2009 has no file). Q4 (Apr–Jun) share is about 27% in large years.
+- `fit_ordering_seasonality.py` counts years present rather than usable years and is looser than the locked wording. `fit_vendor_survival.py` treats source gaps as churn, censors only the last year, and fits in-sample (not the locked 7-window protocol or FY2015–16 hold-out).
+- RESEARCH_OBJECTIVES §7 thresholds remain locked.
+
+### Later 2026-11-09: owner decisions executed
+- **applyPO fixed.** `nextLogicalLine` now starts a record at a physical line whose third tab field is a date (not quote parity). FY2003 dry run: 52,430 records / 104,860 SJE rows (was 25,129 / 50,258). `StandardizeAndSortPOSpec` 11/11 pass (new regression test for unmatched `"` and embedded newline). **The locked CCP1–CCP3 PO figures are now a different workload; re-measure before any comparison.** Steps 2p+2m+3 and the zero balance on the new reader are not yet re-run.
+- **AIM dates shifted.** Eligible years FY2006–08 and FY2010–FY2017 (`--eligible-fy` in `fit_vendor_survival.py` and `fit_ordering_seasonality.py`); gap-adjacent years are censored, not churn. Stage 3 slice is FY2010–FY2014. §7 thresholds unchanged. Recorded in `VERIFICATION_AUDIT_REGISTER.md` and `RESEARCH_OBJECTIVES.md`. Still open: locked 7-window / hold-out protocol and STL / majority-of-agencies rule are not implemented in the scripts.
+
+### Next session — start here
+1. Run the fresh full download: `scripts/download_corpus_zenodo.sh --data-root $HOME/workspace/va_fresh_root` (about 165 GB free; corpus 27.84 GB). State pass criteria first: 385 files accounted for, SHA-256 mismatches = 0, rerun is a no-op.
+2. Run `ttl` on FY2003 from the fresh root and compare to the locked FY2003 figures.
+3. **Owner decision:** record an eligible-year rule (FY2006–08, FY2010–FY2017) in the audit register before any result is seen. Python guard/verdict edits need approval.
+4. **Owner decision:** `applyPO` quote-parity record reader drops about half of FY2003 PO records. A fix affects the locked CCP1–CCP3 PO figures.
+5. Unverified: parent description's "only public copy" claim for FY2003–FY2015 PO files; Zenodo MD5 vs local files for APA records; whether the PO reader also drops records in later years.
+6. Do not rerun `scripts/zenodo_upload.py` (historical). Do not mix `universal_ledger_data` or `ConversationsWithKip` with the fresh root.
+
+---
+## 2026-11-06 $0.00 balance verified, backup branch pruned, Sub-Task 4b design (Bob)
 
 ### $0.00 exact balance verified on seedless posting
 - **SJE stream balance:** `SortedJEFY03merged.csv` has 11,567,184 rows and its net `transTransAmount` sum across all rows is **`0E-22` ($0.00 exact)**.

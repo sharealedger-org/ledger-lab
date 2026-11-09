@@ -40,11 +40,24 @@ from collections import defaultdict
 VIEW_PATH    = "data/output_validate_fy03/output_validate_fy03.next.834/view_monthly_order_volume.csv"
 EVIDENCE_OUT = "data/test_evidence/AIM4_seasonality_results.csv"
 RISK_OUT     = None   # optional: budget_execution_risk_flag output path
+# Eligible fiscal years (owner decision 2026-11-09): PO files are usable only for
+# FY2006-08 and FY2010 onward (FY2001-05 are stubs/partial; FY2009 has no file).
+ELIGIBLE_FY_SPEC = "2006-2008,2010-2017"
+
+def parse_fy_spec(spec):
+    """'2006-2008,2010-2017' -> {2006, 2007, 2008, 2010, ..., 2017}."""
+    out = set()
+    for part in spec.split(","):
+        lo, _, hi = part.strip().partition("-")
+        out.update(range(int(lo), int(hi or lo) + 1))
+    return out
 
 i = 1
 while i < len(sys.argv):
     if sys.argv[i] == "--view" and i + 1 < len(sys.argv):
         VIEW_PATH = sys.argv[i + 1]; i += 2
+    elif sys.argv[i] == "--eligible-fy" and i + 1 < len(sys.argv):
+        ELIGIBLE_FY_SPEC = sys.argv[i + 1]; i += 2
     elif sys.argv[i] == "--evidence-out" and i + 1 < len(sys.argv):
         EVIDENCE_OUT = sys.argv[i + 1]; i += 2
     elif sys.argv[i] == "--risk-out" and i + 1 < len(sys.argv):
@@ -140,9 +153,14 @@ nigp_period_vol = defaultdict(float)
 nigp_counts     = defaultdict(float)  # total po_line_count per nigp class
 distinct_periods = set()
 
+ELIGIBLE_FY = parse_fy_spec(ELIGIBLE_FY_SPEC)
+print(f"  Eligible fiscal years   : {ELIGIBLE_FY_SPEC}")
+
 for r in rows:
     nigp   = r.get("nigp_class_3digit", "UNK")
     period = r.get("fiscal_period", "")
+    if fiscal_year_of_period(period) not in ELIGIBLE_FY:
+        continue   # stub/partial/missing PO year: not usable for seasonality
     vol    = safe_float(r.get("po_line_count", 0))
     nigp_period_vol[(nigp, period)] += vol
     nigp_counts[nigp] += vol
