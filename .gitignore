@@ -51,3 +51,7 @@ data/output_validate_fy03_step3only.generations/
 
 
 .venv/
+
+# Track C (Berka) local runtime data and processed substrates
+data/berka/
+data/berka_processed/

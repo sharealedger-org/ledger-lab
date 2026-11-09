@@ -1,0 +1,146 @@
+{
+  "experiment": "Paper 2 - Track C Retail Banking Benchmark (Berka PKDD'99)",
+  "timestamp": "2026-11-09T22:54:07",
+  "corpus_scale": {
+    "loans_count": 682,
+    "defaults_count": 76,
+    "default_ratio": 0.11143695014662756
+  },
+  "metrics": {
+    "layer_2_balances": {
+      "roc_auc": 0.8471426089977419,
+      "pr_auc": 0.5919081748753393,
+      "brier_score": 0.13806885552811296,
+      "log_loss": 0.42788248893944897
+    },
+    "layer_3_events": {
+      "roc_auc": 0.8487927740142436,
+      "pr_auc": 0.6021149123569981,
+      "brier_score": 0.1290202465936802,
+      "log_loss": 0.4103335191610949
+    },
+    "deltas": {
+      "pr_auc_gain": 0.01020673748165879,
+      "roc_auc_gain": 0.0016501650165017256,
+      "brier_improvement": 0.009048608934432767
+    }
+  },
+  "non_injectivity_analysis": {
+    "ambiguous_pairs_count": 29,
+    "avg_separation_layer_2": 0.04798219434670072,
+    "avg_separation_layer_3": 0.04639029874817658,
+    "separation_gain": -0.0015918955985241429,
+    "top_pairs_sample": [
+      {
+        "loan_default": 6169,
+        "account_default": 5700,
+        "loan_good": 5110,
+        "account_good": 675,
+        "balance_dist": 0.8126599485566205,
+        "pred_b_default": 0.15481292691909804,
+        "pred_b_good": 0.07162228389990788,
+        "pred_e_default": 0.1145378175020746,
+        "pred_e_good": 0.018096398363079448
+      },
+      {
+        "loan_default": 6169,
+        "account_default": 5700,
+        "loan_good": 6474,
+        "account_good": 7190,
+        "balance_dist": 0.8522683960346046,
+        "pred_b_default": 0.15481292691909804,
+        "pred_b_good": 0.08069823135477563,
+        "pred_e_default": 0.1145378175020746,
+        "pred_e_good": 0.026874249216648268
+      },
+      {
+        "loan_default": 6437,
+        "account_default": 7052,
+        "loan_good": 6354,
+        "account_good": 6688,
+        "balance_dist": 0.8898531254515477,
+        "pred_b_default": 0.7323453354726699,
+        "pred_b_good": 0.6230987171568365,
+        "pred_e_default": 0.28996814649578523,
+        "pred_e_good": 0.40490987818376234
+      },
+      {
+        "loan_default": 6303,
+        "account_default": 6400,
+        "loan_good": 6687,
+        "account_good": 8261,
+        "balance_dist": 0.9518880916583646,
+        "pred_b_default": 0.37618463283894255,
+        "pred_b_good": 0.5368178034374851,
+        "pred_e_default": 0.47237047519021647,
+        "pred_e_good": 0.3147251923834948
+      },
+      {
+        "loan_default": 6169,
+        "account_default": 5700,
+        "loan_good": 6726,
+        "account_good": 8492,
+        "balance_dist": 0.9802792528946973,
+        "pred_b_default": 0.15481292691909804,
+        "pred_b_good": 0.06296069553092576,
+        "pred_e_default": 0.1145378175020746,
+        "pred_e_good": 0.05243323734788956
+      },
+      {
+        "loan_default": 6210,
+        "account_default": 5927,
+        "loan_good": 6043,
+        "account_good": 5126,
+        "balance_dist": 1.0184922412436999,
+        "pred_b_default": 0.2812688231720246,
+        "pred_b_good": 0.28001583721260764,
+        "pred_e_default": 0.32631895165219,
+        "pred_e_good": 0.1866935764613505
+      },
+      {
+        "loan_default": 6501,
+        "account_default": 7418,
+        "loan_good": 5130,
+        "account_good": 813,
+        "balance_dist": 1.025520229148733,
+        "pred_b_default": 0.2058706535522959,
+        "pred_b_good": 0.15956428790869517,
+        "pred_e_default": 0.10669188922031142,
+        "pred_e_good": 0.2888604227306105
+      },
+      {
+        "loan_default": 6169,
+        "account_default": 5700,
+        "loan_good": 6605,
+        "account_good": 7890,
+        "balance_dist": 1.0301887510991565,
+        "pred_b_default": 0.15481292691909804,
+        "pred_b_good": 0.16556172756145715,
+        "pred_e_default": 0.1145378175020746,
+        "pred_e_good": 0.04427543713737083
+      },
+      {
+        "loan_default": 6437,
+        "account_default": 7052,
+        "loan_good": 6242,
+        "account_good": 6097,
+        "balance_dist": 1.0304547346631636,
+        "pred_b_default": 0.7323453354726699,
+        "pred_b_good": 0.4982725675664842,
+        "pred_e_default": 0.28996814649578523,
+        "pred_e_good": 0.319159910478119
+      },
+      {
+        "loan_default": 6027,
+        "account_default": 5066,
+        "loan_good": 5389,
+        "account_good": 2165,
+        "balance_dist": 1.037715311977566,
+        "pred_b_default": 0.5999216591040006,
+        "pred_b_good": 0.4555571136860948,
+        "pred_e_default": 0.6221113035364749,
+        "pred_e_good": 0.21287154929211985
+      }
+    ]
+  }
+}
