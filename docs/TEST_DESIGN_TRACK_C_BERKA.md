@@ -105,10 +105,21 @@ A daily balance and the event features are statistically tied as stand-alone vie
 * The post-hoc ablation and the events-only arm were chosen after seeing the first result and are exploratory.
 * Intra-day order was recovered for 9,725 of the 10,081 multi-row days; 356 days use a fallback.
 
+## 8a. Direct non-injectivity count (added 2026-11-10, no model; AIM1 analogue)
+Script `scripts/berka/count_noninjectivity.py`, standard library only, evidence `data/test_evidence/TRACK_C_BERKA_NONINJECTIVITY.json`. It counts how the daily-balance grain we built collapses event rows. It does not use the recovered intra-day order. Event kind = (`type`, `operation`, `k_symbol`); event pattern = the sorted multiset of kinds over a day's rows. The closing level is not used as the key (it carries the whole history, so nearly every key is unique); the key is the day's net change, the part of B one day contributes.
+
+Over 54,694 pre-loan rows and 42,671 active account-days:
+* **Per account-day:** 10,081 days (23.6%) have more than one row; 9,144 (21.4%) hold more than one event kind under the one stored number; 7,938 net a credit and a debit together. Up to 5 event kinds sit under one day's number. Adding the counterparty account raises the count of days with 2 or more distinct events from 9,144 to 9,440.
+* **Per net-change value (all active days):** 4,285 net-change values occur on two or more days; 1,942 (45.3%) are produced by more than one event pattern, and those values cover 19,414 of 34,509 account-days (56.3%). One value maps to as many as 6 patterns (for example -2,400 CZK on 198 days).
+* **Single-row days only (no netting):** 177 of 2,494 repeated values (7.1%) still map to more than one pattern, covering 8,911 of 27,434 days (32.5%). Here the collision is by amount alone. The largest groups are mostly plain cash withdrawals with a few standing-order (`SIPO`) or card withdrawals at the same amount (for example 2,400 CZK: 192 cash, 2 card, 1 `SIPO`; checked against the rows).
+
+**Reading.** A daily balance cannot recover which event produced a number, in about one account-day in five by netting (18.6% net a credit and a debit), and, among account-days whose amount repeats, in about a third even without netting. This is a property of our roll-up of these rows; it needs no model and does not depend on the default label. It does not say what a bank's posting system keeps, because the lineage of the files is unknown, and round amounts make some collisions likely by chance: the count shows what B cannot separate, not that the separated events matter for default. That second question is the predictive comparison in section 6.
+
 ## 8. Artifacts
 * **Download (Bash):** `scripts/download_berka.sh`
 * **Substrate builder:** `scripts/berka/build_berka_substrates.py` → `substrate_b_daily_balance.csv`, `substrate_e_events.csv`, `daily_balance_series.csv`, `build_stats.json` in `data/berka_processed/` (git-ignored)
 * **Fit and evaluation:** `scripts/berka/fit_track_c_models.py`
+* **Non-injectivity count (§8a):** `scripts/berka/count_noninjectivity.py` → `data/test_evidence/TRACK_C_BERKA_NONINJECTIVITY.json`
 * **Runner:** `scripts/run_track_c_berka.sh` (needs `BERKA_DATA_ROOT`)
 * **Evidence:** `data/test_evidence/TRACK_C_BERKA_EVIDENCE.json`
 * **Python status:** Track C Python is owner-approved (2026-11-10), scope Track C only; it is not an engine or cost-curve measurement.

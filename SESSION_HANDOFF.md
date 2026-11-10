@@ -2,6 +2,16 @@
 
 Updated 2026-11-10. This file is a concise state snapshot; use the linked design contracts for details.
 
+## 2026-11-10 (after the decision below) Track C: direct non-injectivity count added (Bob, Mac)
+
+Owner asked why Berka had no tuning and did not follow the AIM outline, and whether it might still show something demonstrable. Answer recorded: v2 deliberately fixed one learner (no tuning on results); it also has no locked acceptance thresholds, no permutation test, no temporal split. Owner approved Python ("yes, python approved"; Track C scope). Added `scripts/berka/count_noninjectivity.py` (standard library, no model; AIM1 analogue), wired as step 4 of `scripts/run_track_c_berka.sh`, evidence `data/test_evidence/TRACK_C_BERKA_NONINJECTIVITY.json`, write-up in `docs/TEST_DESIGN_TRACK_C_BERKA.md` §8a.
+
+- **Result (54,694 pre-loan rows, 42,671 account-days):** 21.4% of account-days hold more than one event kind under one stored number; 18.6% net a credit and a debit. By net change: 45.3% of repeated values come from more than one event pattern (56.3% of the days on them); on single-row days only, 7.1% of repeated values (32.5% of those days), mostly cash withdrawals with a few `SIPO` / card at the same amount.
+- **Scope:** a property of our own roll-up of these rows; independent of the default label. It does not show what a bank's posting system keeps (lineage unknown). Round-amount collisions are partly chance. Still illustrative only; the Paper 2 decision stands.
+- **Not done (options offered):** v3 protocol (locked thresholds, nested-CV tuning, temporal split, permutation test on the 22 event columns); counterparty-diversity vs account-age check.
+
+---
+
 ## 2026-11-10 (latest, last) Decision: Track C (Berka) is illustrative only, not Paper 2 evidence (owner, Bob)
 
 **Owner decision:** the Berka data adds little to the paper because we do not know how the files were produced relative to the originating bank's systems (lineage unknown). Unknowns: whether the per-row balance is a system field or was computed for the challenge file; the cause of the 1.3% balance breaks and the 355 unreconcilable account-days; how loan status was assigned; how accounts and counterparties were sampled and masked. So Track C shows what a model can learn from this table, not what a posting system discards.
