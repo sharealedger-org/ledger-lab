@@ -18,16 +18,18 @@ if [ -d ".venv" ]; then
   source .venv/bin/activate
 fi
 
-# Step 1: Resolve / Unpack fixtures
+# Step 1: Download and verify the public Berka files (Bash; checksum-pinned).
+# Needs BERKA_DATA_ROOT (a directory outside the repository); files land in $BERKA_DATA_ROOT/berka.
+: "${BERKA_DATA_ROOT:?Set BERKA_DATA_ROOT to a directory outside the repository}"
 echo ""
-echo "[Step 1/3] Resolving Berka raw datasets..."
-python3 scripts/berka/fetch_berka_data.py --target-dir data/berka
+echo "[Step 1/3] Downloading and verifying Berka raw datasets..."
+bash scripts/download_berka.sh --data-root "${BERKA_DATA_ROOT}"
 
 # Step 2: Build Substrates (Layer 2 Balances vs Layer 3 Events)
 echo ""
 echo "[Step 2/3] Building Substrates B (Layer 2) and E (Layer 3)..."
 python3 scripts/berka/build_berka_substrates.py \
-  --berka-dir data/berka \
+  --berka-dir "${BERKA_DATA_ROOT}/berka" \
   --out-dir data/berka_processed
 
 # Step 3: Train & Evaluate Information Loss & Non-Injectivity

@@ -1,5 +1,15 @@
 # Paper 2 Insertion Draft: Track C Retail Banking Benchmark (Berka PKDD'99)
 
+> **DO NOT INSERT INTO THE MONOGRAPH AS WRITTEN (2026-11-10).** An audit against the public data found that the claims below are not supported by the current Track C run. The numbers in this file do match `TRACK_C_BERKA_EVIDENCE.json` and reproduce exactly, but:
+> - the balance side is **not** monthly closing balances: it is computed from per-transaction running balances (5.8 events per month-end closing), so there is no real compression;
+> - the event feature set is not a superset of the balance set;
+> - "zero look-ahead bias" is false for district demographics (1996 values joined to 1993-95 loans);
+> - the Theorem 1 gain is within noise (ROC-AUC +0.0017, one seed, 76 defaults, no interval), and Brier/log-loss are worse than the base rate (0.0990 / 0.3495) for both models, so they are not calibration evidence;
+> - the non-injectivity separation gain is -0.0016 (29 pairs; the 10 pairs sampled in the evidence file reuse only 6 defaulted accounts, and 2 of them fit the story while 3 run the other way), so Account 6400 / 8261 is not representative;
+> - the default label is itself a function of the balance path: every default goes negative, no non-default does, and the pre-loan overdraft rule alone catches 27 of 76 defaults with no false positives.
+>
+> See the 2026-11-10 sections of `docs/VERIFICATION_AUDIT_REGISTER.md` and `SESSION_HANDOFF.md`. Rewrite the section around a month-end Layer 2, a strict-superset Layer 3 with event-only attributes, and the overdraft-rule baseline before reuse.
+
 > **Note for Monograph Editing:**  
 > This file contains the ready-to-integrate draft section and empirical evidence summary for **Paper 2 (*Business Event Repositories as Training Corpora for Enterprise AI*)** in the `org-members` monograph repository.
 > Recommended insertion location: **`research/02-business-event-repositories.md` as Section 5.1b**, immediately following §5.1a (The Insurance Corpus).

@@ -1,9 +1,38 @@
 # Ledger Lab Handoff
 
-Updated 2026-11-09. This file is a concise state snapshot; use the linked design contracts for details.
+Updated 2026-11-10. This file is a concise state snapshot; use the linked design contracts for details.
 
 ---
-## 2026-11-09 (latest) Zenodo corpus fixed and published; canonical download script; AIM data-scarcity assessment (Bob, Mac)
+## 2026-11-10 (latest) Track C (Berka) audited against the data; public download script (Bob, Mac)
+
+**Merged `origin/main` (head `acf0ee1`) first, fast-forward, then committed this session's work.** No Python was written or changed. **Owner approval of the existing `scripts/berka/` Python is recorded** (owner instruction, 2026-11-10; scope Track C only, no engine/cost-curve use).
+
+**Read this before using any Track C result:** the other session's rows and the Paper 2 draft say Track C `verified` Theorem 1 and non-injectivity. This session's audit downgraded both (Theorem 1 `not_verified`, non-injectivity `contradicted`). `docs/PAPER_2_TRACK_C_INSERTION_DRAFT.md` carries a "do not insert" warning until the claims are corrected. The Account 6400 / 8261 pair is real in the evidence file but unrepresentative (2 of 10 sampled pairs fit the story, 3 run the other way).
+
+### Berka data now comes from a public source, not the members repo
+- `scripts/download_berka.sh --data-root DIR` (Bash only) fetches the Internet Archive capture of the authors' `data_berka.zip` (18,074,591 bytes, SHA-256 `affa4477572e9d8f2de6beff8a525d37c056d5d8e4a9670dd8c7636208c002ce`), checks every file against the pinned SHA-256 values, and writes `<root>/berka/<name>.asc.txt`. Tested: no root and a root inside the repo give exit 2; fresh download, no-op rerun, a corrupted file replaced, and a wrong pinned hash giving exit 1 all behave as expected.
+- All eight downloaded files match the SHA-256 values in the members repo README (`sharealedger-org/members`, `content/examples/banking-berka/`, commit `fbd72d2`). I compared against the README's listed hashes, not against the committed files, which are not on this machine. The local `members` clone is 12 commits behind and has an uncommitted edit to `research/00-monograph-introduction-and-master-framework.md` (not mine).
+- `scripts/run_track_c_berka.sh` now needs `BERKA_DATA_ROOT` (outside the repo) and calls the download script; it reads `$BERKA_DATA_ROOT/berka`. `scripts/berka/fetch_berka_data.py` is no longer called (not deleted).
+- **Terms of use unconfirmed.** The files and saved description page state no licence. The script fetches only; do not redistribute the data until the authors' terms are confirmed.
+
+### Track C findings (full table in `VERIFICATION_AUDIT_REGISTER.md`, 2026-11-10 section)
+- The committed evidence reproduces exactly from the public data (floating-point noise only).
+- **Substrate B is not compressed.** Every transaction row carries the running balance, so B's balance statistics are event-resolution (54,694 pre-loan events on 9,433 account-months, 5.8 events per month-end). With no real compression, Test 1 cannot show a gap. Month-end closings halve the overdraft rule (14 vs 27 of 76 defaults).
+- **The label is a function of the balance path.** All 76 defaults go negative at some point and no non-default does; 27 do so before the loan date. That rule alone gives precision 1.00, recall 0.36, so a model must beat it.
+- **Event-only attributes** (operation, `k_symbol`, partner bank, intra-period timing) are the only valid Layer 3 advantage. `SANKC. UROK` penalty interest mostly restates the overdraft. Independent counters (household payments, cash drain, cash deposits) have in-sample single-feature AUC 0.57-0.66.
+- Other defects stand: E is not a superset of B; 1996 district demographics are joined to 1993-95 loans; "ambiguous pairs" use loan terms and geography; Brier/log-loss are worse than the base rate; the design doc describes GBDT and a sequence model but the code is one logistic regression.
+- Source balance reconciles on 98.70% of unambiguous transitions; breaks are `UROK` interest and `UVER` loan payments. A whole-file chain looks like 50% failure only because intra-day order is not recoverable.
+
+### Next (needs owner decision)
+1. Done: Track C Python approval recorded 2026-11-10 (here and in the register).
+2. Next, subject to owner go-ahead: rebuild Substrate B from period-end closings; make E a strict superset that adds event-only attributes; drop or date-match the 1996 demographics; define ambiguous pairs on balance columns only; repeat CV with an interval; report against the overdraft-rule baseline.
+3. Align `docs/TEST_DESIGN_TRACK_C_BERKA.md` with the code (or the reverse).
+4. Confirm the Berka authors' terms of use.
+5. Decide whether `docs/PAPER_2_TRACK_C_INSERTION_DRAFT.md` is rewritten around the corrected test or held back; it must not go into the monograph as written.
+6. Pull `members` (12 commits behind) before touching the monograph.
+
+---
+## 2026-11-09 Zenodo corpus fixed and published; canonical download script; AIM data-scarcity assessment (Bob, Mac)
 
 **Committed and pushed to `origin/main` (head `1dd9a09`, 2026-11-09).** Local `main` equals `origin/main`; the working tree was clean at the merge. The `track-c-berka-paper2` branch was fast-forward merged and deleted. `oldmac`, `OldMacInitial` and `origin/oldmac` still exist; all their commits are on `main`.
 
@@ -30,7 +59,7 @@ Updated 2026-11-09. This file is a concise state snapshot; use the linked design
 - **applyPO fixed.** `nextLogicalLine` now starts a record at a physical line whose third tab field is a date (not quote parity). FY2003 dry run: 52,430 records / 104,860 SJE rows (was 25,129 / 50,258). `StandardizeAndSortPOSpec` 11/11 pass (new regression test for unmatched `"` and embedded newline). **The locked CCP1–CCP3 PO figures are now a different workload; re-measure before any comparison.** Steps 2p+2m+3 and the zero balance on the new reader are not yet re-run.
 - **AIM dates shifted.** Eligible years FY2006–08 and FY2010–FY2017 (`--eligible-fy` in `fit_vendor_survival.py` and `fit_ordering_seasonality.py`); gap-adjacent years are censored, not churn. Stage 3 slice is FY2010–FY2014. §7 thresholds unchanged. Recorded in `VERIFICATION_AUDIT_REGISTER.md` and `RESEARCH_OBJECTIVES.md`. Still open: locked 7-window / hold-out protocol and STL / majority-of-agencies rule are not implemented in the scripts.
 
-### Python approved & empirical run recorded: Track C (Berka) scripts
+### Python approved & empirical run recorded: Track C (Berka) scripts (results superseded by the 2026-11-10 audit above: do not cite as a proof)
 - `main` contains `scripts/berka/build_berka_substrates.py`, `fetch_berka_data.py`, `fit_track_c_models.py`, and `scripts/run_track_c_berka.sh` (added in commit `8d2b235`). They read the Berka retail-bank tables and fit models (pure NumPy + stdlib, no Spark, no Scala/VA pipeline data). Evidence file: `data/test_evidence/TRACK_C_BERKA_EVIDENCE.json`.
 - **Approval recorded:** Approved by owner 2026-11-09 for Paper 2 Track C modeling and information-loss evaluation (scope strictly limited to Track C; no engine/cost-curve measurement).
 - **Empirical results (stratified 5-fold CV on 682 loans / 76 defaults):**
