@@ -567,20 +567,35 @@ run_step() {
     period_arg+=" --inPaths $VIEW_IN_PATHS"
   fi
 
-  if [[ "$time_mode" == "macos" ]]; then
-    out=$(cd "$SBT_PROJECT" && /usr/bin/time -l sbt -batch \
-      "run --step $step --inPath $jvm_in_path --outPath $jvm_out_path --year $year --quarter $quarter$jvm_vm_arg$jvm_ref_arg$allocation_rules_arg$fx_args$period_arg" \
-      2>&1 | tee "$_tee_target")
-  elif [[ "$time_mode" == "gnu" ]]; then
-    out=$(cd "$SBT_PROJECT" && /usr/bin/time -v sbt -batch \
-      "run --step $step --inPath $jvm_in_path --outPath $jvm_out_path --year $year --quarter $quarter$jvm_ref_arg$allocation_rules_arg$fx_args$period_arg" \
-      2>&1 | tee "$_tee_target")
-  else
-    out=$(cd "$SBT_PROJECT" && sbt -batch \
-      "run --step $step --inPath $jvm_in_path --outPath $jvm_out_path --year $year --quarter $quarter$jvm_vm_arg$jvm_ref_arg$allocation_rules_arg$fx_args$period_arg" \
-      2>&1 | tee "$_tee_target")
-  fi
-  local rc=$?
+  # Launch retry (job control only): several parallel lanes share one sbt project directory, and
+  # sbt's boot-server socket can be taken by another lane at the same instant. That failure happens
+  # before any engine code runs, so relaunching is safe. Only that exact signature is retried; any
+  # other non-zero exit (including engine rc 2) stops immediately, as before.
+  local rc=0 launch_attempt=0 launch_max=6
+  while true; do
+    launch_attempt=$((launch_attempt + 1))
+    rc=0
+    if [[ "$time_mode" == "macos" ]]; then
+      out=$(cd "$SBT_PROJECT" && /usr/bin/time -l sbt -batch \
+        "run --step $step --inPath $jvm_in_path --outPath $jvm_out_path --year $year --quarter $quarter$jvm_vm_arg$jvm_ref_arg$allocation_rules_arg$fx_args$period_arg" \
+        2>&1 | tee "$_tee_target") || rc=$?
+    elif [[ "$time_mode" == "gnu" ]]; then
+      out=$(cd "$SBT_PROJECT" && /usr/bin/time -v sbt -batch \
+        "run --step $step --inPath $jvm_in_path --outPath $jvm_out_path --year $year --quarter $quarter$jvm_ref_arg$allocation_rules_arg$fx_args$period_arg" \
+        2>&1 | tee "$_tee_target") || rc=$?
+    else
+      out=$(cd "$SBT_PROJECT" && sbt -batch \
+        "run --step $step --inPath $jvm_in_path --outPath $jvm_out_path --year $year --quarter $quarter$jvm_vm_arg$jvm_ref_arg$allocation_rules_arg$fx_args$period_arg" \
+        2>&1 | tee "$_tee_target") || rc=$?
+    fi
+    if [[ $rc -ne 0 && $launch_attempt -lt $launch_max && "$out" == *"ServerAlreadyBootingException"* ]]; then
+      log "RETRY  step=$step year=$year sbt boot-socket collision (rc=$rc); launch attempt $launch_attempt of $launch_max, retrying"
+      sleep $(( 5 + RANDOM % 11 ))
+      continue
+    fi
+    break
+  done
+  [[ $rc -eq 0 ]] || exit $rc
   # Clean up temp tee file if we used one (non-stderr path)
   [[ "$_tee_target" != /dev/stderr ]] && rm -f "$_tee_target"
   local end_epoch

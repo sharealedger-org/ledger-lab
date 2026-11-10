@@ -145,6 +145,94 @@ kill -0 <pid> 2>/dev/null && echo running || echo exited
 Keep agent-side waits short. Long `sleep` commands in the tool were cancelled several times; poll
 with sleeps of about 25 seconds or less.
 
+### 4.1 Full-corpus launch and watch (`scripts/run_full_corpus.sh`)
+
+Added 2026-11-10 from the run that used 4 prep lanes plus a serial posting chain. The launcher
+needs an empty `output_full`: it refuses to start while any `FY*` entry exists.
+
+Before launching: quit Dropbox and OneDrive (the run is disk-bound), check free disk (about
+6 GB per fiscal year seen so far; the 14-year run had written 35 GB about 23 minutes in),
+and clear old output. Confirm with the owner before deleting a previous run's output.
+
+```bash
+cd ~/workspace/sharealedger/ledger-lab
+rm -rf ~/workspace/va_fresh_root/output_full/*
+bash scripts/run_full_corpus.sh > ~/workspace/va_fresh_logs/run2_corpus.log 2>&1 < /dev/null &
+```
+
+**Launching from an agent tool:** use the tool's background mode (`background: true`). A plain
+`nohup ... &` inside one tool call died when that call ended, and the run was lost silently on
+2026-11-10. After launching, wait past the first 60 seconds and confirm the lanes are alive
+(`pgrep -fl run_pipeline`) before reporting it as running.
+
+**Dashboard (recommended).** One row per fiscal year; columns are the six steps, grouped as JE
+generation (`ttl` = Pay JEs, `2p` = PO JEs, `2m` = Merge) and Posting (`3` = Post, `20` = GL Bal,
+`21` = Permute). It is read-only, parses only the START and RESULT lines in the run logs, and costs
+well under one CPU-second per refresh.
+
+```bash
+bash scripts/dashboard_full_corpus.sh         # refreshes every 30 s by default; pass a number of seconds to change it
+```
+
+Cell values: `-` not started, `RUN m:ss` running, `NNs ok` finished with its elapsed seconds,
+`FAIL rc=N` failed. The `Total` column is the sum of the year's finished step times plus the
+running step's elapsed time (step time, not wall clock). State values: `queued`, `JE gen`, `JEs done` (waiting its turn to post),
+`Posting`, `DONE`, `FAILED`. A `rows` line under each year shows records read>written for each
+finished step, because row counts drive step time (for `2m` only the written count is reported;
+for `3`, `20` and `21` the first number is the SJE rows read and the second the ledger, GL or
+permutation rows written). Under `Total` the same line shows all rows read plus written across the
+year's finished steps. A row that passes through several steps is counted once per step, so this
+is volume handled, not distinct records. The footer adds the same sum over all years. It also shows JE generation and posting counts, whether the `5v`
+views pass has started, launch retries, fail markers, output size, free disk, load and the number
+of Java processes.
+
+**Projection line (rough).** For each of the six steps the dashboard takes the mean of the last 3
+completed years, sums what is left (a running step counts only its remaining part), divides JE
+generation by the lane count and treats posting as serial. It prints an estimated clock time for the
+end of JE generation and of posting. It excludes the `5v` pass, assumes today's contention, and later
+fiscal years are larger, so expect the real finish to be later. Posting finishing well after JE
+generation means the serial posting chain is the bottleneck.
+
+**Open the watch windows automatically (macOS).** After launching the run:
+
+```bash
+bash scripts/open_run_windows.sh              # dashboard refresh defaults to 30 s
+```
+
+This opens two Terminal.app windows: the dashboard above, and an events-only stream (RESULT, RETRY,
+nonzero exits, STOPPED, ALL YEARS, ERROR and Exception lines from every run log, including logs
+that do not exist yet). The first use may prompt macOS to allow automation of Terminal. Closing
+the windows does not affect the run. An agent can run this script too, so the owner sees the
+windows without opening them by hand.
+
+**Raw log commands** (all logs are in `~/workspace/va_fresh_logs`):
+
+```bash
+tail -F ~/workspace/va_fresh_logs/run2_corpus.log                                  # orchestrator: lane starts, exits, STOPPED
+tail -F ~/workspace/va_fresh_logs/run2_prep_fy*.log                                # JE-generation lanes live (glob fixed at launch of tail)
+tail -F ~/workspace/va_fresh_logs/run2_*.log | grep --line-buffered -E "RESULT step=|RETRY|exit [1-9]|ERROR|Exception"
+grep -h RETRY ~/workspace/va_fresh_logs/run2_*.log                                 # sbt launch retries (expected: few or none)
+ls "$(ls -dt ~/workspace/va_fresh_logs/markers_* | head -1)"                       # prep_<yy>.ok / .fail, chain_<yy>.fail for this run
+cat ~/workspace/va_fresh_logs/corpus_wallclock_*.csv                               # corpus-level start/end stamps (the comparable figure)
+```
+
+**What the files are.** `run2_corpus.log` is the orchestrator. `run2_prep_fy<yy>.log` holds the
+`ttl,2p,2m` steps for a year, `run2_chain_fy<yy>.log` holds `3,20,21`, and `run2_views.log` holds
+the final cross-year `5v` pass. Markers live in `markers_<stamp>/`; the newest directory is the
+current run, and older ones belong to earlier attempts.
+
+**Reading a failure.** The first failing step stops new work and the `5v` pass is not started
+(`STOPPED: prep rc=... chain rc=...` in the orchestrator log). Running steps finish. Find the
+year with `FAIL` on the dashboard or a `.fail` marker, then read the tail of that year's log.
+`rc=2` from a step is not necessarily an engine error: on 2026-11-10 it was an sbt boot-socket
+collision (`ServerAlreadyBootingException ... Address already in use`) when two lanes launched
+sbt at the same instant. `run_pipeline.sh` now relaunches on exactly that message, up to 6 times,
+and logs a `RETRY` line each time; any other nonzero exit stops the run.
+
+**Timing.** Per-step `elapsed_s` is inflated when lanes overlap (load average was 30 to 55 on
+4 CPUs) and is not comparable with serial baselines. Compare runs by the wall-clock CSV.
+The dashboard and the log commands read files only and start no engine step.
+
 ## 5. When a run fails or is stopped
 
 - [x] Stopping a run: `kill -TERM -<pid>` kills the whole process group.

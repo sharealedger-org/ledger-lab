@@ -128,6 +128,32 @@ fixture scale (183 VendorMaster rows); not valid for full-corpus cost measuremen
 execution costs. The hash-map implementation must be replaced or the workload marked
 `blocked_by_engine_capability` for the sort-merge join capability.
 
+## GERS-003: Extract-Time Summarization With Bounded Buffer, Overflow Flush and Reduce
+
+**Status:** `candidate enhancement` (recorded 2026-11-10 after the full-corpus run; the Scala prototype has no implementation)
+
+**Requirement:** A GenevaERS extract-phase view must be able to summarize records by a declared group key into a bounded aggregation buffer while the ordered CKB stream is processed. When the buffer reaches its declared capacity it flushes partial aggregates (not raw rows) to declared scratch. A reduce step then sorts and collapses only the partial-aggregate file. Records are touched once by the extract; the reduce reads far fewer rows than the source.
+
+**Why it matters to Ledger Lab:** `CKB_LAYER_EXECUTION_MODEL.md` ("Extract-Time Summarization") and `MEASUREMENT_AND_LOGGING.md` already specify this behaviour and its metrics (`aggregation_buffer_peak_keys`, `buffer_overflow`, `partial_aggregate_rows`, `final_reduce_rows`, `final_reduce_seconds`, `reduction_ratio`). `CKBViews` (step `5v`) does not implement it: View D is an unbounded `mutable.HashMap`. On the 14-year run (2026-11-10) it reached about 2.8M entries and filled a 1 GB heap; the step was stopped after 27 minutes with no output. See `VERIFICATION_AUDIT_REGISTER.md`, "2026-11-10 Full-corpus run 2".
+
+**Owner notes (2026-11-10):**
+- Views A and C have small, known key spaces; leave them unbounded and do not add a follow-on process for them (to be confirmed with counts, see the audit entry).
+- The GenevaERS reduce process (MR88) is believed to run as a sort exit (E35 under the sort product), so the data are touched once. Confirm the exact mechanism with GenevaERS maintainers before relying on it; the Ledger Lab prototype has no sort exit hook (`SortEngine.mergeSpills` writes each dequeued row unchanged).
+
+**Required properties:**
+1. The view declares group key, associative metric (sum, count), buffer capacity (keys or bytes), spill format, and overflow reduction behaviour.
+2. Overflow policy is declared (flush all, or flush least-used entries first). The choice is a design decision for the owner.
+3. The final reduce sorts the partial-aggregate file by group key and collapses equal keys. If nothing spilled, no reduce is needed.
+4. The result states whether it completed in memory or needed a reduce, and records the metrics above.
+5. Deterministic: the same inputs and buffer size give the same final rows. Partial-aggregate rows carry the key and the associative state only.
+
+**Ledger Lab validation contract:** a named workload whose group key space exceeds the declared buffer, with the final view equal to a full in-memory computation of the same view. Acceptance: row-for-row equality with the in-memory result on a fixture, control totals (row count and amount sum) equal on a full year, buffer size recorded as an experiment variable.
+
+**Cost evidence:** buffer capacity, peak keys, flush count, partial-aggregate rows and bytes, reduce sort time, reduce output rows, and whether the reduce is a new physical pass.
+
+**Required before:** a 14-year `5v` run can be called a CCP3 cost point. Until then `5v` over all 14 years is `blocked_by_engine_capability` (or must run with a declared, larger heap and be labelled as a different configuration).
+
+
 ## Boundary Rule
 
 When a required capability is absent:

@@ -228,6 +228,48 @@ Owner decisions, 2026-11-09: "Shift the AIM dates. Fix the applyPO." Recorded **
 | The locked CCP1-CCP3 PO figures (25,129-25,131 PO rows) still describe the current reader | contradicted | They were produced by the quote-parity reader. The corrected reader reads 52,430 records. | **Comparability break.** CCP1-CCP3 points must be re-measured with the new reader. Do not compare new PO counts, SJE counts, timings or sizes with the 2026-11-06 locked values as the same workload. |
 | AIM3/AIM4 eligible fiscal years are FY2006-08 and FY2010-FY2017 | recorded | PO source evidence in the 2026-11-06 section above (FY2001-05 stub/partial, FY2009 absent) plus raw order-date counts by fiscal year. `fit_vendor_survival.py` and `fit_ordering_seasonality.py` take `--eligible-fy` (default `2006-2008,2010-2017`). AIM3 drops ineligible years before building `present_next_year` and treats a vendor-year as observable only if year+1 is eligible (gap years and the last year are censored, not churn). AIM4 drops ineligible periods before counting years and classes. `py_compile` OK; a synthetic view confirms ineligible years are removed and gap-adjacent years are censored. | Not yet run on real view output. AIM3 still fits in-sample with one pooled model, not the locked 7-window protocol with FY2015-16 hold-out. AIM4 still uses a Mann-Whitney Q4 test rather than STL and does not apply the "majority of agencies" rule. Stage 3 directional slice moves from FY2003-FY2007 to FY2010-FY2014; the full-corpus run uses FY2006-08 and FY2010-FY2017. The 7-window protocol needs a contiguous run and must be re-specified (longest contiguous eligible run is FY2010-FY2017). |
 
+## 2026-11-10 Full-corpus run 2: 14-year prep and posting complete, `5v` failed, FY2010 ledger imbalance (Bob, Mac)
+
+Run: `scripts/run_full_corpus.sh`, FY2003-FY2016, 4 prep lanes plus one serial posting chain, monthly granularity, git `846e952` (dirty). Started 12:33:03, ended 14:28:20 (`corpus_end_FAILED`). Logs in `~/workspace/va_fresh_logs` (`run2_*.log`, `markers_20261110_123303`, `corpus_wallclock_20261110_123303.csv`); output in `~/workspace/va_fresh_root/output_full` (109 GB). Earlier attempts the same day: a first launch died silently when its shell ended; a second hit an sbt `ServerAlreadyBootingException` on FY2004 `2m` (rc 2, launcher collision, not data). `run_pipeline.sh` now relaunches on exactly that message (up to 6 times, logs `RETRY`); the second full run recorded 0 retries.
+
+### Results
+
+| Item | Result |
+|---|---|
+| JE generation (`ttl,2p,2m`) | All 14 years rc 0. Source rows read 96,465,442 (`ttl`), merged 224,072,586 journal rows (`2m`). Prep committed 12:44 (FY03) to 13:40 (FY16). |
+| Posting (`3,20,21`) | All 14 years rc 0, serial. Each step read the merged rows once: 224,072,586 each, three times (steps run as separate launches). Ledger rows written 10,651,961; GL rows 4,024,745; permutation rows 8,206,816. Chain ended 14:01:28, 21 minutes after prep ended (13:40:03). |
+| `5v` over 14 years | **Failed.** Started 14:01:40, stopped by the owner at 14:28:20 (`rc=143`) after no output. Not a cost point. |
+| Wall clock | 1h55 to the stop. Step time summed over all steps is 15,400 s (4.3 h) across overlapping lanes; per-step `elapsed_s` is not comparable with serial runs (load average 30 to 57 on 4 threads while lanes overlapped). |
+| Retries | 0 in this run. |
+| Quarantine (`2p`) | FY03 20, FY04 1, FY05 3, FY06 1,989, FY07 1,675, FY08 3,048, FY09 0 (empty PO file, rc 0), FY10 3,898, FY11 4,266, FY12 5,747, FY13 3,775, FY14 2,496, FY15 2,673, FY16 2,806. Not yet analysed by reason code. |
+| Checks passed | Per-year SJE amount sum 0.00 in all 14 prep logs. `reconciliation_results.csv` `ledger_balance` PASS for 13 of 14 years. |
+
+### Findings
+
+| Finding | State | Evidence | Remaining gap |
+|---|---|---|---|
+| **`5v` over 14 years does not fit in 1 GB.** View D (`paymentMap`, key agency, column 22, fund, column 15) is an unbounded `mutable.HashMap`; it reached about 2,839,000 entries and filled the heap. | confirmed (cause of the stall), mechanism partly inferred | `jstat`: old gen 99.8%, 526 full GCs, 746 s GC time at 19+ minutes; `jmap -histo`: 2,839,138 `AgencyPaymentAcc`, 11.5M `String`, 11.5M `byte[]`, 2.8M `BigDecimal`; `view_vendor_year_survival.csv` 0 bytes at 14:25 (the file is written through a `PrintWriter` whose buffer is not flushed on a timer, so 0 bytes is weak evidence of no progress). | Which key part drives the cardinality is not yet counted on real data (see below). The 2-year test (109 s) fit, so the "bounded maps" claim in the workload declaration above was never conditional on key space. |
+| **FY2010 ledger does not balance.** `LDGR2010.csv` sums to +60.00 over 881,769 rows (FY09 and FY11 sum to 0.00); `reconciliation_results.csv` `ledger_balance` is `FAIL` with delta 60.00. | confirmed | `LDGR2010.csv` column 20 sums to 60.00; the prep log reports SJE amount sum 0.00 for FY10; steps 3, 20 and 21 all exited rc 0; the orchestrator did not stop. All 60.00 sits under ledger ID `ACTUALS`, ledger period `TXN`. | Source of the 60.00 is unknown: an SJE, posting or rounding issue. The merged SJE sum was being recomputed when this entry was written (see "Pending"). The failed check did not stop the run, so a failed control is currently invisible unless someone reads the CSV. |
+| Steps 3, 20, 21 each re-read the same 224M-row stream | confirmed | Three `LedgerApp` launches per year, each `records_read` equal to the merged file rows (FY12: 19,384,664 each). | See the fuse-into-one-pass to-do in `SESSION_HANDOFF.md`. |
+| Posting does not depend on a prior year; `5v` does not read the ledger | partially_verified | `post.scala` derives the ledger year from the journal file name; `CKBViews` reads only `SortedJE*` files. | `post.scala`, `GLPost`, `PermutationGenerator` not fully read. |
+| The serial chain cost about 21 minutes after prep ended | measured | Wall-clock CSV: `prep_all_done` 13:40:03, `chain_all_done` 14:01:28. | Overlapped runs change the CPU share; only the corpus wall clock is comparable. |
+
+### Corrections to earlier entries
+
+- The workload declaration above says memory for `5v` is "one vendor key group (View B), bounded maps (A, C, D)". Views A, C and D are unbounded maps. A and C are believed to be small (owner: leave unbounded); D is not. Treat the `5v` claim "correct across years" as `partially_verified` for two years only and **unverified for 14 years**.
+- "Steps 3/20/21 and 5v read each row once" is true per step but the three posting steps read the same file three times.
+
+### Late measurements (2026-11-10; results in `~/workspace/va_fresh_logs/analysis/`)
+
+- **View D key space, FY2012 alone:** 292,831 keys over 16,046,772 payment rows; 258 agencies, 431 funds, 328 column-15 codes, 12 periods. The cardinality comes from agency x fund x code combinations, not the period (this corrects the inference in the Findings table). About 2.8M keys at the stall is roughly 10 years' worth; 14 years is about 4M.
+- **FY2010 merged SJE sum:** `cut -d, -f26 | awk` over `SortedJEFY10merged.csv` (17,401,408 rows) gives +80.00. This disagrees with the `2p` log (0.00) and with the ledger (+60.00). A comma split may misread quoted fields, so the three numbers are unreconciled. **Open:** recompute with the engine's own row parsing before concluding where the imbalance enters.
+- **Still not counted:** View A and C key spaces on real data (needed to confirm the owner's "leave unbounded" for those two).
+
+### Next actions
+
+See `SESSION_HANDOFF.md`, "Plan for the next session".
+
+
 ## 2026-11-10 Full-corpus rerun preparation: PO reader, one-read rule, cross-year 5v (Bob, Mac)
 
 Context (owner, 2026-11-10): the FY03-FY06 prep output was throttled, partly killed and unreliable; it is discarded and the run restarts from FY2003. Cleansing of the PO file, not language, was the defect. Python was not used for any of this work.
