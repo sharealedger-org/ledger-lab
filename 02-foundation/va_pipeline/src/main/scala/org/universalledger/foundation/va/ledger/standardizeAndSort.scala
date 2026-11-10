@@ -1020,11 +1020,14 @@ object standardizeAndSort {
     val root = new File(inPath.stripSuffix("/"))
     if (!root.exists()) return Seq.empty
 
+    // Match the 4-digit fiscal year. "--year 04" arrives as 4; matching the bare digit would also
+    // select "...Fiscal Year 2014". Folder names always carry the 4-digit year.
+    val fullYear = if (yearInt < 100) 2000 + yearInt else yearInt
     val candidates = Option(root.listFiles()).getOrElse(Array.empty[File])
       .filter(_.isDirectory)
       .filter { dir =>
         val n = dir.getName.toLowerCase
-        n.contains(yearInt.toString) && (
+        n.contains(fullYear.toString) && (
           if (recType == "R") n.contains("revenue") || n.contains("revenues")
           else n.contains("expenditure") || n.contains("expenditures")
         )
@@ -1035,7 +1038,11 @@ object standardizeAndSort {
       return Seq.empty
     }
 
-    val fyDir = candidates.head
+    if (candidates.length > 1)
+      System.err.println(s"WARNING: ${candidates.length} $typeLabel directories match FY$fullYear: " +
+                         candidates.map(_.getName).sorted.mkString(", ") + " — using the first by name")
+    val fyDir = candidates.sortBy(_.getName).head
+    println(s"  Source folder ($typeLabel FY$fullYear): ${fyDir.getAbsolutePath}")
     val csvFiles = Option(fyDir.listFiles()).getOrElse(Array.empty[File])
       .filter(f => f.isFile && f.getName.toLowerCase.endsWith(".csv"))
 
@@ -1112,6 +1119,10 @@ object standardizeAndSort {
                    }
     val chunkSize = params.get("chunkSize").map(_.toInt).getOrElse(DEFAULT_CHUNK)
     val dryRun    = params.getOrElse("dryRun", "false").toLowerCase == "true"
+    // parseOnly: read, name-resolve and count each source file, but build no SJE pairs, sort
+    // nothing and write nothing. Proves which folder/files are read and that every data line is
+    // accounted for (source + unresolved_ref + blank). Not a measured run.
+    val parseOnly = params.getOrElse("parseOnly", "false").toLowerCase == "true"
     val yearInt   = yearStr.toInt
     val shortYr   = yearStr.takeRight(2)
     // Axis 2 — period granularity: "monthly" → transFiscalPeriod = "YYYY/MM" per source file.
@@ -1184,6 +1195,10 @@ object standardizeAndSort {
         var sjeRows      = 0L
         var unmatchedRef = 0L
         var jrnlID       = 0
+        var fileDataLines = 0L
+        var fileBlank     = 0L
+        var fileSource    = 0L
+        var fileUnmatched = 0L
 
         def flushChunk(): Unit = {
           if (chunk.nonEmpty) {
@@ -1206,6 +1221,8 @@ object standardizeAndSort {
           else
             yearStr
           val src = Source.fromFile(inFile)(codec)
+          fileDataLines = 0L; fileBlank = 0L
+          fileSource = sourceRows; fileUnmatched = unmatchedRef
           try {
             val lines = src.getLines()
             if (!lines.hasNext) { /* empty file */ }
@@ -1214,6 +1231,8 @@ object standardizeAndSort {
               var rowNum = 1
               for (line <- lines) {
                 val raw = line.trim
+                fileDataLines += 1
+                if (raw.isEmpty) fileBlank += 1
                 if (raw.nonEmpty) {
                   rowNum += 1
                   val cols = splitAndStrip(raw, ",")
@@ -1233,18 +1252,23 @@ object standardizeAndSort {
                     case Some(normalized) =>
                       sourceRows += 1
                       jrnlID     += 1
-                      val pairs = buildJEPairsAPA(normalized, recType, vendorMap,
-                                                  accountingRule, filePeriodKey, acctDate, jrnlID)
-                      for ((rowStr, _, _) <- pairs) {
-                        chunk += rowStr
-                        sjeRows += 1
-                        if (chunk.size >= chunkSize) flushChunk()
+                      if (!parseOnly) {
+                        val pairs = buildJEPairsAPA(normalized, recType, vendorMap,
+                                                    accountingRule, filePeriodKey, acctDate, jrnlID)
+                        for ((rowStr, _, _) <- pairs) {
+                          chunk += rowStr
+                          sjeRows += 1
+                          if (chunk.size >= chunkSize) flushChunk()
+                        }
                       }
                   }
                 }
               }
             }
           } finally src.close()
+          // Reconciliation: data_lines (file lines minus header) = source + unresolved_ref + blank.
+          println(s"\n  File ${inFile.getName}: data_lines=$fileDataLines " +
+                  s"source=${sourceRows - fileSource} unresolved_ref=${unmatchedRef - fileUnmatched} blank=$fileBlank")
         }
 
         flushChunk()
@@ -1255,8 +1279,8 @@ object standardizeAndSort {
           println(s"  Merging ${spills.size} spill(s) → $outFile ...")
           val rowsWritten = SortEngine.mergeSpills(spills.toSeq, outFile, sortSpec)
           println(f"  Written: $outFile ($rowsWritten%,d rows)")
-        } else if (dryRun) {
-          println(s"  --dryRun: no output written for $batchLabel")
+        } else if (dryRun || parseOnly) {
+          println(s"  --${if (parseOnly) "parseOnly" else "dryRun"}: no output written for $batchLabel")
         } else {
           println(s"  No rows produced for $batchLabel — output file not written")
         }

@@ -306,4 +306,42 @@ class ApaTtlSpec extends AnyFunSuite {
       assert(agencyKeys.forall(_ == "0"), s"Agency key should be '0' for unresolved name; got $agencyKeys")
     }
   }
+
+
+  // ── Test 9: two-digit --year must select the 4-digit fiscal-year folder ─────
+  // "--year 03" arrives as 3. Matching the bare digit also selects "FY 2013 Expenditure".
+  test("Step ttl: year '03' reads FY 2003 and not FY 2013 (folders share the digit 3)") {
+    withTempDirectory("ttl-yearfolder-") { tempDir =>
+      val inDir   = Files.createDirectory(tempDir.resolve("VARawFiles"))
+      val fy2003  = Files.createDirectory(inDir.resolve("FY 2003 Expenditure"))
+      val fy2013  = Files.createDirectory(inDir.resolve("FY 2013 Expenditure"))
+      val refDir  = Files.createDirectory(tempDir.resolve("data"))
+      val outDir  = Files.createDirectory(tempDir.resolve("out"))
+      writeRefTables(refDir)
+      writeExpFile(fy2003, "Jul 2002", expRowJul)                       // 1 source row
+      writeExpFile(fy2013, "Jul 2012", expRowJul, expRowJul, expRowJul) // 3 source rows
+
+      val output = new java.io.ByteArrayOutputStream()
+      Console.withOut(output) {
+        standardizeAndSort.applyAPA(Map(
+          "inPath"            -> inDir.toString,
+          "refPath"           -> refDir.toString,
+          "outPath"           -> outDir.toString,
+          "year"              -> "03",
+          "type"              -> "E",
+          "periodGranularity" -> "monthly"
+        ))
+      }
+
+      val outFile = outDir.resolve("SortedJEFY03_0003_07_exp.csv").toFile
+      assert(outFile.exists(), "monthly output for Jul should be created")
+      val src  = Source.fromFile(outFile, "UTF-8")
+      val rows = try src.getLines().filter(_.trim.nonEmpty).toVector finally src.close()
+      assert(rows.length == 2, s"FY 2003 has 1 source row (2 SJE rows); got ${rows.length} (FY 2013 has 3 source rows)")
+
+      val log = output.toString("UTF-8")
+      assert(log.contains("Source folder (Expenditure FY2003): " + fy2003.toAbsolutePath), s"log should name the FY 2003 folder:\n$log")
+      assert(log.contains("data_lines=1 source=1 unresolved_ref=0 blank=0"), s"per-file reconciliation line missing:\n$log")
+    }
+  }
 }
