@@ -2,6 +2,50 @@
 
 Updated 2026-11-10. This file is a concise state snapshot; use the linked design contracts for details.
 
+## 2026-11-10 (session close) Start here next session — run Track C v3 (Bob, Mac)
+
+**Branch:** `trackC` (HEAD `40f1b61`). Working tree clean. `trackC` is **local only** — push before running on another machine.
+
+### Exact next step
+
+```bash
+git checkout trackC
+BERKA_DATA_ROOT=<dir outside repo> bash scripts/run_track_c_berka.sh
+```
+
+This runs 5 steps:
+1. Download and verify Berka files (Bash; SHA-256 pinned)
+2. Rebuild substrates — **required** because `build_berka_substrates.py` now adds `grant_date`; existing `data/berka_processed/` CSVs lack it
+3. v2 fit (repeated-CV, paired bootstrap, ablation) → `TRACK_C_BERKA_EVIDENCE.json`
+4. Non-injectivity count (stdlib, no model) → `TRACK_C_BERKA_NONINJECTIVITY.json`
+5. v3 fit (nested-CV λ, temporal split, 999-permutation test) → `TRACK_C_BERKA_V3_EVIDENCE.json`
+
+**Needs:** numpy (already in `.venv` from prior runs); `BERKA_DATA_ROOT` outside the repo; \~30–90 min total (step 5 permutation test dominates).
+
+### After the run
+
+Record T1/T2/T3 verdicts in `docs/VERIFICATION_AUDIT_REGISTER.md` v3 section, update `docs/TEST_DESIGN_TRACK_C_BERKA.md` §9 with actual numbers, then update this handoff. Push `trackC` to origin.
+
+### Locked thresholds (do not change after the run)
+
+| ID | Test | Threshold |
+|---|---|---|
+| T1 | paired 95% CI lower bound on E−B ROC-AUC (nested-CV, all loans) | > 0.00 |
+| T2 | temporal-split test-set E ROC-AUC vs B | E > B (sign positive) |
+| T3 | permutation p on 22 event-only columns (999 perms, one-sided) | < 0.05 |
+
+### What is NOT next (still deferred or out of scope)
+- Counterparty-diversity vs account-age independence (owner decision required)
+- The 355 account-days with no consistent balance chain
+- Berka terms of use confirmation
+- `members` pull (13 commits behind)
+- Paper 2 footnote text
+
+### `main` branch (pipeline, separate from `trackC`)
+`main` HEAD = `acf0ee1`. See the 2026-11-09 "Next session — start here" section below for the VA pipeline work (Zenodo download verification, re-baseline CCP1–CCP3 on the new `applyPO` reader, AIM3/AIM4 on real view output).
+
+---
+
 ## 2026-11-10 (latest) Track C v3 protocol designed; branch `trackC` current (Bob, Mac)
 
 v3 protocol implemented on `trackC` (design doc §9, not yet run):
