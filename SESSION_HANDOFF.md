@@ -2,9 +2,19 @@
 
 Updated 2026-11-10. This file is a concise state snapshot; use the linked design contracts for details.
 
+## 2026-11-10 (latest, last) Decision: Track C (Berka) is illustrative only, not Paper 2 evidence (owner, Bob)
+
+**Owner decision:** the Berka data adds little to the paper because we do not know how the files were produced relative to the originating bank's systems (lineage unknown). Unknowns: whether the per-row balance is a system field or was computed for the challenge file; the cause of the 1.3% balance breaks and the 355 unreconcilable account-days; how loan status was assigned; how accounts and counterparties were sampled and masked. So Track C shows what a model can learn from this table, not what a posting system discards.
+
+- **Paper 2:** do not use Track C as evidence and do not rewrite `docs/PAPER_2_TRACK_C_INSERTION_DRAFT.md` as a results section (marked "withheld"). At most a footnote labelled "public extract of unknown lineage, exploratory".
+- **Repo:** Track C code, design doc and evidence stay as a reproducible worked example of the audit method. Lineage-unknown is now the first limitation in `docs/TEST_DESIGN_TRACK_C_BERKA.md` and a `not_verified` / `contradicted` pair of rows in the register ("Third pass").
+- **Next evidence:** needs a source with a known path from originating system to ledger. The Virginia corpus is closer (the pipeline is built from the state's files) but is also an extract, so state its lineage the same way.
+- The earlier list below (rewrite the Paper 2 text, counterparty-vs-account-age check, the 355 days) is now optional/low priority. Still open: Berka authors' terms of use; pull `members` (13 commits behind).
+
+---
 ## 2026-11-10 (latest, later) Track C redesigned and re-run: B = daily balance, E = same transaction rows (Bob, Mac)
 
-**Python for Track C is approved by the owner (scope Track C only).** Rewritten: `scripts/berka/build_berka_substrates.py`, `scripts/berka/fit_track_c_models.py`, `scripts/run_track_c_berka.sh`, `docs/TEST_DESIGN_TRACK_C_BERKA.md`. Evidence JSON regenerated (v2). The v1 results (earlier sections) are withdrawn. Nothing committed yet.
+**Python for Track C is approved by the owner (scope Track C only).** Rewritten: `scripts/berka/build_berka_substrates.py`, `scripts/berka/fit_track_c_models.py`, `scripts/run_track_c_berka.sh`, `docs/TEST_DESIGN_TRACK_C_BERKA.md`. Evidence JSON regenerated (v2). The v1 results (earlier sections) are withdrawn. Committed and pushed (`3175054`).
 
 - **Design:** one set of pre-loan transaction rows, two views. E = the rows. B = E rolled up to a daily closing balance per account (the grain a product system holds); the per-row balance in the file is a statement field, not posted state. E contains every B column by construction, plus 22 columns a daily balance cannot hold (operation, `k_symbol`, counterparty, intra-day multiplicity). No district demographics, no `order.asc.txt`.
 - **Intra-day order is recoverable from the balance chain** (99.67% of two-row days); `trans_id` and file order are not reliable. 42,671 pre-loan account-days: 32,590 single-row, 9,725 unique order, 355 no consistent order, 1 ambiguous.

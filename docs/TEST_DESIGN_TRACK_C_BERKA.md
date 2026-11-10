@@ -1,9 +1,11 @@
 # Track C: Retail Banking Benchmark (Berka PKDD'99 Corpus)
 ## Paper 2: Business Event Repositories as Training Corpora for Enterprise AI
 
+> **Decision 2026-11-10 (owner): Track C is illustrative only, not evidence for Paper 2.** First limitation: **lineage unknown.** Berka is a public extract and nothing documents how the files were produced from the originating bank's systems. We cannot tell whether the per-row balance came from the bank's system or was computed when the challenge file was built; whether the 1.3% balance breaks and the 355 unreconcilable days are system behaviour or extract artefacts; how loan status was assigned; or how accounts and counterparties were selected and masked. The result therefore shows what a model can learn from this table, not what a bank's posting system keeps or discards, which is what Theorem 1 is about. The design, code and numbers below are kept as a worked example of the audit method and as a reproducible exploratory result. Do not cite them as support for Theorem 1. Stronger evidence needs a source whose path from originating system to ledger is known.
+
 **Status:** v2 protocol implemented and run once on 2026-11-10 (see §6). The v1 design (monthly "compressed" balances, GBDT / sequence model) is withdrawn; see the 2026-11-10 sections of [`VERIFICATION_AUDIT_REGISTER.md`](VERIFICATION_AUDIT_REGISTER.md) for why.
 **Corpus:** Berka Financial Dataset (PKDD'99 Discovery Challenge), fetched by `scripts/download_berka.sh` (terms of use unconfirmed; data stays outside the repository).
-**Role in Monograph:** Complementary empirical benchmark for Paper 2 (information lost when transactions are reduced to account balances). Not an engine measurement.
+**Role in Monograph:** None as evidence (see the decision above). At most a footnote-level illustration labelled "public extract of unknown lineage, exploratory". Not an engine measurement.
 
 ---
 

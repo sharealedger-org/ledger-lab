@@ -1,5 +1,7 @@
 # Paper 2 Insertion Draft: Track C Retail Banking Benchmark (Berka PKDD'99)
 
+> **WITHHELD, NOT TO BE REWRITTEN (owner decision 2026-11-10).** Track C is illustrative only and is not evidence for Paper 2, because the lineage of the Berka files (how they were produced from the originating bank's systems) is unknown. Do not insert this text, and do not rewrite it as a results section. If Berka appears in the paper at all, it is a footnote-level illustration labelled "public extract of unknown lineage, exploratory". See the decision note at the top of `docs/TEST_DESIGN_TRACK_C_BERKA.md`.
+
 > **SUPERSEDED (2026-11-10, later).** Track C was redesigned and re-run the same day: B is now a daily closing balance, E is the same transaction rows (a strict superset of B), with repeated CV, paired intervals and an overdraft-rule baseline. The numbers below belong to the withdrawn v1 run and no longer match `TRACK_C_BERKA_EVIDENCE.json`. Use `docs/TEST_DESIGN_TRACK_C_BERKA.md` §6-7 and the "Third pass" in `docs/VERIFICATION_AUDIT_REGISTER.md` as the basis for a rewrite. This file still must not go into the monograph.
 >
 > **DO NOT INSERT INTO THE MONOGRAPH AS WRITTEN (2026-11-10).** An audit against the public data found that the claims below are not supported by the v1 Track C run. The numbers in this file matched the v1 evidence and reproduced exactly, but:
