@@ -192,8 +192,14 @@ Net: the v1 "not citable" conclusion is superseded for the v2 design. The v2 res
 | The Berka files' lineage from the originating bank's systems is known, so a balance-versus-event comparison on them tests what a posting system discards | not_verified | The authors' description page and the Internet Archive capture state no process. Nothing documents whether the per-row `balance` was a system field or computed when the challenge file was built; why 1.3% of unambiguous transitions break (`UROK`, `UVER`) and 355 pre-loan account-days have no consistent balance chain; how loan `status` was assigned; or how accounts and counterparties were sampled and masked. The members README (`dfe3bae`) says the same about the origin of the data ("generally described as anonymised data from a Czech bank ... not verified here"). | Needs a source with a known path from originating system to ledger. Berka remains usable as an exploratory, reproducible worked example of the audit method. |
 | Track C results may be cited as support for Theorem 1 or for "keep the balance and retain the events" | contradicted | Owner decision above; follows from the row above. The v2 numbers describe this table only. | Paper 2 text: do not rewrite `docs/PAPER_2_TRACK_C_INSERTION_DRAFT.md` as a results section; at most a footnote labelled "public extract of unknown lineage, exploratory". |
 
+## 2026-11-10 Track C branch reorganisation (Bob, Mac)
 
+All Track C commits (`80e39cc` through `3c1edab`) moved to branch `trackC`. `main` reset to `acf0ee1`. No code or evidence was changed; this is a housekeeping move only.
 
+| Claim | State | Evidence | Remaining gap |
+|---|---|---|---|
+| Track C commits are isolated from the mainline pipeline on branch `trackC` | `verified` | `git branch trackC HEAD` from `3c1edab`; `git reset --hard acf0ee1` on `main`. `git log --oneline -5` confirms `main` HEAD = `acf0ee1`; `trackC` HEAD = `3c1edab`. `trackC` is local only (not yet pushed to origin). | Push `trackC` to origin when ready. |
+| Non-injectivity count (`3c1edab`) is the current HEAD of `trackC` | `verified` | `git show --stat 3c1edab`: 5 files changed, 385 insertions. `scripts/berka/count_noninjectivity.py`, `data/test_evidence/TRACK_C_BERKA_NONINJECTIVITY.json`, `docs/TEST_DESIGN_TRACK_C_BERKA.md` §8a, `scripts/run_track_c_berka.sh` step 4, `SESSION_HANDOFF.md` entry all present in the working tree. | None for the branch state itself. |
 
 
 

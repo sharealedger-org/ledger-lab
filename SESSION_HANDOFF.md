@@ -2,6 +2,27 @@
 
 Updated 2026-11-10. This file is a concise state snapshot; use the linked design contracts for details.
 
+## 2026-11-10 (latest) Track C moved to `trackC` branch; `main` reset to `acf0ee1` (Bob, Mac)
+
+All Track C commits (`80e39cc` through `3c1edab`) are now on branch `trackC`. `main` is reset to `acf0ee1` ("record 2026-11-10 Zenodo corpus download completion and FY2003 end-to-end verification run") — the last commit before Track C work began in this session.
+
+- **Branch `trackC`** (HEAD `3c1edab`): contains all five Track C commits: public Berka download script + owner approval + audit findings; v2 redesign and run; Berka data removal from members; lineage decision; non-injectivity count.
+- **Branch `main`** (HEAD `acf0ee1`): clean of all Track C work; continues the mainline pipeline (VA corpus, AIM, CCP runs).
+- **`trackC` is local only** — push with `git push origin trackC` when ready.
+- The non-injectivity count (`3c1edab`) is the last Track C commit on this branch. All evidence and design doc are in the working tree at that commit.
+
+### Next on `trackC` (if Track C continues)
+1. Push `trackC` to origin (`git push origin trackC`).
+2. Optional v3 items (owner decision required): locked thresholds, nested-CV tuning, temporal split, permutation test on the 22 event columns.
+3. Counterparty-diversity vs account-age independence check (owner decision).
+4. Berka terms of use confirmation; pull `members` (13 commits behind).
+5. Paper 2 footnote draft: "public extract of unknown lineage, exploratory" — at most one paragraph.
+
+### Next on `main` (pipeline work)
+See the "Next session — start here" list under the 2026-11-09 section below (Zenodo download, re-baseline CCP1-CCP3 on new applyPO reader, AIM3/AIM4 on real view output).
+
+---
+
 ## 2026-11-10 (after the decision below) Track C: direct non-injectivity count added (Bob, Mac)
 
 Owner asked why Berka had no tuning and did not follow the AIM outline, and whether it might still show something demonstrable. Answer recorded: v2 deliberately fixed one learner (no tuning on results); it also has no locked acceptance thresholds, no permutation test, no temporal split. Owner approved Python ("yes, python approved"; Track C scope). Added `scripts/berka/count_noninjectivity.py` (standard library, no model; AIM1 analogue), wired as step 4 of `scripts/run_track_c_berka.sh`, evidence `data/test_evidence/TRACK_C_BERKA_NONINJECTIVITY.json`, write-up in `docs/TEST_DESIGN_TRACK_C_BERKA.md` §8a.
