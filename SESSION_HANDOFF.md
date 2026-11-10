@@ -16,8 +16,10 @@ Updated 2026-11-10. This file is a concise state snapshot; use the linked design
 - Registers: `VERIFICATION_AUDIT_REGISTER.md` "Third pass" (also corrects the earlier "intra-day order not recoverable" and "posted state" wording).
 - Reproduce: `BERKA_DATA_ROOT=<dir outside repo> bash scripts/run_track_c_berka.sh` (needs numpy).
 
+- **Berka data removed from the members repo** (`sharealedger-org/members`, commit `dfe3bae`, pushed 2026-11-10): the eight data files are deleted (still in history at `fbd72d2`); README keeps provenance, file descriptions, pinned SHA-256 values and the current analysis status; `.gitattributes` rules for the removed files dropped. The data now comes only from `scripts/download_berka.sh`. `scripts/berka/fetch_berka_data.py` (copied from the sibling members checkout) is deleted as dead code. Commit `3175054` already carries Track C v2.
+
 ### Next
-1. Owner: commit this work; decide whether to rewrite the Paper 2 Track C text on the v2 results.
+1. Owner: decide whether to rewrite the Paper 2 Track C text on the v2 results (v2 work itself is committed and pushed); decide whether to rewrite the Paper 2 Track C text on the v2 results.
 2. Examine the 355 account-days with no consistent balance chain (`UROK` / `UVER` candidates).
 3. Optional: test whether counterparty diversity is independent of account age and household type (the main open threat).
 4. Still open: Berka terms of use; pull `members` (12 commits behind).
@@ -87,7 +89,7 @@ Updated 2026-11-10. This file is a concise state snapshot; use the linked design
   - **Non-Injectivity Proof:** 29 ambiguous account pairs in balance space ($B_1 \approx B_2$) with opposing default outcomes ($Y_1 \neq Y_2$) were identified. Layer 2 produced ambiguous/inverted predictions, while Layer 3 event sequences correctly resolved risk (e.g. Account 6400 vs 8261 inverted from 53.7%/37.6% on Layer 2 to 47.2%/31.4% on Layer 3).
 
 ### Other housekeeping done 2026-11-09 (all local, outside git)
-- Berka data copied into the private members repo `org-members` (`content/examples/banking-berka/`, commit `fbd72d2`, pushed). The scripts above read it from `../org-members/content/examples/banking-berka/data_berka`.
+- Berka data copied into the private members repo `org-members` (`content/examples/banking-berka/`, commit `fbd72d2`, pushed). The scripts above read it from `../org-members/content/examples/banking-berka/data_berka` (**removed 2026-11-10**; use `scripts/download_berka.sh`).
 - Deleted after verifying public/duplicate copies: `workspace/data`, `universal_ledger_data_zip`, `VAPostAnalysisRSCDemo`, `IBMSAFR-Spark`, `universal_ledger`, `ConversationsWithKip` (16 GB). Four files from the last (the 2017 SAFR on Spark draft, two workbooks, the IBM-confidential mockups deck) are archived in `~/workspace/reference_data/ConversationsWithKip_docs_archive/` and are **not in any repo**. Unpushed work in `universal_ledger` is saved as `reference_data/universal_ledger_uncommitted_2020.patch`.
 - The HSBC Word spec was judged redundant with `docs/VA_Data_Layouts_and_Specs.md` (HSBC production volumes in its diagram were not carried over). The March 2017 SAFR on Spark draft is now Part B of that spec; its three "not found" requirements (wildcard lookup, attribute precedence, set processing/cycle detection) are **not** in `GENEVAERS_CAPABILITY_GAP_REGISTER.md` and need an owner decision.
 - Not deleted, needs owner decision: `cdscVADataDemoSys` (8 unpushed commits, 4 stashes), `ngsafr` (2 unpushed), `jzosSpark`, `ulscalatra`, and the folders with no remote (`SAFRSpark`, `SparkScratchPad`, `smallprojects`, `AdeProject`, `V2=3Geveva`, `working directory`, `FPEMDemo`, `Lonepeak`, `tokenized`, `vagrant-ofbiz`).
