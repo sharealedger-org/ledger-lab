@@ -138,9 +138,19 @@ CHAIN_RC=$?
 stamp chain_all_done
 say "chain finished rc=$CHAIN_RC"
 
+# ── Archive evidence to repository on exit ──
+archive_evidence() {
+  say "Archiving run evidence into repository..."
+  bash "$SCRIPT_DIR/archive_corpus_run_evidence.sh" \
+    --root "$OUT_ROOT" \
+    --logs "$LOGS" \
+    --tag "$STAMP" || say "WARNING: Evidence archiving encountered an error"
+}
+
 if [[ $PREP_RC -ne 0 || $CHAIN_RC -ne 0 ]]; then
   stamp corpus_end_FAILED
   say "STOPPED: prep rc=$PREP_RC chain rc=$CHAIN_RC; VIEWS pass not started"
+  archive_evidence
   exit 1
 fi
 
@@ -157,8 +167,14 @@ say "=== VIEWS (5v) over ${#YEAR_LIST[@]} years ==="
     > "$LOGS/run2_views.log" 2>&1 )
 VIEWS_RC=$?
 stamp views_end
-if [[ $VIEWS_RC -ne 0 ]]; then stamp corpus_end_FAILED; say "VIEWS FAILED rc=$VIEWS_RC"; exit 1; fi
+if [[ $VIEWS_RC -ne 0 ]]; then
+  stamp corpus_end_FAILED
+  say "VIEWS FAILED rc=$VIEWS_RC"
+  archive_evidence
+  exit 1
+fi
 
 stamp corpus_end
+archive_evidence
 say "ALL YEARS COMPLETE; wall-clock record: $WALL"
 exit 0

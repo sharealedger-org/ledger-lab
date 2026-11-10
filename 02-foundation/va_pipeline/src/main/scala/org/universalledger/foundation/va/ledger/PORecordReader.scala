@@ -102,8 +102,7 @@ final class PORecordReader(in: InputStream) extends Iterator[PORecordReader.Item
     if (f.length < 4) false
     else {
       val d = unq(f(2).trim)
-      DatePattern.matcher(d).matches() ||
-        (d.isEmpty && unq(f(0).trim).nonEmpty && text.count(_ == '\t') >= headerFieldCount - 1)
+      DatePattern.matcher(d).matches()
     }
   }
 

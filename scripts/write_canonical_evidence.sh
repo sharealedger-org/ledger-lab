@@ -443,9 +443,10 @@ for year in "${YEAR_LIST[@]}"; do
   done
   short_year="${year: -2}"
   sorted_file="$OUT_PATH/SortedJEFY${short_year}q1exp.csv"
+  [[ -f "$sorted_file" ]] || sorted_file="$OUT_PATH/SortedJEFY${short_year}merged.csv"
   ledger_file="$OUT_PATH/LDGR20${short_year}.csv"
   if [[ -f "$sorted_file" ]]; then
-    append_control "sje_balance" "sje_fy${short_year}q1exp" "0" \
+    append_control "sje_balance" "$(basename "$sorted_file" .csv)" "0" \
       "$(awk -F',' '{ total += $26 } END { printf "%.2f", total }' "$sorted_file")" \
       "$(file_rows "$sorted_file")"
   fi

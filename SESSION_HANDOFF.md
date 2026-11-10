@@ -1,6 +1,17 @@
 # Ledger Lab Handoff
 
 Updated 2026-11-10. This file is a concise state snapshot; use the linked design contracts for details.
+
+## 2026-11-10 (latest) Run 2 evidence archived into repo; FY2010 PO reader defect fixed & tested; fail-fast controls added (Bob, Mac)
+
+- **Run 2 Evidence Archived in Repo**: Canonical metrics, manifests, sort events, cost surface, and reconciliation results for all 14 fiscal years (FY03–FY16) are archived under `data/test_evidence/corpus_runs/run_20261110_123303/`.
+- **Automatic Evidence Archiving**: Added `scripts/archive_corpus_run_evidence.sh` and wired it into `scripts/run_full_corpus.sh` so every full-corpus run automatically archives its lightweight canonical evidence into the repository.
+- **FY2010 Imbalance Root Cause & Fix**:
+  - `PORecordReader.scala`: Continuation lines with embedded tabs no longer falsely trigger record starts.
+  - `standardizeAndSort.scala`: Comma sanitization (`clean(s)`) added across all fields in `makePORow` and `makeRow`.
+  - `StandardizeAndSortPOSpec.scala`: Added Tests 9d & 9e; all 15 tests pass.
+- **Fail-Fast Controls**: `scripts/run_pipeline.sh` exits with non-zero exit code if any reconciliation check fails.
+
 ## 2026-11-10 (new session start point) Old output cleared; launch with 4 lanes is the first action (Bob, Mac)
 
 Owner decisions: commit the changes below, delete the old outputs, run with four lanes. Done in the closing session: changes committed; `~/workspace/va_fresh_root/output_full` emptied (FY03-FY06 symlinks and `.generations` removed, about 22 GB freed, 442 GiB free after). **The run has NOT been started.** `scripts/run_full_corpus.sh` was edited externally after I wrote it; I re-read it, it is intact and passes `bash -n`.

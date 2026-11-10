@@ -1,0 +1,15 @@
+fiscal_year,quarantine_file,rows
+FY03,POQuarantineFY03.csv,20
+FY04,POQuarantineFY04.csv,1
+FY05,POQuarantineFY05.csv,3
+FY06,POQuarantineFY06.csv,1989
+FY07,POQuarantineFY07.csv,1675
+FY08,POQuarantineFY08.csv,3048
+FY09,POQuarantineFY09.csv,0
+FY10,POQuarantineFY10.csv,3847
+FY11,POQuarantineFY11.csv,4266
+FY12,POQuarantineFY12.csv,5747
+FY13,POQuarantineFY13.csv,3775
+FY14,POQuarantineFY14.csv,2496
+FY15,POQuarantineFY15.csv,2673
+FY16,POQuarantineFY16.csv,2806

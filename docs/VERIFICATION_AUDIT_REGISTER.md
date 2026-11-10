@@ -230,7 +230,7 @@ Owner decisions, 2026-11-09: "Shift the AIM dates. Fix the applyPO." Recorded **
 
 ## 2026-11-10 Full-corpus run 2: 14-year prep and posting complete, `5v` failed, FY2010 ledger imbalance (Bob, Mac)
 
-Run: `scripts/run_full_corpus.sh`, FY2003-FY2016, 4 prep lanes plus one serial posting chain, monthly granularity, git `846e952` (dirty). Started 12:33:03, ended 14:28:20 (`corpus_end_FAILED`). Logs in `~/workspace/va_fresh_logs` (`run2_*.log`, `markers_20261110_123303`, `corpus_wallclock_20261110_123303.csv`); output in `~/workspace/va_fresh_root/output_full` (109 GB). Earlier attempts the same day: a first launch died silently when its shell ended; a second hit an sbt `ServerAlreadyBootingException` on FY2004 `2m` (rc 2, launcher collision, not data). `run_pipeline.sh` now relaunches on exactly that message (up to 6 times, logs `RETRY`); the second full run recorded 0 retries.
+Run: `scripts/run_full_corpus.sh`, FY2003-FY2016, 4 prep lanes plus one serial posting chain, monthly granularity, git `846e952` (dirty). Started 12:33:03, ended 14:28:20 (`corpus_end_FAILED`). Logs in `~/workspace/va_fresh_logs` (`run2_*.log`, `markers_20261110_123303`, `corpus_wallclock_20261110_123303.csv`); output in `~/workspace/va_fresh_root/output_full` (109 GB). Canonical run metrics, manifests, sort events, cost surface, and reconciliation tables are archived in the repository under `data/test_evidence/corpus_runs/run_20261110_123303/`. Earlier attempts the same day: a first launch died silently when its shell ended; a second hit an sbt `ServerAlreadyBootingException` on FY2004 `2m` (rc 2, launcher collision, not data). `run_pipeline.sh` now relaunches on exactly that message (up to 6 times, logs `RETRY`); the second full run recorded 0 retries.
 
 ### Results
 

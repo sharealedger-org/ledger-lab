@@ -601,13 +601,14 @@ object standardizeAndSort {
       qty:       String,
       descript:  String
   ): String = {
+    def clean(s: String): String = if (s != null) s.replace(",", " ") else ""
     Seq(
-      instId, "0", poNumber, jrnlId, lineId, bizEvent, "PO Sys", "Unknown", descript,
+      clean(instId), "0", clean(poNumber), clean(jrnlId), clean(lineId), clean(bizEvent), "PO Sys", "Unknown", clean(descript),
       LEDGER_ID, JRNL_TYPE, BOOK_CODE,
-      agency, "0000", nigpCode, PRODUCT_ID, if (lineId == "1") "COMMIT" else "0000", ALT_ACCOUNT,
+      clean(agency), "0000", clean(nigpCode), PRODUCT_ID, if (lineId == "1") "COMMIT" else "0000", ALT_ACCOUNT,
       CCY_SRC, CCY_TYPE_SRC, CCY_TGT, CCY_TYPE_TGT,
-      year, acctDate, transDate, amount,
-      uomCode, price, qty, " ", " ", "D", "N", "N", " ", " ", " ", " ", " "
+      clean(year), clean(acctDate), clean(transDate), amount,
+      clean(uomCode), price, qty, " ", " ", "D", "N", "N", " ", " ", " ", " ", " "
     ).mkString(",")
   }
 
@@ -792,14 +793,14 @@ object standardizeAndSort {
                       nominalAcct: String, year: String, acctDate: String,
                       transDate: String, amount: String,
                       ruleSetId: String, ruleId: String): String = {
-    val descClean = descript.replace(",", " ")
+    def clean(s: String): String = if (s != null) s.replace(",", " ") else ""
     Seq(
-      instId, "0", "0", jrnlId, lineId, bizEvent, srcSys, "Unknown", descClean,
+      clean(instId), "0", "0", clean(jrnlId), clean(lineId), clean(bizEvent), clean(srcSys), "Unknown", clean(descript),
       LEDGER_ID, JRNL_TYPE, BOOK_CODE,
-      agency, fund, objCode, PRODUCT_ID, nominalAcct, ALT_ACCOUNT,
+      clean(agency), clean(fund), clean(objCode), PRODUCT_ID, clean(nominalAcct), ALT_ACCOUNT,
       CCY_SRC, CCY_TYPE_SRC, CCY_TGT, CCY_TYPE_TGT,
-      year, acctDate, transDate, amount,
-      " ", "0", "0", ruleSetId, ruleId, "D", "N", "N", " ", " ", " ", " ", " "
+      clean(year), clean(acctDate), clean(transDate), amount,
+      " ", "0", "0", clean(ruleSetId), clean(ruleId), "D", "N", "N", " ", " ", " ", " ", " "
     ).mkString(",")
   }
 

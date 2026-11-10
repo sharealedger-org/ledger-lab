@@ -975,3 +975,13 @@ bash "$SCRIPT_DIR/write_canonical_evidence.sh" \
 bash "$SCRIPT_DIR/interpret_run.sh" \
   "${OUT_PATH%/}/metrics" \
   "${OUT_PATH%/}/interpretation"
+
+# Fail fast if any reconciliation control failed
+if [[ -f "${OUT_PATH%/}/metrics/reconciliation_results.csv" ]]; then
+  failed_controls=$(awk -F',' 'NR > 1 { gsub(/"/, "", $9); if ($9 == "FAIL") { printf "  check_id=%s partition=%s delta=%s (expected %s, actual %s)\n", $2, $4, $7, $5, $6 } }' "${OUT_PATH%/}/metrics/reconciliation_results.csv")
+  if [[ -n "$failed_controls" ]]; then
+    log "ERROR: One or more reconciliation controls failed:"
+    printf "%s\n" "$failed_controls" >&2
+    exit 1
+  fi
+fi

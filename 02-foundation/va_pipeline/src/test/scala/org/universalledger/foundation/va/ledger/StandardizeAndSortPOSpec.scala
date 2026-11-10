@@ -429,7 +429,62 @@ class StandardizeAndSortPOSpec extends AnyFunSuite {
     }
   }
 
+  // ── Test 9d: multiline record with embedded tabs is quarantined under FIELD_COUNT ──
+  //  In FY2010, continuation lines with embedded tabs previously fooled the reader into
+  //  treating the second half as a separate record with empty date, causing column shifts
+  //  and ledger imbalance. They must now be joined and quarantined cleanly under FIELD_COUNT.
+  test("Step 2p: multiline record with extra embedded tabs is quarantined under FIELD_COUNT") {
+    withTempDirectory("po-2p-multiline-tabs-") { tempDir =>
+      val inDir  = Files.createDirectory(tempDir.resolve("in"))
+      val outDir = Files.createDirectory(tempDir.resolve("out"))
+      val multilineWithExtraTabs =
+        "\"EP572828\"\t\"Virginia Commonwealth University\"\t\"06/10/2010\"\t\"79215A669\t\t\t\n" +
+        "Regulator Fitting Inlet Nipple, 1/4\" NPT Male, Cga #590, 3.5\" Length\t\t\t\"\t1\t6.16\t\"038599171\"\t\"MCMASTER-CARR SUPPLY CO\"\t\"200 New Canton Way\"\t\"Robbinsville\"\t\"NJ\"\t\"08691\"\t\"ben.schuchardt@mcmaster.com\"\t\"03194\"\t\"Unit Heaters, Steam and Hot Water Types\"\t\"EA\"\t\"each\"\t\"\"\t\"\""
+      writePOFile(inDir, multilineWithExtraTabs)
 
+      standardizeAndSort.applyPO(Map(
+        "inPath"  -> inDir.toString,
+        "outPath" -> outDir.toString,
+        "year"    -> "2003",
+        "quarter" -> "1"
+      ))
+
+      val src  = scala.io.Source.fromFile(outDir.resolve("SortedJEFY03q1PO.csv").toFile, "UTF-8")
+      val rows = try src.getLines().filter(_.trim.nonEmpty).toVector finally src.close()
+      assert(rows.isEmpty, "Malformed multiline row with extra tabs must be quarantined, producing 0 SJE rows")
+
+      val qFile = scala.io.Source.fromFile(outDir.resolve("POQuarantineFY03.csv").toFile, "UTF-8")
+      val qLines = try qFile.getLines().toVector finally qFile.close()
+      assert(qLines.tail.exists(_.contains(",FIELD_COUNT,")), "Must be quarantined with FIELD_COUNT")
+    }
+  }
+
+  // ── Test 9e: commas in PONUMBER and descriptions are sanitized to spaces ─────
+  test("Step 2p: commas in PONUMBER and descriptions are sanitized to prevent CSV corruption") {
+    withTempDirectory("po-2p-commas-") { tempDir =>
+      val inDir  = Files.createDirectory(tempDir.resolve("in"))
+      val outDir = Files.createDirectory(tempDir.resolve("out"))
+      val poWithCommas =
+        "\"PO,123,ABC\"\t\"Agency, Name\"\t\"09/23/2002\"\t\"Item, Description, With, Commas\"\t2\t15.50\t\"038599171\"\t\"Vendor\"\t\"ADDR\"\t\"CITY\"\t\"VA\"\t\"00000\"\t\"\"\t\"08015\"\t\"d\"\t\"EA\"\t\"each\"\t\"\"\t\"\""
+      writePOFile(inDir, poWithCommas)
+
+      standardizeAndSort.applyPO(Map(
+        "inPath"  -> inDir.toString,
+        "outPath" -> outDir.toString,
+        "year"    -> "2003",
+        "quarter" -> "1"
+      ))
+
+      val src  = scala.io.Source.fromFile(outDir.resolve("SortedJEFY03q1PO.csv").toFile, "UTF-8")
+      val rows = try src.getLines().filter(_.trim.nonEmpty).toVector finally src.close()
+
+      assert(rows.length == 2, s"Expected 2 SJE rows; got ${rows.length}")
+      assert(rows.forall(_.split(",", -1).length == 39), s"Every row must have exactly 39 columns; got ${rows.map(_.split(",", -1).length)}")
+      assert(rows(0).split(",", -1)(2) == "PO 123 ABC", "Commas in PONUMBER must be sanitized to space")
+      val amounts = rows.map(r => BigDecimal(r.split(",", -1)(25)))
+      assert(amounts.sum == BigDecimal(0), s"Debit and credit must cancel; sum=${amounts.sum}")
+    }
+  }
 
   // ── Test 10: Step 2m merges payment + PO files in sort order ─────────────────
   test("Step 2m: mergeSpills produces a merged file with all rows in sort order") {
