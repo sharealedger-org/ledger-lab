@@ -775,5 +775,79 @@ Disk note: on this Windows/Git Bash setup, `ln -s` in `commit_attempt` appears t
 | Claim | State | Evidence | Remaining gap |
 |---|---|---|---|
 | Zenodo 385-file download is 100% complete & bit-for-bit verified | `verified` | 383 files SHA-256 verified against `data/corpus_profile/source_catalog.csv`, 2 placeholder files created, 0 failures; manifest at `va_fresh_root/logs/download_corpus_manifest.csv` | None |
-| Fresh corpus executes seedless end-to-end through mainline Scala engine | `verified` | Clean run produced `LDGR2003.csv` (382,193 rows) and 4 CKB view tables | None |
-| Exact zero-sum ledger balance closure ($0.0000) on fresh corpus | `verified` | $\sum \text{ldgrTransAmount} = 0.000000$ across all 382,193 rows in `LDGR2003.csv` | None |
+| Fresh corpus executes seedless end-to-end through mainline Scala engine | `unknown` (was `verified`; downgraded 2026-11-10, see correction below) | Clean run produced `LDGR2003.csv` (382,193 rows) and 4 CKB view tables. The run's `ttl` input is now suspected to be FY2013, not FY2003. | The run did execute end to end, but the claim that it processed FY2003 is unproven. |
+| Exact zero-sum ledger balance closure ($0.0000) on fresh corpus | `unknown` (was `verified`; downgraded 2026-11-10, see correction below) | $\sum \text{ldgrTransAmount} = 0.000000$ across all 382,193 rows in `LDGR2003.csv`. A zero sum is not affected by which year was read, and it also cannot reveal the double read of `SortedJEFY03merged.csv` (see below). | Zero balance holds for whatever was read; it does not show FY2003 was read. |
+
+### Correction 2026-11-10 (later same day): the run above may have parsed the wrong fiscal year
+
+**Claim tested:** "`ttl --year 03` reads the FY2003 expenditure folder."
+
+**Cheapest falsifier:** Run `ttl` for `--year 04` and compare the engine's per-month `source + unresolved_ref` with the line counts of the files in the folder named `FY 2004 Expenditure`.
+
+**Result: contradicted for `--year 04`.** `discoverApaFiles` (`standardizeAndSort.scala`) selects a folder with `dirName.contains(yearInt.toString)`, where `yearInt` is the integer `4`, so it matches the digit `4`. Both `FY 2004 Expenditure` and `All Expenditures for Fiscal Year 2014` match, and `candidates.head` is taken.
+
+| Month | Engine `source + unresolved_ref` | FY2014 file (lines - header) | FY2004 file (lines - header) |
+|---|---:|---:|---:|
+| Jul | 649,422 + 1,078 = 650,500 | 650,500 | 447,907 |
+| Aug | 662,976 + 1,550 = 664,526 | 664,526 | 436,807 |
+
+Folder data-row totals (from `cat *.csv | wc -l` minus one header per file): FY2003 = 5,817,081; FY2004 = 5,602,210; FY2013 = 8,049,644; FY2014 = 8,142,512.
+
+**For `--year 03` (the run above) this is inferred, not shown:** `--year 03` matches `FY 2003 Expenditure` and `FY 2013 Expenditure`. The run read 8,006,618 `ttl` source rows, which is close to FY2013 (8,049,644) and far from FY2003 (5,817,081), and the locked 2026-11-06 FY2003 count was 5,758,480. The gap to FY2013 (43,026 rows) is consistent with `unresolved_ref` rows but that was not checked. File dates were not inspected.
+
+**Also found, by reading code and FY2003 output (not a run):** steps `3` and `5v` (and `20`/`21`) read every `SortedJE*` file containing `FY03`, which includes both the monthly/PO source files and `SortedJEFY03merged.csv`. Reads were 32,236,192 against a merged file of 16,118,096 rows, exactly 2x. View A/B/C each sum to 106,796 PO lines against 53,398 debit-or-zero rows in the PO file. Whether step 3 double-posts is not established.
+
+**State:** the `ttl` year match is `contradicted` for `--year 04`, `unknown` for the 2026-11-10 FY2003 run. The earlier locked CCP1-CCP3 figures (2026-11-06) were produced before the digit-match line is known to have existed and are also unverified for which folder they read; the 2026-11-06 FY2003 count of 5,758,480 is close to the FY2003 folder (5,817,081), which is mild evidence they read the right folder.
+
+**Action taken:** the `ttl` sweep over FY2004-FY2016 was stopped after about 12 minutes and its output deleted. No code was changed. Details and the fix list are in `FULL_CORPUS_RUN_CHECKLIST.md`.
+
+**Next falsifier:** fix the folder match to the 4-digit year, add a test with `FY 2003` and `FY 2013` folders together, log the chosen folder, and reconcile each month's engine counts to the file line count before running any year.
+
+## 2026-11-10 `ttl` folder-match fix, parse proof for FY2003-FY2016, partial prep run (Bob)
+
+**Claim tested:** after matching the folder on the 4-digit fiscal year, `ttl` reads the folder it names and accounts for every data line.
+
+**Change (uncommitted):** `standardizeAndSort.scala` `discoverApaFiles` matches `fullYear` (`yearInt + 2000` when below 100) instead of the bare digit. It logs `Source folder (<type> FY<yyyy>): <path>`, warns when more than one folder matches, and sorts candidates by name. `applyAPA` prints a per-file line `data_lines=N source=S unresolved_ref=U blank=B` (data_lines = file lines minus header). New `--parseOnly true` reads, name-resolves and counts but builds no SJE pairs, sorts nothing and writes nothing. `ApaTtlSpec` test 9 puts `FY 2003` (1 row) and `FY 2013` (3 rows) side by side and requests `--year 03`. `testOnly *ApaTtlSpec`: 9 of 9 pass.
+
+**Parse-only result, all 14 fiscal years, expenditure and revenue (`parse_only_all_years.log`):** exit 0, 28 `RESULT` lines, no `ERROR`/`Exception`, and every source file satisfies `source + unresolved_ref + blank = data_lines` (0 mismatches in the files counted at the last check, 202 of 202). The reference tables were not passed to this direct sbt call, so its `unresolved_ref` counts only malformed rows and not name misses.
+
+| FY | Expenditure `records_read` | Revenue `records_read` |
+|---|---:|---:|
+| 03 | 5,758,480 | 6,639,200 |
+| 04 | 5,542,907 | 6,405,497 |
+| 05 | 4,653,747 | 5,575,828 |
+| 06 | 5,748,555 | 6,682,575 |
+| 07 | 6,541,410 | 7,803,041 |
+| 08 | 7,712,016 | 9,129,392 |
+| 09 | 6,859,730 | 8,280,556 |
+| 10 | 7,164,210 | 8,633,581 |
+| 11 | 7,611,999 | 9,022,450 |
+| 12 | 8,023,386 | 9,392,577 |
+| 13 | 8,006,618 | 9,300,121 |
+| 14 | 8,098,574 | 9,789,221 |
+| 15 | 7,624,413 | 8,995,888 |
+| 16 | 7,119,397 | 8,514,889 |
+
+**Prior inference confirmed.** The earlier 2026-11-10 "FY2003" verification run read 8,006,618 `ttl` source rows. That equals the corrected FY2013 expenditure count above exactly. So that run read FY2013, not FY2003. Its zero balance and `LDGR2003.csv` remain `unknown` for FY2003 and must not be used as a baseline.
+
+**FY2003 `ttl` through `run_pipeline.sh` (fixed parser, reference tables loaded):** `records_read=5,758,480`, `records_written=11,516,960` (exactly 2x), 58,579 unresolved reference lookups, all 12 months reconcile. `5,758,480` equals the locked 2026-11-06 FY2003 count, so those figures are now corroborated for the folder they read. State: `partially_verified` (parse and row accounting only; not sort order, SJE balance or posting).
+
+**Partial prep run (`ttl,2p,2m`, monthly, four concurrent year-lanes, not a measured run):**
+
+| FY | `ttl` `records_read` | `ttl` elapsed_s | Committed | Evidence |
+|---|---:|---:|---|---|
+| 03 | 5,758,480 | 1,228 | yes | complete |
+| 04 | 5,542,907 | 2,214 | yes | incomplete: evidence script killed |
+| 05 | 4,653,747 | 2,046 | yes | complete |
+| 06 | 5,748,555 | 2,260 | yes | incomplete: evidence script killed |
+| 07-16 | | | no | FY07 and FY08 were stopped mid-`ttl` and deleted |
+
+The `ttl` `records_read` for FY2003-FY2006 equals the parse-only count for the same year. The 2p and 2m outputs are present for the committed years; their row counts were not otherwise cross-checked. FY2009 `2p` against the empty PO file has not been reached.
+
+**Throughput finding, with the cause not yet confirmed.** FY2003 `ttl` took 1,228 s today against 251 s in the 2026-11-09 run and 145-218 s in earlier handoff notes. `/usr/bin/time -l` shows user 835 s + sys 106 s, 747.6 billion cycles and 858.8 billion instructions: an average clock of about 0.79 GHz on a 3.1 GHz i7-5557U, and about 1.15 instructions per cycle. `pmset -g therm` reports `CPU_Speed_Limit = 23`. The battery reports `MaxCapacity 424` against `DesignCapacity 6559`, `CurrentCapacity 0`, 402 cycles, condition "Service Recommended", "AC attached; not charging". The owner reports the same battery was present for the earlier FY2003 runs. All elapsed times from this host on 2026-11-10 are therefore **not comparable** with earlier cost points, and four overlapping lanes are not comparable with any serial run. A 1 GiB `dd` write measured 62 MB/s while three pipelines ran; this was not a clean disk benchmark and the read half did not complete.
+
+**Orchestration observations.** The post-step row counts in `run_pipeline.sh` and the per-year sums in `write_canonical_evidence.sh` are serial `awk` passes over multi-GB files. FY2004's evidence step was still running 47 minutes after its `2m` step finished. Not changed.
+
+**Action taken:** the run was stopped on purpose for a hardware check; the queue driver was killed, partial FY07/FY08 output and symlinks were removed. No other output was deleted.
+
+**State:** folder match `partially_verified` (fixed, tested, proven on the real corpus by row accounting). FY2004-FY2016 sort, balance and posting `unknown`.

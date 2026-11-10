@@ -183,6 +183,43 @@ Owner asked why Berka had no tuning and did not follow the AIM outline, and whet
 5. Decide whether `docs/PAPER_2_TRACK_C_INSERTION_DRAFT.md` is rewritten around the corrected test or held back; it must not go into the monograph as written.
 6. Pull `members` (12 commits behind) before touching the monograph.
 
+
+---
+## 2026-11-10 (latest, evening) Folder bug fixed and proven; partial FY2003-FY2006 prep run; paused for a hardware check (Bob, Mac)
+
+**Uncommitted:** `standardizeAndSort.scala` and `ApaTtlSpec.scala` (details and evidence in `VERIFICATION_AUDIT_REGISTER.md`, "2026-11-10 `ttl` folder-match fix"). `testOnly *ApaTtlSpec`: 9 of 9 pass.
+
+- **Fixed:** the folder match uses the 4-digit year; the chosen folder is logged; each file prints `data_lines/source/unresolved_ref/blank`; `--parseOnly true` counts without sorting or writing.
+- **Proven on the real corpus:** parse-only over FY2003-FY2016, expenditure and revenue: 336 of 336 files reconcile, 115,339,659 data lines, 0 mismatches. FY2003 expenditure `ttl` through `run_pipeline.sh` read 5,758,480 rows, equal to the locked 2026-11-06 count.
+- **Confirmed:** the earlier "FY2003" run read FY2013 (8,006,618 rows = the FY2013 count). Its zero balance is not an FY2003 result.
+- **Prep run state (`ttl,2p,2m`, monthly, not measured):** `output_full/FY03`-`FY06` are committed. FY03 and FY05 have complete evidence; **FY04 and FY06 evidence scripts were killed** and their `metrics` files are incomplete (rerun those years or the evidence step). FY07-FY16 not started. FY07/FY08 partial output was deleted.
+- **Not yet run:** `2p` on FY2009 (empty PO file), step `3`, `5v`, `20`, `21`. The two `5v`/step-3 read defects below are still open.
+- **Throughput:** this host ran FY2003 `ttl` in 1,228 s against 251 s on 2026-11-09. Average clock was about 0.79 GHz and `pmset` reports `CPU_Speed_Limit = 23`; the battery reports 424 of 6,559 mAh design capacity and "Service Recommended". The owner says the battery was the same in the earlier fast runs, so the cause is **not established**. Do not compare 2026-11-10 `elapsed_s` with earlier cost points; four overlapping lanes are not comparable with serial runs either.
+- **Orchestration cost:** `run_pipeline.sh` row counts and `write_canonical_evidence.sh` sums are serial `awk` passes over multi-GB files (FY2004 evidence ran 47+ minutes after `2m`).
+
+### Restart (after the reboot)
+1. `pmset -g therm | grep Speed_Limit`. If it still says 23, the cause is not fixed; decide whether to proceed.
+2. Check `pgrep -fl "run_pipeline|sbt|java"` is empty and `ls ~/workspace/va_fresh_root/output_full` shows only FY03-FY06 (+ `.generations`).
+3. Rerun FY04 and FY06 evidence (or the years), then FY07-FY16 with `ttl,2p,2m`. The queue script is `~/workspace/va_fresh_logs/launch_full_prep_x4.sh <pid>` (its first slot waits on a running FY03 pipeline pid; pass a dead pid and FY03 exits 255 unless `output_full/FY03` is committed, which it is). Drop `03` from its year list before reuse. `touch ~/workspace/va_fresh_logs/STOP_QUEUE` stops new years from starting.
+4. Then `3`, after the 2x-read and `5v` overwrite fixes.
+
+### Earlier today: full-corpus run stopped: `ttl` parses the wrong fiscal year (superseded by the section above)
+
+**Nothing is committed from this session except docs; no Scala was changed.** Working checklist: [docs/FULL_CORPUS_RUN_CHECKLIST.md](docs/FULL_CORPUS_RUN_CHECKLIST.md). Register entry: `VERIFICATION_AUDIT_REGISTER.md` "Correction 2026-11-10".
+
+- **Download is done and passes** (383 verified, 2 placeholders, 0 failed; rerun is a no-op). Root `~/workspace/va_fresh_root`. An empty `VAPOData/VA_opendata_FY2009.txt` was created locally (not in Zenodo or the catalog) so step `2p` reaches end of file for FY2009.
+- **Bug (contradicted for `--year 04`):** `discoverApaFiles` picks the folder with `name.contains(yearInt.toString)` = the digit `4`, so `--year 04` can read `All Expenditures for Fiscal Year 2014` instead of `FY 2004 Expenditure`. The `ttl` sweep's "FY2004" month counts equalled the FY2014 files exactly (Jul 650,500; Aug 664,526 data rows). `--year 03` is probably affected the same way (FY2013), which would make the 2026-11-10 "FY2003" run and its zero balance not an FY2003 result. That is inferred, not shown.
+- **Second bug (read, not run):** steps `3`, `5v`, `20`, `21` read both the source `SortedJEFY03*` files and `SortedJEFY03merged.csv`, a 2x read. Step 3 double-posting is not established.
+- **Third (read, not run):** `5v` rewrites its four view files on each call, so a multi-year run keeps only the last year.
+- The `ttl` sweep (FY2004-FY2016) was stopped after about 12 minutes and deleted. Killed or failed runs still commit a partial generation and symlink; remove them by hand before relaunching.
+- The 2026-11-10 FY2003 run and the zero balance are `unknown`, not `verified`. The locked 2026-11-06 CCP figures are unchanged but their folder is also unproven (mild evidence in their favour: 5,758,480 rows against the FY2003 folder's 5,817,081).
+
+### Next session
+1. Parse-first plan: make `ttl` provable on its own. Fix the folder match to the 4-digit year; log the chosen folder per month; reconcile each month (`source + unresolved_ref + blank rows` = file lines - header); add a test with `FY 2003` and `FY 2013` together; check step `2p` and the revenue path for the same pattern. A parse-only mode (no sort chunks) was discussed; `dryRun` exists but still builds and sorts chunks and only skips the final merge.
+2. Then rerun `ttl` for FY2003 and compare with the locked 5,758,480.
+3. Only after all years reconcile, run `2p`, `2m`, `3`; fix the 2x read and the `5v` overwrite before `5v`.
+4. Declare the workload (AGENTIC_ARCHITECTURE_GATES.md section 1) before editing Scala.
+
 ---
 ## 2026-11-09 Zenodo corpus fixed and published; canonical download script; AIM data-scarcity assessment (Bob, Mac)
 
