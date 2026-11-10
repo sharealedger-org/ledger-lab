@@ -1,146 +1,760 @@
 {
-  "experiment": "Paper 2 - Track C Retail Banking Benchmark (Berka PKDD'99)",
-  "timestamp": "2026-11-09T22:54:07",
+  "experiment": "Paper 2 - Track C Retail Banking Benchmark (Berka PKDD'99), v2 protocol",
+  "protocol": {
+    "learner": "L2 logistic regression (IRLS), unweighted, sign-log features",
+    "primary_lambda": 10.0,
+    "sensitivity_lambdas": [
+      1.0,
+      100.0
+    ],
+    "folds": "stratified 5-fold x 20 repeats, shared by B and E",
+    "interval": "2000 stratified paired bootstrap resamples of loans over averaged out-of-fold scores",
+    "neighbours_k": 5
+  },
+  "columns": {
+    "b": [
+      "loan_amount",
+      "duration",
+      "payments",
+      "history_days",
+      "bal_mean",
+      "bal_min",
+      "bal_max",
+      "bal_std",
+      "bal_last",
+      "bal_last30_mean",
+      "days_negative",
+      "days_below_5000",
+      "credit_per30",
+      "debit_per30",
+      "changed_days_per30"
+    ],
+    "e_extra": [
+      "txn_per30",
+      "multi_txn_day_share",
+      "max_rows_per_day",
+      "avg_gap_days",
+      "cash_wd_per30",
+      "card_wd_per30",
+      "deposit_per30",
+      "xfer_out_per30",
+      "xfer_in_per30",
+      "cash_wd_amt_per30",
+      "card_wd_amt_per30",
+      "deposit_amt_per30",
+      "cash_drain_ratio",
+      "sipo_per30",
+      "sluzby_per30",
+      "pojistne_per30",
+      "duchod_per30",
+      "sanction_per30",
+      "distinct_partner_accounts",
+      "distinct_partner_banks",
+      "partner_txn_per30",
+      "partner_txn_share"
+    ]
+  },
   "corpus_scale": {
-    "loans_count": 682,
-    "defaults_count": 76,
+    "loans": 682,
+    "defaults": 76,
     "default_ratio": 0.11143695014662756
   },
-  "metrics": {
-    "layer_2_balances": {
-      "roc_auc": 0.8471426089977419,
-      "pr_auc": 0.5919081748753393,
-      "brier_score": 0.13806885552811296,
-      "log_loss": 0.42788248893944897
+  "base_rate_reference": {
+    "brier": 0.0990187562886456,
+    "log_loss": 0.349509122037354
+  },
+  "all_loans": {
+    "loans": 682,
+    "defaults": 76,
+    "loan_terms_only": {
+      "roc_auc_avg_oof": 0.6533350703491402,
+      "roc_auc_per_repeat_mean": 0.6525365858954317,
+      "roc_auc_per_repeat_sd": 0.004822887781840622,
+      "pr_auc_avg_oof": 0.20189051753139212,
+      "pr_auc_per_repeat_mean": 0.2012119150077106,
+      "brier": 0.09595657563330501,
+      "log_loss": 0.33406274565606703,
+      "auc_ci95": [
+        0.5874364903595622,
+        0.7191804542296334
+      ]
     },
-    "layer_3_events": {
-      "roc_auc": 0.8487927740142436,
-      "pr_auc": 0.6021149123569981,
-      "brier_score": 0.1290202465936802,
-      "log_loss": 0.4103335191610949
+    "B_daily_balance": {
+      "roc_auc_avg_oof": 0.8636659718603439,
+      "roc_auc_per_repeat_mean": 0.8600432082681951,
+      "roc_auc_per_repeat_sd": 0.0074789159613728165,
+      "pr_auc_avg_oof": 0.6552770714509458,
+      "pr_auc_per_repeat_mean": 0.6504629018740828,
+      "brier": 0.05904459587862676,
+      "log_loss": 0.21767269027020095,
+      "auc_ci95": [
+        0.812131969775925,
+        0.9106397646343581
+      ]
     },
-    "deltas": {
-      "pr_auc_gain": 0.01020673748165879,
-      "roc_auc_gain": 0.0016501650165017256,
-      "brier_improvement": 0.009048608934432767
+    "E_events": {
+      "roc_auc_avg_oof": 0.8976897689768977,
+      "roc_auc_per_repeat_mean": 0.8919880145909327,
+      "roc_auc_per_repeat_sd": 0.011092866670975386,
+      "pr_auc_avg_oof": 0.7239719216506567,
+      "pr_auc_per_repeat_mean": 0.7125494841294933,
+      "brier": 0.054048263308105554,
+      "log_loss": 0.1981113113166073,
+      "auc_ci95": [
+        0.856974118464478,
+        0.9368383055410805
+      ]
+    },
+    "overdraft_rule": {
+      "roc_auc": 0.6710526315789473,
+      "flagged_defaults": 26,
+      "flagged_non_defaults": 0
+    },
+    "E_minus_B": {
+      "roc_auc_gain": 0.03402379711655379,
+      "roc_auc_gain_ci95": [
+        0.005340780788605143,
+        0.06353732412714955
+      ],
+      "pr_auc_gain": 0.06869485019971089,
+      "pr_auc_gain_ci95": [
+        0.02029509377203575,
+        0.12181793236164974
+      ],
+      "share_of_resamples_E_better_roc": 0.9935
+    },
+    "B_minus_loan_terms": {
+      "roc_auc_gain": 0.2103309015112037,
+      "roc_auc_gain_ci95": [
+        0.14047355393434083,
+        0.2834228982108737
+      ]
+    },
+    "post_hoc_ablation": {
+      "E_without_counterparty": {
+        "roc_auc": 0.8873110995310057,
+        "gain_over_B": 0.023645127670661847,
+        "gain_over_B_ci95": [
+          -0.0035842235539343234,
+          0.05074528834462397
+        ]
+      },
+      "B_plus_counterparty_only": {
+        "roc_auc": 0.8918056279312142,
+        "gain_over_B": 0.028139656070870323,
+        "gain_over_B_ci95": [
+          0.007164104568351534,
+          0.05264080684384228
+        ]
+      },
+      "E_without_penalty_interest": {
+        "roc_auc": 0.8987102657634184,
+        "gain_over_B": 0.03504429390307451,
+        "gain_over_B_ci95": [
+          0.005904768108389852,
+          0.06487862602049682
+        ]
+      },
+      "B_plus_penalty_interest_only": {
+        "roc_auc": 0.8642956400903248,
+        "gain_over_B": 0.0006296682299808953,
+        "gain_over_B_ci95": [
+          -0.0029095014764634053,
+          0.00393162671530314
+        ]
+      }
+    },
+    "post_hoc_events_only": {
+      "roc_auc": 0.8638179607434427,
+      "B_minus_events_only": -0.0001519888830988636,
+      "B_minus_events_only_ci95": [
+        -0.04745472902553414,
+        0.048143021538995995
+      ],
+      "E_minus_events_only": 0.033871808233454925,
+      "E_minus_events_only_ci95": [
+        0.00738177436164669,
+        0.06309818481848178
+      ],
+      "columns": [
+        "loan_amount",
+        "duration",
+        "payments",
+        "history_days",
+        "txn_per30",
+        "multi_txn_day_share",
+        "max_rows_per_day",
+        "avg_gap_days",
+        "cash_wd_per30",
+        "card_wd_per30",
+        "deposit_per30",
+        "xfer_out_per30",
+        "xfer_in_per30",
+        "cash_wd_amt_per30",
+        "card_wd_amt_per30",
+        "deposit_amt_per30",
+        "cash_drain_ratio",
+        "sipo_per30",
+        "sluzby_per30",
+        "pojistne_per30",
+        "duchod_per30",
+        "sanction_per30",
+        "distinct_partner_accounts",
+        "distinct_partner_banks",
+        "partner_txn_per30",
+        "partner_txn_share"
+      ]
+    },
+    "penalty_sensitivity": {
+      "1.0": {
+        "B": 0.8695066875108564,
+        "E": 0.9063748480111169,
+        "E_minus_B": 0.03686816050026054
+      },
+      "100.0": {
+        "B": 0.8443633837067918,
+        "E": 0.8643607781830814,
+        "E_minus_B": 0.019997394476289676
+      }
+    },
+    "event_only_single_feature_auc": {
+      "txn_per30": {
+        "auc_dir": 0.5377692374500608,
+        "higher_ranks_default": false,
+        "ci95": [
+          0.4626500890220602,
+          0.612562966822998
+        ]
+      },
+      "multi_txn_day_share": {
+        "auc_dir": 0.5033003300330033,
+        "higher_ranks_default": true,
+        "ci95": [
+          0.43054596578078863,
+          0.5759678434948757
+        ]
+      },
+      "max_rows_per_day": {
+        "auc_dir": 0.5835938857043599,
+        "higher_ranks_default": true,
+        "ci95": [
+          0.5089635443807539,
+          0.6584494962654159
+        ]
+      },
+      "avg_gap_days": {
+        "auc_dir": 0.5353482716692722,
+        "higher_ranks_default": true,
+        "ci95": [
+          0.46047501954142783,
+          0.6114035087719297
+        ]
+      },
+      "cash_wd_per30": {
+        "auc_dir": 0.507110908459267,
+        "higher_ranks_default": false,
+        "ci95": [
+          0.4305774491922877,
+          0.5804300742574258
+        ]
+      },
+      "card_wd_per30": {
+        "auc_dir": 0.5198019801980198,
+        "higher_ranks_default": false,
+        "ci95": [
+          0.5123762376237624,
+          0.528052805280528
+        ]
+      },
+      "deposit_per30": {
+        "auc_dir": 0.5565507208615599,
+        "higher_ranks_default": true,
+        "ci95": [
+          0.4922048701580684,
+          0.6210059492791383
+        ]
+      },
+      "xfer_out_per30": {
+        "auc_dir": 0.682071825603613,
+        "higher_ranks_default": false,
+        "ci95": [
+          0.6150325147646343,
+          0.7408567830467258
+        ]
+      },
+      "xfer_in_per30": {
+        "auc_dir": 0.5780354351224597,
+        "higher_ranks_default": false,
+        "ci95": [
+          0.5299947346708356,
+          0.622298669011638
+        ]
+      },
+      "cash_wd_amt_per30": {
+        "auc_dir": 0.5239273927392739,
+        "higher_ranks_default": true,
+        "ci95": [
+          0.45385780354351224,
+          0.5965710222338022
+        ]
+      },
+      "card_wd_amt_per30": {
+        "auc_dir": 0.5198019801980198,
+        "higher_ranks_default": false,
+        "ci95": [
+          0.5123762376237624,
+          0.528052805280528
+        ]
+      },
+      "deposit_amt_per30": {
+        "auc_dir": 0.5914647385791211,
+        "higher_ranks_default": true,
+        "ci95": [
+          0.5246531396560709,
+          0.6515671139482369
+        ]
+      },
+      "cash_drain_ratio": {
+        "auc_dir": 0.663192635052979,
+        "higher_ranks_default": true,
+        "ci95": [
+          0.58769541427827,
+          0.7387370809449365
+        ]
+      },
+      "sipo_per30": {
+        "auc_dir": 0.6176611082160848,
+        "higher_ranks_default": false,
+        "ci95": [
+          0.5538211633663366,
+          0.6823027944241793
+        ]
+      },
+      "sluzby_per30": {
+        "auc_dir": 0.5499392044467605,
+        "higher_ranks_default": false,
+        "ci95": [
+          0.47652097446586783,
+          0.62038768021539
+        ]
+      },
+      "pojistne_per30": {
+        "auc_dir": 0.5306800416883793,
+        "higher_ranks_default": false,
+        "ci95": [
+          0.49247926437380585,
+          0.5647057386659718
+        ]
+      },
+      "duchod_per30": {
+        "auc_dir": 0.5,
+        "higher_ranks_default": true,
+        "ci95": [
+          0.5,
+          0.5
+        ]
+      },
+      "sanction_per30": {
+        "auc_dir": 0.6681431301024839,
+        "higher_ranks_default": true,
+        "ci95": [
+          0.6159224639569221,
+          0.7256573519194024
+        ]
+      },
+      "distinct_partner_accounts": {
+        "auc_dir": 0.7020692200799028,
+        "higher_ranks_default": false,
+        "ci95": [
+          0.6344634792426611,
+          0.7613478699843669
+        ]
+      },
+      "distinct_partner_banks": {
+        "auc_dir": 0.6968038909154073,
+        "higher_ranks_default": false,
+        "ci95": [
+          0.6292214912280704,
+          0.7579826732673267
+        ]
+      },
+      "partner_txn_per30": {
+        "auc_dir": 0.6578187424005558,
+        "higher_ranks_default": false,
+        "ci95": [
+          0.589804802848706,
+          0.7238272429216606
+        ]
+      },
+      "partner_txn_share": {
+        "auc_dir": 0.6819089803717213,
+        "higher_ranks_default": false,
+        "ci95": [
+          0.6176060122459615,
+          0.7445254147125239
+        ]
+      }
     }
   },
-  "non_injectivity_analysis": {
-    "ambiguous_pairs_count": 29,
-    "avg_separation_layer_2": 0.04798219434670072,
-    "avg_separation_layer_3": 0.04639029874817658,
-    "separation_gain": -0.0015918955985241429,
-    "top_pairs_sample": [
-      {
-        "loan_default": 6169,
-        "account_default": 5700,
-        "loan_good": 5110,
-        "account_good": 675,
-        "balance_dist": 0.8126599485566205,
-        "pred_b_default": 0.15481292691909804,
-        "pred_b_good": 0.07162228389990788,
-        "pred_e_default": 0.1145378175020746,
-        "pred_e_good": 0.018096398363079448
+  "overdraft_free_loans": {
+    "loans": 656,
+    "defaults": 50,
+    "loan_terms_only": {
+      "roc_auc_avg_oof": 0.6334323432343234,
+      "roc_auc_per_repeat_mean": 0.6311485148514852,
+      "roc_auc_per_repeat_sd": 0.011200974310063009,
+      "pr_auc_avg_oof": 0.14514798276232654,
+      "pr_auc_per_repeat_mean": 0.14376309297354922,
+      "brier": 0.06922297474333762,
+      "log_loss": 0.2615568464727176,
+      "auc_ci95": [
+        0.5467615511551155,
+        0.7213275577557755
+      ]
+    },
+    "B_daily_balance": {
+      "roc_auc_avg_oof": 0.7896039603960396,
+      "roc_auc_per_repeat_mean": 0.7862244224422441,
+      "roc_auc_per_repeat_sd": 0.009348871972317591,
+      "pr_auc_avg_oof": 0.36507348167890996,
+      "pr_auc_per_repeat_mean": 0.3594581649610484,
+      "brier": 0.059137608683676936,
+      "log_loss": 0.21928721943930193,
+      "auc_ci95": [
+        0.7157722772277227,
+        0.8595808580858085
+      ]
+    },
+    "E_events": {
+      "roc_auc_avg_oof": 0.8365346534653465,
+      "roc_auc_per_repeat_mean": 0.8317656765676567,
+      "roc_auc_per_repeat_sd": 0.012272961487070211,
+      "pr_auc_avg_oof": 0.4502302363794528,
+      "pr_auc_per_repeat_mean": 0.44803053979160257,
+      "brier": 0.054377234812281995,
+      "log_loss": 0.2005650456882391,
+      "auc_ci95": [
+        0.7738861386138614,
+        0.893246699669967
+      ]
+    },
+    "overdraft_rule": {
+      "roc_auc": 0.5,
+      "flagged_defaults": 0,
+      "flagged_non_defaults": 0
+    },
+    "E_minus_B": {
+      "roc_auc_gain": 0.04693069306930686,
+      "roc_auc_gain_ci95": [
+        0.0036947194719472334,
+        0.0873622112211221
+      ],
+      "pr_auc_gain": 0.08515675470054285,
+      "pr_auc_gain_ci95": [
+        0.002443844374612652,
+        0.1788413888529224
+      ],
+      "share_of_resamples_E_better_roc": 0.982
+    },
+    "B_minus_loan_terms": {
+      "roc_auc_gain": 0.15617161716171624,
+      "roc_auc_gain_ci95": [
+        0.059334983498349814,
+        0.2575750825082508
+      ]
+    },
+    "post_hoc_ablation": {
+      "E_without_counterparty": {
+        "roc_auc": 0.8235313531353136,
+        "gain_over_B": 0.03392739273927392,
+        "gain_over_B_ci95": [
+          -0.004161716171617166,
+          0.07019801980198015
+        ]
       },
-      {
-        "loan_default": 6169,
-        "account_default": 5700,
-        "loan_good": 6474,
-        "account_good": 7190,
-        "balance_dist": 0.8522683960346046,
-        "pred_b_default": 0.15481292691909804,
-        "pred_b_good": 0.08069823135477563,
-        "pred_e_default": 0.1145378175020746,
-        "pred_e_good": 0.026874249216648268
+      "B_plus_counterparty_only": {
+        "roc_auc": 0.8317491749174918,
+        "gain_over_B": 0.042145214521452146,
+        "gain_over_B_ci95": [
+          0.011844884488448821,
+          0.07260808580858095
+        ]
       },
-      {
-        "loan_default": 6437,
-        "account_default": 7052,
-        "loan_good": 6354,
-        "account_good": 6688,
-        "balance_dist": 0.8898531254515477,
-        "pred_b_default": 0.7323453354726699,
-        "pred_b_good": 0.6230987171568365,
-        "pred_e_default": 0.28996814649578523,
-        "pred_e_good": 0.40490987818376234
+      "E_without_penalty_interest": {
+        "roc_auc": 0.8376897689768977,
+        "gain_over_B": 0.04808580858085809,
+        "gain_over_B_ci95": [
+          0.00494554455445545,
+          0.0887821782178217
+        ]
       },
-      {
-        "loan_default": 6303,
-        "account_default": 6400,
-        "loan_good": 6687,
-        "account_good": 8261,
-        "balance_dist": 0.9518880916583646,
-        "pred_b_default": 0.37618463283894255,
-        "pred_b_good": 0.5368178034374851,
-        "pred_e_default": 0.47237047519021647,
-        "pred_e_good": 0.3147251923834948
-      },
-      {
-        "loan_default": 6169,
-        "account_default": 5700,
-        "loan_good": 6726,
-        "account_good": 8492,
-        "balance_dist": 0.9802792528946973,
-        "pred_b_default": 0.15481292691909804,
-        "pred_b_good": 0.06296069553092576,
-        "pred_e_default": 0.1145378175020746,
-        "pred_e_good": 0.05243323734788956
-      },
-      {
-        "loan_default": 6210,
-        "account_default": 5927,
-        "loan_good": 6043,
-        "account_good": 5126,
-        "balance_dist": 1.0184922412436999,
-        "pred_b_default": 0.2812688231720246,
-        "pred_b_good": 0.28001583721260764,
-        "pred_e_default": 0.32631895165219,
-        "pred_e_good": 0.1866935764613505
-      },
-      {
-        "loan_default": 6501,
-        "account_default": 7418,
-        "loan_good": 5130,
-        "account_good": 813,
-        "balance_dist": 1.025520229148733,
-        "pred_b_default": 0.2058706535522959,
-        "pred_b_good": 0.15956428790869517,
-        "pred_e_default": 0.10669188922031142,
-        "pred_e_good": 0.2888604227306105
-      },
-      {
-        "loan_default": 6169,
-        "account_default": 5700,
-        "loan_good": 6605,
-        "account_good": 7890,
-        "balance_dist": 1.0301887510991565,
-        "pred_b_default": 0.15481292691909804,
-        "pred_b_good": 0.16556172756145715,
-        "pred_e_default": 0.1145378175020746,
-        "pred_e_good": 0.04427543713737083
-      },
-      {
-        "loan_default": 6437,
-        "account_default": 7052,
-        "loan_good": 6242,
-        "account_good": 6097,
-        "balance_dist": 1.0304547346631636,
-        "pred_b_default": 0.7323453354726699,
-        "pred_b_good": 0.4982725675664842,
-        "pred_e_default": 0.28996814649578523,
-        "pred_e_good": 0.319159910478119
-      },
-      {
-        "loan_default": 6027,
-        "account_default": 5066,
-        "loan_good": 5389,
-        "account_good": 2165,
-        "balance_dist": 1.037715311977566,
-        "pred_b_default": 0.5999216591040006,
-        "pred_b_good": 0.4555571136860948,
-        "pred_e_default": 0.6221113035364749,
-        "pred_e_good": 0.21287154929211985
+      "B_plus_penalty_interest_only": {
+        "roc_auc": 0.7881518151815181,
+        "gain_over_B": -0.0014521452145215274,
+        "gain_over_B_ci95": [
+          -0.005380363036303673,
+          0.0018490099009901683
+        ]
       }
-    ]
+    },
+    "post_hoc_events_only": {
+      "roc_auc": 0.8048844884488449,
+      "B_minus_events_only": -0.01528052805280522,
+      "B_minus_events_only_ci95": [
+        -0.08935808580858083,
+        0.06635891089108904
+      ],
+      "E_minus_events_only": 0.03165016501650164,
+      "E_minus_events_only_ci95": [
+        -0.011325082508250872,
+        0.07706435643564355
+      ],
+      "columns": [
+        "loan_amount",
+        "duration",
+        "payments",
+        "history_days",
+        "txn_per30",
+        "multi_txn_day_share",
+        "max_rows_per_day",
+        "avg_gap_days",
+        "cash_wd_per30",
+        "card_wd_per30",
+        "deposit_per30",
+        "xfer_out_per30",
+        "xfer_in_per30",
+        "cash_wd_amt_per30",
+        "card_wd_amt_per30",
+        "deposit_amt_per30",
+        "cash_drain_ratio",
+        "sipo_per30",
+        "sluzby_per30",
+        "pojistne_per30",
+        "duchod_per30",
+        "sanction_per30",
+        "distinct_partner_accounts",
+        "distinct_partner_banks",
+        "partner_txn_per30",
+        "partner_txn_share"
+      ]
+    },
+    "penalty_sensitivity": {
+      "1.0": {
+        "B": 0.7906930693069307,
+        "E": 0.8518811881188119,
+        "E_minus_B": 0.06118811881188113
+      },
+      "100.0": {
+        "B": 0.775940594059406,
+        "E": 0.7987788778877888,
+        "E_minus_B": 0.02283828382838282
+      }
+    },
+    "event_only_single_feature_auc": {
+      "txn_per30": {
+        "auc_dir": 0.6015016501650166,
+        "higher_ranks_default": false,
+        "ci95": [
+          0.5022252475247528,
+          0.6965202145214522
+        ]
+      },
+      "multi_txn_day_share": {
+        "auc_dir": 0.5722772277227723,
+        "higher_ranks_default": false,
+        "ci95": [
+          0.48116460396039606,
+          0.6630565181518152
+        ]
+      },
+      "max_rows_per_day": {
+        "auc_dir": 0.512112211221122,
+        "higher_ranks_default": false,
+        "ci95": [
+          0.4193436468646866,
+          0.6048688118811881
+        ]
+      },
+      "avg_gap_days": {
+        "auc_dir": 0.6003135313531354,
+        "higher_ranks_default": true,
+        "ci95": [
+          0.5000763201320132,
+          0.6949290429042901
+        ]
+      },
+      "cash_wd_per30": {
+        "auc_dir": 0.5772442244224423,
+        "higher_ranks_default": false,
+        "ci95": [
+          0.4808580858085808,
+          0.6724608085808581
+        ]
+      },
+      "card_wd_per30": {
+        "auc_dir": 0.5198019801980198,
+        "higher_ranks_default": false,
+        "ci95": [
+          0.5123762376237624,
+          0.528052805280528
+        ]
+      },
+      "deposit_per30": {
+        "auc_dir": 0.5325907590759076,
+        "higher_ranks_default": true,
+        "ci95": [
+          0.4581959570957096,
+          0.6136757425742574
+        ]
+      },
+      "xfer_out_per30": {
+        "auc_dir": 0.7176402640264026,
+        "higher_ranks_default": false,
+        "ci95": [
+          0.6424690594059406,
+          0.7809789603960396
+        ]
+      },
+      "xfer_in_per30": {
+        "auc_dir": 0.5516171617161716,
+        "higher_ranks_default": false,
+        "ci95": [
+          0.4882479372937294,
+          0.6106295379537954
+        ]
+      },
+      "cash_wd_amt_per30": {
+        "auc_dir": 0.5172277227722772,
+        "higher_ranks_default": false,
+        "ci95": [
+          0.4273655115511553,
+          0.6116881188118812
+        ]
+      },
+      "card_wd_amt_per30": {
+        "auc_dir": 0.5198019801980198,
+        "higher_ranks_default": false,
+        "ci95": [
+          0.5123762376237624,
+          0.528052805280528
+        ]
+      },
+      "deposit_amt_per30": {
+        "auc_dir": 0.5595544554455446,
+        "higher_ranks_default": true,
+        "ci95": [
+          0.4802326732673267,
+          0.6386518151815181
+        ]
+      },
+      "cash_drain_ratio": {
+        "auc_dir": 0.5974257425742574,
+        "higher_ranks_default": true,
+        "ci95": [
+          0.49821369636963697,
+          0.6901988448844883
+        ]
+      },
+      "sipo_per30": {
+        "auc_dir": 0.622013201320132,
+        "higher_ranks_default": false,
+        "ci95": [
+          0.5467648514851485,
+          0.6945569306930692
+        ]
+      },
+      "sluzby_per30": {
+        "auc_dir": 0.6484983498349834,
+        "higher_ranks_default": false,
+        "ci95": [
+          0.5625742574257426,
+          0.7293547854785478
+        ]
+      },
+      "pojistne_per30": {
+        "auc_dir": 0.5636633663366337,
+        "higher_ranks_default": false,
+        "ci95": [
+          0.5286278877887789,
+          0.5899339933993399
+        ]
+      },
+      "duchod_per30": {
+        "auc_dir": 0.5,
+        "higher_ranks_default": true,
+        "ci95": [
+          0.5,
+          0.5
+        ]
+      },
+      "sanction_per30": {
+        "auc_dir": 0.5174917491749175,
+        "higher_ranks_default": true,
+        "ci95": [
+          0.4966996699669967,
+          0.5485292904290429
+        ]
+      },
+      "distinct_partner_accounts": {
+        "auc_dir": 0.7416171617161715,
+        "higher_ranks_default": false,
+        "ci95": [
+          0.6702924917491749,
+          0.8086749174917491
+        ]
+      },
+      "distinct_partner_banks": {
+        "auc_dir": 0.7207095709570956,
+        "higher_ranks_default": false,
+        "ci95": [
+          0.6473407590759077,
+          0.7860602310231023
+        ]
+      },
+      "partner_txn_per30": {
+        "auc_dir": 0.678118811881188,
+        "higher_ranks_default": false,
+        "ci95": [
+          0.597786303630363,
+          0.7535387788778878
+        ]
+      },
+      "partner_txn_share": {
+        "auc_dir": 0.6996369636963696,
+        "higher_ranks_default": false,
+        "ci95": [
+          0.6236571782178217,
+          0.7704550330033003
+        ]
+      }
+    }
+  },
+  "non_injectivity": {
+    "all_loans": {
+      "defaults": 76,
+      "mean_neighbour_distance": 2.6177318475858358,
+      "mean_score_gap_B": 0.3085771857124891,
+      "mean_score_gap_E": 0.3518791511643099,
+      "gap_gain_E_minus_B": 0.04330196545182076,
+      "gap_gain_ci95": [
+        0.016224079600616222,
+        0.07006181866488165
+      ],
+      "mean_win_rate_B": 0.7947368421052632,
+      "mean_win_rate_E": 0.844736842105263
+    },
+    "overdraft_free_loans": {
+      "defaults": 50,
+      "mean_neighbour_distance": 0.6261230512231799,
+      "mean_score_gap_B": 0.08389751562994299,
+      "mean_score_gap_E": 0.15050000744272093,
+      "gap_gain_E_minus_B": 0.06660249181277794,
+      "gap_gain_ci95": [
+        0.034341518363354015,
+        0.10023321189520688
+      ],
+      "mean_win_rate_B": 0.6759999999999999,
+      "mean_win_rate_E": 0.7399999999999999
+    }
   }
 }

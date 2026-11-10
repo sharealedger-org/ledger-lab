@@ -1,6 +1,8 @@
 # Paper 2 Insertion Draft: Track C Retail Banking Benchmark (Berka PKDD'99)
 
-> **DO NOT INSERT INTO THE MONOGRAPH AS WRITTEN (2026-11-10).** An audit against the public data found that the claims below are not supported by the current Track C run. The numbers in this file do match `TRACK_C_BERKA_EVIDENCE.json` and reproduce exactly, but:
+> **SUPERSEDED (2026-11-10, later).** Track C was redesigned and re-run the same day: B is now a daily closing balance, E is the same transaction rows (a strict superset of B), with repeated CV, paired intervals and an overdraft-rule baseline. The numbers below belong to the withdrawn v1 run and no longer match `TRACK_C_BERKA_EVIDENCE.json`. Use `docs/TEST_DESIGN_TRACK_C_BERKA.md` §6-7 and the "Third pass" in `docs/VERIFICATION_AUDIT_REGISTER.md` as the basis for a rewrite. This file still must not go into the monograph.
+>
+> **DO NOT INSERT INTO THE MONOGRAPH AS WRITTEN (2026-11-10).** An audit against the public data found that the claims below are not supported by the v1 Track C run. The numbers in this file matched the v1 evidence and reproduced exactly, but:
 > - the balance side is **not** monthly closing balances: it is computed from per-transaction running balances (5.8 events per month-end closing), so there is no real compression;
 > - the event feature set is not a superset of the balance set;
 > - "zero look-ahead bias" is false for district demographics (1996 values joined to 1993-95 loans);

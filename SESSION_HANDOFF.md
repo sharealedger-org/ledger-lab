@@ -2,8 +2,28 @@
 
 Updated 2026-11-10. This file is a concise state snapshot; use the linked design contracts for details.
 
+## 2026-11-10 (latest, later) Track C redesigned and re-run: B = daily balance, E = same transaction rows (Bob, Mac)
+
+**Python for Track C is approved by the owner (scope Track C only).** Rewritten: `scripts/berka/build_berka_substrates.py`, `scripts/berka/fit_track_c_models.py`, `scripts/run_track_c_berka.sh`, `docs/TEST_DESIGN_TRACK_C_BERKA.md`. Evidence JSON regenerated (v2). The v1 results (earlier sections) are withdrawn. Nothing committed yet.
+
+- **Design:** one set of pre-loan transaction rows, two views. E = the rows. B = E rolled up to a daily closing balance per account (the grain a product system holds); the per-row balance in the file is a statement field, not posted state. E contains every B column by construction, plus 22 columns a daily balance cannot hold (operation, `k_symbol`, counterparty, intra-day multiplicity). No district demographics, no `order.asc.txt`.
+- **Intra-day order is recoverable from the balance chain** (99.67% of two-row days); `trans_id` and file order are not reliable. 42,671 pre-loan account-days: 32,590 single-row, 9,725 unique order, 355 no consistent order, 1 ambiguous.
+- **Result (one run, protocol fixed beforehand; shared 5-fold x 20 folds, paired bootstrap):** ROC-AUC B 0.864, E 0.898, E-B +0.034 [+0.005, +0.064] on 682 loans; B 0.790, E 0.837, +0.047 [+0.004, +0.087] on the 656 loans with no pre-loan overdraft. Loan terms only 0.653. Overdraft rule flags 26 of 76 defaults with no false positives. Test 2 redefined (5 nearest non-defaults per default, no cutoff): E-B score gap +0.043 [+0.016, +0.070].
+- **Source of the gain (post-hoc):** counterparty diversity (distinct partner accounts, fewer among defaults). Penalty interest adds nothing once the overdraft is in B. May proxy for account maturity or household type.
+- **Balances vs events (post-hoc arm, owner's question):** events alone (no balance columns) 0.864 vs daily balance alone 0.864 (difference -0.000 [-0.048, +0.048]); overdraft-free 0.805 vs 0.790. They are tied; balance plus events is best (+0.034 [+0.007, +0.063] over events only). Supported framing: keep the daily balance and retain the events. Not shown: that a balance-led store beats an event stream (event view is aggregates, not a sequence model).
+- **Caveats:** one corpus, 76 defaults, intervals reflect loan resampling for a fixed procedure, penalty grid of three values, gain is 2-6 AUC points depending on penalty. Exploratory evidence only.
+- `docs/PAPER_2_TRACK_C_INSERTION_DRAFT.md` is marked superseded and still must not go into the monograph; it needs a rewrite on the v2 results.
+- Registers: `VERIFICATION_AUDIT_REGISTER.md` "Third pass" (also corrects the earlier "intra-day order not recoverable" and "posted state" wording).
+- Reproduce: `BERKA_DATA_ROOT=<dir outside repo> bash scripts/run_track_c_berka.sh` (needs numpy).
+
+### Next
+1. Owner: commit this work; decide whether to rewrite the Paper 2 Track C text on the v2 results.
+2. Examine the 355 account-days with no consistent balance chain (`UROK` / `UVER` candidates).
+3. Optional: test whether counterparty diversity is independent of account age and household type (the main open threat).
+4. Still open: Berka terms of use; pull `members` (12 commits behind).
+
 ---
-## 2026-11-10 (latest) Track C (Berka) audited against the data; public download script (Bob, Mac)
+## 2026-11-10 (earlier) Track C (Berka) audited against the data; public download script (Bob, Mac)
 
 **Merged `origin/main` (head `acf0ee1`) first, fast-forward, then committed this session's work.** No Python was written or changed. **Owner approval of the existing `scripts/berka/` Python is recorded** (owner instruction, 2026-11-10; scope Track C only, no engine/cost-curve use).
 
