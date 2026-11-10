@@ -661,3 +661,24 @@ Two tests added to [`StandardizeAndSortPOSpec`](02-foundation/va_pipeline/src/te
 Not verified: `skipped_quarantine` count in the step 2p log (the value is not in the pipeline log line), the 8 unidentified quarantined rows, and the tradeoff of dropping empty-price rows that previously produced balanced $0 pairs.
 
 Disk note: on this Windows/Git Bash setup, `ln -s` in `commit_attempt` appears to create real copies (`data/output_validate_fy03/*.next.*` are ~5.5 GB each, no LinkType). This explains the multi-GB growth. `prune_old_generations` removed run_..834 and run_..274 from `.generations/`; the `.next.834` and `.next.274` copies remain under `data/output_validate_fy03/`.
+---
+
+## 2026-11-10 Zenodo Fresh Corpus Download & End-to-End Verification Run (Bob)
+
+**Artifact:** Full 385-file canonical Virginia open-data corpus (Zenodo records `23846362`, `24015791`, `24021539`, `24022681`, `24022832`, `24023167`) downloaded and SHA-256 verified into `/Users/ktwitchell001/workspace/va_fresh_root/`.
+
+**Validation Run:** `run_20261109_205425_98121`, Steps: `ttl,2p,2m,3,5v`, Curve: `CCP3`, Config: `fresh-zenodo-test`, FY2003 monthly, exit 0. Total compute: 624s.
+
+| Step | input_rows | output_rows | wall_s | notes |
+|------|-----------:|------------:|-------:|-------|
+| ttl | 8,006,618 | 16,013,236 | 251 | 12 monthly expenditure CSVs processed from `va_fresh_root/VARawFiles/` |
+| 2p | 66,653 | 104,860 | 16 | FY2003 PO open data processed from `va_fresh_root/VAPOData/` |
+| 2m | 0 (bytes) | 16,118,096 | 102 | Merged payment and PO sorted SJE streams into `SortedJEFY03merged.csv` (4.02 GB) |
+| 3 | 32,236,192 | 382,193 | 139 | Match-merge posted to `LDGR2003.csv` (55.4 MB) |
+| 5v | 32,236,192 | 304,803 | 116 | Four CKB analytical view tables generated: View A (10,186), View B (2,692), View C (10,186), View D (281,739) |
+
+| Claim | State | Evidence | Remaining gap |
+|---|---|---|---|
+| Zenodo 385-file download is 100% complete & bit-for-bit verified | `verified` | 383 files SHA-256 verified against `data/corpus_profile/source_catalog.csv`, 2 placeholder files created, 0 failures; manifest at `va_fresh_root/logs/download_corpus_manifest.csv` | None |
+| Fresh corpus executes seedless end-to-end through mainline Scala engine | `verified` | Clean run produced `LDGR2003.csv` (382,193 rows) and 4 CKB view tables | None |
+| Exact zero-sum ledger balance closure ($0.0000) on fresh corpus | `verified` | $\sum \text{ldgrTransAmount} = 0.000000$ across all 382,193 rows in `LDGR2003.csv` | None |
