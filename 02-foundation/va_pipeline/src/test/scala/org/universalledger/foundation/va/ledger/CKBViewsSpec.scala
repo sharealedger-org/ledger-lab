@@ -547,4 +547,66 @@ class CKBViewsSpec extends AnyFunSuite {
       assert(ex.getMessage.contains("key group reappears"), ex.getMessage)
     }
   }
+
+  // ── Test 16: GERS-003 bounded aggregation buffer overflow, spill & reduce ───
+  test("CKBViews: GERS-003 bounded View D buffer spills and reduces to exact in-memory result") {
+    withTempDirectory("ckbv-gers003-") { tempDir =>
+      val inDir   = Files.createDirectory(tempDir.resolve("in"))
+      val outSpill = Files.createDirectory(tempDir.resolve("outSpill"))
+      val outMem   = Files.createDirectory(tempDir.resolve("outMem"))
+
+      // 6 payment rows across 4 distinct keys, designed to trigger spills with buffer capacity = 2
+      val p1 = makeRow("v001", "0", "EXPENSE_PAYMENT", "AGY1", "OBJ1", "2003", "2003/09/01", "100.00", fundId = "F1")
+      val p2 = makeRow("v002", "0", "EXPENSE_PAYMENT", "AGY1", "OBJ2", "2003", "2003/09/01", "200.00", fundId = "F1")
+      val p3 = makeRow("v003", "0", "EXPENSE_PAYMENT", "AGY2", "OBJ1", "2003", "2003/09/01", "300.00", fundId = "F1")
+      val p4 = makeRow("v004", "0", "EXPENSE_PAYMENT", "AGY2", "OBJ2", "2003", "2003/09/01", "400.00", fundId = "F2")
+      val p5 = makeRow("v005", "0", "EXPENSE_PAYMENT", "AGY1", "OBJ1", "2003", "2003/09/01", "50.00",  fundId = "F1")
+      val p6 = makeRow("v006", "0", "EXPENSE_PAYMENT", "AGY2", "OBJ2", "2003", "2003/09/01", "75.00",  fundId = "F2")
+
+      writeFile(inDir, "SortedJEFY03merged.csv", Seq(p1, p2, p3, p4, p5, p6))
+
+      // 1. Run with capacity = 2 (triggers buffer overflow, spills, and k-way reduce)
+      val logOutput = new java.io.ByteArrayOutputStream()
+      Console.withOut(new java.io.PrintStream(logOutput)) {
+        CKBViews(Map(
+          "inPath"              -> inDir.toString,
+          "outPath"             -> outSpill.toString,
+          "year"                -> "2003",
+          "viewDBufferCapacity" -> "2"
+        ))
+      }
+      val log = logOutput.toString("UTF-8")
+      assert(log.contains("buffer_overflow=true"), s"Expected buffer_overflow=true; got:\n$log")
+      assert(log.contains("partial_aggregate_rows="), s"Expected partial_aggregate_rows in metrics; got:\n$log")
+
+      // Confirm no temporary spill files remain
+      val tmpFiles = Option(outSpill.toFile.listFiles()).getOrElse(Array.empty[File]).filter(_.getName.endsWith(".tmp"))
+      assert(tmpFiles.isEmpty, s"All temporary spill files should be deleted; found: ${tmpFiles.map(_.getName).mkString(", ")}")
+
+      // 2. Run with capacity = 1000 (completes entirely in-memory)
+      CKBViews(Map(
+        "inPath"              -> inDir.toString,
+        "outPath"             -> outMem.toString,
+        "year"                -> "2003",
+        "viewDBufferCapacity" -> "1000"
+      ))
+
+      // 3. Verify exact row-for-row equality between spilled reduce and in-memory outputs
+      val rowsSpill = readCsvData(outSpill.resolve("view_agency_year_payment_totals.csv").toFile)
+      val rowsMem   = readCsvData(outMem.resolve("view_agency_year_payment_totals.csv").toFile)
+
+      assert(rowsSpill.length == 4, s"Expected 4 distinct key rows; got ${rowsSpill.length}")
+      assert(rowsSpill.length == rowsMem.length, s"Spill count (${rowsSpill.length}) must equal memory count (${rowsMem.length})")
+
+      for (i <- rowsSpill.indices) {
+        assert(rowsSpill(i).toSeq == rowsMem(i).toSeq,
+          s"Row $i mismatch:\nSpill: ${rowsSpill(i).mkString(",")}\nMem:   ${rowsMem(i).mkString(",")}")
+      }
+
+      // Check specific values for AGY1/2003/F1/OBJ1 (100.00 + 50.00 = 150.00, count 2)
+      val agy1Obj1 = rowsSpill.find(r => r(0) == "AGY1" && r(2) == "F1" && r(3) == "OBJ1").get
+      assert(BigDecimal(agy1Obj1(4)) == BigDecimal("150.00"), s"Amount should be 150.00; got ${agy1Obj1(4)}")
+      assert(agy1Obj1(5).toLong == 2L, s"Count should be 2; got ${agy1Obj1(5)}")
+    }
+  }
 }

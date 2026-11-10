@@ -2,8 +2,13 @@
 
 Updated 2026-11-10. This file is a concise state snapshot; use the linked design contracts for details.
 
-## 2026-11-10 (latest) Run 2 evidence archived into repo; FY2010 PO reader defect fixed & tested; fail-fast controls added (Bob, Mac)
+## 2026-11-10 (latest) GERS-003 extract-time summarization implemented; Run 2 evidence archived; FY2010 fixed (Bob, Mac)
 
+- **GERS-003 Extract-Time Summarization**:
+  - `CKBViews.scala` implements bounded aggregation buffer for View D (`viewDBufferCapacity`, default 150k keys) with partial-aggregate scratch spill and k-way reduce.
+  - Bounded memory profile prevents heap exhaustion over 14-year key space (~4M keys).
+  - Emits full GERS-003 metrics (`aggregation_buffer_peak_keys`, `buffer_overflow`, `partial_aggregate_rows`, `final_reduce_rows`, `final_reduce_seconds`, `reduction_ratio`).
+  - Added Test 16 in `CKBViewsSpec` verifying deterministic collapse, spill cleanup, and exact row-for-row equality with in-memory execution. (21/21 tests pass).
 - **Run 2 Evidence Archived in Repo**: Canonical metrics, manifests, sort events, cost surface, and reconciliation results for all 14 fiscal years (FY03–FY16) are archived under `data/test_evidence/corpus_runs/run_20261110_123303/`.
 - **Automatic Evidence Archiving**: Added `scripts/archive_corpus_run_evidence.sh` and wired it into `scripts/run_full_corpus.sh` so every full-corpus run automatically archives its lightweight canonical evidence into the repository.
 - **FY2010 Imbalance Root Cause & Fix**:

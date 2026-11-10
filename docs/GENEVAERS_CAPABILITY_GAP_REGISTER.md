@@ -130,7 +130,7 @@ execution costs. The hash-map implementation must be replaced or the workload ma
 
 ## GERS-003: Extract-Time Summarization With Bounded Buffer, Overflow Flush and Reduce
 
-**Status:** `candidate enhancement` (recorded 2026-11-10 after the full-corpus run; the Scala prototype has no implementation)
+**Status:** `prototype verified in Scala; candidate GenevaERS enhancement` (implemented in `CKBViews.scala` 2026-11-10; verified with unit test 16 in `CKBViewsSpec`)
 
 **Requirement:** A GenevaERS extract-phase view must be able to summarize records by a declared group key into a bounded aggregation buffer while the ordered CKB stream is processed. When the buffer reaches its declared capacity it flushes partial aggregates (not raw rows) to declared scratch. A reduce step then sorts and collapses only the partial-aggregate file. Records are touched once by the extract; the reduce reads far fewer rows than the source.
 

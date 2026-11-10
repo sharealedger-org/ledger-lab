@@ -223,6 +223,12 @@ object CKBViews {
     val commodityMap = mutable.HashMap[(String, String, String), AgencyCommodityAcc]()
     val paymentMap   = mutable.HashMap[(String, String, String, String), AgencyPaymentAcc]()
 
+    // View D bounded aggregation buffer (GERS-003)
+    val viewDBufferCapacity = params.getOrElse("viewDBufferCapacity", "150000").toInt
+    val viewDSpillFiles     = mutable.ArrayBuffer[File]()
+    var peakViewDKeys       = 0
+    var partialAggRows      = 0L
+
     new File(outPath).mkdirs()
     val viewAFile = new File(outPath, "view_monthly_order_volume.csv")
     val viewBFile = new File(outPath, "view_vendor_year_survival.csv")
@@ -232,6 +238,21 @@ object CKBViews {
     var totalRecordsRead = 0L
     var rowsSkippedShort = 0L
     var nVendor          = 0L
+
+    def flushViewDSpill(): Unit = {
+      if (paymentMap.nonEmpty) {
+        val spillFile = new File(outPath, s"viewD_spill_${viewDSpillFiles.size}.tmp")
+        val pw = new PrintWriter(spillFile)
+        try {
+          for (((ag, fy, fund, obj), acc) <- paymentMap.toSeq.sortBy(_._1)) {
+            pw.println(s"$ag,$fy,$fund,$obj,${acc.totalAmt},${acc.paymentCount}")
+          }
+        } finally pw.close()
+        partialAggRows += paymentMap.size
+        viewDSpillFiles += spillFile
+        paymentMap.clear()
+      }
+    }
 
     val inputs = jeFiles.map { f =>
       val decoder = StandardCharsets.UTF_8.newDecoder()
@@ -366,10 +387,15 @@ object CKBViews {
           }
 
           if (bizEvent != "COMMITMENT" && isDebit) {
-            // ── View D: agency-year payment totals ────────────────────────
-            val accD = paymentMap.getOrElseUpdate((agency, fiscYear, fundId, nigpCode), AgencyPaymentAcc())
+            // ── View D: agency-year payment totals (GERS-003 bounded buffer) ──
+            val keyD = (agency, fiscYear, fundId, nigpCode)
+            val accD = paymentMap.getOrElseUpdate(keyD, AgencyPaymentAcc())
             accD.totalAmt     += amt
             accD.paymentCount += 1
+            if (paymentMap.size > peakViewDKeys) peakViewDKeys = paymentMap.size
+            if (paymentMap.size >= viewDBufferCapacity) {
+              flushViewDSpill()
+            }
           }
         } else rowsSkippedShort += 1
       }
@@ -406,20 +432,104 @@ object CKBViews {
       }
     } finally writerC.close()
 
-    // View D — key (agency, fiscal_year, fund_id, object_code)
-    val writerD = new PrintWriter(viewDFile)
-    try {
-      writerD.println("agency,fiscal_year,fund_id,object_code,total_payment_amount,payment_count")
-      for (((ag, fy, fund, obj), acc) <- paymentMap.toSeq.sortBy(_._1))
-        writerD.println(s"$ag,$fy,$fund,$obj,${acc.totalAmt},${acc.paymentCount}")
-    } finally writerD.close()
+    // View D — key (agency, fiscal_year, fund_id, object_code) with GERS-003 conditional reduce
+    var finalReduceRows    = 0L
+    var finalReduceSeconds = 0L
+    var nPayment           = 0L
+
+    val tReduceStart = System.currentTimeMillis()
+    if (viewDSpillFiles.isEmpty) {
+      // In-memory completion (no buffer overflow)
+      val writerD = new PrintWriter(viewDFile)
+      try {
+        writerD.println("agency,fiscal_year,fund_id,object_code,total_payment_amount,payment_count")
+        for (((ag, fy, fund, obj), acc) <- paymentMap.toSeq.sortBy(_._1)) {
+          writerD.println(s"$ag,$fy,$fund,$obj,${acc.totalAmt},${acc.paymentCount}")
+          nPayment += 1
+        }
+      } finally writerD.close()
+    } else {
+      // Buffer overflow occurred: flush remaining memory and execute k-way reduce
+      flushViewDSpill()
+      finalReduceRows = partialAggRows
+
+      case class SpillRow(agency: String, fy: String, fund: String, obj: String, amt: BigDecimal, count: Long) {
+        val keyTuple: (String, String, String, String) = (agency, fy, fund, obj)
+      }
+
+      val spillReaders = viewDSpillFiles.map { f =>
+        new BufferedReader(new InputStreamReader(new FileInputStream(f), StandardCharsets.UTF_8), 1 << 16)
+      }
+
+      def readSpillRow(reader: BufferedReader): SpillRow = {
+        val line = reader.readLine()
+        if (line == null || line.trim.isEmpty) null
+        else {
+          val parts = line.split(",", -1)
+          SpillRow(parts(0), parts(1), parts(2), parts(3), BigDecimal(parts(4)), parts(5).toLong)
+        }
+      }
+
+      val spillPq = new mutable.PriorityQueue[(SpillRow, Int)]()(
+        Ordering.fromLessThan[(SpillRow, Int)] { case ((a, _), (b, _)) =>
+          if (a.agency != b.agency) a.agency > b.agency
+          else if (a.fy != b.fy) a.fy > b.fy
+          else if (a.fund != b.fund) a.fund > b.fund
+          else a.obj > b.obj
+        }
+      )
+
+      for (idx <- spillReaders.indices) {
+        val row = readSpillRow(spillReaders(idx))
+        if (row != null) spillPq.enqueue((row, idx))
+      }
+
+      val writerD = new PrintWriter(viewDFile)
+      try {
+        writerD.println("agency,fiscal_year,fund_id,object_code,total_payment_amount,payment_count")
+
+        var curKey: (String, String, String, String) = null
+        var curAmt: BigDecimal = BigDecimal(0)
+        var curCount: Long = 0L
+
+        def emitCurGroup(): Unit = {
+          if (curKey != null) {
+            writerD.println(s"${curKey._1},${curKey._2},${curKey._3},${curKey._4},$curAmt,$curCount")
+            nPayment += 1
+          }
+        }
+
+        while (spillPq.nonEmpty) {
+          val (row, idx) = spillPq.dequeue()
+          val nextRow = readSpillRow(spillReaders(idx))
+          if (nextRow != null) spillPq.enqueue((nextRow, idx))
+
+          if (curKey == null || curKey != row.keyTuple) {
+            emitCurGroup()
+            curKey   = row.keyTuple
+            curAmt   = row.amt
+            curCount = row.count
+          } else {
+            curAmt   += row.amt
+            curCount += row.count
+          }
+        }
+        emitCurGroup()
+      } finally {
+        writerD.close()
+        spillReaders.foreach(r => try r.close() catch { case _: Exception => })
+        viewDSpillFiles.foreach(f => try f.delete() catch { case _: Exception => })
+      }
+      finalReduceSeconds = ((System.currentTimeMillis() - tReduceStart) / 1000).max(0)
+    }
+
+    val reductionRatio = if (totalRecordsRead > 0) finalReduceRows.toDouble / totalRecordsRead else 0.0
 
     // ── Emit structured metrics ────────────────────────────────────────────
     val elapsedS   = ((System.currentTimeMillis() - t0) / 1000).max(1)
     val peakRss    = Runtime.getRuntime.totalMemory()
     val nMonthly   = monthlyMap.size
     val nCommodity = commodityMap.size
-    val nPayment   = paymentMap.size
 
     println("*" * 100)
     println(s"Files processed     : ${jeFiles.size}")
@@ -429,7 +539,7 @@ object CKBViews {
     println(s"View B rows (vendor-year survival)      : $nVendor")
     println(s"View C rows (agency-year commodity mix) : $nCommodity")
     println(s"View D rows (agency-year payments)      : $nPayment")
-    println(s"RESULT step=5v year=$yearStr rc=0 records_read=$totalRecordsRead rows_skipped_short=$rowsSkippedShort files_read=${jeFiles.size} view_monthly=$nMonthly view_vendor=$nVendor view_agency_commodity=$nCommodity view_agency_payment=$nPayment elapsed_s=$elapsedS")
+    println(s"RESULT step=5v year=$yearStr rc=0 records_read=$totalRecordsRead rows_skipped_short=$rowsSkippedShort files_read=${jeFiles.size} view_monthly=$nMonthly view_vendor=$nVendor view_agency_commodity=$nCommodity view_agency_payment=$nPayment elapsed_s=$elapsedS aggregation_buffer_peak_keys=$peakViewDKeys buffer_overflow=${viewDSpillFiles.nonEmpty} partial_aggregate_rows=$finalReduceRows final_reduce_rows=$finalReduceRows final_reduce_seconds=$finalReduceSeconds reduction_ratio=${"%.4f".format(reductionRatio)}")
     println(s"RESOURCE step=5v year=$yearStr peak_rss_bytes=$peakRss")
     println("Process End Time: " + Calendar.getInstance.getTime)
     println("*" * 100)
