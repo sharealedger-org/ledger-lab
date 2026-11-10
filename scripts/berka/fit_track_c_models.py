@@ -58,7 +58,7 @@ K_NEIGHBOURS = 5
 BOOT_SEED = 12345
 LOAN_TERM_COLS = ["loan_amount", "duration", "payments"]
 BALANCE_PROFILE_COLS = ["bal_mean", "bal_min", "bal_std", "bal_last", "bal_last30_mean"]
-ID_COLS = ["loan_id", "account_id", "target_default"]
+ID_COLS = ["loan_id", "account_id", "grant_date", "target_default"]
 
 # ---------------------------------------------------------------------------
 # Metrics

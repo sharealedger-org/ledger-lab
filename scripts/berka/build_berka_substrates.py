@@ -341,6 +341,7 @@ for loan in loans:
     ident = {
         "loan_id": loan["loan_id"],
         "account_id": loan["account_id"],
+        "grant_date": loan["loan_date"].isoformat(),   # needed for temporal split (v3)
         "target_default": loan["target_default"],
     }
     b_rows.append({**ident, **b})

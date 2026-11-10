@@ -2,6 +2,126 @@
 
 Updated 2026-11-10. This file is a concise state snapshot; use the linked design contracts for details.
 
+## 2026-11-10 (after the v3 run) Track C v3 run: T1 PASS, T2 FAIL, T3 PASS, overall FAIL (Bob, Mac)
+
+The v3 pipeline was run once with `BERKA_DATA_ROOT=/tmp/berka_root_test` (the eight files were already there and verified by SHA-256). Thresholds were not changed. Evidence: `data/test_evidence/TRACK_C_BERKA_V3_EVIDENCE.json`.
+
+| ID | Observed | Verdict |
+|---|---|---|
+| T1 | all loans B 0.8665, E 0.9098, gain +0.0433, 95% CI [0.0126, 0.0760] | PASS |
+| T2 | temporal split (409 train / 273 test, 21 test defaults, cutoff 1997-06-13): B 0.9240, E 0.9227, E−B −0.0013 | FAIL |
+| T3 | 0 of 999 permuted gains ≥ real +0.0433 (permuted mean −0.0264); p reported 0.0, floor 1/1000 | PASS |
+
+**Reading:** the event-column gain holds under repeated nested-CV and is not a column-structure artefact, but it did not show a positive sign on the single forward-in-time split. The test set has only 21 defaults, so T2 is noise-limited; the FAIL means the sign was not shown, not that E is worse. Illustrative only: one corpus, 76 defaults, unknown lineage.
+
+**Changes this session** (uncommitted on `trackC`):
+- `scripts/berka/fit_track_c_models.py` line 61: `"grant_date"` added to `ID_COLS` (owner-approved). Without it, v2 (step 3) crashed on the rebuilt substrates because `grant_date` was read as a numeric feature. v2 features are unchanged; the regenerated v2 and non-injectivity evidence files are byte-identical to the committed ones (`git status` shows them unmodified).
+- `docs/TEST_DESIGN_TRACK_C_BERKA.md`: new §9.4a with the results; §9 title and artifact line updated.
+- `docs/VERIFICATION_AUDIT_REGISTER.md`: v3 section updated, with T1/T2/T3 recorded as `verified` PASS/FAIL/PASS.
+- `data/test_evidence/TRACK_C_BERKA_V3_EVIDENCE.json` created (untracked). The other two evidence files were regenerated unchanged.
+- A local `.venv` (git-ignored) was created with numpy 2.5.4.
+
+**Operational notes:** step 5 took roughly 34 minutes here. Its output is block-buffered when redirected to a file, so the progress lines only appear at the end.
+
+**Owner decision (2026-11-10, after the v3 run):** Track C stays as is, an illustrative example outside the AIM structure. No language model was trained on Track C (L2 logistic regression on hand-built numeric features). Not moved into `RESEARCH_OBJECTIVES.md` §7, no rolling-window v4, no LLM arm.
+
+
+### Next
+1. ~~Commit and push `trackC`~~ done this session.
+2. **Owner decision 2026-11-10: Track C is left out of Paper 2 entirely** (no results section, no footnote). Do not re-run or change thresholds to turn T2 into a pass.
+3. Remaining deferred items are unchanged (see the next section's "What is NOT next").
+
+---
+
+## 2026-11-10 (session close, superseded by the entry above) Run Track C v3 (Bob, Mac)
+
+**Branch:** `trackC` (HEAD `40f1b61`). Working tree clean. `trackC` is **local only** — push before running on another machine.
+
+### Exact next step
+
+```bash
+git checkout trackC
+BERKA_DATA_ROOT=<dir outside repo> bash scripts/run_track_c_berka.sh
+```
+
+This runs 5 steps:
+1. Download and verify Berka files (Bash; SHA-256 pinned)
+2. Rebuild substrates — **required** because `build_berka_substrates.py` now adds `grant_date`; existing `data/berka_processed/` CSVs lack it
+3. v2 fit (repeated-CV, paired bootstrap, ablation) → `TRACK_C_BERKA_EVIDENCE.json`
+4. Non-injectivity count (stdlib, no model) → `TRACK_C_BERKA_NONINJECTIVITY.json`
+5. v3 fit (nested-CV λ, temporal split, 999-permutation test) → `TRACK_C_BERKA_V3_EVIDENCE.json`
+
+**Needs:** numpy (already in `.venv` from prior runs); `BERKA_DATA_ROOT` outside the repo; \~30–90 min total (step 5 permutation test dominates).
+
+### After the run
+
+Record T1/T2/T3 verdicts in `docs/VERIFICATION_AUDIT_REGISTER.md` v3 section, update `docs/TEST_DESIGN_TRACK_C_BERKA.md` §9 with actual numbers, then update this handoff. Push `trackC` to origin.
+
+### Locked thresholds (do not change after the run)
+
+| ID | Test | Threshold |
+|---|---|---|
+| T1 | paired 95% CI lower bound on E−B ROC-AUC (nested-CV, all loans) | > 0.00 |
+| T2 | temporal-split test-set E ROC-AUC vs B | E > B (sign positive) |
+| T3 | permutation p on 22 event-only columns (999 perms, one-sided) | < 0.05 |
+
+### What is NOT next (still deferred or out of scope)
+- Counterparty-diversity vs account-age independence (owner decision required)
+- The 355 account-days with no consistent balance chain
+- Berka terms of use confirmation
+- `members` pull (13 commits behind)
+- Paper 2 footnote text
+
+### `main` branch (pipeline, separate from `trackC`)
+`main` HEAD = `acf0ee1`. See the 2026-11-09 "Next session — start here" section below for the VA pipeline work (Zenodo download verification, re-baseline CCP1–CCP3 on the new `applyPO` reader, AIM3/AIM4 on real view output).
+
+---
+
+## 2026-11-10 (latest) Track C v3 protocol designed; branch `trackC` current (Bob, Mac)
+
+v3 protocol implemented on `trackC` (design doc §9, not yet run):
+- **Locked thresholds declared before any run:** T1 paired 95% CI lb > 0.00; T2 temporal-split E > B (sign); T3 permutation p < 0.05.
+- **`scripts/berka/fit_track_c_v3.py`** (new): nested-CV λ selection from `{0.1, 1, 10, 100}`, temporal split (60/40 by grant_date), 999-permutation test on 22 event-only columns. Produces `data/test_evidence/TRACK_C_BERKA_V3_EVIDENCE.json`.
+- **`scripts/berka/build_berka_substrates.py`** updated: now writes `grant_date` (ISO) on every substrate row (required for the temporal split; existing `data/berka_processed/` CSVs must be regenerated before step 5 runs).
+- **`scripts/run_track_c_berka.sh`** updated: v3 is step 5/5; runner header updated.
+- **`docs/TEST_DESIGN_TRACK_C_BERKA.md`** §9 added.
+- **`docs/VERIFICATION_AUDIT_REGISTER.md`** v3 section added (all four items `recorded`; not yet run).
+
+Branch `trackC` is local only and **not yet pushed** to origin.
+
+### Next on `trackC`
+1. **Run step 5:** `BERKA_DATA_ROOT=<dir> bash scripts/run_track_c_berka.sh` (re-runs steps 1-5; step 2 regenerates the substrates with `grant_date`). Runtime: steps 1-4 ≈ same as before; step 5 permutation test ≈ 30-90 min on a laptop.
+2. **Record results:** fill in T1/T2/T3 verdicts in the register; update design doc §9 with actual numbers; update this handoff.
+3. Push `trackC` to origin after the first v3 run.
+4. Counterparty-diversity vs account-age check (owner decision required).
+5. Berka terms of use; pull `members` (13 commits behind).
+6. Paper 2 footnote: "public extract of unknown lineage, exploratory" — at most one paragraph.
+
+### Next on `main` (pipeline work, separate from `trackC`)
+See the "Next session — start here" list under the 2026-11-09 section below (Zenodo download, re-baseline CCP1-CCP3 on new applyPO reader, AIM3/AIM4 on real view output).
+
+---
+
+## 2026-11-10 (earlier) Track C moved to `trackC` branch; `main` reset to `acf0ee1` (Bob, Mac)
+
+All Track C commits (`80e39cc` through `3c1edab`) are now on branch `trackC`. `main` is reset to `acf0ee1` ("record 2026-11-10 Zenodo corpus download completion and FY2003 end-to-end verification run") — the last commit before Track C work began in this session.
+
+- **Branch `trackC`** (HEAD after v3 design work): contains all Track C commits.
+- **Branch `main`** (HEAD `acf0ee1`): clean of all Track C work; continues the mainline pipeline (VA corpus, AIM, CCP runs).
+- **`trackC` is local only** — push with `git push origin trackC` when ready.
+
+---
+
+## 2026-11-10 (after the decision below) Track C: direct non-injectivity count added (Bob, Mac)
+
+Owner asked why Berka had no tuning and did not follow the AIM outline, and whether it might still show something demonstrable. Answer recorded: v2 deliberately fixed one learner (no tuning on results); it also has no locked acceptance thresholds, no permutation test, no temporal split. Owner approved Python ("yes, python approved"; Track C scope). Added `scripts/berka/count_noninjectivity.py` (standard library, no model; AIM1 analogue), wired as step 4 of `scripts/run_track_c_berka.sh`, evidence `data/test_evidence/TRACK_C_BERKA_NONINJECTIVITY.json`, write-up in `docs/TEST_DESIGN_TRACK_C_BERKA.md` §8a.
+
+- **Result (54,694 pre-loan rows, 42,671 account-days):** 21.4% of account-days hold more than one event kind under one stored number; 18.6% net a credit and a debit. By net change: 45.3% of repeated values come from more than one event pattern (56.3% of the days on them); on single-row days only, 7.1% of repeated values (32.5% of those days), mostly cash withdrawals with a few `SIPO` / card at the same amount.
+- **Scope:** a property of our own roll-up of these rows; independent of the default label. It does not show what a bank's posting system keeps (lineage unknown). Round-amount collisions are partly chance. Still illustrative only; the Paper 2 decision stands.
+- **Not done (options offered):** v3 protocol (locked thresholds, nested-CV tuning, temporal split, permutation test on the 22 event columns); counterparty-diversity vs account-age check.
+
+---
+
 ## 2026-11-10 (latest, last) Decision: Track C (Berka) is illustrative only, not Paper 2 evidence (owner, Bob)
 
 **Owner decision:** the Berka data adds little to the paper because we do not know how the files were produced relative to the originating bank's systems (lineage unknown). Unknowns: whether the per-row balance is a system field or was computed for the challenge file; the cause of the 1.3% balance breaks and the 355 unreconcilable account-days; how loan status was assigned; how accounts and counterparties were sampled and masked. So Track C shows what a model can learn from this table, not what a posting system discards.

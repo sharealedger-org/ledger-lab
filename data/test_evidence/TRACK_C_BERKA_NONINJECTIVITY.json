@@ -1,0 +1,120 @@
+{
+  "experiment": "Paper 2 - Track C Berka, direct non-injectivity count of the daily-balance grain",
+  "date": "2026-11-10",
+  "status": "Exploratory. Counts how our own roll-up collapses event rows; says nothing about a bank's posting system (lineage of the Berka files is unknown).",
+  "window": "transactions strictly before the loan date, 682 loan accounts",
+  "pre_loan_rows": 54694,
+  "event_kind": "(type, operation, k_symbol)",
+  "event_pattern": "sorted multiset of event kinds over a day's rows",
+  "measure_1_per_account_day": {
+    "account_days": 42671,
+    "days_with_more_than_one_row": 10081,
+    "days_with_more_than_one_event_kind": 9144,
+    "share_days_with_more_than_one_event_kind": 0.2143,
+    "days_with_credit_and_debit_netted_into_one_number": 7938,
+    "days_with_zero_net_change_despite_rows": 1,
+    "distinct_event_kinds_per_day": {
+      "1": 33527,
+      "2": 8416,
+      "3-5": 728,
+      "6-10": 0,
+      ">10": 0
+    },
+    "distinct_event_kinds_incl_counterparty_per_day": {
+      "1": 33231,
+      "2": 8647,
+      "3-5": 793,
+      "6-10": 0,
+      ">10": 0
+    },
+    "max_distinct_event_kinds_in_a_day": 5
+  },
+  "measure_2_per_net_change_all_active_days": {
+    "net_change_values_total": 12447,
+    "net_change_values_on_2plus_days": 4285,
+    "values_mapping_to_more_than_one_event_pattern": 1942,
+    "share_of_2plus_values_with_collision": 0.4532,
+    "account_days_on_2plus_values": 34509,
+    "account_days_whose_value_has_more_than_one_pattern": 19414,
+    "share_of_those_days": 0.5626,
+    "distinct_patterns_per_value_distribution": {
+      "1": 2343,
+      "2": 1618,
+      "3-5": 322,
+      "6-10": 2,
+      ">10": 0
+    },
+    "max_distinct_patterns_for_one_value": 6,
+    "top_collisions_cents": [
+      {
+        "net_change_cents": -240000,
+        "account_days": 198,
+        "distinct_patterns": 6
+      },
+      {
+        "net_change_cents": -390000,
+        "account_days": 177,
+        "distinct_patterns": 6
+      },
+      {
+        "net_change_cents": -480000,
+        "account_days": 177,
+        "distinct_patterns": 5
+      },
+      {
+        "net_change_cents": -370000,
+        "account_days": 93,
+        "distinct_patterns": 5
+      },
+      {
+        "net_change_cents": -200000,
+        "account_days": 121,
+        "distinct_patterns": 5
+      }
+    ]
+  },
+  "measure_2_per_net_change_single_row_days": {
+    "net_change_values_total": 7650,
+    "net_change_values_on_2plus_days": 2494,
+    "values_mapping_to_more_than_one_event_pattern": 177,
+    "share_of_2plus_values_with_collision": 0.071,
+    "account_days_on_2plus_values": 27434,
+    "account_days_whose_value_has_more_than_one_pattern": 8911,
+    "share_of_those_days": 0.3248,
+    "distinct_patterns_per_value_distribution": {
+      "1": 2317,
+      "2": 158,
+      "3-5": 19,
+      "6-10": 0,
+      ">10": 0
+    },
+    "max_distinct_patterns_for_one_value": 3,
+    "top_collisions_cents": [
+      {
+        "net_change_cents": -480000,
+        "account_days": 170,
+        "distinct_patterns": 3
+      },
+      {
+        "net_change_cents": -240000,
+        "account_days": 195,
+        "distinct_patterns": 3
+      },
+      {
+        "net_change_cents": -370000,
+        "account_days": 91,
+        "distinct_patterns": 3
+      },
+      {
+        "net_change_cents": -260000,
+        "account_days": 119,
+        "distinct_patterns": 3
+      },
+      {
+        "net_change_cents": -570000,
+        "account_days": 138,
+        "distinct_patterns": 3
+      }
+    ]
+  }
+}
