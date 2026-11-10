@@ -2,24 +2,38 @@
 
 Updated 2026-11-10. This file is a concise state snapshot; use the linked design contracts for details.
 
-## 2026-11-10 (latest) Track C moved to `trackC` branch; `main` reset to `acf0ee1` (Bob, Mac)
+## 2026-11-10 (latest) Track C v3 protocol designed; branch `trackC` current (Bob, Mac)
+
+v3 protocol implemented on `trackC` (design doc §9, not yet run):
+- **Locked thresholds declared before any run:** T1 paired 95% CI lb > 0.00; T2 temporal-split E > B (sign); T3 permutation p < 0.05.
+- **`scripts/berka/fit_track_c_v3.py`** (new): nested-CV λ selection from `{0.1, 1, 10, 100}`, temporal split (60/40 by grant_date), 999-permutation test on 22 event-only columns. Produces `data/test_evidence/TRACK_C_BERKA_V3_EVIDENCE.json`.
+- **`scripts/berka/build_berka_substrates.py`** updated: now writes `grant_date` (ISO) on every substrate row (required for the temporal split; existing `data/berka_processed/` CSVs must be regenerated before step 5 runs).
+- **`scripts/run_track_c_berka.sh`** updated: v3 is step 5/5; runner header updated.
+- **`docs/TEST_DESIGN_TRACK_C_BERKA.md`** §9 added.
+- **`docs/VERIFICATION_AUDIT_REGISTER.md`** v3 section added (all four items `recorded`; not yet run).
+
+Branch `trackC` is local only and **not yet pushed** to origin.
+
+### Next on `trackC`
+1. **Run step 5:** `BERKA_DATA_ROOT=<dir> bash scripts/run_track_c_berka.sh` (re-runs steps 1-5; step 2 regenerates the substrates with `grant_date`). Runtime: steps 1-4 ≈ same as before; step 5 permutation test ≈ 30-90 min on a laptop.
+2. **Record results:** fill in T1/T2/T3 verdicts in the register; update design doc §9 with actual numbers; update this handoff.
+3. Push `trackC` to origin after the first v3 run.
+4. Counterparty-diversity vs account-age check (owner decision required).
+5. Berka terms of use; pull `members` (13 commits behind).
+6. Paper 2 footnote: "public extract of unknown lineage, exploratory" — at most one paragraph.
+
+### Next on `main` (pipeline work, separate from `trackC`)
+See the "Next session — start here" list under the 2026-11-09 section below (Zenodo download, re-baseline CCP1-CCP3 on new applyPO reader, AIM3/AIM4 on real view output).
+
+---
+
+## 2026-11-10 (earlier) Track C moved to `trackC` branch; `main` reset to `acf0ee1` (Bob, Mac)
 
 All Track C commits (`80e39cc` through `3c1edab`) are now on branch `trackC`. `main` is reset to `acf0ee1` ("record 2026-11-10 Zenodo corpus download completion and FY2003 end-to-end verification run") — the last commit before Track C work began in this session.
 
-- **Branch `trackC`** (HEAD `3c1edab`): contains all five Track C commits: public Berka download script + owner approval + audit findings; v2 redesign and run; Berka data removal from members; lineage decision; non-injectivity count.
+- **Branch `trackC`** (HEAD after v3 design work): contains all Track C commits.
 - **Branch `main`** (HEAD `acf0ee1`): clean of all Track C work; continues the mainline pipeline (VA corpus, AIM, CCP runs).
 - **`trackC` is local only** — push with `git push origin trackC` when ready.
-- The non-injectivity count (`3c1edab`) is the last Track C commit on this branch. All evidence and design doc are in the working tree at that commit.
-
-### Next on `trackC` (if Track C continues)
-1. Push `trackC` to origin (`git push origin trackC`).
-2. Optional v3 items (owner decision required): locked thresholds, nested-CV tuning, temporal split, permutation test on the 22 event columns.
-3. Counterparty-diversity vs account-age independence check (owner decision).
-4. Berka terms of use confirmation; pull `members` (13 commits behind).
-5. Paper 2 footnote draft: "public extract of unknown lineage, exploratory" — at most one paragraph.
-
-### Next on `main` (pipeline work)
-See the "Next session — start here" list under the 2026-11-09 section below (Zenodo download, re-baseline CCP1-CCP3 on new applyPO reader, AIM3/AIM4 on real view output).
 
 ---
 

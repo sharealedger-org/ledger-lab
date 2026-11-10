@@ -115,11 +115,47 @@ Over 54,694 pre-loan rows and 42,671 active account-days:
 
 **Reading.** A daily balance cannot recover which event produced a number, in about one account-day in five by netting (18.6% net a credit and a debit), and, among account-days whose amount repeats, in about a third even without netting. This is a property of our roll-up of these rows; it needs no model and does not depend on the default label. It does not say what a bank's posting system keeps, because the lineage of the files is unknown, and round amounts make some collisions likely by chance: the count shows what B cannot separate, not that the separated events matter for default. That second question is the predictive comparison in section 6.
 
+## 9. v3 Protocol (designed 2026-11-10; not yet run)
+
+v3 adds the four items the v2 run lacked. It is a separate script (`scripts/berka/fit_track_c_v3.py`) that reads the same substrate CSVs; v2 is unchanged and still runs as step 3 of the runner.
+
+**Substrate change:** `build_berka_substrates.py` now writes `grant_date` (ISO, loan grant date) on every row, required for the temporal split. Re-run `build_berka_substrates.py` before running v3 on existing processed data.
+
+### 9.1 Locked acceptance thresholds (declared before any v3 run)
+
+| ID | Threshold | Metric |
+|---|---|---|
+| T1 | paired 95% CI lower bound on E−B ROC-AUC > 0.00 | repeated nested-CV, all loans |
+| T2 | temporal-split test-set E ROC-AUC > B ROC-AUC (sign positive) | 60/40 train/test by grant_date |
+| T3 | permutation p < 0.05 (one-sided) | 999 permutations of the 22 event-only columns |
+
+These are illustrative thresholds on one corpus (76 defaults). Passing all three does not prove Theorem 1 but sharpens the v2 result. A fail on one or more is also informative and must be reported as-is.
+
+### 9.2 Nested-CV lambda tuning
+
+The outer loop is the same stratified 5-fold × 20 repeats as v2. Inside each outer training set, a 3-fold inner CV picks the best λ from `{0.1, 1, 10, 100}`. The chosen lambda per fold is reported in the evidence file. The v2 result fixed λ = 10; if the inner CV consistently picks a different value the headline AUC will differ.
+
+### 9.3 Temporal split
+
+Loans are sorted by `grant_date`; the first 60% (by date) are training, the last 40% are test. A separate inner CV on the training set picks λ. No repeated resampling: the split is single-shot. This checks whether the event gain generalises forward in time, not just across folds of the same time window. The Berka corpus covers loans from 1993 to 1998, so the split is within a six-year window.
+
+### 9.4 Permutation test on the 22 event-only columns
+
+Independently permute (shuffle) each of the 22 event-only columns (`cols_e_extra`) across loans, rerun the full nested-CV, and record E−B. Repeat 999 times. The one-sided p-value is the fraction of permuted gains ≥ the real gain. This is the standard column-permutation test: it asks whether the event-column signal could arise by chance at the observed feature structure.
+
+**Runtime note:** the permutation test runs 999 complete nested-CV evaluations of both B and the permuted E. With 682 loans, 5×20 outer folds, 3 inner folds and 4 lambda values, each evaluation fits approximately 120 × 4 = 480 logistic regressions. 999 × 2 × 480 ≈ 958,000 model fits. On a laptop this is expected to take 30–90 minutes depending on hardware.
+
+### 9.5 Not included in v3 (deferred or out of scope)
+
+* Counterparty-diversity vs account-age independence check (owner decision required before implementing).
+* The 355 account-days with no consistent balance chain: `UROK`/`UVER` candidates, not examined.
+* Terms-of-use confirmation for the Berka data set (still open).
+
 ## 8. Artifacts
 * **Download (Bash):** `scripts/download_berka.sh`
-* **Substrate builder:** `scripts/berka/build_berka_substrates.py` → `substrate_b_daily_balance.csv`, `substrate_e_events.csv`, `daily_balance_series.csv`, `build_stats.json` in `data/berka_processed/` (git-ignored)
-* **Fit and evaluation:** `scripts/berka/fit_track_c_models.py`
+* **Substrate builder:** `scripts/berka/build_berka_substrates.py` → `substrate_b_daily_balance.csv`, `substrate_e_events.csv`, `daily_balance_series.csv`, `build_stats.json` in `data/berka_processed/` (git-ignored). v3 adds `grant_date` column to both substrate CSVs.
+* **v2 fit and evaluation:** `scripts/berka/fit_track_c_models.py` → `data/test_evidence/TRACK_C_BERKA_EVIDENCE.json`
 * **Non-injectivity count (§8a):** `scripts/berka/count_noninjectivity.py` → `data/test_evidence/TRACK_C_BERKA_NONINJECTIVITY.json`
-* **Runner:** `scripts/run_track_c_berka.sh` (needs `BERKA_DATA_ROOT`)
-* **Evidence:** `data/test_evidence/TRACK_C_BERKA_EVIDENCE.json`
+* **v3 fit (§9):** `scripts/berka/fit_track_c_v3.py` → `data/test_evidence/TRACK_C_BERKA_V3_EVIDENCE.json` (not yet run)
+* **Runner:** `scripts/run_track_c_berka.sh` (needs `BERKA_DATA_ROOT`; v3 is step 5)
 * **Python status:** Track C Python is owner-approved (2026-11-10), scope Track C only; it is not an engine or cost-curve measurement.

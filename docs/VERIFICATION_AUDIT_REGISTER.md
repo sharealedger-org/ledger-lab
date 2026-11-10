@@ -201,8 +201,17 @@ All Track C commits (`80e39cc` through `3c1edab`) moved to branch `trackC`. `mai
 | Track C commits are isolated from the mainline pipeline on branch `trackC` | `verified` | `git branch trackC HEAD` from `3c1edab`; `git reset --hard acf0ee1` on `main`. `git log --oneline -5` confirms `main` HEAD = `acf0ee1`; `trackC` HEAD = `3c1edab`. `trackC` is local only (not yet pushed to origin). | Push `trackC` to origin when ready. |
 | Non-injectivity count (`3c1edab`) is the current HEAD of `trackC` | `verified` | `git show --stat 3c1edab`: 5 files changed, 385 insertions. `scripts/berka/count_noninjectivity.py`, `data/test_evidence/TRACK_C_BERKA_NONINJECTIVITY.json`, `docs/TEST_DESIGN_TRACK_C_BERKA.md` §8a, `scripts/run_track_c_berka.sh` step 4, `SESSION_HANDOFF.md` entry all present in the working tree. | None for the branch state itself. |
 
+## 2026-11-10 Track C v3 protocol designed (Bob, Mac)
 
+v3 adds locked acceptance thresholds, nested-CV lambda tuning, a temporal split, and a permutation test on the 22 event-only columns. All four are declared before any run. The script is `scripts/berka/fit_track_c_v3.py`; it is new code on `trackC`. **Not yet run** — Berka data must be re-fetched with `BERKA_DATA_ROOT` set, then `run_track_c_berka.sh` step 5 produces `data/test_evidence/TRACK_C_BERKA_V3_EVIDENCE.json`.
 
+| Claim | State | Evidence | Remaining gap |
+|---|---|---|---|
+| v3 protocol is declared before any run (locked thresholds T1/T2/T3) | `recorded` | `scripts/berka/fit_track_c_v3.py` lines 48-57: T1 CI lb > 0.00 (repeated nested-CV); T2 temporal-split E > B sign positive; T3 permutation p < 0.05. `docs/TEST_DESIGN_TRACK_C_BERKA.md` §9.1 table. Constants are module-level literals; they cannot be changed after a run without the change being visible in git history. | The script has not been run; the thresholds are locked but unexercised. |
+| `build_berka_substrates.py` now emits `grant_date` (ISO) needed for temporal split | `verified` | Single-line change at line 344: `"grant_date": loan["loan_date"].isoformat()` added to `ident` dict written to both substrate CSVs. Confirmed present in the `write_csv` call (dynamic fieldnames from row keys). | Existing processed CSVs in `data/berka_processed/` lack this column; `build_berka_substrates.py` must be re-run before step 5. |
+| Nested-CV lambda tuning is implemented | `recorded` | `nested_oof()` in `fit_track_c_v3.py` lines 130-154: 3-fold inner CV over `{0.1, 1, 10, 100}` inside each outer fold. Inner seed = `outer_rep * 100 + len(val)` (deterministic, not the outer seed). | Not run; requires numpy. |
+| Permutation test on 22 event-only columns is implemented | `recorded` | `fit_track_c_v3.py` lines 241-261: independently permute each of `cols_e_extra` (22 columns), rerun full nested-CV 999 times, compute one-sided p. Runtime estimate: 30-90 minutes on a laptop. | Not run. |
+| Temporal split is implemented | `recorded` | `fit_track_c_v3.py` lines 186-223: sort loans by `grant_date` (ISO string sort), 60/40 train/test, inner CV on training to pick lambda. | Not run. Berka loans run 1993-1998; the split is within a six-year window. |
 
 ## 2026-11-09 applyPO record-boundary fix and AIM eligible-year rule (Bob)
 
