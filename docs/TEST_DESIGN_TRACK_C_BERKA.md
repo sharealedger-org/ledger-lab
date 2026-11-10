@@ -115,7 +115,7 @@ Over 54,694 pre-loan rows and 42,671 active account-days:
 
 **Reading.** A daily balance cannot recover which event produced a number, in about one account-day in five by netting (18.6% net a credit and a debit), and, among account-days whose amount repeats, in about a third even without netting. This is a property of our roll-up of these rows; it needs no model and does not depend on the default label. It does not say what a bank's posting system keeps, because the lineage of the files is unknown, and round amounts make some collisions likely by chance: the count shows what B cannot separate, not that the separated events matter for default. That second question is the predictive comparison in section 6.
 
-## 9. v3 Protocol (designed 2026-11-10; not yet run)
+## 9. v3 Protocol (designed and run 2026-11-10; overall FAIL against the locked thresholds)
 
 v3 adds the four items the v2 run lacked. It is a separate script (`scripts/berka/fit_track_c_v3.py`) that reads the same substrate CSVs; v2 is unchanged and still runs as step 3 of the runner.
 
@@ -145,6 +145,27 @@ Independently permute (shuffle) each of the 22 event-only columns (`cols_e_extra
 
 **Runtime note:** the permutation test runs 999 complete nested-CV evaluations of both B and the permuted E. With 682 loans, 5×20 outer folds, 3 inner folds and 4 lambda values, each evaluation fits approximately 120 × 4 = 480 logistic regressions. 999 × 2 × 480 ≈ 958,000 model fits. On a laptop this is expected to take 30–90 minutes depending on hardware.
 
+### 9.4a Result of the single v3 run (2026-11-10)
+
+Run via `scripts/run_track_c_berka.sh` with `BERKA_DATA_ROOT=/tmp/berka_root_test` (files verified by SHA-256; substrates rebuilt with `grant_date`). Evidence: `data/test_evidence/TRACK_C_BERKA_V3_EVIDENCE.json`. Thresholds in §9.1 were not changed.
+
+| ID | Threshold | Observed | Verdict |
+|---|---|---|---|
+| T1 | paired 95% CI lower bound on E−B ROC-AUC > 0.00 | all loans: B 0.8665, E 0.9098, gain +0.0433, CI [0.0126, 0.0760] | **PASS** |
+| T2 | temporal-split test E ROC-AUC > B | train 409 loans (55 defaults), test 273 loans (21 defaults), cutoff 1997-06-13; B 0.9240, E 0.9227, E−B −0.0013 | **FAIL** |
+| T3 | permutation p < 0.05 | real gain +0.0433; permuted gains mean −0.0264, sd 0.0127; 0 of 999 permuted gains ≥ real | **PASS** |
+
+Overall: **FAIL** (T1 and T3 pass, T2 fails). Reported as-is.
+
+Supporting numbers:
+
+* Overdraft-free loans (656 loans, 50 defaults), T1 analogue: B 0.7889, E 0.8575, gain +0.0685, CI [0.0213, 0.1233].
+* Chosen λ (outer folds, all loans) — B: 0.1 ×7, 1 ×60, 10 ×32, 100 ×1; E: 0.1 ×37, 1 ×39, 10 ×24, 100 ×0. λ = 10, fixed in v2, was not the modal choice.
+* Brier (all loans): B 0.0590, E 0.0510.
+* Nearest-neighbour test (balance-profile space): E−B gap gain +0.1000 [0.0622, 0.1405] (all loans); +0.1285 [0.0802, 0.1802] (overdraft-free).
+
+**Reading.** The event columns add a gain under repeated nested-CV that is unlikely to arise from column structure alone: permuted event columns lower the AUC on average (−0.026), and none of the 999 permutations reached the real gain. The gain did **not** carry into the single forward-in-time split, where B and E tie to the third decimal (−0.0013). The test set holds 21 defaults, so a ROC-AUC difference of this size is far inside sampling noise; the T2 FAIL is a failure to show a positive sign, not evidence that E is worse than B. The permutation p is bounded below by 1/1000 with 999 permutations; the script prints 0.0000 (no +1 correction). The result stays illustrative: one corpus, 76 defaults, unknown file lineage.
+
 ### 9.5 Not included in v3 (deferred or out of scope)
 
 * Counterparty-diversity vs account-age independence check (owner decision required before implementing).
@@ -156,6 +177,6 @@ Independently permute (shuffle) each of the 22 event-only columns (`cols_e_extra
 * **Substrate builder:** `scripts/berka/build_berka_substrates.py` → `substrate_b_daily_balance.csv`, `substrate_e_events.csv`, `daily_balance_series.csv`, `build_stats.json` in `data/berka_processed/` (git-ignored). v3 adds `grant_date` column to both substrate CSVs.
 * **v2 fit and evaluation:** `scripts/berka/fit_track_c_models.py` → `data/test_evidence/TRACK_C_BERKA_EVIDENCE.json`
 * **Non-injectivity count (§8a):** `scripts/berka/count_noninjectivity.py` → `data/test_evidence/TRACK_C_BERKA_NONINJECTIVITY.json`
-* **v3 fit (§9):** `scripts/berka/fit_track_c_v3.py` → `data/test_evidence/TRACK_C_BERKA_V3_EVIDENCE.json` (not yet run)
+* **v3 fit (§9):** `scripts/berka/fit_track_c_v3.py` → `data/test_evidence/TRACK_C_BERKA_V3_EVIDENCE.json` (run 2026-11-10; see §9.4a)
 * **Runner:** `scripts/run_track_c_berka.sh` (needs `BERKA_DATA_ROOT`; v3 is step 5)
 * **Python status:** Track C Python is owner-approved (2026-11-10), scope Track C only; it is not an engine or cost-curve measurement.

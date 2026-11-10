@@ -2,7 +2,38 @@
 
 Updated 2026-11-10. This file is a concise state snapshot; use the linked design contracts for details.
 
-## 2026-11-10 (session close) Start here next session — run Track C v3 (Bob, Mac)
+## 2026-11-10 (after the v3 run) Track C v3 run: T1 PASS, T2 FAIL, T3 PASS, overall FAIL (Bob, Mac)
+
+The v3 pipeline was run once with `BERKA_DATA_ROOT=/tmp/berka_root_test` (the eight files were already there and verified by SHA-256). Thresholds were not changed. Evidence: `data/test_evidence/TRACK_C_BERKA_V3_EVIDENCE.json`.
+
+| ID | Observed | Verdict |
+|---|---|---|
+| T1 | all loans B 0.8665, E 0.9098, gain +0.0433, 95% CI [0.0126, 0.0760] | PASS |
+| T2 | temporal split (409 train / 273 test, 21 test defaults, cutoff 1997-06-13): B 0.9240, E 0.9227, E−B −0.0013 | FAIL |
+| T3 | 0 of 999 permuted gains ≥ real +0.0433 (permuted mean −0.0264); p reported 0.0, floor 1/1000 | PASS |
+
+**Reading:** the event-column gain holds under repeated nested-CV and is not a column-structure artefact, but it did not show a positive sign on the single forward-in-time split. The test set has only 21 defaults, so T2 is noise-limited; the FAIL means the sign was not shown, not that E is worse. Illustrative only: one corpus, 76 defaults, unknown lineage.
+
+**Changes this session** (uncommitted on `trackC`):
+- `scripts/berka/fit_track_c_models.py` line 61: `"grant_date"` added to `ID_COLS` (owner-approved). Without it, v2 (step 3) crashed on the rebuilt substrates because `grant_date` was read as a numeric feature. v2 features are unchanged; the regenerated v2 and non-injectivity evidence files are byte-identical to the committed ones (`git status` shows them unmodified).
+- `docs/TEST_DESIGN_TRACK_C_BERKA.md`: new §9.4a with the results; §9 title and artifact line updated.
+- `docs/VERIFICATION_AUDIT_REGISTER.md`: v3 section updated, with T1/T2/T3 recorded as `verified` PASS/FAIL/PASS.
+- `data/test_evidence/TRACK_C_BERKA_V3_EVIDENCE.json` created (untracked). The other two evidence files were regenerated unchanged.
+- A local `.venv` (git-ignored) was created with numpy 2.5.4.
+
+**Operational notes:** step 5 took roughly 34 minutes here. Its output is block-buffered when redirected to a file, so the progress lines only appear at the end.
+
+**Owner decision (2026-11-10, after the v3 run):** Track C stays as is, an illustrative example outside the AIM structure. No language model was trained on Track C (L2 logistic regression on hand-built numeric features). Not moved into `RESEARCH_OBJECTIVES.md` §7, no rolling-window v4, no LLM arm.
+
+
+### Next
+1. ~~Commit and push `trackC`~~ done this session.
+2. **Owner decision 2026-11-10: Track C is left out of Paper 2 entirely** (no results section, no footnote). Do not re-run or change thresholds to turn T2 into a pass.
+3. Remaining deferred items are unchanged (see the next section's "What is NOT next").
+
+---
+
+## 2026-11-10 (session close, superseded by the entry above) Run Track C v3 (Bob, Mac)
 
 **Branch:** `trackC` (HEAD `40f1b61`). Working tree clean. `trackC` is **local only** — push before running on another machine.
 

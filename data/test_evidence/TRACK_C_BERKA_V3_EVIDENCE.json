@@ -1,0 +1,211 @@
+{
+  "experiment": "Paper 2 - Track C Retail Banking Benchmark (Berka PKDD'99), v3 protocol",
+  "protocol": {
+    "version": "v3",
+    "learner": "L2 logistic regression (IRLS), nested-CV lambda selection",
+    "lambda_grid": [
+      0.1,
+      1.0,
+      10.0,
+      100.0
+    ],
+    "outer_folds": "stratified 5-fold x 20 repeats",
+    "inner_folds": "stratified 3-fold within each outer training set",
+    "interval": "2000 stratified paired bootstrap resamples of loans",
+    "permutation_n": 999,
+    "neighbours_k": 5
+  },
+  "locked_thresholds": {
+    "T1_ci_lb": 0.0,
+    "T1_desc": "paired 95% CI lower bound on E-B ROC-AUC must exceed this",
+    "T2_desc": "temporal split E ROC-AUC must exceed B (sign positive)",
+    "T3_perm_p": 0.05,
+    "T3_desc": "permutation p on event-only columns must be below this"
+  },
+  "columns": {
+    "b": [
+      "loan_amount",
+      "duration",
+      "payments",
+      "history_days",
+      "bal_mean",
+      "bal_min",
+      "bal_max",
+      "bal_std",
+      "bal_last",
+      "bal_last30_mean",
+      "days_negative",
+      "days_below_5000",
+      "credit_per30",
+      "debit_per30",
+      "changed_days_per30"
+    ],
+    "e_extra": [
+      "txn_per30",
+      "multi_txn_day_share",
+      "max_rows_per_day",
+      "avg_gap_days",
+      "cash_wd_per30",
+      "card_wd_per30",
+      "deposit_per30",
+      "xfer_out_per30",
+      "xfer_in_per30",
+      "cash_wd_amt_per30",
+      "card_wd_amt_per30",
+      "deposit_amt_per30",
+      "cash_drain_ratio",
+      "sipo_per30",
+      "sluzby_per30",
+      "pojistne_per30",
+      "duchod_per30",
+      "sanction_per30",
+      "distinct_partner_accounts",
+      "distinct_partner_banks",
+      "partner_txn_per30",
+      "partner_txn_share"
+    ]
+  },
+  "corpus_scale": {
+    "loans": 682,
+    "defaults": 76,
+    "default_ratio": 0.11143695014662756
+  },
+  "cv_all_loans": {
+    "loans": 682,
+    "defaults": 76,
+    "B_roc_auc": 0.8664886225464652,
+    "E_roc_auc": 0.9097620288344624,
+    "E_minus_B_roc_auc": 0.04327340628799725,
+    "E_minus_B_ci95": [
+      0.012568394997394414,
+      0.07602049678652067
+    ],
+    "T1_verdict": "PASS",
+    "brier_B": 0.05901225026908598,
+    "brier_E": 0.05100312286389679,
+    "lambda_B_counts": {
+      "0.1": 7,
+      "1.0": 60,
+      "10.0": 32,
+      "100.0": 1
+    },
+    "lambda_E_counts": {
+      "0.1": 37,
+      "1.0": 39,
+      "10.0": 24,
+      "100.0": 0
+    }
+  },
+  "cv_overdraft_free_loans": {
+    "loans": 656,
+    "defaults": 50,
+    "B_roc_auc": 0.7889438943894389,
+    "E_roc_auc": 0.8574587458745875,
+    "E_minus_B_roc_auc": 0.06851485148514858,
+    "E_minus_B_ci95": [
+      0.02127970297029694,
+      0.12327062706270625
+    ],
+    "T1_verdict": "PASS",
+    "brier_B": 0.05964377854766393,
+    "brier_E": 0.05162385144914501,
+    "lambda_B_counts": {
+      "0.1": 12,
+      "1.0": 19,
+      "10.0": 68,
+      "100.0": 1
+    },
+    "lambda_E_counts": {
+      "0.1": 39,
+      "1.0": 25,
+      "10.0": 34,
+      "100.0": 2
+    }
+  },
+  "temporal_split": {
+    "train_n": 409,
+    "train_defaults": 55,
+    "test_n": 273,
+    "test_defaults": 21,
+    "cutoff_date": "1997-06-13",
+    "train_end_date": "1997-06-13",
+    "B": {
+      "lambda": 1.0,
+      "test_roc_auc": 0.9240362811791383,
+      "test_defaults": 21,
+      "test_loans": 273
+    },
+    "E": {
+      "lambda": 1.0,
+      "test_roc_auc": 0.922713529856387,
+      "test_defaults": 21,
+      "test_loans": 273
+    },
+    "E_minus_B_test_roc_auc": -0.001322751322751281,
+    "T2_verdict": "FAIL"
+  },
+  "permutation_test": {
+    "event_only_columns": [
+      "txn_per30",
+      "multi_txn_day_share",
+      "max_rows_per_day",
+      "avg_gap_days",
+      "cash_wd_per30",
+      "card_wd_per30",
+      "deposit_per30",
+      "xfer_out_per30",
+      "xfer_in_per30",
+      "cash_wd_amt_per30",
+      "card_wd_amt_per30",
+      "deposit_amt_per30",
+      "cash_drain_ratio",
+      "sipo_per30",
+      "sluzby_per30",
+      "pojistne_per30",
+      "duchod_per30",
+      "sanction_per30",
+      "distinct_partner_accounts",
+      "distinct_partner_banks",
+      "partner_txn_per30",
+      "partner_txn_share"
+    ],
+    "n_permutations": 999,
+    "real_E_minus_B_roc_auc": 0.04327340628799725,
+    "perm_mean": -0.026383905183627283,
+    "perm_sd": 0.012724990716278651,
+    "perm_p_one_sided": 0.0,
+    "T3_verdict": "PASS"
+  },
+  "non_injectivity_test2": {
+    "all_loans": {
+      "defaults": 76,
+      "mean_gap_B": 0.30940899731946064,
+      "mean_gap_E": 0.4093701300144603,
+      "gap_gain": 0.09996113269499962,
+      "gap_gain_ci95": [
+        0.06218460672729307,
+        0.14050600228909169
+      ],
+      "win_rate_B": 0.7631578947368421,
+      "win_rate_E": 0.8421052631578947
+    },
+    "overdraft_free": {
+      "defaults": 50,
+      "mean_gap_B": 0.08426400513046335,
+      "mean_gap_E": 0.21278578775339405,
+      "gap_gain": 0.1285217826229307,
+      "gap_gain_ci95": [
+        0.0801754418376709,
+        0.1802217142875592
+      ],
+      "win_rate_B": 0.6,
+      "win_rate_E": 0.76
+    }
+  },
+  "verdict": {
+    "T1": "PASS",
+    "T2": "FAIL",
+    "T3": "PASS",
+    "overall": "FAIL"
+  }
+}
