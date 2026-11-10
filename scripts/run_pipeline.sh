@@ -123,6 +123,8 @@ MATERIALIZATION_PROFILE="unspecified"
 PERIOD_GRANULARITY="monthly"
 PO_PATH=""
 PAYMENT_PATH=""
+SEED_FROM_COMMITTED="N"
+VIEW_IN_PATHS=""
 
 # ── arg parsing ───────────────────────────────────────────────────────────────
 while [[ $# -gt 0 ]]; do
@@ -139,6 +141,8 @@ while [[ $# -gt 0 ]]; do
     --periodGranularity) PERIOD_GRANULARITY="$2"; shift 2 ;;
     --poPath)      PO_PATH="$2";      shift 2 ;;
     --paymentPath) PAYMENT_PATH="$2"; shift 2 ;;
+    --seedFromCommitted) SEED_FROM_COMMITTED="Y"; shift ;;
+    --viewInPaths) VIEW_IN_PATHS="$2"; shift 2 ;;
     -h|--help)     grep '^#' "$0" | sed 's/^# \{0,2\}//'; exit 0 ;;
     *) echo "Unknown option: $1"; exit 1 ;;
   esac
@@ -294,19 +298,41 @@ log() {
   echo "$msg" >> "$LOG_FILE"
 }
 
+# Row counts use wc -l (newline count). Engine outputs are println-terminated, so this equals the
+# former awk NR count; it is several times faster on the 10M+ row merged files.
 count_file_rows() {
-  local file="$1"
-  [[ -f "$file" ]] && awk 'END { print NR + 0 }' "$file" || printf '0\n'
+  local file="$1" n
+  if [[ -f "$file" ]]; then n=$(wc -l < "$file" | tr -d ' '); printf '%s\n' "${n:-0}"; else printf '0\n'; fi
 }
 
 count_data_rows() {
-  local file="$1"
-  [[ -f "$file" ]] && awk 'END { print (NR > 0 ? NR - 1 : 0) }' "$file" || printf '0\n'
+  local file="$1" n
+  if [[ -f "$file" ]]; then
+    n=$(wc -l < "$file" | tr -d ' '); n=${n:-0}
+    printf '%s\n' "$(( n > 0 ? n - 1 : 0 ))"
+  else
+    printf '0\n'
+  fi
 }
 
 count_file_bytes() {
   local file="$1"
   [[ -f "$file" ]] && wc -c < "$file" | tr -d ' ' || printf '0\n'
+}
+
+# One-read rule (mirrors SortedJEInputs.scala): when SortedJEFY<YY>merged.csv exists, steps 3/20/21
+# read it plus the derived files (_FXR/_ALLOC/_CONTRA/_RECLASS) and skip the 2m inputs, which hold
+# the same rows. Prints one file per line. Orchestration of file selection only; no financial logic.
+oneread_sje_files() {
+  local year="$1" f merged="$OUT_PATH/SortedJEFY${1}merged.csv"
+  for f in "$OUT_PATH/SortedJEFY${year}"*.csv; do
+    [[ -f "$f" ]] || continue
+    if [[ -f "$merged" && "$f" != "$merged" && "$f" != *_FXR* && "$f" != *_ALLOC* \
+          && "$f" != *_CONTRA* && "$f" != *_RECLASS* ]]; then
+      continue
+    fi
+    printf '%s\n' "$f"
+  done
 }
 
 # Directory that holds the step-2 payment file FY<YY>q<Q>exp.txt (explicit --paymentPath wins).
@@ -437,11 +463,10 @@ run_step() {
       output_file="$OUT_PATH/LDGR20${year}.csv"
       records_read=0
       input_bytes=0
-      for sje_file in "$OUT_PATH/SortedJEFY${year}"*.csv; do
-        [[ -f "$sje_file" ]] || continue
+      while IFS= read -r sje_file; do
         records_read=$((records_read + $(count_file_rows "$sje_file")))
         input_bytes=$((input_bytes + $(count_file_bytes "$sje_file")))
-      done
+      done < <(oneread_sje_files "$year")
       ;;
     5v)
       # Step 5v produces four view files; use the merged SJE as reference input
@@ -457,11 +482,10 @@ run_step() {
       output_file="$OUT_PATH/GL20${year}.csv"
       input_bytes=0
       records_read=0
-      for sje_file in "$OUT_PATH/SortedJEFY${year}"*.csv; do
-        [[ -f "$sje_file" ]] || continue
+      while IFS= read -r sje_file; do
         records_read=$((records_read + $(count_file_rows "$sje_file")))
         input_bytes=$((input_bytes + $(count_file_bytes "$sje_file")))
-      done
+      done < <(oneread_sje_files "$year")
       ;;
     21)
       # PermutationGenerator: same input glob as step 20
@@ -470,11 +494,10 @@ run_step() {
       output_file="$OUT_PATH/PERM_TBL20${year}.csv"
       input_bytes=0
       records_read=0
-      for sje_file in "$OUT_PATH/SortedJEFY${year}"*.csv; do
-        [[ -f "$sje_file" ]] || continue
+      while IFS= read -r sje_file; do
         records_read=$((records_read + $(count_file_rows "$sje_file")))
         input_bytes=$((input_bytes + $(count_file_bytes "$sje_file")))
-      done
+      done < <(oneread_sje_files "$year")
       ;;
     6)
       input_file="$OUT_PATH/LDGR20${year}.csv"
@@ -539,6 +562,10 @@ run_step() {
   fi
 
   local period_arg=" --periodGranularity $PERIOD_GRANULARITY"
+  # Step 5v can merge several years' output directories in one ordered pass (CKBViews inPaths).
+  if [[ "$step" == "5v" && -n "$VIEW_IN_PATHS" ]]; then
+    period_arg+=" --inPaths $VIEW_IN_PATHS"
+  fi
 
   if [[ "$time_mode" == "macos" ]]; then
     out=$(cd "$SBT_PROJECT" && /usr/bin/time -l sbt -batch \
@@ -606,10 +633,10 @@ run_step() {
     2p)
       records_written=$(count_file_rows "$output_file")
       result_line_2p=$(echo "$out" | grep -E "RESULT step=2p " | tail -1 || true)
-      if [[ -z "$records_read" || "$records_read" == "?" || "$records_read" == "0" ]]; then
-        records_read=$(printf '%s\n' "$result_line_2p" | sed -nE 's/.*records_read=([0-9]+).*/\1/p' | tail -1)
-        [[ -n "$records_read" ]] || records_read="?"
-      fi
+      # records_read is the engine's logical PO record count (physical lines can span several lines).
+      engine_2p_read=$(printf '%s\n' "$result_line_2p" | sed -nE 's/.*records_read=([0-9]+).*/\1/p' | tail -1)
+      [[ -z "$engine_2p_read" ]] || records_read="$engine_2p_read"
+      [[ -n "$records_read" ]] || records_read="?"
       if [[ -z "$records_written" || "$records_written" == "?" || "$records_written" == "0" ]]; then
         records_written=$(printf '%s\n' "$result_line_2p" | sed -nE 's/.*records_written=([0-9]+).*/\1/p' | tail -1)
         [[ -n "$records_written" ]] || records_written="?"
@@ -683,6 +710,13 @@ run_step() {
 
   # Structured result line — readable by agents and humans
   local result_line="RESULT step=$step year=$year quarter=$quarter elapsed_s=$elapsed rc=$rc records_read=$records_read records_written=$records_written input_bytes=$input_bytes output_bytes=$output_file_bytes outPath_bytes=$out_bytes"
+  if [[ "$step" == "2p" ]]; then
+    for field in records_accepted skipped_quarantine reader_rejects physical_lines; do
+      local value
+      value=$(printf '%s\n' "$result_line_2p" | sed -nE "s/.*(^| )${field}=([^ ]+).*/\\2/p" | tail -1)
+      [[ -z "$value" ]] || result_line+=" $field=$value"
+    done
+  fi
   if [[ "$step" == "12" ]]; then
     local engine_result
     engine_result=$(printf '%s\n' "$out" | grep -E 'RESULT step=12 ' | tail -1 || true)
@@ -753,6 +787,25 @@ record_cost_point() {
 # ── main loop ─────────────────────────────────────────────────────────────────
 trap 'rc=$?; if [[ $rc -eq 0 ]]; then commit_attempt "$COMMITTED_OUT_PATH" "$ATTEMPT_OUT_PATH" || { cleanup_failed_attempt; exit 1; }; else cleanup_failed_attempt; fi' EXIT
 mkdir -p "$ATTEMPT_ROOT" "$OUT_PATH"
+# --seedFromCommitted: continue a year whose earlier steps are already committed (e.g. 3,20,21 after
+# ttl,2p,2m). Large data files are hard-linked (same filesystem, no copy, never modified in place);
+# log, cost surface and evidence directories are copied so this run appends to them.
+if [[ "$SEED_FROM_COMMITTED" == "Y" ]]; then
+  if [[ ! -d "$COMMITTED_OUT_PATH" ]]; then
+    echo "ERROR: --seedFromCommitted but nothing committed at $COMMITTED_OUT_PATH" >&2
+    exit 1
+  fi
+  for seed_item in "${COMMITTED_OUT_PATH%/}"/*; do
+    seed_name="$(basename "$seed_item")"
+    if [[ -d "$seed_item" ]]; then
+      cp -R "$seed_item" "$OUT_PATH/$seed_name"
+    elif [[ "$seed_name" == "cost_surface.csv" || "$seed_name" == "pipeline_results.log" ]]; then
+      cp "$seed_item" "$OUT_PATH/$seed_name"
+    else
+      ln "$seed_item" "$OUT_PATH/$seed_name" 2>/dev/null || cp "$seed_item" "$OUT_PATH/$seed_name"
+    fi
+  done
+fi
 for year in ${YEARS//,/ }; do
   if [[ -f "$COMMITTED_OUT_PATH/LDGR20${year}.csv" ]]; then
     cp "$COMMITTED_OUT_PATH/LDGR20${year}.csv" "$OUT_PATH/LDGR20${year}.csv"

@@ -538,6 +538,8 @@ applied to agentic analysis.**
 | **Sort order is a contract** | Paper 4 §6.2: sort at write time eliminates query-time re-sort | First/last line answers range questions; two-pointer walk for comparisons |
 | **Never load what you don't use** | Paper 2 Theorem 1: loading compressed data burns tokens without adding information | `grep` before `read_file`; scripts before interactive reads |
 | **All outputs in one pass** | Paper 5 §6.2: O(M) single pass produces all V views simultaneously | No intermediate files; column remaps and filters are inline, not pre-passes |
+| **All periods flow, the writer selects** | CKB model: working set is one key group | A history view runs in the last period's pass over every period's ordered partition; the standard ledger WRITE still selects only the current period. An extra pass for an odd view is cheaper to control than a change to the standard path (`CKB_LAYER_EXECUTION_MODEL.md`, Cross-Period Views) |
+| **Memory is the group, not the key space** | CKB model: bounded by the largest key group | Do not size a CKB view by distinct keys or by number of periods; if a design needs that, it is not a CKB design |
 | **No intermediate files** | Session 15: convert_bal_to_ldgr.ps1 doubled I/O for zero gain | If a file is just a format translation of an input, do it inline |
 | **Dry run before write** | Session 15 learning: disk writes are expensive; incorrect output costs more than two clean passes | Every new script gets a --dry-run flag; validate control totals before committing |
 | **Aggregate in the pass** | Paper 4 §4.3: in-memory piping; zero scratch files | One `execute_command` computes all statistics in one pass |

@@ -71,7 +71,8 @@ object post {
     } else {
       jrnlFileNamesFiltered
     }
-    val jrnlFileNamesSorted = jrnlFileNamesSelected.sortWith(_.getName < _.getName)
+    // One-read rule: when a year's merged file is present, its 2m inputs hold the same rows; skip them.
+    val jrnlFileNamesSorted = SortedJEInputs.oneRead(jrnlFileNamesSelected.sortWith(_.getName < _.getName))
 
     //-----------------------------------------------------------------------------------------
     // Process Varilables

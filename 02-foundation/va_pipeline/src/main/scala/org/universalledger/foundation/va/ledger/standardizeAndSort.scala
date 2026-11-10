@@ -7,6 +7,8 @@ import java.util.Calendar
 
 import org.apache.commons.csv.{CSVFormat, CSVParser}
 
+import org.universalledger.foundation.va.corpus.CorpusProfile
+
 import scala.collection.mutable
 import scala.io.Source
 
@@ -405,147 +407,111 @@ object standardizeAndSort {
       sys.exit(1)
     }
 
-    implicit val codec = scala.io.Codec.UTF8
-      .onMalformedInput(java.nio.charset.CodingErrorAction.REPLACE)
-      .onUnmappableCharacter(java.nio.charset.CodingErrorAction.REPLACE)
-
     val tmpDir = outPath.stripSuffix("/") + "/.sortedPO_spill_" + System.currentTimeMillis()
     new File(tmpDir).mkdirs()
 
-    var sourceRows    = 0L
-    var skippedRows   = 0L   // address-fragment column-shift quarantine count
+    var sourceRows    = 0L   // records accepted into SJE rows
+    var skippedRows   = 0L   // every quarantined record: reader rejects + the three field guards
+    var readerRejects = 0L   // subset of skippedRows rejected by PORecordReader (structure)
     var totalRows     = 0L
     var totalAmt      = BigDecimal(0)
     var jrnlID        = 0
 
-    // Stream the PO file through the sort engine one row at a time.
+    // Structural reader: record boundaries come from the ORDEREDDATE anchor and the header field count,
+    // not from quote parity (see PORecordReader). Nothing is dropped without a row in the quarantine file.
+    val reader = new PORecordReader(new java.io.FileInputStream(inF))
+    val quarantineFile = outPath.stripSuffix("/") + "/POQuarantineFY" + shortYr + ".csv"
+    val qWriter = new BufferedWriter(new java.io.OutputStreamWriter(new java.io.FileOutputStream(quarantineFile), StandardCharsets.UTF_8))
+    qWriter.write(CorpusProfile.csvLine(CorpusProfile.QuarantineHeader))
+    val quarantine = new CorpusProfile.Quarantine(qWriter)
+    val sourceName = inF.getName
+    val reasonCounts = mutable.LinkedHashMap[String, Long]()
+    def quarantineItem(item: PORecordReader.Item, reason: String): Unit = {
+      skippedRows += 1
+      reasonCounts(reason) = reasonCounts.getOrElse(reason, 0L) + 1
+      quarantine.add(sourceName, item.ordinal, item.startLine, item.startOffset, item.lines, reason, item.raw)
+    }
+
+    // Stream the PO file through the sort engine one record at a time.
     // The iterator yields comma-joined 39-field SJE strings; SortEngine.externalSort
     // handles the chunk/spill/merge cycle at O(chunkSize) peak heap.
     val rowIterator: Iterator[String] = new Iterator[String] {
-      private val src   = scala.io.Source.fromFile(inFile)(codec)
-      private val lines: BufferedIterator[String] = src.getLines().buffered
-
-      // Consume header (first non-empty line)
-      if (lines.hasNext) lines.next()
-      // Consume blank second line common in VA PO files (e.g. blank line after header)
-      while (lines.hasNext && lines.head.trim.isEmpty) lines.next()
-
       private var pending: List[String] = Nil
-
-      // Multi-line field handling: description and vendor-address fields may contain
-      // embedded newlines, so one PO record can span several physical lines.
-      // Record boundary = a physical line whose third tab field (ORDEREDDATE) is
-      // MM/DD/YYYY, or empty with at least 6 tabs (a full-width row). Every physical
-      // line that is NOT a record start is a continuation and is joined onto the
-      // preceding record with a space (so the downstream comma-replace still works).
-      // This replaces the earlier quote-parity join, which absorbed every following
-      // record whenever a description held an unmatched `"` (e.g. `18" x 225 ft.`).
-      // Orphaned fragments that don't form a ≥7-column row are discarded by the
-      // existing `cols.length >= 7` guard in fetchNext.
-      private val dateField = "\\d{1,2}/\\d{1,2}/\\d{4}"
-      private def isRecordStart(line: String): Boolean = {
-        val f = line.split("\t", 4)
-        if (f.length < 4) false
-        else {
-          val d = f(2).trim.stripPrefix("\"").stripSuffix("\"")
-          d.matches(dateField) || (d.isEmpty && line.count(_ == '\t') >= 6)
-        }
-      }
-      private def nextLogicalLine(): String = {
-        if (!lines.hasNext) return ""
-        val sb = new StringBuilder(lines.next())
-        while (lines.hasNext && !isRecordStart(lines.head)) {
-          sb.append(' ')
-          sb.append(lines.next())
-        }
-        sb.toString()
-      }
 
       override def hasNext: Boolean = pending.nonEmpty || fetchNext()
 
       private def fetchNext(): Boolean = {
-        while (lines.hasNext || pending.nonEmpty) {
-          if (pending.nonEmpty) return true
-          val raw = nextLogicalLine().trim
-          if (raw.nonEmpty) {
-            val cols = raw.split("\t", -1).map(_.trim)
-            // Accept rows with ≥ 7 columns AND a valid date-shaped ordDate (col 2 = MM/DD/YYYY).
-            // This guards against stray continuation fragments that have enough columns but
-            // land a non-date value at col 2, which is the most reliable structural anchor.
-            val colsOk = cols.length >= 7 && {
-              val d = if (cols.length > 2) cols(2) else ""
-              // Strip outer quotes from date before validation
-              val ds = d.stripPrefix("\"").stripSuffix("\"")
-              ds.matches("\\d{1,2}/\\d{1,2}/\\d{4}") || ds.isEmpty
-            }
-            if (colsOk) {
-              // Tab-delimited PO source uses RFC-4180 quoting: string fields are wrapped
-              // in double-quotes.  Strip those outer quotes before use so they never
-              // appear inside the comma-delimited SortedJE output rows.
-              def unq(s: String): String = s.stripPrefix("\"").stripSuffix("\"")
-              val poNumber   = unq(cols(0))
-              // Pre-SJE address-fragment guard: multi-line vendor addresses (city/state/ZIP
-              // on a separate physical line) survive RFC-4180 reassembly but cause a column
-              // shift that places the state+ZIP fragment in the PONUMBER field.
+        while (reader.hasNext) {
+          reader.next() match {
+            case rej: PORecordReader.Rej =>
+              readerRejects += 1
+              quarantineItem(rej, rej.reason)
+
+            case rec: PORecordReader.Rec =>
+              // Fields are already unquoted and trimmed by the reader (19 fields, header width).
+              val cols     = rec.fields
+              val poNumber = cols(0)
+              // Pre-SJE address-fragment guard: a state+ZIP fragment in the PONUMBER field.
               // Pattern: optional whitespace, two uppercase letters, whitespace, five digits.
-              // Rows matching this pattern are quarantined here — no SJE rows emitted.
               if (poNumber.matches("\\s*[A-Z]{2}\\s+\\d{5}.*")) {
-                skippedRows += 1
                 Console.err.println(s"[applyPO] QUARANTINE address-fragment in PONUMBER field" +
-                  s" (row ~${sourceRows + skippedRows}): '$poNumber' — skipping row")
+                  s" (record ${rec.ordinal}, line ${rec.startLine}): '$poNumber' — skipping row")
+                quarantineItem(rec, "ADDRESS_FRAGMENT")
               } else if (tryBigDecimal(cols, 5, null.asInstanceOf[BigDecimal]) == null && poNumber.matches(".*\\d.*")) {
-                // Extended guard: price field (col 5) is non-numeric AND poNumber contains
-                // digits — row survived RFC-4180 reassembly as a well-formed logical record
-                // but the column-shift from a multi-line vendor address placed garbage in the
-                // price field.  These rows produce safeBD-zeroed SJE pairs that are not
-                // balanced (debit and credit map to different commitment keys) and contribute
-                // to the $18.00 ledger delta.  Quarantine here — no SJE rows emitted.
-                skippedRows += 1
+                // Price field (col 5) is non-numeric and the PONUMBER looks real: a column shift that the
+                // reader's field count cannot see. These rows would produce unbalanced SJE pairs.
                 Console.err.println(s"[applyPO] QUARANTINE non-numeric price field" +
-                  s" (row ~${sourceRows + skippedRows}): poNumber='$poNumber'" +
-                  s" price='${if (cols.length > 5) cols(5) else "missing"}' — skipping row")
+                  s" (record ${rec.ordinal}, line ${rec.startLine}): poNumber='$poNumber'" +
+                  s" price='${cols(5)}' — skipping row")
+                quarantineItem(rec, "BAD_PRICE")
+              } else if (!cols(6).matches("[A-Za-z]{0,3}\\d+(-[A-Za-z]+)?")) {
+                // Vendor-ID shape guard: transIPID is the leading CKB sort key, so a price, decimal or
+                // description fragment in VENDORID would create a bogus vendor group.
+                // Accepted shape (observed, not a vendor-master rule): 0-3 letters, digits, optional -SUFFIX (e.g. 178461687-BAD).
+                Console.err.println(s"[applyPO] QUARANTINE implausible VENDORID" +
+                  s" (record ${rec.ordinal}, line ${rec.startLine}): poNumber='$poNumber'" +
+                  s" vendorId='${cols(6)}' — skipping row")
+                quarantineItem(rec, "BAD_VENDOR_ID")
               } else {
-              sourceRows += 1
-              jrnlID     += 1
-              val agency     = unq(cols(1))
-              val ordDate    = if (cols(2).nonEmpty) unq(cols(2)) else acctDate
-              val commDesc   = if (cols.length > 3) unq(cols(3)).replace(",", " ") else " "
-              val qty        = tryBigDecimal(cols, 4, BigDecimal(1))
-              val price      = tryBigDecimal(cols, 5, BigDecimal(0))
-              val vendorId   = unq(cols(6))
-              val nigpCode   = if (cols.length > 13) unq(cols(13)) else "00000"
-              val uomCode    = if (cols.length > 15) unq(cols(15)) else " "
-              val amt        = price * qty
+                sourceRows += 1
+                jrnlID     += 1
+                val agency     = cols(1)
+                val ordDate    = if (cols(2).nonEmpty) cols(2) else acctDate
+                val commDesc   = cols(3).replace(",", " ")
+                val qty        = tryBigDecimal(cols, 4, BigDecimal(1))
+                val price      = tryBigDecimal(cols, 5, BigDecimal(0))
+                val vendorId   = cols(6)
+                val nigpCode   = cols(13)
+                val uomCode    = cols(15)
+                val amt        = price * qty
 
-              val jid = "ID" + jrnlID + acctDate + "PO"
+                val jid = "ID" + jrnlID + acctDate + "PO"
 
-              // Build the fiscal period key for this PO row.
-              // monthly → parse ORDEREDDATE (MM/DD/YYYY) → "YYYY/MM"; fall back to yearStr.
-              val poPeriodKey: String = if (periodGranularity == "monthly") {
-                val dateParts = ordDate.split("/")
-                if (dateParts.length == 3 && dateParts(2).length == 4)
-                  dateParts(2) + "/" + f"${dateParts(0).toInt}%02d"
-                else yearStr
-              } else yearStr
+                // Build the fiscal period key for this PO row.
+                // monthly → parse ORDEREDDATE (MM/DD/YYYY) → "YYYY/MM"; fall back to yearStr.
+                val poPeriodKey: String = if (periodGranularity == "monthly") {
+                  val dateParts = ordDate.split("/")
+                  if (dateParts.length == 3 && dateParts(2).length == 4)
+                    dateParts(2) + "/" + f"${dateParts(0).toInt}%02d"
+                  else yearStr
+                } else yearStr
 
-              val debitRow  = makePORow(vendorId, poNumber, jid, "1", "COMMITMENT",
-                                        agency, nigpCode, poPeriodKey, acctDate, ordDate,
-                                        amt.toString(), uomCode, price.toString(), qty.toString(),
-                                        commDesc)
-              val creditRow = makePORow(vendorId, poNumber, jid, "2", "COMMITMENT",
-                                        agency, "0000", poPeriodKey, acctDate, ordDate,
-                                        (-amt).toString(), uomCode, price.toString(), qty.toString(),
-                                        "COMMITMENT_OFFSET")
+                val debitRow  = makePORow(vendorId, poNumber, jid, "1", "COMMITMENT",
+                                          agency, nigpCode, poPeriodKey, acctDate, ordDate,
+                                          amt.toString(), uomCode, price.toString(), qty.toString(),
+                                          commDesc)
+                val creditRow = makePORow(vendorId, poNumber, jid, "2", "COMMITMENT",
+                                          agency, "0000", poPeriodKey, acctDate, ordDate,
+                                          (-amt).toString(), uomCode, price.toString(), qty.toString(),
+                                          "COMMITMENT_OFFSET")
 
-              totalRows += 2
-              totalAmt  += amt + (-amt)   // always 0; tracked for control assertion
-              pending = debitRow :: creditRow :: Nil
-              return true
-              } // end address-fragment else branch
-            }
+                totalRows += 2
+                totalAmt  += amt + (-amt)   // always 0; tracked for control assertion
+                pending = debitRow :: creditRow :: Nil
+                return true
+              }
           }
         }
-        src.close()
         false
       }
 
@@ -556,16 +522,30 @@ object standardizeAndSort {
       }
     }
 
+
+    // Reconciliation (runs after the reader is drained): every physical line after the header is in exactly
+    // one record, and every record is either accepted into SJE rows or written to the quarantine file.
+    def reconcile(): Unit = {
+      qWriter.close()
+      reader.close()
+      if (reader.physicalLines != reader.groupedLines)
+        throw new IllegalStateException(s"[applyPO] line reconcile failed for $inFile: physical=${reader.physicalLines} grouped=${reader.groupedLines}")
+      if (reader.logicalRecords != sourceRows + skippedRows)
+        throw new IllegalStateException(s"[applyPO] record reconcile failed for $inFile: records=${reader.logicalRecords} accepted=$sourceRows quarantined=$skippedRows")
+    }
+
     if (dryRun) {
       // Drain the iterator for control-total accounting without writing
       rowIterator.foreach(_ => ())
-      println(s"\n--dryRun: source_rows=$sourceRows sje_rows=$totalRows")
+      reconcile()
+      println(s"\n--dryRun: source_rows=$sourceRows sje_rows=$totalRows quarantined=$skippedRows")
       new File(tmpDir).delete()
       return
     }
 
     val (rowsWritten, spillCount) = SortEngine.externalSort(rowIterator, outFile, sortSpec, chunkSize, tmpDir)
     new File(tmpDir).delete()
+    reconcile()
 
     val elapsedS = ((System.currentTimeMillis() - t0) / 1000).max(1)
     val inBytes  = inF.length()
@@ -573,12 +553,15 @@ object standardizeAndSort {
     val peakRss  = Runtime.getRuntime.totalMemory()
 
     println(f"\nControl totals:")
-    println(f"  PO source rows read : $sourceRows%,d")
-    println(f"  Rows quarantined    : $skippedRows%,d  (address-fragment + non-numeric-price guards)")
-    println(f"  SJE rows produced   : $rowsWritten%,d  (= 2 × source rows)")
+    println(f"  Physical lines      : ${reader.physicalLines}%,d  (all assigned to a record: ${reader.groupedLines}%,d)")
+    println(f"  Logical records     : ${reader.logicalRecords}%,d  (= accepted + quarantined)")
+    println(f"  PO records accepted : $sourceRows%,d")
+    println(f"  Records quarantined : $skippedRows%,d  (reader rejects $readerRejects%,d; see $quarantineFile)")
+    reasonCounts.foreach { case (r, n) => println(f"    $r%-20s $n%,d") }
+    println(f"  SJE rows produced   : $rowsWritten%,d  (= 2 × accepted records)")
     println(f"  Spill files used    : $spillCount%d")
     println(f"  Sum of all amounts  : $totalAmt%.2f  (should be 0.00)")
-    println(s"\nRESULT step=2p year=$yearStr rc=0 records_read=$sourceRows records_written=$rowsWritten skipped_quarantine=$skippedRows elapsed_s=$elapsedS input_bytes=$inBytes output_bytes=$outBytes")
+    println(s"\nRESULT step=2p year=$yearStr rc=0 records_read=${reader.logicalRecords} records_written=$rowsWritten records_accepted=$sourceRows skipped_quarantine=$skippedRows reader_rejects=$readerRejects physical_lines=${reader.physicalLines} elapsed_s=$elapsedS input_bytes=$inBytes output_bytes=$outBytes")
     println(s"RESOURCE step=2p year=$yearStr peak_rss_bytes=$peakRss")
     println("STATUS: COMPLETE")
     println("*" * 100)

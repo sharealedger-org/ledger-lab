@@ -86,11 +86,13 @@ object GLPost {
 
     // Collect SortedJE files for the requested year
     val inDir    = new File(inPath)
+    // One-read rule: when SortedJEFY{yy}merged.csv exists, skip the 2m inputs that hold the same rows.
     val jeFiles  = if (inDir.exists() && inDir.isDirectory)
-      inDir.listFiles().filter(_.isFile)
-        .filter(f => f.getName.startsWith(s"SortedJEFY$shortYr") && f.getName.endsWith(".csv"))
-        .sortBy(_.getName)
-        .toSeq
+      SortedJEInputs.oneRead(
+        inDir.listFiles().filter(_.isFile)
+          .filter(f => f.getName.startsWith(s"SortedJEFY$shortYr") && f.getName.endsWith(".csv"))
+          .sortBy(_.getName)
+          .toSeq)
     else Seq.empty
 
     if (jeFiles.isEmpty) {

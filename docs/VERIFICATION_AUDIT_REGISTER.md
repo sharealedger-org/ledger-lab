@@ -228,6 +228,45 @@ Owner decisions, 2026-11-09: "Shift the AIM dates. Fix the applyPO." Recorded **
 | The locked CCP1-CCP3 PO figures (25,129-25,131 PO rows) still describe the current reader | contradicted | They were produced by the quote-parity reader. The corrected reader reads 52,430 records. | **Comparability break.** CCP1-CCP3 points must be re-measured with the new reader. Do not compare new PO counts, SJE counts, timings or sizes with the 2026-11-06 locked values as the same workload. |
 | AIM3/AIM4 eligible fiscal years are FY2006-08 and FY2010-FY2017 | recorded | PO source evidence in the 2026-11-06 section above (FY2001-05 stub/partial, FY2009 absent) plus raw order-date counts by fiscal year. `fit_vendor_survival.py` and `fit_ordering_seasonality.py` take `--eligible-fy` (default `2006-2008,2010-2017`). AIM3 drops ineligible years before building `present_next_year` and treats a vendor-year as observable only if year+1 is eligible (gap years and the last year are censored, not churn). AIM4 drops ineligible periods before counting years and classes. `py_compile` OK; a synthetic view confirms ineligible years are removed and gap-adjacent years are censored. | Not yet run on real view output. AIM3 still fits in-sample with one pooled model, not the locked 7-window protocol with FY2015-16 hold-out. AIM4 still uses a Mann-Whitney Q4 test rather than STL and does not apply the "majority of agencies" rule. Stage 3 directional slice moves from FY2003-FY2007 to FY2010-FY2014; the full-corpus run uses FY2006-08 and FY2010-FY2017. The 7-window protocol needs a contiguous run and must be re-specified (longest contiguous eligible run is FY2010-FY2017). |
 
+## 2026-11-10 Full-corpus rerun preparation: PO reader, one-read rule, cross-year 5v (Bob, Mac)
+
+Context (owner, 2026-11-10): the FY03-FY06 prep output was throttled, partly killed and unreliable; it is discarded and the run restarts from FY2003. Cleansing of the PO file, not language, was the defect. Python was not used for any of this work.
+
+### Workload declaration (AGENTIC_ARCHITECTURE_GATES.md §1)
+
+| Item | Declaration |
+|---|---|
+| Capability measured | Full VA corpus FY2003-FY2016 through CCP2/CCP1 (`ttl,2p,2m` then `3,20,21`) plus one CCP3 cross-year view pass (`5v`). Comparable only to runs on the same reader, one-read rule and substrate. |
+| Logical owner | `2p` reader: 01 transformation. One-read rule and `5v`: 02 foundation / 05 perspective. Orchestration: Bash only (`scripts/run_full_corpus.sh`). |
+| `2p` reader | `PORecordReader` (new): byte-level line reader, record start = ORDEREDDATE date or empty-on-full-width row, continuation lines joined with a space, bare CR to space, TAB split with quotes not interpreted, outer quotes stripped per field. Exactly header-width fields accepted; otherwise quarantined with reason `FIELD_COUNT` or `ORPHAN_FRAGMENT`. Field guards (`ADDRESS_FRAGMENT`, `BAD_PRICE`, `BAD_VENDOR_ID`) unchanged in kind. |
+| One-read rule | `SortedJEInputs.oneRead`: for a year whose `SortedJEFY{yy}merged.csv` exists, steps 3, 20, 21 and 5v read the merged file plus `_FXR/_ALLOC/_CONTRA/_RECLASS` and skip the 2m inputs (same rows). Previously every row was read twice. |
+| `5v` CKB placement | One k-way merge over every year's merged file, ordered by the engine key (`SortedJE.sortspec`, via `SortEngine.extractKey`), run once after the last year's chain. Memory is one vendor key group (View B), bounded maps (A, C, D). The standard ledger WRITE still selects only the current year; `5v` is an extra pass for a cross-period view, chosen because it is easier to control-total than changing the standard path. See `CKB_LAYER_EXECUTION_MODEL.md`, "Cross-Period Views: All Periods Flow, the Writer Selects". |
+| Order guard | Local to `5v`: a row below the previous key of its file, or a vendor key group that reappears, throws `IllegalStateException` and stops the step. Not shared with other CKB readers (follow-up). |
+| Schemas | View A-D columns and keys unchanged. View B `fiscal_year` remains the raw column-22 value. `present_next_year` now compares Virginia fiscal years (Jul-Jun) derived from column 22 (`YYYY` as is; `YYYY/MM` -> `YYYY` for 01-06, `YYYY+1` for 07-12). Payment rows are not part of View B. |
+| Controls | `2p`: physical lines == grouped lines and records == accepted + quarantined (throws otherwise); SJE amount sum 0.00; new RESULT keys `records_read` (logical records), `records_accepted`, `skipped_quarantine`, `reader_rejects`, `physical_lines`. `5v`: `records_read`, `rows_skipped_short`, `files_read`, view row counts. Steps 3/20/21: `records_read` equals merged-file rows plus derived files. |
+| Evidence | `StandardizeAndSortPOSpec` 13, `SortedJEInputsSpec` 3, `GLPostSpec` one-read test, `CKBViewsSpec` 20; full `sbt test` 70/70. Real-file scratch `2p` runs reconcile (table below). Real `5v` over the old FY03+FY04 merged files: 22,708,084 rows read, 2 files, order guard silent, 109 s (not a measured point). Small-fixture orchestrator run: `ttl`-less `2,2p,2m` then `--seedFromCommitted 3,20,21` then `--viewInPaths 5v`; steps 3, 20, 21 each read 1,540 rows (1,520 payment + 20 PO) where the old selection read 3,080. `run_repo_fixture_smoke_test.sh` passes (442 ledger rows, sum 0.00). |
+
+### Claims
+
+| Claim | State | Evidence | Remaining gap |
+|---|---|---|---|
+| Structural PO reader reconciles on real files | partially_verified | Scratch `2p` runs, all reconcile and SJE amount sum 0.00: FY2003 52,420 accepted / 20 quarantined (all `FIELD_COUNT`); FY2004 224 / 1; FY2005 1,032 / 3; FY2006 1,203,766 / 1,989 (1,988 reader rejects + 1 `BAD_PRICE`, 48 s); FY2009 file is 0 bytes and `2p` writes an empty SJE and a header-only quarantine, rc 0. | FY2007-FY2016 not yet run through the reader. Quarantine rate for FY2006 is 0.17%. |
+| New PO baseline | recorded | FY2003 accepted 52,420 (was 52,430 on the 2026-11-09 reader; 25,129 on the quote-parity reader). | **Comparability break again.** Do not compare PO counts, SJE counts, timings or sizes with the 2026-11-06 or 2026-11-09 figures. The 20 quarantined FY2003 records are embedded-tab records. |
+| Vendor-ID guard shape | **guess** | `[A-Za-z]{0,3}\d+(-[A-Za-z]+)?` is the owner-accepted working guess ("your guess is as good as mine"). 0 off-pattern IDs in the four scratch years. | Needs a source-of-truth for the vendor-ID shape; years not yet run may hold other shapes (they would be quarantined as `BAD_VENDOR_ID`, visible in the quarantine file). |
+| Steps 3/20/21 and 5v read each row once | partially_verified | Unit tests and the orchestrator fixture above. | Not yet shown on a full-year file. Old FY03-FY06 outputs (which doubled) are discarded. |
+| `5v` is correct across years | partially_verified | `CKBViewsSpec`: multi-year merge, vendor in two years is one key group, `vendor_count` counts a vendor once across files, order guard and split-group guard stop the step, View A control total. Real FY03+FY04 run completes. | No independent recomputation of View B on real data; the FY03/FY04 inputs used were from the discarded run. Peak memory not measured (reported value is `totalMemory`, 1 GiB, not RSS). |
+| Cross-period sort is correct | verified (FY03, FY04) | Under the engine key (columns 0 and 9-22, byte-wise) the old FY03 merged file (11,621,820 rows, 2,218 vendor groups) and FY04 (11,086,264 rows, 893 groups) have 0 descents and 0 split groups. Earlier "out of order" findings were my own check errors (column-1 `sort -c` and numeric `awk` compares), not engine defects. | Not rechecked on the files the rerun will produce, but `5v` now enforces it. |
+| Row counts in `run_pipeline.sh` / `write_canonical_evidence.sh` | changed | Serial `awk` passes replaced with `wc -l` (newline count; equals the old count for engine outputs, which are newline-terminated). This is an evidence-path change, not an engine change; time is outside engine `elapsed_s`. | Evidence-path time still counts in the per-step wrapper `elapsed_s`; engine `elapsed_s` is in each engine `RESULT` line. Control-total `awk` sums (`write_canonical_evidence.sh` lines ~445-470) remain serial. |
+
+### Known open items
+
+- `CorpusProfile` still assembles PO records its own way; `applyPO` and `CorpusProfile` may count differently. Re-pointing the profiler was deferred.
+- FY2003 bare-CR records (25) are now joined with a space; "cleaned" flags them.
+- A shared sort-order guard for the other CKB readers (steps 3, 20, 21, `2m`) is a later follow-up.
+- `scripts/launch_full_prep_x4.sh` (in `va_fresh_logs`, outside the repo) is superseded by `scripts/run_full_corpus.sh` and must not be reused (it waits on a running FY03 pid and still starts FY03 from the discarded output).
+- Corpus timing is two separate records: per-year rows in each `cost_surface.csv` and `corpus_wallclock_<stamp>.csv` from start/end stamps. With overlapping lanes, per-step `elapsed_s` is not comparable with serial baselines.
+
+
 
 
 ## 2026-10-31 Public supplier-directory reference acquisition

@@ -183,6 +183,34 @@ class GLPostSpec extends AnyFunSuite {
     }
   }
 
+  test("GLPost one-read rule: merged file plus its 2m inputs is read once (control total is not doubled)") {
+    withTempDirectory("glpost-oneread-") { tmpDir =>
+      val inDir  = Files.createDirectory(tmpDir.resolve("input"))
+      val outDir = Files.createDirectory(tmpDir.resolve("output"))
+
+      val rows = Seq(
+        makeJERow("V001", "AGY", "FND", "EXP001", "2014", "100.00", "D"),
+        makeJERow("V001", "AGY", "FND", "EXP001", "2014", "-100.00", "N"),
+        makeJERow("V002", "AGY", "FND", "EXP001", "2014", "200.00", "D"),
+        makeJERow("V002", "AGY", "FND", "EXP001", "2014", "-200.00", "N")
+      )
+      // Step 2m inputs and their merged output hold the same rows.
+      writeSortedJE(inDir, "2014", rows)                                   // SortedJEFY14q1exp.csv
+      java.nio.file.Files.write(inDir.resolve("SortedJEFY14merged.csv"), rows.mkString("\n").getBytes("UTF-8"))
+
+      val baos = new java.io.ByteArrayOutputStream()
+      Console.withOut(new java.io.PrintStream(baos, true, "UTF-8")) {
+        GLPost(Map("inPath" -> inDir.toString, "outPath" -> outDir.toString, "year" -> "2014"))
+      }
+
+      val src   = Source.fromFile(outDir.resolve("GL2014.csv").toFile, "UTF-8")
+      val lines = try src.getLines().toVector finally src.close()
+      val total = lines.drop(1).head.split(",").last.trim.toDouble
+      assert(Math.abs(total - 300.0) < 0.01, s"Expected 300.00 (read once), got $total (600.00 would mean a double read)")
+      assert(baos.toString("UTF-8").contains("records_read=4 "), s"Expected records_read=4; got:\n${baos.toString("UTF-8")}")
+    }
+  }
+
   test("GLPost emits RESULT and RESOURCE log lines") {
     withTempDirectory("glpost-metrics-") { tmpDir =>
       val inDir  = Files.createDirectory(tmpDir.resolve("input"))

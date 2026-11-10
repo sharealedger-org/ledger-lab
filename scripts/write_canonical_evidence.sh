@@ -87,12 +87,16 @@ init_file() {
 
 file_rows() {
   local file="$1"
-  [[ -f "$file" ]] && awk 'END { print NR }' "$file" || printf '0\n'
+  [[ -f "$file" ]] && { wc -l < "$file" | tr -d ' '; } || printf '0\n'
 }
 
 file_data_rows() {
-  local file="$1"
-  [[ -f "$file" ]] && awk 'END { print (NR > 0 ? NR - 1 : 0) }' "$file" || printf '0\n'
+  local file="$1" n
+  if [[ -f "$file" ]]; then
+    n=$(wc -l < "$file" | tr -d ' '); printf '%s\n' "$(( ${n:-0} > 0 ? ${n:-0} - 1 : 0 ))"
+  else
+    printf '0\n'
+  fi
 }
 
 file_bytes() {

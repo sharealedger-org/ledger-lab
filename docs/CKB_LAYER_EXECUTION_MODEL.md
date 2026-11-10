@@ -323,6 +323,44 @@ reduced partial aggregates emitted by an overflowing view buffer. Its input is n
 transaction stream and not the full ledger history. A later sort may also substantiate a view for a
 downstream CKB section, but that sort is charged to that view's new order contract.
 
+## Cross-Period Views: All Periods Flow, the Writer Selects
+
+A view that needs history (for example vendor survival, "present in a later year", or first-order
+year) does not have to carry state from one period's run to the next, and it does not need a
+hash map of all keys. Attach it to the **last period's** CKB pass and let every period's ordered
+partition flow through that one pass as declared inputs:
+
+```text
+FY03 merged ─┐
+FY04 merged ─┤  k-way merge on the CKB sort key (vendor first)
+...          ├─►  one CKB group at a time  ──►  standard ledger WRITE:  selects last-period rows only
+FY16 merged ─┘                              └─►  cross-period view WRITE: selects what it needs, any period
+```
+
+Rules:
+
+1. **Flow is not selection.** All periods are read, in key order, through the same CKB. Each WRITE
+   decides which of the records in the current group it emits. The standard ledger WRITE emits only
+   the current period; it does not change because other periods are present in the stream.
+2. **Memory is the CKB group, not the key space or the number of periods.** At any instant the
+   working set is one key group (for vendor-ordered streams, one vendor across all periods), so the
+   cross-period view is bounded by the largest group, as in any other CKB section. No cross-run
+   state file and no second sweep of earlier periods' outputs are needed.
+3. **An extra pass for an odd view is acceptable.** When a view's selection rule differs from the
+   standard process (a different period filter, a history look-ahead, a one-off report), it is
+   often simpler and easier to control-total as a separate pass or consumer over the same ordered
+   partitions than to change the standard process. Declare it as a physical pass in the
+   materialization profile and record its time separately from the per-period engine time. The
+   alternative, adding conditional logic to the standard ledger path, puts the change risk on the
+   path that carries the financial control totals.
+4. **Controls.** The standard WRITE keeps its own control total for the current period, unchanged.
+   The cross-period view carries its own: records read per period, groups emitted, and a
+   reconciliation of its per-period sums back to the period partitions it read.
+
+Applied here: step `5v` runs once, in the final period's pass, over every period's merged
+partition. Steps `3`, `20` and `21` stay per-period.
+
+
 ## Reference Joins and the Hash-Map Boundary
 
 A CKB process often needs to resolve an attribute from a reference table — for example, resolving

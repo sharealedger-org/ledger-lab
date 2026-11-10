@@ -1,6 +1,51 @@
 # Ledger Lab Handoff
 
 Updated 2026-11-10. This file is a concise state snapshot; use the linked design contracts for details.
+## 2026-11-10 (new session start point) Old output cleared; launch with 4 lanes is the first action (Bob, Mac)
+
+Owner decisions: commit the changes below, delete the old outputs, run with four lanes. Done in the closing session: changes committed; `~/workspace/va_fresh_root/output_full` emptied (FY03-FY06 symlinks and `.generations` removed, about 22 GB freed, 442 GiB free after). **The run has NOT been started.** `scripts/run_full_corpus.sh` was edited externally after I wrote it; I re-read it, it is intact and passes `bash -n`.
+
+First action in the new session:
+
+```bash
+cd ~/workspace/sharealedger/ledger-lab
+bash scripts/run_full_corpus.sh > ~/workspace/va_fresh_logs/run2_corpus.log 2>&1 &   # defaults: FY03-FY16, 4 lanes, monthly
+```
+
+Then watch `~/workspace/va_fresh_logs/run2_corpus.log`, `run2_prep_fy*.log`, `run2_chain_fy*.log`, and `corpus_wallclock_<stamp>.csv`. Do not edit Scala while it runs. OneDrive/Dropbox sync state was not confirmed with the owner; ask before launching. Stop at the first failure (the script does this and skips `5v`). Details are in the entry below.
+
+## 2026-11-10 (latest, `main`) Full-corpus rerun is ready to launch; not yet launched (Bob, Mac)
+
+Owner: "We have run nothing effectively. We're at ground zero." FY03-FY06 prep output is discarded. Evidence and the workload declaration are in `docs/VERIFICATION_AUDIT_REGISTER.md`, "2026-11-10 Full-corpus rerun preparation".
+
+### What changed (all uncommitted on `main`; `git status` shows 12 modified, 4 new)
+
+- `PORecordReader.scala` (new) and `standardizeAndSort.applyPO`: structural PO reader, reason-coded quarantine `POQuarantineFY{yy}.csv`, reconcile-or-throw. New FY2003 baseline: 52,420 accepted, 20 quarantined.
+- `SortedJEInputs.scala` (new), used by `post.scala`, `GLPost.scala`, `PermutationGenerator.scala`: a year with a merged file is read once.
+- `CKBViews.scala` (`5v`) rewritten: one k-way merge over every year's merged file by the engine key, built-in order guard, Virginia fiscal year for `present_next_year` only. New param `inPaths` (comma-separated dirs).
+- `scripts/run_pipeline.sh`: `--seedFromCommitted` (continue a committed year with `3,20,21`; data files hard-linked), `--viewInPaths` (for `5v`), one-read file counts, `wc -l` row counts, new `2p` RESULT fields. `write_canonical_evidence.sh`: `wc -l` row counts.
+- `scripts/run_full_corpus.sh` (new): parallel prep lanes (`ttl,2p,2m` per year), serial `3,20,21` chain starting as each year's prep commits, one final `5v` pass over all years, `corpus_wallclock_<stamp>.csv` start/end stamps. Stops on the first failure and does not start the `5v` pass.
+- Docs: `CKB_LAYER_EXECUTION_MODEL.md` ("Cross-Period Views: All Periods Flow, the Writer Selects"), `BOB_METHOD_NOTE_CKB_EFFICIENCY.md` (two rows).
+
+### Validation run
+
+- `sbt test`: 70/70 pass (from `02-foundation/va_pipeline`).
+- `bash scripts/run_repo_fixture_smoke_test.sh`: pass (442 ledger rows, sum 0.00).
+- Small-fixture orchestrator run of prep, `--seedFromCommitted` chain, and `--viewInPaths` `5v`: all rc 0; steps 3/20/21 read 1,540 rows each (once).
+- Real-file scratch `2p`: FY2003-FY2006 reconcile; FY2009 (0-byte file) gives empty output, rc 0.
+- Real `5v` over old FY03+FY04 merged files: 22,708,084 rows, 109 s, order guard silent.
+
+### Exact next step
+
+1. Owner decides: pause OneDrive and Dropbox for the run (disk-bound), and confirm clearing `~/workspace/va_fresh_root/output_full` (FY03-FY06 symlinks and `.generations`, untrusted).
+2. `rm -rf ~/workspace/va_fresh_root/output_full/* ` (after confirmation), then `bash scripts/run_full_corpus.sh` (defaults: years 03..16, 4 lanes, monthly). Do not edit Scala while it runs.
+3. Watch FY2009 (0-byte PO file; `2m` then merges payments with an empty PO file) and the first PO-heavy years; check each year's `POQuarantineFY{yy}.csv` reasons and the `BAD_VENDOR_ID` count.
+
+### Known open items
+
+Vendor-ID shape is a guess; shared sort-order guard for other CKB readers is a follow-up; `CorpusProfile` PO assembly not re-pointed; old launcher `va_fresh_logs/launch_full_prep_x4.sh` is superseded; control-total `awk` sums in `write_canonical_evidence.sh` remain serial and may be slow on 10M+ row files.
+
+
 
 ## 2026-11-10 (after the v3 run) Track C v3 run: T1 PASS, T2 FAIL, T3 PASS, overall FAIL (Bob, Mac)
 

@@ -74,9 +74,23 @@ class CKBViewsSpec extends AnyFunSuite {
     cols.mkString(",")
   }
 
+  // 5v requires its inputs in engine-key order (SortedJE.sortspec); fixtures are written in that order,
+  // as step 2/2p/2m would have produced them.
+  private lazy val spec = SortEngine.loadSpec("../sort_specs/SortedJE.sortspec")
+
+  private def inEngineOrder(rows: Seq[String]): Seq[String] =
+    rows.map(r => SortEngine.extractKey(r, spec)).sortBy(_.keyStr).map(_.originalRow)
+
   private def writeSortedJE(dir: Path, yearSuffix: String, rows: String*): Path = {
     val f = dir.resolve(s"SortedJEFY${yearSuffix}q1exp.csv")
-    Files.write(f, (rows.mkString("\n") + "\n").getBytes("UTF-8"))
+    Files.write(f, (inEngineOrder(rows).mkString("\n") + "\n").getBytes("UTF-8"))
+    f
+  }
+
+  private def writeFile(dir: Path, name: String, rows: Seq[String], sorted: Boolean = true): Path = {
+    val f = dir.resolve(name)
+    val body = if (sorted) inEngineOrder(rows) else rows
+    Files.write(f, (body.mkString("\n") + "\n").getBytes("UTF-8"))
     f
   }
 
@@ -391,6 +405,146 @@ class CKBViewsSpec extends AnyFunSuite {
       val viewA = new File(tempDir.toFile, "view_monthly_order_volume.csv")
       val rowsA = readCsvData(viewA)
       assert(rowsA.length == 1, s"View A should have 1 row from FY03; got ${rowsA.length}")
+    }
+  }
+
+  // ── Test 9: Virginia fiscal year used for present_next_year only ────────────
+  test("CKBViews.virginiaFiscalYear: YYYY is a fiscal year; YYYY/MM maps July-June; other shapes never count as later") {
+    assert(CKBViews.virginiaFiscalYear("2003")    == 2003)
+    assert(CKBViews.virginiaFiscalYear("2002/06") == 2002, "June belongs to the fiscal year ending that June")
+    assert(CKBViews.virginiaFiscalYear("2002/07") == 2003, "July starts the next fiscal year")
+    assert(CKBViews.virginiaFiscalYear("2002/12") == 2003)
+    assert(CKBViews.virginiaFiscalYear("")        == -1)
+    assert(CKBViews.virginiaFiscalYear("unknown") == -1)
+  }
+
+  // ── Test 10: calendar-month periods are compared as fiscal years ────────────
+  test("CKBViews: present_next_year compares Virginia fiscal years when column 22 is YYYY/MM") {
+    withTempDirectory("ckbv-vafy-") { tempDir =>
+      // 2003/05 -> FY2003; 2003/08 -> FY2004; 2003/11 -> FY2004
+      val a = makeRow("v001", "PO1", "COMMITMENT", "AGY1", "08015", "2003/05", "2003/05/01", "10.00")
+      val b = makeRow("v001", "PO2", "COMMITMENT", "AGY1", "08015", "2003/08", "2003/08/01", "20.00")
+      val c = makeRow("v001", "PO3", "COMMITMENT", "AGY1", "08015", "2003/11", "2003/11/01", "30.00")
+      writeSortedJE(tempDir, "03", a, b, c)
+
+      CKBViews(Map("inPath" -> tempDir.toString, "outPath" -> tempDir.toString, "year" -> ""))
+
+      val byFy = readCsvData(new File(tempDir.toFile, "view_vendor_year_survival.csv")).map(r => r(2) -> r(4).toInt).toMap
+      assert(byFy("2003/05") == 1, "FY2003 order, later FY2004 orders exist")
+      assert(byFy("2003/08") == 0, "2003/08 and 2003/11 are the same fiscal year (FY2004)")
+      assert(byFy("2003/11") == 0)
+    }
+  }
+
+  // ── Test 11: all years flow through one ordered merge ───────────────────────
+  test("CKBViews: inPaths merges every year's merged file in one pass; a vendor is one key group across years") {
+    withTempDirectory("ckbv-multi-") { tempDir =>
+      val dir03 = Files.createDirectory(tempDir.resolve("FY03"))
+      val dir04 = Files.createDirectory(tempDir.resolve("FY04"))
+      val out   = tempDir.resolve("views")
+
+      writeFile(dir03, "SortedJEFY03merged.csv", Seq(
+        makeRow("v001", "PO1", "COMMITMENT", "AGY1", "08015", "2003", "2003/09/01", "100.00"),
+        makeRow("v002", "PO2", "COMMITMENT", "AGY1", "08015", "2003", "2003/09/01", "30.00")))
+      writeFile(dir04, "SortedJEFY04merged.csv", Seq(
+        makeRow("v001", "PO3", "COMMITMENT", "AGY1", "08015", "2004", "2004/09/01", "50.00"),
+        makeRow("v003", "PO4", "COMMITMENT", "AGY1", "08015", "2004", "2004/09/01", "70.00")))
+
+      val log = new java.io.ByteArrayOutputStream()
+      Console.withOut(new java.io.PrintStream(log)) {
+        CKBViews(Map("inPaths" -> s"$dir03,$dir04", "outPath" -> out.toString, "year" -> "2004"))
+      }
+      assert(log.toString("UTF-8").contains("records_read=4 "), s"Expected records_read=4; got:\n${log.toString("UTF-8")}")
+      assert(log.toString("UTF-8").contains("files_read=2 "))
+
+      val b = readCsvData(out.resolve("view_vendor_year_survival.csv").toFile)
+      val byKey = b.map(r => (r(0), r(2)) -> r(4).toInt).toMap
+      assert(b.length == 4, s"v001x2003, v001x2004, v002x2003, v003x2004; got ${b.length}")
+      assert(byKey(("v001", "2003")) == 1, "v001 reappears in FY04")
+      assert(byKey(("v001", "2004")) == 0)
+      assert(byKey(("v002", "2003")) == 0)
+      assert(byKey(("v003", "2004")) == 0)
+      // first_order_year is the vendor-year's own earliest period; same vendor, two keys
+      assert(b.find(r => r(0) == "v001" && r(2) == "2004").get(3) == "2004")
+
+      // Control total: View A total equals the sum of the four debit rows
+      val totalA = readCsvData(out.resolve("view_monthly_order_volume.csv").toFile).map(r => BigDecimal(r(4))).sum
+      assert(totalA == BigDecimal("250.00"), s"Expected 250.00; got $totalA")
+    }
+  }
+
+  // ── Test 12: vendor_count counts a vendor once per key even when it spans files ─
+  test("CKBViews: View C vendor_count counts a vendor once across files") {
+    withTempDirectory("ckbv-vendorcount-") { tempDir =>
+      val dir03 = Files.createDirectory(tempDir.resolve("FY03"))
+      val dir04 = Files.createDirectory(tempDir.resolve("FY04"))
+      val out   = tempDir.resolve("views")
+      // same agency / fiscal_year / class on both sides; v001 appears in both files
+      writeFile(dir03, "SortedJEFY03merged.csv", Seq(
+        makeRow("v001", "PO1", "COMMITMENT", "AGY1", "08015", "2003", "2003/09/01", "10.00"),
+        makeRow("v002", "PO2", "COMMITMENT", "AGY1", "08015", "2003", "2003/09/01", "20.00")))
+      writeFile(dir04, "SortedJEFY04merged.csv", Seq(
+        makeRow("v001", "PO3", "COMMITMENT", "AGY1", "08015", "2003", "2003/10/01", "30.00")))
+
+      CKBViews(Map("inPaths" -> s"$dir03,$dir04", "outPath" -> out.toString, "year" -> ""))
+
+      val c = readCsvData(out.resolve("view_agency_year_commodity_mix.csv").toFile)
+      assert(c.length == 1)
+      assert(c.head(3).toLong == 3L, "po_count 3")
+      assert(c.head(6).toLong == 2L, s"vendor_count must be 2 (v001 once, v002 once); got ${c.head(6)}")
+    }
+  }
+
+  // ── Test 13: one read per row ───────────────────────────────────────────────
+  test("CKBViews: a year's merged file is read instead of (not in addition to) its 2m inputs") {
+    withTempDirectory("ckbv-oneread-") { tempDir =>
+      val rows = Seq(
+        makeRow("v001", "PO1", "COMMITMENT", "AGY1", "08015", "2003", "2003/09/01", "100.00"),
+        makeRow("v002", "PO2", "COMMITMENT", "AGY1", "08015", "2003", "2003/09/01", "30.00"))
+      writeFile(tempDir, "SortedJEFY03q1PO.csv", rows)       // 2m input
+      writeFile(tempDir, "SortedJEFY03merged.csv", rows)     // its merged output
+
+      val log = new java.io.ByteArrayOutputStream()
+      Console.withOut(new java.io.PrintStream(log)) {
+        CKBViews(Map("inPath" -> tempDir.toString, "outPath" -> tempDir.toString, "year" -> "2003"))
+      }
+      assert(log.toString("UTF-8").contains("records_read=2 "), s"double read; got:\n${log.toString("UTF-8")}")
+      val a = readCsvData(new File(tempDir.toFile, "view_monthly_order_volume.csv"))
+      assert(BigDecimal(a.head(4)) == BigDecimal("130.00"))
+    }
+  }
+
+  // ── Test 14: order guard stops processing ───────────────────────────────────
+  test("CKBViews: an input out of engine-key order stops the step") {
+    withTempDirectory("ckbv-orderguard-") { tempDir =>
+      val rows = Seq(
+        makeRow("v002", "PO2", "COMMITMENT", "AGY1", "08015", "2003", "2003/09/01", "30.00"),
+        makeRow("v001", "PO1", "COMMITMENT", "AGY1", "08015", "2003", "2003/09/01", "100.00"))
+      writeFile(tempDir, "SortedJEFY03merged.csv", rows, sorted = false)   // descending: out of order
+
+      val ex = intercept[IllegalStateException] {
+        CKBViews(Map("inPath" -> tempDir.toString, "outPath" -> tempDir.toString, "year" -> "2003"))
+      }
+      assert(ex.getMessage.contains("order guard"), ex.getMessage)
+      assert(ex.getMessage.contains("SortedJEFY03merged.csv line 2"), ex.getMessage)
+    }
+  }
+
+  // ── Test 15: engine key can interleave a vendor with a longer vendor id ─────
+  test("CKBViews: a vendor whose key group is split by another vendor stops the step") {
+    withTempDirectory("ckbv-splitgroup-") { tempDir =>
+      // Engine key = col 0 ++ cols 9..22.  "V1"+"ZZZ" sorts after "V1X"+"AAA", so V1 is split by V1X.
+      def withCol9(r: String, v: String): String = { val c = r.split(",", -1); c(9) = v; c.mkString(",") }
+      val rows = Seq(
+        withCol9(makeRow("V1",  "PO1", "COMMITMENT", "AGY1", "08015", "2003", "2003/09/01", "10.00"), "AAA"),
+        withCol9(makeRow("V1X", "PO2", "COMMITMENT", "AGY1", "08015", "2003", "2003/09/01", "20.00"), "AAA"),
+        withCol9(makeRow("V1",  "PO3", "COMMITMENT", "AGY1", "08015", "2003", "2003/09/01", "30.00"), "ZZZ"))
+      writeFile(tempDir, "SortedJEFY03merged.csv", rows)
+
+      val ex = intercept[IllegalStateException] {
+        CKBViews(Map("inPath" -> tempDir.toString, "outPath" -> tempDir.toString, "year" -> "2003"))
+      }
+      assert(ex.getMessage.contains("key group reappears"), ex.getMessage)
     }
   }
 }

@@ -301,6 +301,102 @@ class StandardizeAndSortPOSpec extends AnyFunSuite {
       assert(amounts.sum == BigDecimal(0), s"Amounts should sum to 0; got ${amounts.sum}")
     }
   }
+
+  // ── Test 9a: implausible VENDORID (column shift) is quarantined ──────────────
+  //  Observed in FY2003: a price ($158.79), a decimal (.01) or description text landed in
+  //  VENDORID from a multi-line record that passed the PONUMBER and PRICE guards. VENDORID is the
+  //  leading CKB sort key, so these must not become vendor groups.
+  test("Step 2p: implausible VENDORID is quarantined; well-formed neighbours (digits, letters+digits) still emit") {
+    withTempDirectory("po-2p-badvendor-") { tempDir =>
+      val inDir  = Files.createDirectory(tempDir.resolve("in"))
+      val outDir = Files.createDirectory(tempDir.resolve("out"))
+      def row(po: String, vendor: String) =
+        s"$po\tAgency\t09/23/2002\tPEN\t1\t10.00\t$vendor\tName\tADDR\tCITY\tVA\t00000\temail\t08015\tdesc\tEA\teach\t\t"
+      writePOFile(inDir,
+        row("DO1", "c9545"),            // letters + digits  -> kept
+        row("DO2", "1229771"),          // digits only       -> kept
+        row("DO3", "$158.79"),          // dollar amount     -> quarantined
+        row("DO4", ".01"),              // decimal           -> quarantined
+        row("DO5", "& conditions of"))  // description text  -> quarantined
+
+      val errOut = new java.io.ByteArrayOutputStream()
+      val stdOut = new java.io.ByteArrayOutputStream()
+      Console.withErr(new java.io.PrintStream(errOut)) {
+        Console.withOut(new java.io.PrintStream(stdOut)) {
+          standardizeAndSort.applyPO(Map(
+            "inPath"  -> inDir.toString,
+            "outPath" -> outDir.toString,
+            "year"    -> "2003",
+            "quarter" -> "1"
+          ))
+        }
+      }
+
+      val src  = scala.io.Source.fromFile(outDir.resolve("SortedJEFY03q1PO.csv").toFile, "UTF-8")
+      val rows = try src.getLines().filter(_.trim.nonEmpty).toVector finally src.close()
+
+      assert(rows.length == 4, s"Expected 4 rows (2 kept × 2 SJE); got ${rows.length}")
+      assert(rows.map(_.split(",", -1)(0)).distinct.sorted == Vector("1229771", "c9545"))
+      assert(rows.map(r => BigDecimal(r.split(",", -1)(25))).sum == BigDecimal(0))
+      assert(errOut.toString("UTF-8").split("\n").count(_.contains("QUARANTINE implausible VENDORID")) == 3)
+      assert(stdOut.toString("UTF-8").contains("skipped_quarantine=3"),
+        s"RESULT line should report skipped_quarantine=3; got:\n${stdOut.toString("UTF-8")}")
+    }
+  }
+
+  // ── Test 9c: structural reader — inch-mark quotes, embedded tabs, empty-date fragments, bare CR ──────────
+  //  Record boundaries come from the ORDEREDDATE anchor and the header width, not from quote parity.
+  //  Every rejected record is written to POQuarantineFY{yy}.csv and the run reconciles
+  //  physical lines and records (accepted + quarantined = records read).
+  test("Step 2p: structural reader accepts inch-mark quotes, quarantines embedded-tab records with a reason code, and reconciles") {
+    withTempDirectory("po-2p-reader-") { tempDir =>
+      val inDir  = Files.createDirectory(tempDir.resolve("in"))
+      val outDir = Files.createDirectory(tempDir.resolve("out"))
+      def q(s: String) = "\"" + s + "\""
+      def rec(po: String, date: String, desc: String, vendor: String = "c1") =
+        Seq(q(po), q("Agency"), q(date), desc, "1", "10.00", q(vendor), q("Name"), q("ADDR"), q("CITY"),
+            q("VA"), q("00000"), q(""), q("08015"), q("d"), q("EA"), q("each"), q(""), q("")).mkString("\t")
+
+      // A fragment before any record start (tail of an address, empty date, empty first field) is an orphan.
+      val orphan      = "\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\""
+      val inchMark    = rec("DO1", "09/23/2002", q("Tape, Black Gaffer's 2\"\""))   // ends in inch mark: accepted
+      val multiLine   = rec("DO2", "09/24/2002", q("Line one\ncontinues here"))      // embedded newline: joined, accepted
+      val embeddedTab = rec("DO3", "09/25/2002", q("Part#\tQty\tPrice"))             // 2 extra tabs: FIELD_COUNT
+      val bareCr      = rec("DO4", "09/26/2002", q("before\rafter"))                 // CR must not split the SJE row
+      writePOFile(inDir, orphan, inchMark, multiLine, embeddedTab, bareCr)
+
+      val stdOut = new java.io.ByteArrayOutputStream()
+      Console.withOut(new java.io.PrintStream(stdOut)) {
+        standardizeAndSort.applyPO(Map(
+          "inPath"  -> inDir.toString,
+          "outPath" -> outDir.toString,
+          "year"    -> "2003",
+          "quarter" -> "1"
+        ))
+      }
+
+      val sje = Source.fromFile(outDir.resolve("SortedJEFY03q1PO.csv").toFile, "UTF-8")
+      val rows = try sje.getLines().filter(_.trim.nonEmpty).toVector finally sje.close()
+      assert(rows.forall(_.split(",", -1).length == 39), "every SJE row must have 39 columns (bare CR must not split a row)")
+      val poNumbers = rows.map(_.split(",", -1)(2)).distinct.sorted
+      assert(poNumbers == Vector("DO1", "DO2", "DO4"), s"accepted POs; got $poNumbers")
+
+      val qFile = Source.fromFile(outDir.resolve("POQuarantineFY03.csv").toFile, "UTF-8")
+      val qLines = try qFile.getLines().toVector finally qFile.close()
+      assert(qLines.head.startsWith("rel_path,record_ordinal,start_line"), s"quarantine header; got ${qLines.head}")
+      val data = qLines.tail.filter(_.nonEmpty)
+      assert(data.length == 2, s"expected 2 quarantined records (orphan fragment + embedded tab); got ${data.length}: $data")
+      assert(data.exists(l => l.contains("DO3") && l.contains(",FIELD_COUNT,")), s"DO3 should be FIELD_COUNT; got $data")
+      assert(data.exists(_.contains(",ORPHAN_FRAGMENT,")), s"leading fragment should be ORPHAN_FRAGMENT; got $data")
+
+      val out = stdOut.toString("UTF-8")
+      assert(out.contains("records_accepted=3"), s"RESULT line should report records_accepted=3; got:\n$out")
+      assert(out.contains("skipped_quarantine=2"), s"RESULT line should report skipped_quarantine=2; got:\n$out")
+      assert(out.contains("reader_rejects=2"), s"RESULT line should report reader_rejects=2; got:\n$out")
+    }
+  }
+
+
   // ── Test 9b: record boundary is the date field, not quote parity ─────────────
   //  A description with an unmatched `"` (e.g. `18" x 225 ft.`) used to leave the
   //  quote count odd and absorb every following record.  A description with an
