@@ -1,10 +1,11 @@
 package org.universalledger.foundation.va.ledger
 
-import java.io.{File, PrintWriter, BufferedWriter, FileWriter}
+import java.io.{File, PrintWriter, BufferedWriter, FileWriter, DataInputStream, DataOutputStream, BufferedInputStream, BufferedOutputStream, FileInputStream, FileOutputStream, EOFException}
 import java.util.Calendar
 
 import scala.collection.mutable
 import scala.io.Source
+import scala.util.hashing.MurmurHash3
 
 //***************************************************************************************************************
 //
@@ -58,13 +59,19 @@ import scala.io.Source
 //    step 3's ledger rows.
 //  * vendor_rows = sum over GL keys of distinct vendors, kept for continuity with earlier runs.
 //
-//  MEMORY CONTRACT
-//  ---------------
-//  Per GL key: row count and the first value per dimension, plus a set only where a dimension takes a
-//  second value.  Dependency tracking keeps, for each non-constant dimension, one int array per distinct
-//  value of that dimension (distinct values x dimensions ints).  Both are whole-file maps, as in step 20
-//  (about 275K–310K keys per year in the VA corpus); neither is bounded by the row count.  Measured heap
-//  must be recorded before this is used at larger scale.
+//  MEMORY CONTRACT (revised: extract-time summarisation, same pattern as 5v View D / GERS-003)
+//  -------------------------------------------------------------------------------------------
+//  The sorted JE is read once.  Each row emits (GL key id, dimension, 64-bit value hash) facts for the
+//  dimensions that vary in the year into a bounded buffer (permBufferCapacity records, default 1,000,000).
+//  A full buffer is sorted, de-duplicated and spilled as a run; at the end a k-way merge counts distinct
+//  hashes per (GL key, dimension).  Resident state is therefore the GL key index (one entry per GL key, as in
+//  step 20), the buffer, and the dependency tables below, not one entry per distinct value of every column.
+//  Dependencies: vendor-determined dimensions are detected exactly from the vendor order of the input (a
+//  dimension constant within every vendor group); other determinants are tracked only while they have at
+//  most permFdCap distinct values (default 20,000), above which they stop determining anything and are listed
+//  in fd_untracked_dims (capacity can only be larger for it).  A vendor that reappears after its group closed
+//  sets vendor_order=violated and the vendor-determined set is then not reported.
+//  Values are held as 64-bit hashes, never as strings.
 //
 //  METRICS (process_metrics.csv)
 //  ------------------------------
@@ -122,58 +129,74 @@ object PermutationGenerator {
   private case class GLKey(agency: String, nominalAccount: String, fund: String, objectCode: String,
                            fiscalYear: String, dirFlag: String)
 
-  // Per GL key: row count, the first value seen per dimension, and (only for dimensions that took a
-  // second value) the set of distinct interned values.
-  private final class KeyState {
-    var rows: Long = 0L
-    val first: Array[Int] = Array.fill(DIM_COUNT)(-1)
-    var extra: Array[mutable.HashSet[Int]] = null  // allocated on first divergence
 
-    def distinct(dim: Int): Int =
-      if (extra == null || extra(dim) == null) 1 else extra(dim).size
+  // Dimension hash: 64 bits from two seeded 32-bit murmur hashes.  Values are never stored, only their
+  // hashes; a wrong count needs two different values of one dimension under one GL key to share 64 bits.
+  private def hash64(s: String): Long =
+    (MurmurHash3.stringHash(s, 0x3c074a61).toLong << 32) | (MurmurHash3.stringHash(s, 0x1b873593) & 0xffffffffL)
+
+  private final class GLInfo(val id: Int) { var rows: Long = 0L }
+
+  // One fact: GL key id, dimension, value hash.  pk = glId << 6 | dimension.  Sorted, de-duplicated runs of
+  // these facts are the partial aggregates; the final reduce counts distinct hashes per pk.
+  private final case class Rec(pk: Long, h: Long)
+  private def recLess(a: Rec, b: Rec): Boolean = a.pk < b.pk || (a.pk == b.pk && a.h < b.h)
+  private val recComparator = new java.util.Comparator[Rec] {
+    def compare(a: Rec, b: Rec): Int =
+      if (a.pk != b.pk) java.lang.Long.compare(a.pk, b.pk) else java.lang.Long.compare(a.h, b.h)
   }
 
-  // Year-wide functional-dependency detector.  conflict(a)(b) becomes true once two rows share a value
-  // of dimension a but differ on dimension b; a pair that never conflicts is a dependency a -> b.
-  // Constant dimensions are skipped while they are constant (they determine nothing and are determined by
-  // everything); the history needed when one stops being constant is reconstructed from the first row.
-  private final class FdTracker(n: Int) {
+  private abstract class Run { var cur: Rec = null; def advance(): Unit; def close(): Unit = () }
+  private final class MemRun(a: Array[Rec], n: Int) extends Run {
+    private var i = 0
+    advance()
+    def advance(): Unit = if (i < n) { cur = a(i); i += 1 } else cur = null
+  }
+  private final class FileRun(f: File) extends Run {
+    private val in = new DataInputStream(new BufferedInputStream(new FileInputStream(f), 1 << 16))
+    advance()
+    def advance(): Unit = cur = try Rec(in.readLong(), in.readLong()) catch { case _: EOFException => null }
+    override def close(): Unit = in.close()
+  }
+
+  // Year-wide functional-dependency detector over dimension HASHES.  conflict(a)(b) becomes true once two rows
+  // share a value of a but differ on b; a pair that never conflicts is a dependency a -> b.  Memory is bounded:
+  // a determinant whose distinct values pass `cap` stops being tracked and then determines nothing, which can
+  // only make the reported capacity larger.  The vendor dimension (`skip`) is handled exactly by the
+  // vendor-group check in the main pass, not here.  `first` is the first row's hashes (filled by the caller).
+  private final class FdTracker(n: Int, skip: Int, cap: Int, first: Array[Long]) {
     private val conflict = Array.fill(n, n)(false)
     private val alive: Array[Array[Int]] = Array.tabulate(n)(a => (0 until n).filter(_ != a).toArray)
-    private val table: Array[mutable.ArrayBuffer[Array[Int]]] = Array.fill(n)(new mutable.ArrayBuffer[Array[Int]])
-    private var firstIds: Array[Int] = null
+    private val table = new Array[mutable.HashMap[Long, Array[Long]]](n)
+    val tracked = Array.fill(n)(true)
 
-    private def put(buf: mutable.ArrayBuffer[Array[Int]], id: Int, row: Array[Int]): Unit = {
-      while (buf.size <= id) buf += null
-      buf(id) = row
-    }
-
-    def observe(ids: Array[Int], sizeBefore: Array[Int], sizeAfter: Array[Int]): Unit = {
-      if (firstIds == null) firstIds = ids.clone()
+    def observe(hs: Array[Long], variedBefore: Array[Boolean], varied: Array[Boolean]): Unit = {
       var a = 0
       while (a < n) {
-        if (sizeAfter(a) >= 2) {
+        if (a != skip && tracked(a) && varied(a)) {
           var changed = false
-          val buf = table(a)
-          if (sizeBefore(a) <= 1) {
-            // a stops being constant on this row.  Every earlier row had a = a0, so any b that already
-            // had two values is not determined by a.
+          if (!variedBefore(a)) {
+            // a stops being constant on this row.  Every earlier row had first(a), so any b that already
+            // had two values among them is not determined by a.
             var b = 0
             while (b < n) {
-              if (b != a && sizeBefore(b) >= 2 && !conflict(a)(b)) { conflict(a)(b) = true; changed = true }
+              if (b != a && variedBefore(b) && !conflict(a)(b)) { conflict(a)(b) = true; changed = true }
               b += 1
             }
-            put(buf, 0, firstIds.clone())
+            table(a) = new mutable.HashMap[Long, Array[Long]]
+            table(a).put(first(a), first)
           }
-          val id  = ids(a)
-          val row = if (id < buf.size) buf(id) else null
-          if (row == null) put(buf, id, ids.clone())
-          else {
+          val tbl = table(a)
+          val row = tbl.getOrElse(hs(a), null)
+          if (row == null) {
+            if (tbl.size >= cap) { tracked(a) = false; table(a) = null }
+            else tbl.put(hs(a), hs.clone())
+          } else {
             val list = alive(a)
             var i = 0
             while (i < list.length) {
               val b = list(i)
-              if (!conflict(a)(b) && sizeAfter(b) >= 2 && row(b) != ids(b)) { conflict(a)(b) = true; changed = true }
+              if (!conflict(a)(b) && row(b) != hs(b)) { conflict(a)(b) = true; changed = true }
               i += 1
             }
           }
@@ -183,9 +206,9 @@ object PermutationGenerator {
       }
     }
 
-    /** a -> b among dimensions that actually vary in the year. */
-    def determines(a: Int, b: Int, finalSize: Array[Int]): Boolean =
-      a != b && finalSize(a) >= 2 && finalSize(b) >= 2 && !conflict(a)(b)
+    /** a -> b among dimensions that actually vary in the year (never for the vendor dimension). */
+    def determines(a: Int, b: Int, varied: Array[Boolean]): Boolean =
+      a != skip && a != b && tracked(a) && varied(a) && varied(b) && !conflict(a)(b)
   }
 
   // ── Entry point called by LedgerApp dispatcher ─────────────────────────────
@@ -224,138 +247,245 @@ object PermutationGenerator {
     val summaryFile = new File(outPath, s"PERM_SUMMARY20${shortYr}.csv")
     println(s"  Output file    : ${outFile.getPath}")
 
-    // ── Accumulate per-GL-key distinct counts and year-wide dependencies ──────
-    val states    = mutable.HashMap[GLKey, KeyState]()
-    val dicts     = Array.fill(DIM_COUNT)(mutable.HashMap[String, Int]())
-    val varied    = Array.fill(DIM_COUNT)(false)
-    val fd        = new FdTracker(DIM_COUNT)
-    val ids       = new Array[Int](DIM_COUNT)
-    val sizeBefore = new Array[Int](DIM_COUNT)
-    val sizeAfter  = new Array[Int](DIM_COUNT)
-    var totalRead = 0L
+    val bufCap = params.getOrElse("permBufferCapacity", "1000000").toInt
+    val fdCap  = params.getOrElse("permFdCap", "20000").toInt
+    require(DIM_COUNT < 64, "dimension index must fit in 6 bits")
+    new File(outPath).mkdirs()
+
+    // ── Pass over the sorted JE: per-row facts into a bounded buffer; full buffers spill as sorted runs ──
+    val glIndex      = mutable.HashMap[GLKey, GLInfo]()
+    var nextId       = 0
+    val varied       = Array.fill(DIM_COUNT)(false)
+    val variedBefore = new Array[Boolean](DIM_COUNT)
+    val firstHash    = new Array[Long](DIM_COUNT)
+    val hs           = new Array[Long](DIM_COUNT)
+    val fd           = new FdTracker(DIM_COUNT, VENDOR_DIM, fdCap, firstHash)
+    // Vendor-group check (exact, uses the CKB vendor order): a dimension is vendor-determined when it is
+    // constant within every vendor group.  A vendor that reappears after its group closed makes it unreliable.
+    val vendorConst  = Array.fill(DIM_COUNT)(true)
+    val vendorFirst  = new Array[Long](DIM_COUNT)
+    val vendorsDone  = mutable.HashSet[Long]()
+    var curVendor    = 0L
+    var haveVendor   = false
+    var vendorOrdered = true
+    var totalRead    = 0L
     var totalInputBytes = 0L
 
-    for (jeFile <- jeFiles) {
-      totalInputBytes += jeFile.length()
-      implicit val codec = scala.io.Codec.UTF8
-        .onMalformedInput(java.nio.charset.CodingErrorAction.REPLACE)
-        .onUnmappableCharacter(java.nio.charset.CodingErrorAction.REPLACE)
-      val src = Source.fromFile(jeFile)(codec)
+    val buf = new Array[Rec](bufCap)
+    var bufN = 0
+    val spills = mutable.ArrayBuffer[File]()
+    var spillRecords = 0L
+    def spillBuffer(): Unit = {
+      java.util.Arrays.sort(buf, 0, bufN, recComparator)
+      val f = new File(outPath, s"perm_spill_${shortYr}_${spills.size}.tmp")
+      val out = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(f), 1 << 16))
       try {
-        for (line <- src.getLines()) {
-          val cols = line.split(",", -1)
-          // Same row-acceptance rule as step 20 (> col 31) so records_read matches; short rows read ""
-          if (cols.length > COL_DIR_FLAG) {
-            totalRead += 1
-            val key = GLKey(
-              agency         = cols(COL_AGENCY).trim,
-              nominalAccount = cols(COL_NOMINAL_ACC).trim,
-              fund           = cols(COL_FUND).trim,
-              objectCode     = cols(COL_OBJECT).trim,
-              fiscalYear     = cols(COL_FISCAL_YR).trim,
-              dirFlag        = cols(COL_DIR_FLAG).trim
-            )
-            val st = states.getOrElseUpdate(key, new KeyState)
-            st.rows += 1
-            var d = 0
-            while (d < DIM_COUNT) {
-              val c  = DIM_COLUMNS(d)
-              val v  = if (c < cols.length) cols(c).trim else ""
-              val dict = dicts(d)
-              sizeBefore(d) = dict.size
-              val id = dict.getOrElseUpdate(v, dict.size)
-              sizeAfter(d) = dict.size
-              ids(d) = id
-              val f  = st.first(d)
-              if (f == -1) st.first(d) = id
-              else if (f != id || (st.extra != null && st.extra(d) != null)) {
-                if (st.extra == null) st.extra = new Array[mutable.HashSet[Int]](DIM_COUNT)
-                if (st.extra(d) == null) st.extra(d) = mutable.HashSet[Int](f)
-                st.extra(d) += id
-                varied(d) = true
-              }
-              d += 1
-            }
-            fd.observe(ids, sizeBefore, sizeAfter)
+        var i = 0
+        while (i < bufN) {
+          val r = buf(i)
+          if (i == 0 || r.pk != buf(i - 1).pk || r.h != buf(i - 1).h) {
+            out.writeLong(r.pk); out.writeLong(r.h); spillRecords += 1
           }
+          i += 1
         }
-      } finally src.close()
+      } finally out.close()
+      spills += f
+      java.util.Arrays.fill(buf.asInstanceOf[Array[AnyRef]], 0, bufN, null)
+      bufN = 0
+    }
+    // Direct-mapped recent-fact cache: a fact identical to the one last stored in its slot is not re-emitted.
+    // Bounded (2^20 slots), it only removes duplicates the spill de-duplication would remove anyway.
+    val cacheMask = (1 << 20) - 1
+    val cachePk   = Array.fill(cacheMask + 1)(-1L)
+    val cacheH    = new Array[Long](cacheMask + 1)
+    def emit(glId: Int, d: Int, h: Long): Unit = {
+      val pk = (glId.toLong << 6) | d
+      val slot = ((pk * 0x9E3779B97F4A7C15L) ^ h * 0xC2B2AE3D27D4EB4FL).hashCode & cacheMask
+      if (cachePk(slot) == pk && cacheH(slot) == h) return
+      cachePk(slot) = pk; cacheH(slot) = h
+      if (bufN == bufCap) spillBuffer()
+      buf(bufN) = Rec(pk, h)
+      bufN += 1
     }
 
-    // ── Resolve dependencies: which dimensions stay in the product ────────────
-    val finalSize = dicts.map(_.size)
-    // B is dropped when some A determines it and either B does not determine A back or A comes first
-    // (so of two mutually dependent dimensions the earlier column is kept).
-    val dropped = mutable.LinkedHashMap[Int, Int]()   // B -> the A that determines it
-    for (b <- 0 until DIM_COUNT) {
-      val a = (0 until DIM_COUNT).find(a => fd.determines(a, b, finalSize) &&
-        (!fd.determines(b, a, finalSize) || a < b))
-      a.foreach(dropped(b) = _)
-    }
-    val capacityDims = (0 until DIM_COUNT).filterNot(dropped.contains)
-    // CAR: everything the vendor determines, plus transContractID, which is CAR by definition
-    // (a contract belongs to one vendor) even while it is a constant in every current producer.
-    val carDims = (0 until DIM_COUNT).filter(b => b != VENDOR_DIM &&
-      (b == CONTRACT_DIM || fd.determines(VENDOR_DIM, b, finalSize)))
-
-    // ── Write permutation capacity table ──────────────────────────────────────
-    new File(outPath).mkdirs()
-    val varyingDims = (0 until DIM_COUNT).filter(varied(_))
-    var capacityTotal = BigInt(0)
-    var independentTotal = BigInt(0)
-    var vendorRows    = 0L
-    val pw = new PrintWriter(new BufferedWriter(new FileWriter(outFile)))
+    val runs = mutable.ArrayBuffer[Run]()
     try {
-      pw.println((Seq("agency", "nominal_account_id", "fund", "object_id", "fiscal_year", "dir_flag", "row_count") ++
-        varyingDims.map(d => "d_" + dimName(d)) ++ Seq("capacity")).mkString(","))
-      val sorted = states.toSeq.sortBy(kv =>
-        (kv._1.fiscalYear, kv._1.agency, kv._1.nominalAccount, kv._1.fund, kv._1.objectCode, kv._1.dirFlag))
-      for ((key, st) <- sorted) {
-        var capacity = BigInt(1)
-        for (d <- capacityDims) capacity *= st.distinct(d)
-        var independent = BigInt(1)
-        var d = 0
-        while (d < DIM_COUNT) { independent *= st.distinct(d); d += 1 }
-        capacityTotal    += capacity
-        independentTotal += independent
-        vendorRows       += st.distinct(VENDOR_DIM)
-        pw.println((Seq(key.agency, key.nominalAccount, key.fund, key.objectCode, key.fiscalYear, key.dirFlag, st.rows) ++
-          varyingDims.map(st.distinct) ++ Seq(capacity)).mkString(","))
+      for (jeFile <- jeFiles) {
+        totalInputBytes += jeFile.length()
+        implicit val codec = scala.io.Codec.UTF8
+          .onMalformedInput(java.nio.charset.CodingErrorAction.REPLACE)
+          .onUnmappableCharacter(java.nio.charset.CodingErrorAction.REPLACE)
+        val src = Source.fromFile(jeFile)(codec)
+        try {
+          for (line <- src.getLines()) {
+            val cols = line.split(",", -1)
+            // Same row-acceptance rule as step 20 (> col 31) so records_read matches; short rows read ""
+            if (cols.length > COL_DIR_FLAG) {
+              totalRead += 1
+              val key = GLKey(
+                agency         = cols(COL_AGENCY).trim,
+                nominalAccount = cols(COL_NOMINAL_ACC).trim,
+                fund           = cols(COL_FUND).trim,
+                objectCode     = cols(COL_OBJECT).trim,
+                fiscalYear     = cols(COL_FISCAL_YR).trim,
+                dirFlag        = cols(COL_DIR_FLAG).trim
+              )
+              var info = glIndex.getOrElse(key, null)
+              val isNew = info == null
+              if (isNew) { info = new GLInfo(nextId); nextId += 1; glIndex.put(key, info) }
+              info.rows += 1
+              val existing = if (isNew) info.id else nextId   // GL ids that existed before this row
+
+              var d = 0
+              while (d < DIM_COUNT) {
+                val c = DIM_COLUMNS(d)
+                hs(d) = hash64(if (c < cols.length) cols(c).trim else "")
+                d += 1
+              }
+              if (totalRead == 1L) System.arraycopy(hs, 0, firstHash, 0, DIM_COUNT)
+              System.arraycopy(varied, 0, variedBefore, 0, DIM_COUNT)
+              d = 0
+              while (d < DIM_COUNT) {
+                if (!varied(d) && hs(d) != firstHash(d)) {
+                  varied(d) = true
+                  // Every earlier row held the first value, so every GL key seen so far owes that one fact.
+                  var g = 0
+                  while (g < existing) { emit(g, d, firstHash(d)); g += 1 }
+                }
+                if (varied(d)) emit(info.id, d, hs(d))
+                d += 1
+              }
+              fd.observe(hs, variedBefore, varied)
+
+              val vh = hs(VENDOR_DIM)
+              if (!haveVendor || vh != curVendor) {
+                if (haveVendor) vendorsDone += curVendor
+                if (vendorsDone.contains(vh)) vendorOrdered = false
+                curVendor = vh; haveVendor = true
+                System.arraycopy(hs, 0, vendorFirst, 0, DIM_COUNT)
+              } else {
+                d = 0
+                while (d < DIM_COUNT) { if (hs(d) != vendorFirst(d)) vendorConst(d) = false; d += 1 }
+              }
+            }
+          }
+        } finally src.close()
       }
-    } finally pw.close()
 
-    val glKeys   = states.size.toLong
-    val outBytes = outFile.length()
-    val elapsedS = ((System.currentTimeMillis() - t0) / 1000).max(1)
-    val peakRss  = Runtime.getRuntime.totalMemory()
-    def names(ds: Seq[Int]): String = if (ds.isEmpty) "none" else ds.map(dimName).mkString(";")
-    val varyingNames = names(varyingDims)
-    val carNames     = names(carDims)
-    val droppedNames = if (dropped.isEmpty) "none" else dropped.map { case (b, a) => dimName(b) + "<-" + dimName(a) }.mkString(";")
-    val capacityNames = names(capacityDims.filter(varyingDims.contains))
+      // ── Final reduce: merge the sorted runs; distinct hashes per (GL key, dimension) ──
+      java.util.Arrays.sort(buf, 0, bufN, recComparator)
+      spills.foreach(f => runs += new FileRun(f))
+      runs += new MemRun(buf, bufN)
+      val variedDims = (0 until DIM_COUNT).filter(varied(_))   // differs anywhere in the year
+      val pos = Array.fill(DIM_COUNT)(-1)
+      variedDims.zipWithIndex.foreach { case (d, i) => pos(d) = i }
+      val counts = new Array[Array[Int]](nextId)
+      val tR = System.currentTimeMillis()
+      val pq = new mutable.PriorityQueue[(Rec, Int)]()(
+        Ordering.fromLessThan[(Rec, Int)]((x, y) => recLess(y._1, x._1)))   // smallest record first
+      for (i <- runs.indices) if (runs(i).cur != null) pq.enqueue((runs(i).cur, i))
+      var last: Rec = null
+      while (pq.nonEmpty) {
+        val (r, idx) = pq.dequeue()
+        runs(idx).advance()
+        if (runs(idx).cur != null) pq.enqueue((runs(idx).cur, idx))
+        if (last == null || r.pk != last.pk || r.h != last.h) {
+          val gl = (r.pk >>> 6).toInt
+          val dm = (r.pk & 63L).toInt
+          var c = counts(gl)
+          if (c == null) { c = new Array[Int](variedDims.length); counts(gl) = c }
+          c(pos(dm)) += 1
+        }
+        last = r
+      }
+      val reduceS = (System.currentTimeMillis() - tR) / 1000
+      // Listed (d_ columns, varying_dims): dimensions on which some GL key holds two or more values.
+      val varyingDims = variedDims.filter(d => counts.exists(c => c != null && c(pos(d)) >= 2))
 
-    val sw = new PrintWriter(new BufferedWriter(new FileWriter(summaryFile)))
-    try {
-      sw.println("fiscal_year,gl_keys,vendor_rows,capacity,capacity_independent")
-      sw.println(s"20$shortYr,$glKeys,$vendorRows,$capacityTotal,$independentTotal")
-    } finally sw.close()
+      // ── Resolve dependencies: which dimensions stay in the product ────────────
+      def determines(a: Int, b: Int): Boolean =
+        if (a == VENDOR_DIM) a != b && varied(a) && varied(b) && vendorOrdered && vendorConst(b)
+        else fd.determines(a, b, varied)
+      // B is dropped when some A determines it and either B does not determine A back or A comes first
+      // (so of two mutually dependent dimensions the earlier column is kept).
+      val dropped = mutable.LinkedHashMap[Int, Int]()   // B -> the A that determines it
+      for (b <- 0 until DIM_COUNT) {
+        val a = (0 until DIM_COUNT).find(a => determines(a, b) && (!determines(b, a) || a < b))
+        a.foreach(dropped(b) = _)
+      }
+      val capacityDims = (0 until DIM_COUNT).filterNot(dropped.contains)
+      // CAR: everything the vendor determines, plus transContractID, which is CAR by definition
+      // (a contract belongs to one vendor) even while it is a constant in every current producer.
+      val carDims = (0 until DIM_COUNT).filter(b => b != VENDOR_DIM && (b == CONTRACT_DIM || determines(VENDOR_DIM, b)))
+      val untrackedDims = (0 until DIM_COUNT).filter(d => d != VENDOR_DIM && varied(d) && !fd.tracked(d))
 
-    println(f"  GL keys (rows written)   : $glKeys%,d")
-    println(f"  Journal rows read        : $totalRead%,d")
-    println(f"  Vendor rows (observed)   : $vendorRows%,d")
-    println(s"  Capacity (dependencies removed): $capacityTotal")
-    println(s"  Capacity (independent bound)   : $independentTotal")
-    println(s"  Varying dimensions       : $varyingNames")
-    println(s"  Vendor-determined (CAR)  : $carNames")
-    println(s"  Dropped by dependency    : $droppedNames")
-    println(s"  Output                   : ${outFile.getPath}")
-    println("STATUS: COMPLETE")
-    println(s"RESULT step=21 year=$yearStr rc=0 records_read=$totalRead records_written=$glKeys elapsed_s=$elapsedS input_bytes=$totalInputBytes output_bytes=$outBytes vendor_rows=$vendorRows capacity=$capacityTotal capacity_independent=$independentTotal varying_dims=$varyingNames car_dims=$carNames dropped_dims=$droppedNames capacity_dims=$capacityNames")
-    println(s"RESOURCE step=21 year=$yearStr jvm_heap_bytes=$peakRss")
+      // ── Write permutation capacity table ──────────────────────────────────────
+      var capacityTotal = BigInt(0)
+      var independentTotal = BigInt(0)
+      var vendorRows    = 0L
+      val pw = new PrintWriter(new BufferedWriter(new FileWriter(outFile)))
+      try {
+        pw.println((Seq("agency", "nominal_account_id", "fund", "object_id", "fiscal_year", "dir_flag", "row_count") ++
+          varyingDims.map(d => "d_" + dimName(d)) ++ Seq("capacity")).mkString(","))
+        val sorted = glIndex.toSeq.sortBy(kv =>
+          (kv._1.fiscalYear, kv._1.agency, kv._1.nominalAccount, kv._1.fund, kv._1.objectCode, kv._1.dirFlag))
+        for ((key, info) <- sorted) {
+          val c = counts(info.id)
+          def distinct(d: Int): Int = if (c == null || pos(d) < 0) 1 else c(pos(d)).max(1)
+          var capacity = BigInt(1)
+          for (d <- capacityDims) capacity *= distinct(d)
+          var independent = BigInt(1)
+          var d = 0
+          while (d < DIM_COUNT) { independent *= distinct(d); d += 1 }
+          capacityTotal    += capacity
+          independentTotal += independent
+          vendorRows       += distinct(VENDOR_DIM)
+          pw.println((Seq(key.agency, key.nominalAccount, key.fund, key.objectCode, key.fiscalYear, key.dirFlag, info.rows) ++
+            varyingDims.map(distinct) ++ Seq(capacity)).mkString(","))
+        }
+      } finally pw.close()
 
-    println("*" * 100)
-    println(s"Process End Time: ${Calendar.getInstance.getTime}")
-    println("*" * 100)
+      val glKeys   = glIndex.size.toLong
+      val outBytes = outFile.length()
+      val elapsedS = ((System.currentTimeMillis() - t0) / 1000).max(1)
+      val peakRss  = Runtime.getRuntime.totalMemory()
+      def names(ds: Seq[Int]): String = if (ds.isEmpty) "none" else ds.map(dimName).mkString(";")
+      val varyingNames = names(varyingDims)
+      val carNames     = names(carDims)
+      val droppedNames = if (dropped.isEmpty) "none" else dropped.map { case (b, a) => dimName(b) + "<-" + dimName(a) }.mkString(";")
+      val capacityNames = names(capacityDims.filter(varyingDims.contains))
+      val untrackedNames = names(untrackedDims)
+      val overflow = spills.nonEmpty
+
+      val sw = new PrintWriter(new BufferedWriter(new FileWriter(summaryFile)))
+      try {
+        sw.println("fiscal_year,gl_keys,vendor_rows,capacity,capacity_independent")
+        sw.println(s"20$shortYr,$glKeys,$vendorRows,$capacityTotal,$independentTotal")
+      } finally sw.close()
+
+      println(f"  GL keys (rows written)   : $glKeys%,d")
+      println(f"  Journal rows read        : $totalRead%,d")
+      println(f"  Vendor rows (observed)   : $vendorRows%,d")
+      println(s"  Capacity (dependencies removed): $capacityTotal")
+      println(s"  Capacity (independent bound)   : $independentTotal")
+      println(s"  Varying dimensions       : $varyingNames")
+      println(s"  Vendor-determined (CAR)  : $carNames")
+      println(s"  Dropped by dependency    : $droppedNames")
+      println(s"  Buffer capacity / spills : $bufCap / ${spills.size} files, $spillRecords records, reduce ${reduceS}s")
+      println(s"  Vendor order             : ${if (vendorOrdered) "ok" else "VIOLATED (vendor-determined dims not detected)"}")
+      println(s"  Determinants not tracked : $untrackedNames")
+      println(s"  Output                   : ${outFile.getPath}")
+      println("STATUS: COMPLETE")
+      println(s"RESULT step=21 year=$yearStr rc=0 records_read=$totalRead records_written=$glKeys elapsed_s=$elapsedS input_bytes=$totalInputBytes output_bytes=$outBytes vendor_rows=$vendorRows capacity=$capacityTotal capacity_independent=$independentTotal varying_dims=$varyingNames car_dims=$carNames dropped_dims=$droppedNames capacity_dims=$capacityNames buffer_overflow=$overflow spill_files=${spills.size} spill_records=$spillRecords reduce_seconds=$reduceS vendor_order=${if (vendorOrdered) "ok" else "violated"} fd_untracked_dims=$untrackedNames")
+      println(s"RESOURCE step=21 year=$yearStr jvm_heap_bytes=$peakRss")
+
+      println("*" * 100)
+      println(s"Process End Time: ${Calendar.getInstance.getTime}")
+      println("*" * 100)
+    } finally {
+      runs.foreach(r => try r.close() catch { case _: Exception => })
+      spills.foreach(f => try f.delete() catch { case _: Exception => })
+    }
   }
 }
 
