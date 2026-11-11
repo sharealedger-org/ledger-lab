@@ -92,7 +92,7 @@ import scala.io.Source
 //   28  transStatisticAmount   = "0"
 //   29  tranRuleSetID          = " "
 //   30  transRuleID            = " "
-//   31  transDirVsOffsetFlg    = "D"
+//   31  transDirVsOffsetFlg    = "D" on line 1 (debit), "O" on line 2 (offset)
 //   32  transReconcileFlg      = "N"
 //   33  transAdjustFlg         = "N"
 //   34  transExtensionIDAuditTrail = " "
@@ -608,7 +608,7 @@ object standardizeAndSort {
       clean(agency), "0000", clean(nigpCode), PRODUCT_ID, if (lineId == "1") "COMMIT" else "0000", ALT_ACCOUNT,
       CCY_SRC, CCY_TYPE_SRC, CCY_TGT, CCY_TYPE_TGT,
       clean(year), clean(acctDate), clean(transDate), amount,
-      clean(uomCode), price, qty, " ", " ", "D", "N", "N", " ", " ", " ", " ", " "
+      clean(uomCode), price, qty, " ", " ", if (lineId == "1") "D" else "O", "N", "N", " ", " ", " ", " ", " "
     ).mkString(",")
   }
 
@@ -800,7 +800,7 @@ object standardizeAndSort {
       clean(agency), clean(fund), clean(objCode), PRODUCT_ID, clean(nominalAcct), ALT_ACCOUNT,
       CCY_SRC, CCY_TYPE_SRC, CCY_TGT, CCY_TYPE_TGT,
       clean(year), clean(acctDate), clean(transDate), amount,
-      " ", "0", "0", clean(ruleSetId), clean(ruleId), "D", "N", "N", " ", " ", " ", " ", " "
+      " ", "0", "0", clean(ruleSetId), clean(ruleId), if (lineId == "1") "D" else "O", "N", "N", " ", " ", " ", " ", " "
     ).mkString(",")
   }
 

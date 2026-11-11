@@ -495,9 +495,9 @@ class StandardizeAndSortPOSpec extends AnyFunSuite {
       // Build a minimal payment SortedJE file (vendor "z9999") and PO SortedJE (vendor "c9545")
       // After merge, "c9545" rows should precede "z9999" rows (ascending by transIPID col 0).
       val payRow1 = "z9999,0,0,IDpay1,1,EXPENSE_PAYMENT,Payment Sys,Unknown,Test,ACTUALS,FIN,SHRD-3RD-PARTY,AGY1,FUND1,OBJ1,0,EXPOBJ1,0,USD,TXN,USD,BASE-LE,2003,2003/03/01,2003/03/01,100.00, ,0,0, , ,D,N,N, , , , , "
-      val payRow2 = "z9999,0,0,IDpay1,2,EXPENSE_PAYMENT,Payment Sys,Unknown,CASH_CLEARING,ACTUALS,FIN,SHRD-3RD-PARTY,AGY1,0000,0000,0,0000,0,USD,TXN,USD,BASE-LE,2003,2003/03/01,2003/03/01,-100.00, ,0,0, , ,D,N,N, , , , , "
+      val payRow2 = "z9999,0,0,IDpay1,2,EXPENSE_PAYMENT,Payment Sys,Unknown,CASH_CLEARING,ACTUALS,FIN,SHRD-3RD-PARTY,AGY1,0000,0000,0,0000,0,USD,TXN,USD,BASE-LE,2003,2003/03/01,2003/03/01,-100.00, ,0,0, , ,O,N,N, , , , , "
       val poRow1s = "c9545,0,A501_0000200268,IDpo1PO,1,COMMITMENT,PO Sys,Unknown,PEN AND PENCIL,ACTUALS,FIN,SHRD-3RD-PARTY,Virginia DOT,0000,08015,0,COMMIT,0,USD,TXN,USD,BASE-LE,2003,2003/03/01,09/23/2002,33.45,EA,33.45,1, , ,D,N,N, , , , , "
-      val poRow2s = "c9545,0,A501_0000200268,IDpo1PO,2,COMMITMENT,PO Sys,Unknown,COMMITMENT_OFFSET,ACTUALS,FIN,SHRD-3RD-PARTY,Virginia DOT,0000,0000,0,0000,0,USD,TXN,USD,BASE-LE,2003,2003/03/01,09/23/2002,-33.45,EA,33.45,1, , ,D,N,N, , , , , "
+      val poRow2s = "c9545,0,A501_0000200268,IDpo1PO,2,COMMITMENT,PO Sys,Unknown,COMMITMENT_OFFSET,ACTUALS,FIN,SHRD-3RD-PARTY,Virginia DOT,0000,0000,0,0000,0,USD,TXN,USD,BASE-LE,2003,2003/03/01,09/23/2002,-33.45,EA,33.45,1, , ,O,N,N, , , , , "
 
       val payFile     = outDir.resolve("SortedJEFY03q1exp.csv")
       val poSortedFile= outDir.resolve("SortedJEFY03q1PO.csv")

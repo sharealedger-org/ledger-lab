@@ -2,6 +2,33 @@
 
 Updated 2026-11-10. This file is a concise state snapshot; use the linked design contracts for details.
 
+## 2026-11-11 (latest) Steps 20 and 21 redefined; corpus rerun is the next action (Bob, Mac)
+
+Updated 2026-11-11. Full evidence and gate declaration: `docs/VERIFICATION_AUDIT_REGISTER.md`, "2026-11-11 Steps 20 and 21 redefined". Design text: `docs/TEST_DESIGN.md` §CCP1.
+
+**Decided with the owner today**
+- Do not fuse 20 and 21 into the posting step. Fusing changes what CCP1 measures; speed-ups come from scheduling instead (run 20 and 21 in parallel, years in parallel after prep) and need CPU seconds, which are empty in all 84 `process_metrics` rows, to stay comparable.
+- The old step 21 row count (GL key + vendor) was not an explosion measure: it cannot exceed the ledger rows (0.71-1.00 of ledger, 1.2-2.5x GL in FY03-FY16). Do not cite it.
+- New definition: (1) GL = agency, fund, object, nominal, period (all lines, debit and offset); (2) capacity = per GL key, the product of distinct values of every other SJE column except 3, 25, 27, 28; (3) ledger rows from step 3. NIGP and geo are functions of vendor and add nothing.
+- `transDirVsOffsetFlg` is `D` on both lines of every pair, so the old "debit only" filter did nothing; removed.
+
+**Done and tested** (`sbt test` in `02-foundation/va_pipeline`: 78/78): `GLPost`, `PermutationGenerator`, `GLPostSpec`, `run_pipeline.sh` and `write_canonical_evidence.sh` (new `permutation_capacity` column), `TEST_DESIGN.md`.
+
+**Also done later the same day (owner instructions)**
+- Debit/offset flag is a GL field: `D` on the debit line, `O` on the offset line; it is in the GL key (`dir_flag`). Smoke test unchanged (442 ledger rows).
+- The awk big-number code is gone from `run_pipeline.sh`; Scala step `21s` sums the years (BigInt). No Python was used for this.
+- Capacity now drops dimensions that another dimension determines (Scala); `RESULT` reports `capacity_independent`, `car_dims`, `dropped_dims`. `transContractID` is declared CAR (it is constant `"0"` in every producer; nothing varies it by PO or payment).
+- CPU seconds captured from `/usr/bin/time` into the `RESOURCE` line and `process_metrics.csv` (macOS verified; GNU branch untested here).
+- `scripts/fit_noninjectivity.py` updated for the new `PERM_TBL`/GL schemas (owner approved) and run on the mini-run output.
+
+**Not done**
+1. No corpus run of the revised steps. Check: `net_amount=0` per year, PERM_TBL key set equals GL key set, step 21 heap and elapsed. Step 21 now also tracks functional dependencies; its memory on the corpus is unmeasured.
+2. Owner field list for the Instrument Ledger side (which dimensions are CAR attributes; which pivots, such as injectivity, the IL cannot answer). `car_dims` in the step 21 `RESULT` gives the vendor-determined set per year.
+3. Run 20 and 21 in parallel and the chain years in parallel after prep (orchestration only; confirm independence first).
+4. Views (`5v`) failed in run 2 and has no CCP3 row; the FY2010 imbalance was reported fixed at `2p` (owner, today).
+5. `scripts/standardize_and_sort.py` (legacy Python producer) still writes `D` on both lines; not used by the Scala pipeline, left unchanged.
+
+
 ## 2026-11-10 (for a new session, owner to consider) Fusing steps `3`, `20`, `21`: what it does to the cost curves; not decided (Bob, Mac)
 
 **Nothing was changed.** This records a discussion so a fresh session can start from it. The owner wants to re-read the graph designs (`docs/COST_GRAPH_DESIGN.md`, "Process Graph: CCP1 to CCP5" and the Mix/bowl graph; `docs/TEST_DESIGN.md` §CCP1) before deciding.

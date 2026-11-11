@@ -23,6 +23,7 @@ LDGR_ROW_COUNT="0"
 LDGR_FILE_BYTES="0"
 VIEW_FILE_BYTES="0"
 PERMUTATION_ROWS="0"
+PERMUTATION_CAPACITY="0"
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -45,6 +46,7 @@ while [[ $# -gt 0 ]]; do
     --ldgr-file-bytes) LDGR_FILE_BYTES="$2"; shift 2 ;;
     --view-file-bytes) VIEW_FILE_BYTES="$2"; shift 2 ;;
     --permutation-rows) PERMUTATION_ROWS="$2"; shift 2 ;;
+    --permutation-capacity) PERMUTATION_CAPACITY="$2"; shift 2 ;;
     --status) STATUS="$2"; shift 2 ;;
     *) echo "Unknown option: $1" >&2; exit 1 ;;
   esac
@@ -128,7 +130,7 @@ RECONCILIATIONS="$METRICS_ROOT/reconciliation_results.csv"
 SORT_EVENTS="$METRICS_ROOT/sort_events.csv"
 SJE_ENGINE_METRICS="$METRICS_ROOT/sje_engine_metrics.csv"
 
-init_file "$RUN_MANIFEST" 'run_id,experiment_id,experiment_version,point_id,workload_profile,materialization_profile,period_granularity,curve,configuration_hash,rules_hash,viewspec_hash,input_snapshot_id,git_revision,engine_version,host_id,os_version,java_version,scala_version,start_time,end_time,wall_seconds,status,replicate_number,ldgr_row_count,ldgr_file_bytes,view_file_bytes,permutation_rows'
+init_file "$RUN_MANIFEST" 'run_id,experiment_id,experiment_version,point_id,workload_profile,materialization_profile,period_granularity,curve,configuration_hash,rules_hash,viewspec_hash,input_snapshot_id,git_revision,engine_version,host_id,os_version,java_version,scala_version,start_time,end_time,wall_seconds,status,replicate_number,ldgr_row_count,ldgr_file_bytes,view_file_bytes,permutation_rows,permutation_capacity'
 init_file "$PROCESS_METRICS" 'run_id,process_id,parent_process_id,layer,process_name,engine_name,input_partition_ids,output_partition_ids,ckb_process_id,pass_id,start_time,end_time,wall_seconds,cpu_user_seconds,cpu_system_seconds,cpu_total_seconds,peak_rss_bytes,peak_jvm_heap_bytes,pageins,context_switches,input_rows,input_bytes,output_rows,output_bytes,spill_bytes,status,peak_memory_footprint_bytes'
 init_file "$PARTITION_CATALOG" 'run_id,partition_id,partition_type,logical_layer,producer_process_id,parent_partition_ids,path,row_count,byte_count,checksum,sorted,sort_spec_id,first_key,last_key,min_period,max_period,created_at'
 init_file "$RECONCILIATIONS" 'run_id,check_id,scope,partition_id,expected_value,actual_value,delta,rows_checked,status,failure_reason'
@@ -142,7 +144,7 @@ append_csv_row "$RUN_MANIFEST" \
   "$PERIOD_GRANULARITY" "$CURVE" "" "" "" "" \
   "$GIT_REVISION" "" "$HOST_ID" "$OS_VERSION" "" "2.12.20" "$RUN_TIMESTAMP" \
   "$RUN_END_TIMESTAMP" "$WALL_SECONDS" "$STATUS" "1" \
-  "$LDGR_ROW_COUNT" "$LDGR_FILE_BYTES" "$VIEW_FILE_BYTES" "$PERMUTATION_ROWS"
+  "$LDGR_ROW_COUNT" "$LDGR_FILE_BYTES" "$VIEW_FILE_BYTES" "$PERMUTATION_ROWS" "$PERMUTATION_CAPACITY"
 
 append_partition() {
   local partition_id="$1" partition_type="$2" logical_layer="$3"
@@ -299,6 +301,9 @@ append_process() {
   [[ "$peak_jvm_heap_bytes" =~ ^[0-9]+$ ]] || peak_jvm_heap_bytes=""
   peak_memory_footprint_bytes="$(printf '%s\n' "$resource_line" | sed -nE 's/.*peak_memory_footprint_bytes=([0-9]+).*/\1/p')"
   [[ "$peak_memory_footprint_bytes" =~ ^[0-9]+$ ]] || peak_memory_footprint_bytes=""
+  cpu_user_seconds="$(printf '%s\n' "$resource_line" | sed -nE 's/.*cpu_user_seconds=([0-9.]+).*/\1/p')"
+  cpu_system_seconds="$(printf '%s\n' "$resource_line" | sed -nE 's/.*cpu_system_seconds=([0-9.]+).*/\1/p')"
+  cpu_total_seconds="$(printf '%s\n' "$resource_line" | sed -nE 's/.*cpu_total_seconds=([0-9.]+).*/\1/p')"
   process_layer="02-foundation"
   process_name="step-${step}"
   engine_name="legacy-va"
@@ -331,7 +336,7 @@ append_process() {
   fi
   append_csv_row "$PROCESS_METRICS" "$RUN_ID" "$process_id" "" "$process_layer" \
     "$process_name" "$engine_name" "$input_partition" "$output_partition" "" "$step" \
-    "$RUN_TIMESTAMP" "$RUN_END_TIMESTAMP" "$step_elapsed" "" "" "" "$peak_rss_bytes" "$peak_jvm_heap_bytes" "" "" \
+    "$RUN_TIMESTAMP" "$RUN_END_TIMESTAMP" "$step_elapsed" "$cpu_user_seconds" "$cpu_system_seconds" "$cpu_total_seconds" "$peak_rss_bytes" "$peak_jvm_heap_bytes" "" "" \
     "$input_rows" "$input_bytes" "$output_rows" "$output_bytes" "" "complete" "$peak_memory_footprint_bytes"
   if [[ "$step" == "ttl" ]]; then
     for sje_f in "$OUT_PATH/SortedJEFY${short_year}_"*"_exp.csv" \

@@ -269,6 +269,49 @@ Run: `scripts/run_full_corpus.sh`, FY2003-FY2016, 4 prep lanes plus one serial p
 
 See `SESSION_HANDOFF.md`, "Plan for the next session".
 
+## 2026-11-11 Steps 20 and 21 redefined: the permutation row count was not an explosion measure (Bob, Mac)
+
+Trigger: the owner asked why permutation rows were not larger than GL rows. Evidence: `run_20261110_123303` `process_metrics_all_years.csv` and the step 20/21 source.
+
+### Claim tested and result
+
+| Claim | State | Evidence | Remaining gap |
+|---|---|---|---|
+| Step 21 permutation rows (GL key + vendor) can exceed ledger rows | **refuted by construction and by data** | Its key is a subset of the 15-field ledger key (`post.scala` line 213), so its distinct count cannot be larger. FY03-FY16: permutation / ledger = 0.71 to 1.00 in every year; permutation / GL = 1.23 to 2.49. | The cause of the 25-29% shortfall against the ledger in FY06+ is inferred (object, which the step ignored, and product-like dimensions), not counted on real data. |
+| The "debit only" filter in steps 20 and 21 selected debit lines | **refuted** | `transStandardize.scala` lines 396 and 422 and `standardizeAndSort.scala` line 803 write `D` on both lines of each pair, so the filter removed nothing and offset rows (nominal `0000`) were already in the GL and permutation counts. | Size of the offset share of the 4.0M GL rows not counted (output files are not on this machine). |
+| The step 20 header claim of "a few thousand" account keys | **refuted** | 275,632 to 308,180 GL rows per year. | None; comment corrected. |
+
+### Changes (implemented, unit tested; NOT yet run on the corpus)
+
+- `GLPost`: key is now agency, fund, object, nominal, period; all lines accumulated; `RESULT` adds `net_amount`; header gains `object_id`.
+- `PermutationGenerator`: now reports capacity per GL key (product of per-dimension distinct counts over all SJE columns except GL key and columns 3, 25, 27, 28); one row per GL key; `RESULT` adds `vendor_rows`, `capacity`, `varying_dims`. Counts only, nothing materialised. Capacity is an independence upper bound.
+- `run_pipeline.sh`, `write_canonical_evidence.sh`: `permutation_rows` is now the sum of distinct vendors per GL key; new `permutation_capacity` column in `cost_surface.csv` and `run_manifest.csv` (decimal string sum in awk; verified against a value above 64 bits).
+- `GLPostSpec` rewritten (10 tests); full suite 75/75 passes (`sbt test` in `02-foundation/va_pipeline`).
+
+### Architecture-gate declaration (AGENTIC_ARCHITECTURE_GATES.md section 1)
+
+Owner 02-foundation (CCP1). Input: the same merged SJE, one read per step, no new pass boundary; steps 20 and 21 stay two bounded Scala processes (fusing was considered and rejected so the CCP1 baseline stays comparable). Controls: `net_amount` = 0.00; PERM_TBL key set equals GL key set; `records_read` equal in steps 20 and 21. Memory: whole-file maps keyed by GL key (order of 300K keys per year before object was added); step 21 keeps per-key sets only for dimensions that take a second value. Heap not yet measured for the revised steps.
+
+### Follow-up changes, same day (owner instructions; implemented, tested)
+
+| Change | Evidence |
+|---|---|
+| `transDirVsOffsetFlg` is a GL field: `D` on line 1, `O` on line 2 (`transStandardize` lines 269/422/545, `standardizeAndSort` `makeRow`/`makePORow`); in the GL key (`dir_flag` column in `GL20YY.csv` and `PERM_TBL20YY.csv`). Legacy `scripts/standardize_and_sort.py` still writes `D` on both lines; it is a pre-Scala producer and was not changed. | `run_repo_fixture_smoke_test.sh` passes: 1520 payment rows, 442 ledger rows, sum 0.00 (the flag is not in the ledger key, so counts did not move). Mini run of steps 2,20,21: GL has `D` and `O` rows, 27 GL keys, `net_amount=0.00`. `StandardizeAndSortPOSpec` fixtures updated (`O` on offset rows). |
+| Awk big-number summation removed from `run_pipeline.sh`. Step 21 writes `PERM_SUMMARY20YY.csv`; new Scala step `21s` (`PermutationSummary`, BigInt) sums years; the shell only parses its `RESULT` line. | `GLPostSpec` test "PermutationSummary sums per-year summaries as BigInt" (values above `Long.MaxValue`, missing-year reporting). Mini run printed `RESULT step=21s ... capacity=6292`. |
+| Capacity tightened with functional dependencies detected in Scala (`FdTracker`); `capacity_independent`, `car_dims`, `dropped_dims`, `capacity_dims` added to the `RESULT`. `transContractID` is declared CAR. | Unit test: vendor-determined business event is dropped (capacity 4 vs independent 8) and reported CAR; date is not CAR. On the FY03 small fixture the only dropped pair was `transJrnlLineID <- transJrnlDescript` (capacity equals the independent bound, 6,292), so the tightening is small there; effect on the corpus is unmeasured. |
+| CPU seconds captured: `run_pipeline.sh` parses user/sys from `/usr/bin/time -l` (macOS) or `-v` (GNU) and adds `cpu_user_seconds`, `cpu_system_seconds`, `cpu_total_seconds` to the `RESOURCE` line; `write_canonical_evidence.sh` writes them to `process_metrics.csv`. Empty when `time` gives none. | Parse checked on real `/usr/bin/time -l` output. Smoke test `RESOURCE` line: `cpu_total_seconds=8.94` for step 3. The GNU branch is untested on this machine. |
+| `scripts/fit_noninjectivity.py` updated (owner approved) for the new schemas: reads the GL key including `object_id` and `dir_flag`, vendors per GL key from `d_transIPID` (1 if the column is absent), refuses old-schema files. | Ran on the mini-run output: CCP1_GL and CCP1_PERM 27 keys, 442 vendor patterns, 20 keys with more than one vendor. The CCP2 side was skipped (no `LDGR` in that run). |
+
+The inline Python used earlier to rewrite `GLPostSpec.scala` is moot; no Python was used for the follow-up edits.
+
+### Not done
+
+- Rerun on the corpus; confirm the elapsed cost of the revised step 21 (now also tracking dependencies) and its heap high-water mark.
+- The dependency tracker keeps one int array per distinct value of each non-constant dimension; on the corpus that includes the description column. Its memory is not measured and could be large.
+- Contract by PO or payment: no producer varies it, so CAR-by-contract is declared, not observed.
+- The 15,400 s step total in the section above still comes from overlapped lanes. CPU seconds are now captured but the run-2 archive has none.
+
+
 
 ## 2026-11-10 Full-corpus rerun preparation: PO reader, one-read rule, cross-year 5v (Bob, Mac)
 

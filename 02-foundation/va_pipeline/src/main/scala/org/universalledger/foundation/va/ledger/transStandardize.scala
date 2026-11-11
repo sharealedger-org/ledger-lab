@@ -542,7 +542,7 @@ object transStandardize {
                 transAcctDate = JrnlDate,
                 transTransDate = rec._1.tranDate,
                 transTransAmount = rec._2 * -1, //reverse sign on entry
-                transDirVsOffsetFlg = "D",
+                transDirVsOffsetFlg = "O", // offset line
                 transAdjustFlg = "N"
               )
               outJournals.write(transOutRec.toString.substring(12, transOutRec.toString.length() - 1) + "\n")

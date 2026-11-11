@@ -241,6 +241,8 @@ object LedgerApp {
       // CCP1 baseline steps — read SortedJE output, produce GL balances and permutation table
       case "20" => GLPost(params + ("inPath" -> inPath, "outPath" -> outPath, "year" -> year))
       case "21" => PermutationGenerator(params + ("inPath" -> inPath, "outPath" -> outPath, "year" -> year))
+      // Step 21s: sum the per-year PERM_SUMMARY files (BigInt) — keeps big-number arithmetic out of Bash
+      case "21s" => PermutationSummary(params + ("outPath" -> outPath))
       case _    => println(s"Step '$step' is not implemented.")
     }
   }

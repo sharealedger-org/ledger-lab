@@ -3,13 +3,16 @@
 AIM1 -- Non-injectivity count (no ML required)
 Paper 2 Part 1, Section §5.2
 
-Measures how many distinct pre-hierarchy patterns (VENDORID × NIGP_3digit) map to the
-same posted key in CCP1 (GL) versus how many are preserved in CCP2 (Instrument Ledger).
+Measures how many distinct vendors (transIPID) map to the same posted key in CCP1 (GL)
+versus how many are preserved in CCP2 (Instrument Ledger).
 
 Inputs (resolved relative to repo root unless overridden):
   --ldgr  PATH   LDGR20YY.csv (CCP2 step 3 output)
-  --perm  PATH   PERM_TBL20YY.csv (CCP1 step 21 output)
-  --gl    PATH   GL20YY.csv (CCP1 step 20 output)
+  --perm  PATH   PERM_TBL20YY.csv (CCP1 step 21 output): one row per GL key
+                 (agency, nominal_account_id, fund, object_id, fiscal_year, dir_flag),
+                 with a d_transIPID column = distinct vendors under that key.  The column
+                 is absent when vendor is constant in the year, which means 1 vendor per key.
+  --gl    PATH   GL20YY.csv (CCP1 step 20 output), same GL key plus total_amount
 
 Output:
   data/test_evidence/AIM1_noninjectivity_distribution.csv
@@ -131,29 +134,47 @@ else:
     print(f"  SKIP — file not found: {LDGR_PATH}", file=sys.stderr)
     results.append({"label": "CCP2_LDGR", "key_count": 0, "note": "file not found"})
 
+GL_KEY_COLS = ["agency", "nominal_account_id", "fund", "object_id", "fiscal_year", "dir_flag"]
+
+
+def gl_key(row):
+    return tuple(row[c] for c in GL_KEY_COLS)
+
+
+def perm_vendor_counts(path):
+    """
+    Read PERM_TBL (one row per GL key) and return {gl_key: distinct vendors}.
+    d_transIPID is absent when vendor is constant in the year; every key then has 1 vendor.
+    Returns None when the key columns are missing (old-schema file).
+    """
+    counts = {}
+    with open_csv(path) as fh:
+        reader = csv.DictReader(fh)
+        if reader.fieldnames is None or any(c not in reader.fieldnames for c in GL_KEY_COLS):
+            print(f"  WARNING: {path} lacks GL key columns {GL_KEY_COLS}; old schema? skipping",
+                  file=sys.stderr)
+            return None
+        has_vendor_col = "d_transIPID" in reader.fieldnames
+        for row in reader:
+            counts[gl_key(row)] = int(row["d_transIPID"]) if has_vendor_col else 1
+    return counts
+
+
 # CCP1 substrate A: GL output
-# GL key: (agency|nominal_account_id|fund, fiscal_year) -- one balance row per key.
-# The GL accumulates a single total_amount per key, so vendor identity is gone.
-# The PERM table is the answer key: it records which vendors fed each
-# (account_key, fiscal_year).  Pattern = vendor_id.  A GL balance row with >1
-# distinct vendor in PERM is a row where distinct pre-hierarchy patterns were
+# GL key: (agency, nominal_account_id, fund, object_id, fiscal_year, dir_flag) -- one balance
+# row per key.  The GL accumulates a single total_amount per key, so vendor identity is gone.
+# The PERM table is the answer key: d_transIPID is the number of vendors that fed each GL key.
+# A GL balance row with >1 vendor is a row where distinct pre-hierarchy patterns were
 # collapsed into one posted number.
 print(f"\n[2] CCP1 GL output (vendors per GL balance row, via PERM): {GL_PATH}")
-if os.path.isfile(GL_PATH) and os.path.isfile(PERM_PATH):
-    from collections import defaultdict
+perm_vendors = perm_vendor_counts(PERM_PATH) if os.path.isfile(PERM_PATH) else None
+if os.path.isfile(GL_PATH) and perm_vendors is not None:
     gl_keys = set()
     with open_csv(GL_PATH) as fh:
         for row in csv.DictReader(fh):
-            gl_keys.add((row["agency"] + "|" + row["nominal_account_id"] + "|" + row["fund"],
-                         row["fiscal_year"]))
-    gl_vendors = defaultdict(set)
-    with open_csv(PERM_PATH) as fh:
-        for row in csv.DictReader(fh):
-            k = (row["account_key"], row["fiscal_year"])
-            if k in gl_keys:
-                gl_vendors[k].add(row["vendor_id"])
-    # GL keys with no PERM rows have 0 vendors; count them as 0 so key_count is the GL row count.
-    gl_counts = {k: len(gl_vendors.get(k, ())) for k in gl_keys}
+            gl_keys.add(gl_key(row))
+    # GL keys with no PERM row have 0 vendors; count them as 0 so key_count is the GL row count.
+    gl_counts = {k: perm_vendors.get(k, 0) for k in gl_keys}
     gl_summary = summarise(gl_counts, "CCP1_GL")
     print(f"  GL rows with no PERM vendor: {sum(1 for v in gl_counts.values() if v == 0)}")
     for k, v in gl_summary.items():
@@ -164,16 +185,11 @@ else:
     results.append({"label": "CCP1_GL", "key_count": 0, "note": "file not found"})
 
 # CCP1 substrate B: Permutation table
-# Key: account_key (agency|nominal_account|fund)
-# Pattern: vendor_id — the permutation table expands one row per (account_key, vendor_id)
+# Key: the GL key; pattern: vendors under it (d_transIPID).  Taken from PERM alone, so it also
+# covers any GL key the GL file might lack (the two key sets are equal by construction).
 print(f"\n[3] CCP1 Permutation table: {PERM_PATH}")
-if os.path.isfile(PERM_PATH):
-    perm_counts = count_distinct_patterns(
-        PERM_PATH,
-        key_col="account_key",
-        pattern_cols=["vendor_id"]
-    )
-    perm_summary = summarise(perm_counts, "CCP1_PERM")
+if perm_vendors is not None:
+    perm_summary = summarise(perm_vendors, "CCP1_PERM")
     for k, v in perm_summary.items():
         print(f"  {k}: {v}")
     results.append(perm_summary)

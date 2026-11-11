@@ -20,24 +20,30 @@ import scala.io.Source
 //  --------------
 //  1. Reads all SortedJE_{year}*.csv files produced by Step 2 (same SJE partition as CCP2).
 //  2. Accumulates account-keyed balances:
-//       key = (transLegalEntityID, transNominalAccountID, transCenterID, transFiscalPeriod)
-//       value = SUM(transTransAmount)   [only debit lines — transDirVsOffsetFlg == "D"]
-//     Instrument identity (transIPID) is intentionally NOT included in the key — this is
-//     the defining property of the GL architecture.
+//       key = (transLegalEntityID, transCenterID, transProjectID, transNominalAccountID,
+//              transFiscalPeriod, transDirVsOffsetFlg)
+//           = agency, fund, object, nominal account, period, debit/offset flag
+//       value = SUM(transTransAmount)   [every line — debit and offset/credit]
+//     This is the typical government GL key.  Instrument identity (transIPID) is intentionally
+//     NOT in the key — this is the defining property of the GL architecture.
+//     transDirVsOffsetFlg is a GL field: "D" on the debit line, "O" on the offset line (it was "D"
+//     on both lines before 2026-11-11, which is why an earlier debit-only filter selected nothing).
+//     Both sides are real GL postings and both are kept, separated by the flag.
 //  3. Writes GL20YY.csv:
-//       agency, nominal_account_id, fund, fiscal_year, total_amount
+//       agency, nominal_account_id, fund, object_id, fiscal_year, dir_flag, total_amount
 //
 //  MEMORY CONTRACT
 //  ---------------
-//  The accumulation map is keyed on (agency × nominal_account × fund × year).  For the full
-//  VA corpus (~133M JE rows) the number of distinct account keys is O(agencies × funds × objects
-//  × years) — empirically a few thousand entries — so the map is bounded.  No external sort is
-//  required.
+//  The accumulation map is keyed on (agency × fund × object × nominal_account × year).  Measured
+//  on the VA corpus (FY03–FY16, before object was added to the key) it held about 275K–310K
+//  entries per year; adding object can only increase that.  The map is bounded by the key
+//  cardinality, not the row count.  No external sort is required.
 //
 //  METRICS (process_metrics.csv)
 //  ------------------------------
 //  RESULT step=20 year=YYYY rc=0 records_read=N records_written=M elapsed_s=E
-//         input_bytes=B output_bytes=O
+//         input_bytes=B output_bytes=O net_amount=X
+//  net_amount is the sum of all amounts written; it is 0.00 when the SJE pairs balance.
 //  RESOURCE step=20 year=YYYY jvm_heap_bytes=R
 //
 //  CLI invocation (via LedgerApp dispatcher):
@@ -63,10 +69,11 @@ object GLPost {
   private val COL_NOMINAL_ACC = 16  // transNominalAccountID
   private val COL_FISCAL_YR   = 22  // transFiscalPeriod
   private val COL_AMOUNT      = 25  // transTransAmount
-  private val COL_DIR_FLAG    = 31  // transDirVsOffsetFlg ("D" = debit, offset = "N" direction)
+  private val COL_DIR_FLAG    = 31  // transDirVsOffsetFlg — GL key field (D = debit, O = offset)
 
   // Case class for accumulation key
-  private case class GLKey(agency: String, nominalAccount: String, fund: String, fiscalYear: String)
+  private case class GLKey(agency: String, nominalAccount: String, fund: String, objectCode: String,
+                           fiscalYear: String, dirFlag: String)
 
   // ── Entry point called by LedgerApp dispatcher ─────────────────────────────
   def apply(params: Map[String, String]): Unit = {
@@ -106,6 +113,7 @@ object GLPost {
 
     // ── Accumulate account-keyed balances ─────────────────────────────────────
     val balances   = mutable.HashMap[GLKey, BigDecimal]()
+    var netAmount  = BigDecimal(0)
     var totalRead  = 0L
     var totalInputBytes = 0L
 
@@ -120,17 +128,17 @@ object GLPost {
           val cols = line.split(",", -1)
           if (cols.length > COL_DIR_FLAG) {
             totalRead += 1
-            // Accumulate only debit lines ("D") to avoid double-counting debit+credit pairs
-            if (cols(COL_DIR_FLAG).trim == "D") {
-              val key = GLKey(
-                agency        = cols(COL_AGENCY).trim,
-                nominalAccount = cols(COL_NOMINAL_ACC).trim,
-                fund          = cols(COL_FUND).trim,
-                fiscalYear    = cols(COL_FISCAL_YR).trim
-              )
-              val amt = try BigDecimal(cols(COL_AMOUNT).trim) catch { case _: NumberFormatException => BigDecimal(0) }
-              balances(key) = balances.getOrElse(key, BigDecimal(0)) + amt
-            }
+            val key = GLKey(
+              agency         = cols(COL_AGENCY).trim,
+              nominalAccount = cols(COL_NOMINAL_ACC).trim,
+              fund           = cols(COL_FUND).trim,
+              objectCode     = cols(COL_OBJECT).trim,
+              fiscalYear     = cols(COL_FISCAL_YR).trim,
+              dirFlag        = cols(COL_DIR_FLAG).trim
+            )
+            val amt = try BigDecimal(cols(COL_AMOUNT).trim) catch { case _: NumberFormatException => BigDecimal(0) }
+            balances(key) = balances.getOrElse(key, BigDecimal(0)) + amt
+            netAmount += amt
           }
         }
       } finally src.close()
@@ -140,11 +148,12 @@ object GLPost {
     new File(outPath).mkdirs()
     val pw = new PrintWriter(new BufferedWriter(new FileWriter(outFile)))
     try {
-      pw.println("agency,nominal_account_id,fund,fiscal_year,total_amount")
+      pw.println("agency,nominal_account_id,fund,object_id,fiscal_year,dir_flag,total_amount")
       // Sort output by key for deterministic output
-      val sorted = balances.toSeq.sortBy(kv => (kv._1.fiscalYear, kv._1.agency, kv._1.nominalAccount, kv._1.fund))
+      val sorted = balances.toSeq.sortBy(kv =>
+        (kv._1.fiscalYear, kv._1.agency, kv._1.nominalAccount, kv._1.fund, kv._1.objectCode, kv._1.dirFlag))
       for ((key, total) <- sorted) {
-        pw.println(s"${key.agency},${key.nominalAccount},${key.fund},${key.fiscalYear},$total")
+        pw.println(s"${key.agency},${key.nominalAccount},${key.fund},${key.objectCode},${key.fiscalYear},${key.dirFlag},$total")
       }
     } finally pw.close()
 
@@ -157,7 +166,7 @@ object GLPost {
     println(f"  Journal rows read       : $totalRead%,d")
     println(s"  Output                  : ${outFile.getPath}")
     println("STATUS: COMPLETE")
-    println(s"RESULT step=20 year=$yearStr rc=0 records_read=$totalRead records_written=$totalWritten elapsed_s=$elapsedS input_bytes=$totalInputBytes output_bytes=$outBytes")
+    println(s"RESULT step=20 year=$yearStr rc=0 records_read=$totalRead records_written=$totalWritten elapsed_s=$elapsedS input_bytes=$totalInputBytes output_bytes=$outBytes net_amount=${netAmount.bigDecimal.toPlainString}")
     println(s"RESOURCE step=20 year=$yearStr jvm_heap_bytes=$peakRss")
 
     println("*" * 100)

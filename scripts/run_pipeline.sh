@@ -609,19 +609,37 @@ run_step() {
   #   LAST_JVM_HEAP_BYTES        JVM committed heap at the end of the step, as printed by the Scala
   #                              RESOURCE line (Runtime.totalMemory). Not a peak and not RSS.
   # No value is ever substituted for another: an empty field means "not measured".
+  #   LAST_CPU_USER_S / LAST_CPU_SYSTEM_S / LAST_CPU_TOTAL_S
+  #                              user and system CPU seconds of the `sbt` process tree, from the same
+  #                              `time` output. Unlike wall seconds they do not grow when lanes run in
+  #                              parallel, so they are the comparable compute measure. Includes sbt/JVM
+  #                              start-up. Empty when `time` gives none.
   LAST_PEAK_RSS_BYTES=""
   LAST_PEAK_FOOTPRINT_BYTES=""
   LAST_JVM_HEAP_BYTES=""
+  LAST_CPU_USER_S=""
+  LAST_CPU_SYSTEM_S=""
+  LAST_CPU_TOTAL_S=""
   if [[ "$time_mode" == "macos" ]]; then
     LAST_PEAK_RSS_BYTES=$(printf '%s\n' "$out" | awk '/maximum resident set size/ { print $1; exit }')
     LAST_PEAK_FOOTPRINT_BYTES=$(printf '%s\n' "$out" | awk '/peak memory footprint/ { print $1; exit }')
+    # macOS: "   12.34 real        10.00 user         2.00 sys"
+    LAST_CPU_USER_S=$(printf '%s\n' "$out" | awk '/ real .* user .* sys/ { for (i = 1; i < NF; i++) if ($(i+1) == "user") { print $i; exit } }')
+    LAST_CPU_SYSTEM_S=$(printf '%s\n' "$out" | awk '/ real .* user .* sys/ { for (i = 1; i < NF; i++) if ($(i+1) == "sys") { print $i; exit } }')
   elif [[ "$time_mode" == "gnu" ]]; then
     local rss_kb
     rss_kb=$(printf '%s\n' "$out" | awk -F': ' '/Maximum resident set size/ { print $2; exit }' | awk '{print $1}')
     [[ "$rss_kb" =~ ^[0-9]+$ ]] && LAST_PEAK_RSS_BYTES=$((rss_kb * 1024))
+    LAST_CPU_USER_S=$(printf '%s\n' "$out" | awk -F': ' '/User time \(seconds\)/ { print $2; exit }')
+    LAST_CPU_SYSTEM_S=$(printf '%s\n' "$out" | awk -F': ' '/System time \(seconds\)/ { print $2; exit }')
   fi
   [[ "$LAST_PEAK_RSS_BYTES" =~ ^[0-9]+$ ]] || LAST_PEAK_RSS_BYTES=""
   [[ "$LAST_PEAK_FOOTPRINT_BYTES" =~ ^[0-9]+$ ]] || LAST_PEAK_FOOTPRINT_BYTES=""
+  [[ "$LAST_CPU_USER_S"   =~ ^[0-9]+(\.[0-9]+)?$ ]] || LAST_CPU_USER_S=""
+  [[ "$LAST_CPU_SYSTEM_S" =~ ^[0-9]+(\.[0-9]+)?$ ]] || LAST_CPU_SYSTEM_S=""
+  if [[ -n "$LAST_CPU_USER_S" && -n "$LAST_CPU_SYSTEM_S" ]]; then
+    LAST_CPU_TOTAL_S=$(awk -v u="$LAST_CPU_USER_S" -v s="$LAST_CPU_SYSTEM_S" 'BEGIN { printf "%.2f", u + s }')
+  fi
   # JVM heap: parse the Scala-emitted line (available on all platforms).
   LAST_JVM_HEAP_BYTES=$(printf '%s\n' "$out" | grep -E "RESOURCE step=${step} " | \
     sed -nE 's/.*jvm_heap_bytes=([0-9]+).*/\1/p' | tail -1)
@@ -750,7 +768,7 @@ run_step() {
     done
   fi
   log "$result_line"
-  log "RESOURCE step=$step year=$year peak_rss_bytes=${LAST_PEAK_RSS_BYTES:-} peak_memory_footprint_bytes=${LAST_PEAK_FOOTPRINT_BYTES:-} jvm_heap_bytes=${LAST_JVM_HEAP_BYTES:-}"
+  log "RESOURCE step=$step year=$year peak_rss_bytes=${LAST_PEAK_RSS_BYTES:-} peak_memory_footprint_bytes=${LAST_PEAK_FOOTPRINT_BYTES:-} jvm_heap_bytes=${LAST_JVM_HEAP_BYTES:-} cpu_user_seconds=${LAST_CPU_USER_S:-} cpu_system_seconds=${LAST_CPU_SYSTEM_S:-} cpu_total_seconds=${LAST_CPU_TOTAL_S:-}"
 
   if [[ $rc -ne 0 ]]; then
     log "ERROR  step=$step year=$year exited with code $rc — pipeline halted"
@@ -782,19 +800,20 @@ count_enabled_views() {
 init_cost_surface() {
   local f="$1"
   if [[ ! -f "$f" ]]; then
-    echo "\"run_id\",\"run_timestamp\",\"curve\",\"config_description\",\"years\",\"steps\",total_compute_s,total_storage_bytes,master_file_count,total_cost_proxy,\"capability_layer\",\"period_granularity\",\"materialization_scope\",ledger_row_count,ldgr_file_bytes,view_file_bytes,permutation_rows" > "$f"
+    echo "\"run_id\",\"run_timestamp\",\"curve\",\"config_description\",\"years\",\"steps\",total_compute_s,total_storage_bytes,master_file_count,total_cost_proxy,\"capability_layer\",\"period_granularity\",\"materialization_scope\",ledger_row_count,ldgr_file_bytes,view_file_bytes,permutation_rows,permutation_capacity" > "$f"
   fi
 }
 
 # Append one row to cost_surface.csv.
 # Args: f run_id ts curve cfg years steps compute_s storage_bytes master_count
 #       capability_layer period_granularity materialization_scope
-#       ledger_row_count ldgr_file_bytes view_file_bytes permutation_rows
+#       ledger_row_count ldgr_file_bytes view_file_bytes permutation_rows permutation_capacity
 record_cost_point() {
   local f="$1" run_id="$2" ts="$3" curve="$4" cfg="$5" years="$6" steps="$7"
   local compute_s="$8" storage_bytes="$9" master_count="${10}"
   local capability_layer="${11:-}" period_granularity="${12:-}" materialization_scope="${13:-}"
   local ledger_row_count="${14:-}" ldgr_file_bytes="${15:-}" view_file_bytes="${16:-}" permutation_rows="${17:-}"
+  local permutation_capacity="${18:-}"
   # total_cost_proxy: compute(s) + storage(MB) + master_files × 10
   local proxy
   if [[ "$storage_bytes" =~ ^[0-9]+$ ]]; then
@@ -804,7 +823,7 @@ record_cost_point() {
     proxy="?"
   fi
   # Quote fields that may contain spaces or commas
-  echo "\"${run_id}\",\"${ts}\",\"${curve}\",\"${cfg}\",\"${years}\",\"${steps}\",${compute_s},${storage_bytes},${master_count},${proxy},\"${capability_layer}\",\"${period_granularity}\",\"${materialization_scope}\",${ledger_row_count:-0},${ldgr_file_bytes:-0},${view_file_bytes:-0},${permutation_rows:-0}" >> "$f"
+  echo "\"${run_id}\",\"${ts}\",\"${curve}\",\"${cfg}\",\"${years}\",\"${steps}\",${compute_s},${storage_bytes},${master_count},${proxy},\"${capability_layer}\",\"${period_granularity}\",\"${materialization_scope}\",${ledger_row_count:-0},${ldgr_file_bytes:-0},${view_file_bytes:-0},${permutation_rows:-0},${permutation_capacity:-0}" >> "$f"
 }
 
 # ── main loop ─────────────────────────────────────────────────────────────────
@@ -920,18 +939,27 @@ COST_MATERIALIZATION="${MATERIALIZATION_PROFILE:-movement-only}"
 LDGR_ROW_COUNT=0
 LDGR_FILE_BYTES=0
 VIEW_FILE_BYTES=0
-PERMUTATION_ROWS=0
+PERMUTATION_ROWS=0       # sum over GL keys of distinct vendors (continuity with the pre-2026-11-11 row count)
+PERMUTATION_CAPACITY=0   # sum over GL keys of the product of per-dimension distinct counts
 for year in ${YEARS//,/ }; do
   ldgr_file="$OUT_PATH/LDGR20${year}.csv"
-  perm_file="$OUT_PATH/PERM_TBL20${year}.csv"
   if [[ -f "$ldgr_file" ]]; then
     LDGR_ROW_COUNT=$(( LDGR_ROW_COUNT + $(count_data_rows "$ldgr_file") ))
     LDGR_FILE_BYTES=$(( LDGR_FILE_BYTES + $(count_file_bytes "$ldgr_file") ))
   fi
-  if [[ -f "$perm_file" ]]; then
-    PERMUTATION_ROWS=$(( PERMUTATION_ROWS + $(count_data_rows "$perm_file") ))
-  fi
 done
+# Permutation totals exceed 64-bit integers.  Step 21 writes one PERM_SUMMARY20YY.csv per year and
+# Scala step 21s sums them (BigInt); this shell only forwards the RESULT line it prints.
+if [[ ",$STEPS," == *",21,"* ]]; then
+  perm_summary_out=$(cd "$SBT_PROJECT" && sbt -batch \
+    "run --step 21s --outPath $(to_jvm_path "$OUT_PATH") --years $YEARS" 2>&1) || perm_summary_out=""
+  perm_summary_line=$(printf '%s\n' "$perm_summary_out" | grep -E "RESULT step=21s " | tail -1 || true)
+  perm_rows=$(printf '%s\n' "$perm_summary_line" | sed -nE 's/.*vendor_rows=([0-9]+).*/\1/p')
+  perm_cap=$(printf '%s\n' "$perm_summary_line" | sed -nE 's/.* capacity=([0-9]+).*/\1/p')
+  [[ -n "$perm_rows" ]] && PERMUTATION_ROWS="$perm_rows"
+  [[ -n "$perm_cap"  ]] && PERMUTATION_CAPACITY="$perm_cap"
+  log "$perm_summary_line"
+fi
 for vf in "$OUT_PATH"/view_*.csv; do
   [[ -f "$vf" ]] && VIEW_FILE_BYTES=$(( VIEW_FILE_BYTES + $(count_file_bytes "$vf") ))
 done
@@ -948,13 +976,14 @@ log "  ldgr_row_count      = $LDGR_ROW_COUNT"
 log "  ldgr_file_bytes     = $LDGR_FILE_BYTES"
 log "  view_file_bytes     = $VIEW_FILE_BYTES"
 log "  permutation_rows    = $PERMUTATION_ROWS"
+log "  permutation_capacity = $PERMUTATION_CAPACITY"
 log "  cost_surface        = $COST_SURFACE"
 log "======================================================================"
 
 record_cost_point "$COST_SURFACE" "$RUN_ID" "$RUN_TS" "$CURVE" "$CONFIG_DESC" \
   "$YEARS" "$STEPS" "$TOTAL_COMPUTE_S" "$FINAL_STORAGE_BYTES" "$MASTER_FILE_COUNT" \
   "$CAPABILITY_LAYER" "$COST_PERIOD_GRANULARITY" "$COST_MATERIALIZATION" \
-  "$LDGR_ROW_COUNT" "$LDGR_FILE_BYTES" "$VIEW_FILE_BYTES" "$PERMUTATION_ROWS"
+  "$LDGR_ROW_COUNT" "$LDGR_FILE_BYTES" "$VIEW_FILE_BYTES" "$PERMUTATION_ROWS" "$PERMUTATION_CAPACITY"
 
 log "Cost point recorded → $COST_SURFACE"
 
@@ -978,7 +1007,8 @@ bash "$SCRIPT_DIR/write_canonical_evidence.sh" \
   --ldgr-row-count "$LDGR_ROW_COUNT" \
   --ldgr-file-bytes "$LDGR_FILE_BYTES" \
   --view-file-bytes "$VIEW_FILE_BYTES" \
-  --permutation-rows "$PERMUTATION_ROWS"
+  --permutation-rows "$PERMUTATION_ROWS" \
+  --permutation-capacity "$PERMUTATION_CAPACITY"
 
 bash "$SCRIPT_DIR/interpret_run.sh" \
   "${OUT_PATH%/}/metrics" \
