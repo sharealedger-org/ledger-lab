@@ -1,7 +1,7 @@
 # Cost Graph Design — Working Notes
 
-**Status:** In-progress design conversation, 2026-11-05.
-**Purpose:** Capture the agreed graph designs so this conversation can be resumed in a new session.
+**Status:** Updated design conversation, 2026-11-11.
+**Purpose:** Capture the agreed graph designs, mathematical formulas, and spreadsheet model specifications so Charlie Anderson and other researchers have the exact calculated values and equations.
 **Companion:** [`docs/TEST_DESIGN.md`](TEST_DESIGN.md) — CCP/AIM measurement specs that sit underneath these graphs.
 
 ---
@@ -52,6 +52,42 @@ combinatorial cost for pre-computed answers to questions defined at design time.
 **What it proves (Paper 1):** An interior minimum exists. Most institutions are past it,
 paying combinatorial cost for pre-computed answers to questions that could have been answered
 at query time from a narrower, cheaper store.
+
+### Mathematical Formulation of the Cost Bowl (For Charlie Anderson's Model)
+
+Total lifecycle cost for any architectural point $P$ across the mix dial is decomposed into four explicit terms:
+
+$$\text{Total Cost}(P) = \text{Cost}_{\text{batch}}(P) + \text{Cost}_{\text{storage}}(P) + \text{Cost}_{\text{query}}(P) + \text{Cost}_{\text{reconciliation}}(P)$$
+
+#### 1. The Left Wall: Pure Event Replay ($X = 0$)
+* **Mechanism:** Store zero ledgers/balances. Retain only raw transaction events (`SortedJE`).
+* **Batch Cost:** $\text{Cost}_{\text{batch}} = 0$.
+* **Storage Cost:** $\text{Cost}_{\text{storage}} = \text{Size}(\text{Raw Events}) \times \text{Unit Storage Rate}$.
+* **Query Cost:** Paid at **query time**. Every financial question (annual balance sheet, monthly actuals, vendor spend) must scan the full historical transaction corpus:
+  $$\text{Cost}_{\text{query}} = \sum_{q \in Q} \Big( \text{Size}(\text{Raw Events}) \times \text{Unit Scan Cost} \Big) = |Q| \times \text{Scan Cost}$$
+* **Reconciliation Cost:** $0$ (single source of truth).
+* **Behavior:** As query volume $|Q|$ rises, total cost shoots vertically up the left wall.
+
+#### 2. Run A (`T-annual`) vs. Run B (`T-monthly`): Where Run A Actually Sits
+* **Run A is NOT on the Left Wall:** Run A produces an Instrument Ledger at annual granularity (`LDGR20YY.csv`, 1 row per instrument-year). It sits at the **left edge of the bowl bottom**, not at $X = 0$.
+* **Batch Time Equivalence:** Under CKB streaming (`post.scala`), reading the sorted SJE stream to produce annual movements (Run A, $\approx 350\text{k}$ rows, $40\text{ MB}$) takes the same single pass and elapsed time ($\approx 50\text{ s}$) as producing monthly movements (Run B, $\approx 1.2\text{M}$ rows, $120\text{ MB}$).
+* **Query Time Divergence (The Transaction Fallback Tax):**
+  * **Run B (`T-monthly`):** Answers monthly, quarterly, and annual questions directly by range-summing 1 to 12 movement rows from the $120\text{ MB}$ ledger. $\text{Scan Cost} = 0$.
+  * **Run A (`T-annual`):** Can answer annual questions directly, but **cannot answer monthly or quarterly questions** because it destroyed sub-annual time boundaries. Any sub-annual query must fall back to scanning the multi-gigabyte raw `SortedJE` files:
+    $$\text{Cost}_{\text{query}}(\text{Run A}) = |Q_{\text{annual}}| \times \text{Seek}(\text{LDGR}) + |Q_{\text{subannual}}| \times \text{Scan}(\text{Raw SortedJE})$$
+* **Finding:** Run B is the natural bowl minimum for the Virginia corpus because it completely eliminates the transaction fallback tax at zero extra batch pass cost.
+
+#### 3. The Right Wall: Steps 20, 21, and Multi-Master Proliferation ($X \to 100$)
+* **Step 20 (`GLPost`):** Collapses dimensions into an account key `(agency, fund, object, nominal, period, dir_flag)`, producing $\approx 300\text{k}$ rows. It is cheap to compute, but suffers complete structural information loss (AIM1/3/4 fail).
+* **Step 21 (`PermutationGenerator`):** Acts as a **structural sizing instrument** for externalized upstream cost. It calculates the combinatorial capacity:
+  $$\text{Capacity} = \sum_{k \in \text{GL Keys}} \left( \prod_{d \in \text{Independent Dims}} |V_d(k)| \right)$$
+* **Physical Enterprise Reality:** To answer queries outside the GL key in balance space, enterprises instantiate $M$ separate subledgers, OLAP cubes, and data marts.
+* **Storage Cost:** $\text{Cost}_{\text{storage}} = (\text{GL Size} + M \times \text{Subledger Sizes} + \text{Capacity Footprint}) \times \text{Unit Storage Rate}$.
+* **Batch Write Amplification:** Every source transaction must update $M$ distinct balance stores with row locking and index maintenance:
+  $$\text{Cost}_{\text{batch}} = M \times \text{Base Ingestion Cost}$$
+* **Reconciliation Tax:** Paid continuously at batch/month-end close to synchronize and audit $M$ disparate balance stores:
+  $$\text{Cost}_{\text{reconciliation}} = \binom{M}{2} \times \text{Reconciliation Sync Cost} = \frac{M(M-1)}{2} \times \text{Unit Sync Cost}$$
+* **Behavior:** As dimensional reporting requirements grow, storage and reconciliation explode combinatorially up the right wall.
 
 ### Footnote on Graph 1 — why the minimum is a movement store, not a balance store
 
@@ -123,6 +159,17 @@ minimum empirically visible: same architecture, different hardware, different mi
 remains conceptual until the insurance company engages. It is recorded here as an open
 invitation for collaboration, not a gap in the current experiment.
 
+**Third curve — Unrestrained AI / Shuffle Engine (Track D - "Twisting of the Curve"):**
+When an unrestrained AI coding assistant (or conventional data engineer) builds a financial
+engine without CKB architecture rules, it falls into historical habits:
+1. It uses in-memory accumulators, DataFrames, and shuffle stages (`groupBy`, Spark shuffles).
+2. It aggregates early and discards event detail, building fixed summary tables.
+
+This produces a **twisted and elevated cost bowl**:
+- **Left Wall Twists Vertically:** An event-replay query triggers distributed shuffles, memory thrashing, and disk spill buffers instead of streaming sequential reads.
+- **Bowl Minimum Lifts:** The bottom of the bowl is elevated by $10\times$ to $50\times$ in compute and memory footprint (requiring a multi-node cluster to process what CKB streams on 1 laptop thread).
+- **Right Wall Accelerates Outward:** The AI proliferates auxiliary summary tables and cubes, rapidly triggering write amplification and permutation capacity explosion.
+
 ---
 
 ## Process Graph — CCP Layers: CCP1 → CCP5
@@ -155,6 +202,45 @@ cost up the right wall.
 
 ---
 
+## Spreadsheet Model Specification for Charlie Anderson
+
+To allow Charlie Anderson to execute and manipulate the underlying mathematical model in Excel, the workbook is organized into four interconnected sheets:
+
+### Sheet 1: `Model_Parameters` (Corpus Constants & Unit Rates)
+* `N_events_yr`: Raw SJE transaction volume per year ($\approx 16\text{M}$ rows/yr).
+* `S_raw_GB_yr`: Raw SJE file size per year ($\approx 5.0\text{ GB}$/yr).
+* `N_vendors`: Distinct active instrument count ($\approx 65\text{k}$).
+* `N_ldgr_ann_yr`: Run A annual ledger row count ($\approx 350\text{k}$ rows/yr, $40\text{ MB}$).
+* `N_ldgr_mon_yr`: Run B monthly ledger row count ($\approx 1.2\text{M}$ rows/yr, $120\text{ MB}$).
+* `Perm_Capacity`: Step 21 combinatorial capacity bound ($\approx 10^{9} \text{ to } 10^{12}$).
+* `Cost_Scan_per_GB`: Unit scan cost for raw events (e.g. $\$0.02/\text{GB}$).
+* `Cost_Seek_per_Q`: Unit lookup cost in narrow LDGR + CAR (e.g. $\$0.0001/\text{query}$).
+* `Cost_Store_per_GB_mo`: Enterprise storage rate (e.g. $\$0.023/\text{GB-month}$).
+* `Cost_Reconcile_per_Pair`: Monthly reconciliation cost per master pair (e.g. $\$50.00/\text{pair-month}$).
+* `Q_annual`, `Q_subannual`, `Q_dimensional`: Annual, sub-annual, and AI query volumes.
+* `M_subledgers`: Count of parallel legacy balance stores ($M = 5$).
+
+### Sheet 2: `Cost_Equations` (Cell Formulas)
+* `Batch_Cost(i)`: Model ingestion / CKB pass / multi-master write amplification.
+* `Storage_Cost(i)`: $\text{Total Stored GB} \times \text{Cost\_Store\_per\_GB\_mo} \times 12$.
+* `Query_Cost(i)`: $\sum (\text{Queries} \times \text{Scan/Seek Unit Costs})$.
+* `Reconcile_Cost(i)`: $\frac{M(M-1)}{2} \times \text{Cost\_Reconcile\_per\_Pair} \times 12$.
+* `Total_Cost(i)`: Sum of all four cost components.
+
+### Sheet 3: `Cost_Bowl_Data` (Calculated Curve Coordinates)
+Coordinates plotted across the Mix Dial ($X \in [0, 100]$):
+1. **Point 1 ($X=0$):** Pure Event Store (Left Wall).
+2. **Point 2 ($X=15$):** Run A (`T-annual` Movement Store + Sub-annual Event Scans).
+3. **Point 3 ($X=30$):** Run B / CCP2 (Instrument Ledger Monthly Movements + CAR — Bowl Minimum).
+4. **Point 4 ($X=60$):** Run D (Movement Ledger + Pre-computed Rollup Cubes).
+5. **Point 5 ($X=90$):** CCP1 Status Quo GL + 5 Subledgers.
+6. **Point 6 ($X=100$):** Full Key Permutation Explosion (Right Wall).
+
+### Sheet 4: `Multi_Substrate_Comparison`
+Plotted comparison of Curve 1 (CKB / GenevaERS on Laptop), Curve 2 (GenevaERS on z/OS Mainframe), and Curve 3 (Track D Unrestrained AI / Shuffle Engine).
+
+---
+
 ## Open questions from the design conversation
 
 1. **Engine Graph — Python implementation:** to run this experiment requires a Python
@@ -165,9 +251,9 @@ cost up the right wall.
    explains why the bowl minimum is a movement store. It does not need its own graph.
 
 3. **AIM tests (Paper 2)** sit underneath these three graphs but are not shown on them. A
-   separate one-pager maps CCP labels and AIM tests to the graphs — see the artifact
-   produced in this session.
+   separate one-pager maps CCP labels and AIM tests to the graphs.
 
 4. **Combination graph** — a fourth artifact overlaying all three dials (Mix, Engine,
-   Process) onto one surface. Design not yet started; depends on the three standalone graphs
-   being settled first.
+   Process) onto one surface.
+
+5. **Track D Separate Repo Setup:** Track D (unrestrained AI subject engine) will be executed in a clean, isolated repository with gated information feeds to prevent contamination from Ledger Lab CKB architecture rules.

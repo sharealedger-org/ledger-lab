@@ -4,6 +4,8 @@ Updated 2026-11-10. This file is a concise state snapshot; use the linked design
 
 ## 2026-11-11 (latest, CODE + PREFLIGHT) Step 21 recoded with extract-time summarisation; preflight done; ready for the full re-run in a new session (Bob, Mac)
 
+**Baseline Commit Locked:** Tagged as `ccp-baseline-20261111` at commit `63e7900fb180a4d36c4c746999df30601c5d0b07`. This commit contains the verified Step 21 extract-time summarisation (81/81 unit tests passing) and represents the exact codebase running for the first full CCP benchmark points.
+
 **What changed.** `PermutationGenerator.scala` (step 21) no longer loads the year into global maps. It follows the `5v` View D (GERS-003) pattern: a bounded buffer of facts, sorted de-duplicated spill runs, one k-way merge. Owner instruction: "This is CKB. In order by vendor. We aren't loading all vendors in 21" and "Why measure first. Not hard to code and then we run."
 - Each row emits `(GL key id, dimension, 64-bit value hash)` for the dimensions that vary in the year into a buffer of `permBufferCapacity` records (default 1,000,000). A full buffer is sorted, de-duplicated and spilled. A direct-mapped 2^20-slot cache drops immediate repeats before they reach the buffer. The final merge counts distinct hashes per (GL key, dimension). Values are kept as hashes, never strings.
 - Resident state: the GL key index (one entry per GL key, as in step 20), the buffer, the cache, and the dependency tables. The old per-value int arrays per dimension (including the journal description column) are gone.
