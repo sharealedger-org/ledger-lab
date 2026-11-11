@@ -148,7 +148,10 @@ with sleeps of about 25 seconds or less.
 ### 4.1 Full-corpus launch and watch (`scripts/run_full_corpus.sh`)
 
 Added 2026-11-10 from the run that used 4 prep lanes plus a serial posting chain. The launcher
-needs an empty `output_full`: it refuses to start while any `FY*` entry exists.
+needs an empty `output_full`: it refuses to start while any `FY*` entry exists. It also moves any
+existing `run2_*.log` in the logs directory to `prev_run2_before_<stamp>/` (never deletes), because
+the dashboard and the evidence archive read those logs by fixed name and a stale one is shown as
+this run's result (seen 2026-11-10: a new run's dashboard reported `DONE` from the previous run's logs).
 
 Before launching: quit Dropbox and OneDrive (the run is disk-bound), check free disk (about
 6 GB per fiscal year seen so far; the 14-year run had written 35 GB about 23 minutes in),

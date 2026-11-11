@@ -87,6 +87,14 @@ if compgen -G "$OUT_ROOT/FY*" >/dev/null; then
   exit 1
 fi
 
+# The dashboard and the evidence archive read run2_*.log by fixed name. A log left from an earlier run
+# would be shown as this run's result, so move any stale ones aside (not deleted) before starting.
+if compgen -G "$LOGS/run2_*.log" >/dev/null; then
+  STALE="$LOGS/prev_run2_before_$STAMP"
+  mkdir -p "$STALE" && mv "$LOGS"/run2_*.log "$STALE"/
+  echo "Moved stale run2_*.log files to $STALE"
+fi
+
 stamp() {  # event
   printf '%s,%s,%s\n' "$1" "$(date +%s)" "$(date '+%F %T')" >> "$WALL"
 }
