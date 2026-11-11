@@ -2,7 +2,7 @@
 
 Updated 2026-11-10. This file is a concise state snapshot; use the linked design contracts for details.
 
-## 2026-11-11 (latest, RUN 3 PREFLIGHT) Baseline run finished and committed; run-2 layout built and tested on 2 years; preflight for the 14-year run NOT complete (Bob, Mac)
+## 2026-11-11 (latest, RUN 3 PREFLIGHT) Baseline run finished and committed; run-2 layout built and tested on 2 years; preflight for the 14-year run COMPLETE, ready to launch in a new session (Bob, Mac)
 
 **Where things stand.**
 - Baseline run `20261110_210721` (serial chain, `5v` after posting, start commit `70b6781`): exit 0, 42/42 control rows PASS, `5v` rc 0 (1,285 s, 224,072,410 records). Evidence `data/test_evidence/corpus_runs/run_20261110_210721/`, audit entry "2026-11-11 Full corpus run FY2003-FY2016". Counts as a new baseline, not a replicate.
@@ -14,13 +14,13 @@ Updated 2026-11-10. This file is a concise state snapshot; use the linked design
 - [x] Engine unchanged since the baseline: no diff under `01-` to `05-` between `70b6781` and `HEAD`. Only `scripts/run_full_corpus.sh` and `scripts/dashboard_full_corpus.sh` changed. `bash -n` clean on both.
 - [x] Step 21 real-data probe (the old "FY12 probe"): superseded by the baseline, which ran step 21 on all 14 years, `vendor_order=ok` in every year, highest peak RSS 1.34 GB with the 1 GB heap.
 - [x] Source data: `va_fresh_root` names and sizes match the catalog; `VA_opendata_FY2009.txt` placeholder present (0 bytes). Nothing running (`run_pipeline`, `sbt`, `java`, `python`, `caffeinate`).
-- [x] Disk: 199 GB free. `output_full` is 110 GB and `output_full_prev_20261110` is 109 GB; the new run needs about 110 GB, so it fits with about 89 GB left.
-- [ ] **`output_full` must be emptied of `FY*` first and the launcher refuses otherwise. Moving it aside breaks its symlinks.** The `FY<yy>` and `VIEWS` entries are *absolute* symlinks into `output_full/<name>.generations/`. `output_full_prev_20261110` (moved on 2026-11-10 without asking) already has dangling `FY*` links; the data is intact in its `*.generations/` directories. The same will happen to the baseline output if it is renamed. Options for the owner: (a) rename and then repoint the links relative to the new directory; (b) delete the 12:33 run's `output_full_prev_20261110` (superseded, its `5v` failed) and keep the baseline; (c) run in a new root, as the test root does, with `--root`, `--logs`. Not done; needs the owner's decision.
-- [ ] **Dropbox:** a Dropbox helper process (`garcon`, the Finder extension) is running. The checklist says to quit Dropbox and OneDrive before a run (disk-bound). I could not tell whether the main app is running. Owner to quit it.
-- [ ] Reboot not done (the Track D reboot is for the other machine's run).
-- [ ] The launcher moves stale `run2_*.log` aside by itself (`prev_run2_before_<stamp>/`); nothing to do by hand.
+- [x] Disk: 308 GB free after the cleanup (the baseline output, 110 GB, is kept); the new run needs about 110 GB.
+- [x] **`output_full` emptied (done 2026-11-11 01:13, owner approved).** The superseded 12:33 run's output (`output_full_prev_20261110`, 109 GB, dangling links, `5v` had failed) was deleted after checking that nothing in the baseline output linked to it or shared an inode with it. The baseline output is kept, renamed to `~/workspace/va_fresh_root/output_full_baseline_20261110_210721/` (110 GB), and its 15 absolute symlinks (`FY03` to `FY16`, `VIEWS`) were repointed to the new path; all 15 resolve and `LDGR`/view files read. A new empty `output_full/` exists for the next run. Disk free now 308 GB.
+- [x] **Dropbox:** the main app is not running (owner confirmed); only the Finder extension helper `garcon` is.
+- [x] Reboot: not required for this run (the Track D reboot is for the other machine).
+- [x] The launcher moves stale `run2_*.log` aside by itself (`prev_run2_before_<stamp>/`); nothing to do by hand. The baseline logs and wall-clock CSV stay in `~/workspace/va_fresh_logs/` and are also archived in git.
 
-**Launch (new session, after the three open items above).** From the repo root, with the tool's background mode (a plain `nohup ... &` died last time):
+**Launch (new session).** From the repo root, with the tool's background mode (a plain `nohup ... &` died last time). Reboot is not required:
 `bash scripts/run_full_corpus.sh > ~/workspace/va_fresh_logs/run2_corpus.log 2>&1 < /dev/null`
 then `bash scripts/open_run_windows.sh`. Confirm lanes are alive after 60 s (`pgrep -fl run_pipeline`). Wall-clock header must read `chain_width=2 views_early=Y caffeinate=on`.
 
