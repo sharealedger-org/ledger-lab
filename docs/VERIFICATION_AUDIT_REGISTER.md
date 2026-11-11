@@ -1028,3 +1028,24 @@ Claim tested: replacing the whole-year maps in `PermutationGenerator` with the `
 Defect found by the check: the first version listed extra `d_` columns (dimensions varying year-wide but not within any one GL key). Fixed; header and rows now match the old output.
 
 Process finding: two source edits were applied with inline Python text replacement without owner approval (see `SESSION_HANDOFF.md`).
+
+## 2026-11-11 Full corpus run FY2003-FY2016, 14 years, monthly (run tag `20261110_210721`)
+
+Claim tested: the current mainline (new reader, one-read rule, redefined step 20, recoded step 21, `5v`) runs the whole 14-year corpus on one 4-CPU, 16 GB Mac with a fixed 1 GB JVM heap and passes its controls. Falsifier: any non-zero exit, any failed control, or `5v` failing as it did in the 2026-11-10 12:33 run (27 min).
+
+Start commit `70b6781`, clean tree. `6ff2caa` (launcher moves stale `run2_*.log` aside; no effect on the engine) was added mid-run. The orchestrator (pid 97054) had already read the script. One machine idle sleep of about 7 seconds at 22:00:16 happened before `caffeinate` was started; it falls inside the wall-clock figures. Evidence: `data/test_evidence/corpus_runs/run_20261110_210721/`.
+
+| Claim | Status | Evidence | Remaining gap |
+|---|---|---|---|
+| All 14 prep lanes, 14 posting chains (steps 3, 20, 21) and `5v` exit 0 | `partially_verified` | Wall-clock record: start 21:07:21, prep done 22:42:31, serial chain done 00:00:47, `5v` 00:00:47 to 00:22:16 (1,285 s). Orchestrator exit 0. One sbt boot-socket RETRY (FY10), recovered. | One run is a new baseline, not a replicate. `TEST_DESIGN.md` requires three. |
+| `5v` completes over all years | `partially_verified` | `RESULT step=5v rc=0 records_read=224,072,410 files_read=14 rows_skipped_short=0`; views: monthly 1,052,244, vendor 773,380, agency-commodity 1,052,244, agency-payment 3,848,658. Peak RSS 1,361,825,792; footprint 1,311,862,784; heap 1,073,741,824. CPU 1,433 s. `buffer_overflow=true` (designed spill path). | The 2026-11-10 `5v` figures (RSS 1,353,891,840; footprint 1,326,723,072) are close. Different view code and inputs, so the comparison is indicative only. |
+| SJE and ledger balance to zero in every year | `verified` for this run | 42 reconciliation rows, all `PASS`: `sje_balance` and `ledger_balance` for FY03-FY16 (FY03 SJE rows 11,621,800 up to FY14 19,542,304). | These are awk totals in `write_canonical_evidence.sh` (see below). |
+| Step 21 quality flags | `partially_verified` | `vendor_order=ok` in 14 of 14 years, rc 0. `fd_untracked_dims` is non-empty in every year (`transJrnlDescript;transTransDate`, plus `transCommitmentID` in most). Capacity is therefore an upper bound by that much. | Compare against the old step 21 on a large year (requested in the 2026-11-11 entry above). |
+| Step memory is bounded | `partially_verified` | Highest peak RSS in the chains: step 3 1.34 GB, step 20 1.27 GB, step 21 1.34 GB, with a 1 GB heap. | Step 3 and step 21 maxima are identical to the byte; check that the two RESOURCE lines are not read from the same process before quoting them. |
+| Chain wall time is engine time | `contradicted` | About 8.5 min per year against about 3.4 min of step time (steps 3 about 55 s, 20 about 53 s, 21 about 93 s from FY09). FY13: pipeline complete 23:25:37, reconciliation and interpretation written 23:30:38. | The cause is not proven by timing. Suspect: the `awk` control-total pass over the merged SJE and ledger in `write_canonical_evidence.sh` (about 5 min per year), plus three sbt launches and counting passes. |
+
+Quarantined PO rows (14 files): FY03 20, FY04 1, FY05 3, FY06 1,987, FY07 1,675, FY08 3,042, FY09 0, FY10 3,847, FY11 4,253, FY12 5,742, FY13 3,762, FY14 2,476, FY15 2,667, FY16 2,803.
+
+Boundary note: the SJE and ledger control totals are computed by `awk` in Bash. AGENTS.md puts control totals produced as part of financial processing in Scala. Owner decision needed before changing it. This run's wall time for posting includes that pass, so cost points that use chain wall time include orchestration overhead and must not be read as engine time; use the `RESOURCE` CPU seconds.
+
+**State:** run `partially_verified` as a baseline (one run, serial posting, `5v` after posting).

@@ -288,6 +288,79 @@ reading source only; none of it has been run.
 - [ ] Replicates: Stage 4 calls for 3 replicates for each of CCP1, CCP2 and CCP3.
 - [ ] Re-baseline: the `applyPO` fix changed the PO workload, so the locked 2026-11-06 CCP figures
       are not comparable. Record these runs as a new baseline, not a replicate.
+- [ ] **Investigate parallel posting (added 2026-11-10, not started).** `chain()` in
+      `scripts/run_full_corpus.sh` runs `3,20,21` for one year at a time. Once prep ends the 4 CPUs
+      are mostly idle during posting (about 3 minutes per year in the 12:33 run, 10 years left at
+      that point), so running more than one posting lane may shorten the corpus wall clock. Not
+      measured. Do not edit the script while a run is in progress.
+      - **Investigation findings (2026-11-10, code and logs read only; nothing run or changed).**
+        - *Why it is serial:* `846e952` states "parallel prep lanes, serial 3/20/21 chain" with no
+          reason given. The owner's to-do in `SESSION_HANDOFF.md` ("next full run, post years in
+          parallel and start `5v` when JE generation ends") already proposes this and lists the
+          checks below. Item 3 of the 2026-11-11 "Not done" list adds "run 20 and 21 in parallel".
+        - *Years look independent (code reading):* `post.scala` derives the ledger name from each
+          journal file's own year (`LDGR20{yy}`) and opens only that year's `LDGR` as the prior
+          ledger; every chain log so far says "No existing ledger file. File will be created:
+          LDGR20{yy}.csv" and none opens another year. Steps `3`, `20`, `21` take
+          `--outPath` = that year's own generation directory and select `SortedJEFY{yy}` files;
+          `GLPost` and `PermutationGenerator` write only `GL20{yy}`, `PERM_TBL20{yy}`,
+          `PERM_SUMMARY20{yy}` and spill files (`perm_spill_{yy}_{n}.tmp`) inside that directory.
+          Each year has its own `FY<yy>` output directory, `.generations` folder and
+          `cost_surface.csv`. `--seedFromCommitted` copies only that year's own committed output.
+          Not read: all of `post.scala`, `GLPost` and `LedgerApp` step 3/20/21 dispatch beyond
+          the lines above; and `CurrencyRevaluation` opening-ledger reads, which are not in the
+          `3,20,21` path.
+        - *Steps 20 and 21 within a year:* `GLPost` has no reference to `PERM_TBL` and
+          `PermutationGenerator` does not read `GL20{yy}`, so neither looks like it needs the
+          other's output. Both read the same merged file, so they could run side by side. Not
+          proven by a run.
+        - *Capacity, measured in this run (FY06-FY08, load was light):* each step uses about
+          1.0 to 1.3 GB peak RSS (heap is fixed at 1 GB) and 66 to 207 s wall for 80 to 160 CPU
+          seconds. Wall is close to CPU seconds, so each step is mostly one busy core, which is the
+          single-core pattern seen once JE generation finished. The machine has 4 CPUs and 16 GB,
+          so 2 to 4 concurrent steps fit in memory (about 5 GB at four). A whole year's three
+          steps use about 240 to 350 CPU seconds.
+        - *Upper bound on the gain (estimate, not measured):* with serial posting at about 5 min
+          per year, 8 years remaining at 22:45 is about 40 min. Two years in parallel would
+          approach half of that; the limit is CPU (4), disk (about 108 GB written so far) and the
+          1 GB heap per JVM. Do not expect a straight 2x.
+      - *Still to check before any change:* the sbt boot-socket collision (more concurrent
+        launches; `RETRY` covers the exact message, one retry seen in this run); whether `5v`
+        and the posting steps compete for disk; and the dashboard (`dashboard_full_corpus.sh`)
+        assumes one chain and must be changed with the launcher. CPU seconds per step are now
+        captured in `RESOURCE` lines, so step cost stays comparable across serial and parallel
+        runs on CPU seconds even where wall time is not.
+      - If years are independent (as above), test two posting lanes on a bounded set of years
+        first, and compare control totals (`net_amount=0` per year, ledger row counts) and the
+        output files with the serial result before using it on the corpus.
+      - It changes the workload shape (overlapping posting). Record any parallel run as a new
+        baseline, not a replicate, and keep the serial figures separate (see the re-baseline item).
+      - Keep it in Bash job control; no financial logic in the script.
+- [ ] **Investigate starting `5v` in parallel with posting (added 2026-11-10, owner's idea, not
+      started).** `run_full_corpus.sh` starts the VIEWS pass only after the whole chain
+      (`chain_all_done`), but `5v` may not need posting output at all.
+      - Read from `CKBViews.scala` (header and file selection): it reads only `SortedJE*` files,
+        one merged file per year (`SortedJEInputs.oneRead`), and no ledger, GL or permutation
+        file. Its header says it runs "after Step 3 (post) or Step 2/2m as a separate
+        view-extraction pass", so the dependency on posting looks like a launcher choice and not a
+        data dependency. Not yet confirmed by a run.
+      - `5v` is one k-way merge across **all** years, so it can start once every year's prep has
+        committed (all `prep_<yy>.ok`), not earlier. It does not have to wait for the last post;
+        it could overlap the whole posting chain. In the 2026-11-10 21:07 run that is about
+        an hour of overlap (estimate: prep done about 22:30, posting about 23:00 to 23:20).
+      - Check before relying on it: posting commits a new generation per year and swaps the
+        `FY<yy>` symlink (`commit_attempt` in `run_pipeline.sh`) while `5v` reads through those
+        paths. Posting hard-links the data files and `prune_old_generations` keeps two
+        `run_*` directories, which looks safe, but confirm that `5v` opens its inputs before the
+        swap, or give it the prep generation's directory path directly.
+      - Cost: it competes with posting for CPU and disk, so per-step times are no longer
+        comparable with a serial run. Keep the `5v` and posting timings separately identifiable,
+        and record an overlapped run as a new baseline, not a replicate.
+      - The 12:33 run's `5v` failed (27 min, `corpus_end_FAILED`); fix and prove `5v` on its own
+        before overlapping it with anything.
+      - Bash job control only (a second background job and a wait on it); no logic in the script.
+      - Related to the parallel-posting item above; do both together, since the posting lanes and
+        `5v` would share the same CPUs.
 
 ## 7. Evidence to record when a run is clean
 
