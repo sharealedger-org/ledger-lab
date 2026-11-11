@@ -1139,3 +1139,27 @@ Timing, three runs (same machine class, 4 CPUs; the baseline was serial):
 CPU seconds reproduce within 0.3% (all steps) and 1.9% (chains) between the two run-2-layout runs, so the +15% chain CPU over the baseline is repeatable and layout-related, not a one-off. Wall clock varied by 397 s. Possible causes, none tested: the Mac ran at 0% battery charge on AC ("not charging") the whole run, `XprotectService` and the IBM Bob helpers used CPU alongside the pipeline, and swap use was 2.2 GB of 3 GB mid-run. The run-3 sleep incident (45 s) did not recur: `caffeinate` held both assertions and `pmset -g log` shows no sleep between 06:40 and 09:03; the first sleep after the run is 09:12:26. The charger was changed at about 06:39, before launch, which caused one sleep outside the run.
 
 **State:** run `verified` as a byte-identical replicate of run 3 on the 74 final data files compared. Open: failure path, designed symlink-swap test, merged SJE comparison.
+
+## 2026-11-11 Timing test 1: post-pipeline tail of one chain, FY12 of run 4 (Bob, Mac)
+
+Claim tested (from the `aim-three-model` handoff, "RUN 3 ANALYSIS"): the unmetered tail after "Pipeline complete" in each chain is the single-threaded `awk` controls plus `wc -l` / `shasum` in `write_canonical_evidence.sh`, not the generation commit or prune. Falsifier: the controls take less than about half of the FY12 tail. Evidence: `data/test_evidence/corpus_runs/run_20261111_064052/tail_timing_fy12.txt`.
+
+| Item | Seconds |
+|---|---|
+| FY12 chain wall clock in run 4 (`chain_start_fy12` 08:24:43 to `chain_end_fy12` 08:38:52) | 849 |
+| of which inside `run_pipeline.sh` (to "Pipeline complete" 08:31:23) | 400 |
+| of which after it (the tail) | 449 |
+| `awk` `sje_balance` over `SortedJEFY12merged.csv` (4.9 GB), first pass / warm pass | 396 / 365 |
+| `shasum -a 256` of the merged file (both passes) | 40 |
+| `wc -l` of the merged file | 11 |
+| `awk` `ledger_balance` over `LDGR2012.csv` | 12 |
+| `shasum` of `LDGR2012.csv` | 1 |
+| `wc -l` of `GL2012.csv` and `PERM_TBL2012.csv`, and `interpret_run.sh` | under 1 each |
+
+The listed controls add up to about 460 s, which is at least the 449 s tail, so the falsifier did not fire: the tail is the controls, and the `sje_balance` `awk` alone is about 80% of it. The commit and prune part is too small to separate from the timing noise. Status: `partially_verified` (one year, one run).
+
+Limits: the machine was not idle. OneDrive was syncing the gold files, `fileproviderd` took 76 to 84% CPU, load was 5 to 7, and the `awk` ran at 55 to 89% of one core, so the absolute seconds are inflated and not a clean measure. The helper clock has 1 s resolution, so sub-second items show as 0. The measurement ran the same commands the script runs but not the script itself. Run 3's FY12 tail was 415 s (from the handoff). Per AGENTS.md the awk controls stay in Bash; this entry only makes the orchestration overhead identifiable.
+
+## 2026-11-11 Track D input check (Bob, Mac)
+
+All 385 files in `~/workspace/va_control_root` were hashed with `shasum -a 256` and compared with `~/workspace/va_track_d_handoff/MANIFEST.csv`: 385 files, empty diff, 233 s. No file in the tree is writable. `ENVIRONMENT.md` free-disk figure updated from about 199 GB to about 212 GB. Result file: `trackd_sha_check_result.txt` in the run 4 archive. Not done: reboot (owner) and handover to Codex.
