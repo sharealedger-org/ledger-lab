@@ -80,10 +80,12 @@ Updated 2026-11-10. This file is a concise state snapshot; use the linked design
 - **Output:** `~/workspace/va_fresh_root/output_full/` (110 GB, run 4) and `output_full_run3_20261111_014229/` (110 GB, run 3). Both are kept until the timing tests below have run (test 2 needs a committed `FY12` tree to seed from); delete both after that, per the earlier plan. 213 GB free.
 - **OneDrive:** started by a watcher at 09:03:40 when the run exited; `LedgerLabOutputs-Gold` shows 106 files locally (104 data files plus README/MANIFEST). That is local presence, not confirmed upload completion.
 
-**To do next, in order (idle machine, nothing else running).**
-1. Timing test 1 (branch `aim-three-model`, handoff "RUN 3 ANALYSIS"): time the post-pipeline tail on FY12 (`write_canonical_evidence.sh`: `wc -l`, `shasum`, each `awk` control, `interpret_run.sh`, separately). Falsifier: controls under about half of the 415 s FY12 tail means the cause is elsewhere (commit or prune).
-2. Timing test 2: run one FY12 chain alone (`3,20,21`, `--seedFromCommitted`) and compare CPU with run 3's FY12 (steps 3 / 20 / 21: 96 / 91 / 162 s) and the baseline's (66 / 75 / 125).
-3. Track D: `va_control_root` SHA-256 check against `~/workspace/va_track_d_handoff/MANIFEST.csv` (26 GB read), refresh the free-disk figure in `ENVIRONMENT.md` (it says about 199 GB; now 213 GB), reboot (owner), then hand over.
+**Done after the run (same day).** Timing test 1 (FY12 tail): the `sje_balance` awk is about 396 s of a 449 s tail, so the controls are the tail (audit register "Timing test 1"). Timing test 2 (FY12 chain alone, quiet machine, Spotlight off, OneDrive and VS Code closed): CPU 267.87 s for steps 3, 20 and 21 against 266.85 s for the serial baseline (+0.4%), 349.29 s for run 3 (+30.9%) and 357.69 s for run 4 (+34.0%); outputs byte-identical to run 4. So the chain CPU premium of the run-2 layout is contention between lanes, not a code or data change (audit register "Timing test 2"). Track D input check: all 385 files in `va_control_root` match the manifest; `ENVIRONMENT.md` free disk updated. Gold copy: OneDrive upload complete (owner confirmed), 104 files match `MANIFEST.csv` locally.
+
+**To do next.**
+1. Owner: re-enable Spotlight with `sudo mdutil -i on /` (it was turned off for test 2).
+2. Owner approval to delete the two 110 GB outputs (`output_full` and `output_full_run3_20261111_014229`); the merged SJE (56.7 GB) is not in the gold copy and was not compared byte for byte between runs.
+3. Reboot, then hand Track D to Codex (`~/workspace/va_track_d_handoff/`, own repo `ledger-lab-control` cloned at `~/workspace/sharealedger/ledger-lab-control`). Gate 0 in that repo uses file paths that do not exist in `va_control_root`; Codex needs the manifest, not the Gate 0 example.
 4. Merge `aim-three-model` when the owner decides (worktree at `../ledger-lab-aim`, branch tracks `origin/aim-three-model`).
 
 **Open.** Failure path (a failing year stops new years) not run; a designed symlink-swap test; merged SJE comparison; awk control totals remain in Bash (owner decision: they stay).
