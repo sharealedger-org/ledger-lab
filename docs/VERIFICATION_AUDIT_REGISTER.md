@@ -1062,6 +1062,8 @@ Claim tested: running the `3,20,21` chains through a width-2 pool and starting `
 | `caffeinate` is started by the launcher | `verified` | `caffeinate -i -s -w <pid>` seen with the launcher's pid; header records `caffeinate=on`. | None. |
 | The ~5 min per year after the engine is the control-total `awk` | `partially_verified` | During FY04, `awk -F, '{ total += $26 }'` over the merged SJE had used 1:45 of CPU after 2:08 wall, still running. FY05 chain: step 21 result 00:46:45, `chain_end` 00:50:31. | Not timed end to end; per-year share not separated from the sbt launches. Owner decided awk stays for now. |
 
+Test evidence (kept in the repo): `data/test_evidence/run2_orchestration_test_20261111/` holds the archive tables, the test logs and `byte_comparison.csv` (14 cksum comparisons, all IDENTICAL).
+
 Track D control tree: SHA-256 of all 385 files in `~/workspace/va_control_root` match `data/corpus_profile/source_catalog.csv` (empty diff, 2026-11-11 00:36).
 
 **State:** run-2 layout `partially_verified` on 2 years. The first corpus run with it is a new baseline, not a replicate.

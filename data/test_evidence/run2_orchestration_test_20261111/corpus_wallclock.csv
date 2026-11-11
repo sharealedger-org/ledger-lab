@@ -1,0 +1,16 @@
+event,epoch_s,local_time
+corpus_start,1794382330,2026-11-11 00:32:10
+# years=04,05 lanes=2 periodGranularity=monthly
+# chain_width=2 views_early=Y caffeinate=on
+# git=8054b7c dirty_files=1
+# host=Kips-MBP cpus=4
+chain_start_fy05,1794382951,2026-11-11 00:42:31
+prep_all_done,1794383035,2026-11-11 00:43:55
+views_start,1794383041,2026-11-11 00:44:01
+chain_start_fy04,1794383041,2026-11-11 00:44:01
+views_end,1794383264,2026-11-11 00:47:44
+chain_end_fy05,1794383431,2026-11-11 00:50:31
+chain_end_fy04,1794383567,2026-11-11 00:52:47
+chain_all_done,1794383567,2026-11-11 00:52:47
+views_all_done,1794383567,2026-11-11 00:52:47
+corpus_end,1794383567,2026-11-11 00:52:47
