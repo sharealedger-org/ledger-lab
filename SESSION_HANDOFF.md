@@ -2,6 +2,26 @@
 
 Updated 2026-11-10. This file is a concise state snapshot; use the linked design contracts for details.
 
+## 2026-11-11 (RUN 4 DONE) Last CCP run finished: exit 0, 42/42 controls PASS, 74 final data files byte-identical to the gold copy; evidence archived; next: idle-machine timing tests, then Track D (Bob, Mac)
+
+**Result (run tag `20261111_064052`, start commit `9d54cd8`, header `chain_width=2 views_early=Y caffeinate=on`).** Orchestrator exit 0, 06:40:52 to 09:03:16. Corpus wall clock 8,544 s (run 3: 8,147 s, +4.9%); step CPU 11,207 s (run 3: 11,179 s, +0.3%); chain CPU (steps 3, 20, 21) 4,593 s (run 3: 4,506 s, +1.9%; baseline 3,913 s). Prep done at 6,388 s, `5v` 1,696 s. No machine sleep during the run (`caffeinate` held both assertions; `pmset -g log` shows none between 06:40 and 09:03). No `RETRY`, `WARNING`, `FAIL` or nonzero `rc` in any log. `permutation_capacity_sum` equals the `cost_surface` sum (503,118,463,033,110).
+- **Compared with the gold copy:** the 74 data files in `gold/MANIFEST.csv` other than `cost_surface.csv` and `pipeline_results.log` (`LDGR*`, `GL*`, `PERM_TBL*`, `PERM_SUMMARY*`, `POQuarantineFY*`, four views) have identical SHA-256: 0 different, 0 missing. This now covers `GL*` and `PERM_TBL*`, which runs 3 and the baseline were not compared on. Merged SJE not compared.
+- **The +15% chain CPU over the baseline repeats** (run 3 +15.2%, run 4 +17.4%), so it is a property of the run-2 layout on this 4-CPU machine, not a one-off. Isolating it is test 2 below.
+- Conditions to remember when reading the wall clock: battery at 0% on AC ("not charging", 402 cycles, service recommended) for the whole run; swap 2.2 GB of 3 GB used mid-run; `XprotectService` and the IBM Bob helpers used some CPU. Not tested as causes of the 397 s wall difference from run 3.
+- **Evidence:** `data/test_evidence/corpus_runs/run_20261111_064052/` (archived automatically, includes `corpus_totals.csv`, `quarantine_summary.csv`) plus `run_logs_20261111_064052.tar.gz` (29 run logs, launcher stdout, wall-clock CSV, exit marker, markers; force-added since `.gitignore` excludes `*.log`). Audit register entry "2026-11-11 Full corpus run 4". Raw logs stay in `~/workspace/va_fresh_logs/`.
+- **Output:** `~/workspace/va_fresh_root/output_full/` (110 GB, run 4) and `output_full_run3_20261111_014229/` (110 GB, run 3). Both are kept until the timing tests below have run (test 2 needs a committed `FY12` tree to seed from); delete both after that, per the earlier plan. 213 GB free.
+- **OneDrive:** started by a watcher at 09:03:40 when the run exited; `LedgerLabOutputs-Gold` shows 106 files locally (104 data files plus README/MANIFEST). That is local presence, not confirmed upload completion.
+
+**To do next, in order (idle machine, nothing else running).**
+1. Timing test 1 (branch `aim-three-model`, handoff "RUN 3 ANALYSIS"): time the post-pipeline tail on FY12 (`write_canonical_evidence.sh`: `wc -l`, `shasum`, each `awk` control, `interpret_run.sh`, separately). Falsifier: controls under about half of the 415 s FY12 tail means the cause is elsewhere (commit or prune).
+2. Timing test 2: run one FY12 chain alone (`3,20,21`, `--seedFromCommitted`) and compare CPU with run 3's FY12 (steps 3 / 20 / 21: 96 / 91 / 162 s) and the baseline's (66 / 75 / 125).
+3. Track D: `va_control_root` SHA-256 check against `~/workspace/va_track_d_handoff/MANIFEST.csv` (26 GB read), refresh the free-disk figure in `ENVIRONMENT.md` (it says about 199 GB; now 213 GB), reboot (owner), then hand over.
+4. Merge `aim-three-model` when the owner decides (worktree at `../ledger-lab-aim`, branch tracks `origin/aim-three-model`).
+
+**Open.** Failure path (a failing year stops new years) not run; a designed symlink-swap test; merged SJE comparison; awk control totals remain in Bash (owner decision: they stay).
+
+
+
 ## 2026-11-11 (RUN 3 DONE) 14-year run with the run-2 layout finished: exit 0, 42/42 controls PASS, outputs identical to the baseline; evidence archived (Bob, Mac)
 
 **Result (run tag `20261111_014229`, start commit `d500af4`, header `chain_width=2 views_early=Y caffeinate=on`).** Orchestrator exit 0. Corpus wall clock 8,147 s (2 h 15 m 47 s) against the baseline's 11,695 s (3 h 14 m 55 s), -30.3%; 8,102 s after subtracting a 45 s machine sleep (02:07:41 to 02:08:26; the true loss is 45 to 75 s because DarkWake began 02:07:11). Prep done at 6,191 s (baseline 5,710 s), `5v` 1,551 s (baseline 1,285 s), step CPU 11,179 s (baseline 10,670 s, +4.8%). More work per step, less total time. Compare by CPU seconds and total wall clock, not per-step `elapsed_s`.

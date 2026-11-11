@@ -1111,3 +1111,31 @@ The parallel layout shortens the run by overlapping prep, chains and `5v`. It co
 **Sleep incident.** One machine sleep, 02:07:41 to 02:08:26 (45 s, `pmset -g log`), with the Mac on AC and `caffeinate` active. `caffeinate` does not prevent lid-close or forced power sleep; the cause is not proven (the lid is the likely one). It falls inside the wall-clock figures of the FY03 and FY04 chains and the FY07 to FY10 prep lanes. The corpus total is corrected by 45 s above. The Mac went into DarkWake 30 s earlier (02:07:11), so the true loss is 45 to 75 s. CPU seconds are unaffected. Record: `sleep_windows_20261111_014229.csv` in the run archive. The Mac also slept several times after `corpus_end` (03:58:32 onward, idle and maintenance sleep); that is outside the run.
 
 **State:** run `partially_verified` as a baseline for the run-2 layout. Open: failure path, a designed symlink-swap test, SJE/`GL`/`PERM_TBL` cksum comparison, and a replicate.
+
+## 2026-11-11 Full corpus run 4, FY2003-FY2016, run-2 layout replicate (run tag `20261111_064052`) (Bob, Mac)
+
+Claim tested: a second run of the run-2 layout (chain pool width 2, early `5v`, `caffeinate`) passes every control and reproduces run 3's final output files byte for byte. Falsifier: any non-zero exit, failed control, a final file whose SHA-256 differs from the gold `MANIFEST.csv`, or a `RETRY`/`WARNING`/`FAIL` line. Start commit `9d54cd8`, clean tree (`dirty_files=0`); engine and scripts unchanged since run 3's `d500af4` (`git diff d500af4 9d54cd8` over `01-` to `05-` and `scripts/` is empty). Header `chain_width=2 views_early=Y caffeinate=on`, host `Kips-MacBook-Pro.local`, 4 CPUs. Evidence: `data/test_evidence/corpus_runs/run_20261111_064052/` (archived automatically; logs in `run_logs_20261111_064052.tar.gz`, force-added because `.gitignore` excludes `*.log`).
+
+| Claim | Status | Evidence | Remaining gap |
+|---|---|---|---|
+| All 14 prep lanes, 14 chains and `5v` exit 0 | `partially_verified` | Orchestrator exit 0. `corpus_start` 06:40:52, `views_end` 08:55:51, `corpus_end` 09:03:16. No `RETRY`, `WARNING`, `FAIL` or nonzero `rc` in the 29 `run2_*.log` files or `launch_stdout.out`. | Two runs with this layout. |
+| 42 of 42 controls pass | `verified` for this run | 42 `PASS`, 0 other, in `reconciliation_results_all_years.csv`. | Controls are still the awk totals in Bash (owner decision). |
+| Final outputs identical to the gold copy (run 3) | `verified` for the files compared | 74 files (`LDGR*`, `GL*`, `PERM_TBL*`, `PERM_SUMMARY*`, `POQuarantineFY*`, four views) SHA-256 equal to `gold/MANIFEST.csv`; 0 different, 0 missing. The 30 `cost_surface.csv` / `pipeline_results.log` files were excluded (timings and run ids differ by design). This also covers `GL*` and `PERM_TBL*`, which run 3 and the baseline were not compared on. | Merged SJE (56.7 GB) not compared. |
+| Step 21 summary reaches `cost_surface` in every year | `partially_verified` | `permutation_capacity_sum_cost_surface` = `permutation_capacity_sum` = 503,118,463,033,110; `permutation_rows` 10,651,908 = ledger rows. | The retry path was not triggered in either run. |
+| Corpus totals | `verified` for this run | `corpus_totals.csv` row counts equal run 3's (ledger 10,651,908; GL keys 6,433,714; merged SJE 224,072,410; quarantine counts FY03-FY16 identical). | None. |
+| A failing year stops new years | `unknown` | Not exercised. | Fixture test needed. |
+
+Timing, three runs (same machine class, 4 CPUs; the baseline was serial):
+
+| Measure | Baseline `20261110_210721` | Run 3 `20261111_014229` | Run 4 `20261111_064052` |
+|---|---|---|---|
+| Corpus wall clock | 11,695 s | 8,147 s | 8,544 s (+4.9% vs run 3) |
+| Prep complete | 5,710 s | 6,191 s | 6,388 s |
+| `5v` wall (`cost_surface`) | 1,285 s | 1,551 s | 1,696 s |
+| Step CPU, all steps excl. `5v` | 10,670 s | 11,179 s | 11,207 s (+0.3% vs run 3) |
+| Chain CPU (steps 3 + 20 + 21) | 3,913 s | 4,506 s | 4,593 s (+1.9% vs run 3) |
+| Max step peak RSS | 1,348,485,120 | 1,351,610,368 | 1,362,649,088 (`step-ttl`) |
+
+CPU seconds reproduce within 0.3% (all steps) and 1.9% (chains) between the two run-2-layout runs, so the +15% chain CPU over the baseline is repeatable and layout-related, not a one-off. Wall clock varied by 397 s. Possible causes, none tested: the Mac ran at 0% battery charge on AC ("not charging") the whole run, `XprotectService` and the IBM Bob helpers used CPU alongside the pipeline, and swap use was 2.2 GB of 3 GB mid-run. The run-3 sleep incident (45 s) did not recur: `caffeinate` held both assertions and `pmset -g log` shows no sleep between 06:40 and 09:03; the first sleep after the run is 09:12:26. The charger was changed at about 06:39, before launch, which caused one sleep outside the run.
+
+**State:** run `verified` as a byte-identical replicate of run 3 on the 74 final data files compared. Open: failure path, designed symlink-swap test, merged SJE comparison.
