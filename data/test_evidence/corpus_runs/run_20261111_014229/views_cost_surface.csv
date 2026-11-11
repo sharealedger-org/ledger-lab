@@ -1,0 +1,2 @@
+"run_id","run_timestamp","curve","config_description","years","steps",total_compute_s,total_storage_bytes,master_file_count,total_cost_proxy,"capability_layer","period_granularity","materialization_scope",ledger_row_count,ldgr_file_bytes,view_file_bytes,permutation_rows,permutation_capacity
+"run_20261111_032543_9270","2026-11-11 03:25:43","CCP3","fullcorpus-run2-views","16","5v",1551,289162260,0,1840.16,"CCP3","monthly","unspecified",0,0,289160418,0,0

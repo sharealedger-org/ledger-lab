@@ -1082,3 +1082,32 @@ Owner asked whether input and output sizes are recorded for the Track D comparis
 **State:** totals file `partially_verified`; the two record gaps are open and are carried into the next run's checks.
 
 **Fix for the FY03 permutation record (2026-11-11, owner approved; Bash only).** `scripts/run_pipeline.sh`, the `21s` summary call: it now has the same boot-socket retry as the engine launches (up to 6 attempts, `RETRY step=21s` log line), and when it still yields no `RESULT step=21s` line it logs a `WARNING` with the return code, attempt count and the last 8 output lines, instead of discarding them. It stays non-fatal, as before. Evidence (fixture, steps `2,3,20,21`): normal run gives `permutation_capacity = 6292`, `permutation_rows = 442`; with a stub `sbt` that fails the first `21s` launch with `ServerAlreadyBootingException`, the log shows one `RETRY`, then `RESULT step=21s` and the same 6292; with a stub that always fails with another error, the log shows the `WARNING` and `21s> some other sbt error`, capacity stays 0, exit 0. **Not proven:** that a boot-socket collision was the cause for FY03 in the baseline (the log kept nothing); the fix covers that case and makes any other cause visible. Not run on the corpus.
+
+## 2026-11-11 Full corpus run 3, FY2003-FY2016, run-2 layout (chain pool width 2, early `5v`) (run tag `20261111_014229`) (Bob, Mac)
+
+Claim tested: the run-2 layout on all 14 years gives byte-identical outputs to the serial baseline `20261110_210721` and passes every control. Falsifier: any non-zero exit, failed control, differing `cksum` on a final output file, or a `WARNING step=21s` line. Start commit `d500af4`, clean tree, header `chain_width=2 views_early=Y caffeinate=on`. Evidence: `data/test_evidence/corpus_runs/run_20261111_014229/`. This is a second full run but with a different orchestration layout, so it is a new baseline for the layout, not a replicate of `20261110_210721`.
+
+| Claim | Status | Evidence | Remaining gap |
+|---|---|---|---|
+| All 14 prep lanes, 14 chains and `5v` exit 0 | `partially_verified` | Orchestrator exit 0. `corpus_start` 01:42:29, `prep_all_done` 03:25:40, `5v` 03:25:43 to 03:51:39, `corpus_end` 03:58:16. No `RETRY`, `WARNING`, `FAIL` or nonzero `rc` in any `run2_*.log`. | One run with this layout. |
+| 42 of 42 controls pass | `verified` for this run | 42 `PASS` in `reconciliation_results_all_years.csv`. | Controls are still the awk totals in Bash (owner decision: they stay). |
+| Outputs identical to the serial baseline | `partially_verified` (final files only) | `cksum` of `LDGR*` and `PERM_SUMMARY*` in all 14 `FY<yy>` trees (28 files) and the four view files (`view_*.csv`) identical to `output_full_baseline_20261110_210721`. `5v` read 224,072,410 records from 14 files, as in the baseline. Only `cost_surface.csv` and `pipeline_results.log` in `VIEWS` differ, as expected (timings, run ids). | Merged SJE, `GL` and `PERM_TBL` files were not compared this time (only `LDGR` and `PERM_SUMMARY`). |
+| `FY<yy>` symlink swap while `5v` is reading | `partially_verified` (exercised, outputs identical) | `5v` ran 03:25:43 to 03:51:39; chains committed FY11 (03:26:51), FY12 (03:35:57), FY13 (03:39:31) and FY14 (03:49:38) during that window. View files identical to the baseline. | Not a designed test of the swap; it shows no harm in this run only. |
+| Step 21 summary reaches `cost_surface` in every year (baseline gap) | `partially_verified` | No `WARNING step=21s`, no `RETRY`; `RESULT step=21s rc=0` in all 14 years. `permutation_capacity_sum_cost_surface` 503,118,463,033,110 equals the `PERM_SUMMARY` sum; `permutation_rows` 10,651,908 equals ledger rows. The baseline's was short by FY03. | The retry path was not triggered, so it is not proven on the corpus. |
+| Peak RSS maxima come from different processes (watch item 5) | `verified` for this run | Highest per process: `permutation-generator` 1,351,610,368 (FY12 step 21), `step-ttl` 1,350,295,552, `po-standardize` 1,340,743,680, `gl-post` 1,266,200,576, `merge-payment-po` 1,051,086,848, `step-3` 1,044,336,640. Heap 1 GB. | The baseline's identical step 3 / step 21 value is not explained by this run. |
+| A failing year stops new years | `unknown` | Not exercised. | Fixture test needed. |
+
+Timing against the baseline (wall clock, 4 CPUs, one machine):
+
+| Measure | Baseline `20261110_210721` | Run 3 `20261111_014229` | Change |
+|---|---|---|---|
+| Corpus wall clock | 11,695 s (3 h 14 m 55 s) | 8,147 s (2 h 15 m 47 s); 8,102 s after the sleep correction below | -30.3% (-30.7% corrected) |
+| Prep complete | 5,710 s | 6,191 s | +8.4% (prep lanes share the machine with two chains) |
+| `5v` | 1,285 s | 1,551 s | +20.7% (`5v` runs beside two chains) |
+| Step CPU seconds, all steps (excl. `5v`) | 10,670.04 | 11,179.07 | +4.8% (`permutation-generator` +303, `step-3` +183, `gl-post` +106) |
+
+The parallel layout shortens the run by overlapping prep, chains and `5v`. It costs a little more CPU and wall time per step because the lanes contend for 4 CPUs. Per the earlier note, compare by CPU seconds and total wall clock, not per-step `elapsed_s`.
+
+**Sleep incident.** One machine sleep, 02:07:41 to 02:08:26 (45 s, `pmset -g log`), with the Mac on AC and `caffeinate` active. `caffeinate` does not prevent lid-close or forced power sleep; the cause is not proven (the lid is the likely one). It falls inside the wall-clock figures of the FY03 and FY04 chains and the FY07 to FY10 prep lanes. The corpus total is corrected by 45 s above. The Mac went into DarkWake 30 s earlier (02:07:11), so the true loss is 45 to 75 s. CPU seconds are unaffected. Record: `sleep_windows_20261111_014229.csv` in the run archive. The Mac also slept several times after `corpus_end` (03:58:32 onward, idle and maintenance sleep); that is outside the run.
+
+**State:** run `partially_verified` as a baseline for the run-2 layout. Open: failure path, a designed symlink-swap test, SJE/`GL`/`PERM_TBL` cksum comparison, and a replicate.

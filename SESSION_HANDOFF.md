@@ -2,7 +2,7 @@
 
 Updated 2026-11-10. This file is a concise state snapshot; use the linked design contracts for details.
 
-## 2026-11-11 (latest, RUN 3 PREFLIGHT) Baseline run finished and committed; run-2 layout built and tested on 2 years; preflight for the 14-year run COMPLETE, ready to launch in a new session (Bob, Mac)
+## 2026-11-11 (RUN 3 PREFLIGHT) Baseline run finished and committed; run-2 layout built and tested on 2 years; preflight for the 14-year run COMPLETE, ready to launch in a new session (Bob, Mac)
 
 **Where things stand.**
 - Baseline run `20261110_210721` (serial chain, `5v` after posting, start commit `70b6781`): exit 0, 42/42 control rows PASS, `5v` rc 0 (1,285 s, 224,072,410 records). Evidence `data/test_evidence/corpus_runs/run_20261110_210721/`, audit entry "2026-11-11 Full corpus run FY2003-FY2016". Counts as a new baseline, not a replicate.

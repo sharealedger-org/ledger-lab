@@ -1,0 +1,7 @@
+event,sleep_epoch_s,wake_epoch_s,suspended_s,sleep_local,wake_local,source
+system_sleep,1794388061,1794388106,45,2026-11-11 02:07:41,2026-11-11 02:08:26,pmset -g log (Entering Sleep ... 45 secs; Wake from AutoPowerOff by EC.PowerButton/UserActivity)
+# run=20261111_014229 (corpus_wallclock_20261111_014229.csv). Only sleep window in the pmset log for this run.
+# Correction rule: for any interval [start_epoch,end_epoch], subtract max(0, min(end,wake) - max(start,sleep)).
+# All measured timings use wall clock (date +%s in run_pipeline.sh / run_full_corpus.sh; System.currentTimeMillis in the Scala steps), so every step whose interval spans the window is inflated by up to 45 s.
+# CPU seconds (/usr/bin/time) are not affected. Apply per lane for per-step elapsed; apply once for corpus wall-clock.
+# Uncertainty: DarkWake began 02:07:11, 30 s before full sleep; whether the CPUs ran in that gap is not established, so the true loss is 45 s to 75 s.
