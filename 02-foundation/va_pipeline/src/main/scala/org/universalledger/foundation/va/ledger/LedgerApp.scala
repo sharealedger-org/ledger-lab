@@ -48,24 +48,72 @@ object LedgerApp {
     pairs.toMap
   }
 
+  // ── banner labels (same step names as scripts/dashboard_full_corpus.sh) ───
+  def stepLabel(step: String): String = step match {
+    case "ttl" => "Pay JEs (APA transform)"
+    case "2"   => "Standardize & Journalize"
+    case "2p"  => "PO JEs"
+    case "2m"  => "Merge payment + PO JEs"
+    case "3"   => "Post"
+    case "5v"  => "Views (CKB)"
+    case "20"  => "GL Bal"
+    case "21"  => "Permute"
+    case other => other
+  }
+
+  def fmtElapsed(ms: Long): String = {
+    val s = ms / 1000
+    f"${s / 3600}%d:${(s % 3600) / 60}%02d:${s % 60}%02d"
+  }
+
+  /** Scope shown in the banner: one fiscal year, or all years for a multi-directory 5v pass. */
+  def scopeLabel(step: String, year: String, params: Map[String, String]): String = {
+    val dirs = params.get("inPaths").map(_.split(",").count(_.trim.nonEmpty)).getOrElse(0)
+    if (step == "5v" && dirs > 0) s"all years ($dirs input directories)" else s"FY20$year"
+  }
+
   def main(args: Array[String]): Unit = {
 
+    val cli     = args.nonEmpty
+    val params  = if (cli) parseArgs(args) else Map.empty[String, String]
+    val step    = params.getOrElse("step", "interactive")
+    val year    = params.getOrElse("year", DefaultYear)
+    val quarter = params.getOrElse("quarter", DefaultQuarter)
+    val label   = stepLabel(step)
+    val summary =
+      if (cli) s"step=$step${if (label != step) s" - $label" else ""}  ${scopeLabel(step, year, params)}  quarter=$quarter"
+      else "interactive mode"
+    val startMs = System.currentTimeMillis()
+    // A step that calls sys.exit skips `finally`, so the end banner is also printed from a shutdown
+    // hook. The hook cannot see the exit code, so that case is reported as "exited before completion".
+    @volatile var status = "exited before completion (sys.exit)"
+    val endPrinted = new java.util.concurrent.atomic.AtomicBoolean(false)
+    def endBanner(): Unit = if (endPrinted.compareAndSet(false, true)) {
+      println("*" * 100)
+      println("                                  End of Ledger Lab step")
+      println("                  " + summary)
+      println(s"                  status=$status  elapsed=${fmtElapsed(System.currentTimeMillis() - startMs)}")
+      println("*" * 100)
+    }
+    Runtime.getRuntime.addShutdownHook(new Thread(new Runnable { override def run(): Unit = endBanner() }))
+
     println("*" * 100)
-    println("                                Universal Ledger")
-    println("                                   Demo System")
+    println("                                    Ledger Lab")
+    println("                                    VA Corpus")
     println("                  Using State of Virginia Public Financial Data")
+    println("                  " + summary)
+    println("                  started " + java.time.LocalDateTime.now().withNano(0))
     println("*" * 100)
 
     // ── choose mode ──────────────────────────────────────────────────────────
-    if (args.nonEmpty) {
-      runCLI(args)
-    } else {
-      runInteractive()
+    try {
+      if (cli) runCLI(args) else runInteractive()
+      status = "ok"
+    } catch {
+      case t: Throwable => status = "FAILED"; throw t
+    } finally {
+      endBanner()
     }
-
-    println("*" * 100)
-    println("                           End of Financial Patterns Processes")
-    println("*" * 100)
   }
 
   // ── CLI mode ─────────────────────────────────────────────────────────────
@@ -193,6 +241,8 @@ object LedgerApp {
       // CCP1 baseline steps — read SortedJE output, produce GL balances and permutation table
       case "20" => GLPost(params + ("inPath" -> inPath, "outPath" -> outPath, "year" -> year))
       case "21" => PermutationGenerator(params + ("inPath" -> inPath, "outPath" -> outPath, "year" -> year))
+      // Step 21s: sum the per-year PERM_SUMMARY files (BigInt) — keeps big-number arithmetic out of Bash
+      case "21s" => PermutationSummary(params + ("outPath" -> outPath))
       case _    => println(s"Step '$step' is not implemented.")
     }
   }
@@ -292,7 +342,7 @@ object LedgerApp {
 
     println(f"\n  Merged rows written: $rowsWritten%,d")
     println(s"\nRESULT step=2m year=$yearStr rc=0 records_read=0 records_written=$rowsWritten elapsed_s=$elapsedS input_bytes=0 output_bytes=$outBytes")
-    println(s"RESOURCE step=2m year=$yearStr peak_rss_bytes=$peakRss")
+    println(s"RESOURCE step=2m year=$yearStr jvm_heap_bytes=$peakRss")
     println("STATUS: COMPLETE")
     println("*" * 100)
     println(s"Process End Time: ${java.util.Calendar.getInstance.getTime}")

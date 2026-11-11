@@ -173,7 +173,12 @@ view_file_bytes, permutation_rows, peak_rss_bytes, total_cost_proxy
 **`ledger_row_count`** = number of rows in `LDGR20YY.csv` (diagnostic for period granularity impact).
 **`ldgr_file_bytes`** = size of ledger file (separated from total_storage_bytes for analysis).
 **`view_file_bytes`** = size of all view files combined.
-**`permutation_rows`** = rows in `PERM_TBL20YY.csv` (CCP1 only; `0` for CCP2–CCP5).
+**`permutation_rows`** = sum over GL keys of distinct vendors, kept for continuity with the earlier
+row count (CCP1 only; `0` for CCP2–CCP5).
+**`permutation_capacity`** = sum over GL keys of the product of per-dimension distinct counts, with
+dimensions determined by another dimension removed (CCP1 only; `0` for CCP2–CCP5). Stored as a
+decimal string because it can exceed 64-bit integers. The cross-year sum is computed in Scala
+(step `21s`, BigInt); the shell only forwards the `RESULT` line.
 
 *Implementation note:* `--periodGranularity` and `--materialization` parameters are to be added
 to `run_pipeline.sh` and threaded through the Scala dispatchers. Until wired, capture values in
@@ -203,22 +208,52 @@ warehouse, or data mart would preserve more dimensions but shares the same struc
 pre-computed answers to questions fixed at design time. CCP1 measures the GL as a right-wall
 proxy for this class. Steps 20 and 21 read the same SortedJE stream independently.
 
-**Step 20 — GL post:** sort by account key `(AGENCY, OBJECT_NAME)`; accumulate amounts;
-write `GL20YY.csv`. Instrument identity (`transIPID`) intentionally excluded from the key.
+**Step 20 — GL post (revised 2026-11-11):** key = agency, fund, object, nominal account, period,
+debit/offset flag (`transDirVsOffsetFlg`, an important GL field). Accumulate the amounts of every
+line into `GL20YY.csv` (`dir_flag` column). Instrument identity (`transIPID`) is intentionally
+excluded from the key. The flag is now `D` on the debit line and `O` on the offset line in
+`transStandardize` and `standardizeAndSort` (it was `D` on both lines, which is why the old
+"debit only" filter selected nothing). `RESULT` carries `net_amount`, which must be 0.00.
 
-**Step 21 — Permutation generator:** for each distinct `(account_key)` in the GL output,
-enumerate all distinct `(VENDORID, NIGPCODE_3digit, revision_suffix)` combinations that
-contributed to it. Write `PERM_TBL20YY.csv`. The permutation row count is the empirical
-size of the upstream materialisation burden the GL architecture externalises onto source systems.
+**Step 21 — Permutation capacity (revised 2026-11-11):** per GL key, count the distinct values of
+every other SJE column, excluding journal ID (3), amount (25), unit price (27) and statistic (28).
+While reading, Scala detects year-wide functional dependencies (A -> B when every value of A co-occurred
+with one value of B). A dimension that another one determines adds no combinations and is dropped.
+`capacity` = the product of the remaining distinct counts: the number of balance rows a fixed-key
+system would have to hold to answer a question on any of those attributes. `capacity_independent`
+(nothing dropped) is reported beside it. Only counts are kept; nothing is materialised.
+`PERM_TBL20YY.csv` has one row per GL key (`row_count`, `d_<column>` for each column that varies,
+`capacity`); `PERM_SUMMARY20YY.csv` has the year totals. Constant columns contribute a factor of 1.
+`RESULT` lists `car_dims`, `dropped_dims` and `capacity_dims`.
+
+**CAR fields:** any dimension determined by the vendor is a CAR field (`car_dims`, detected), and
+`transContractID` is CAR by definition (declared; constant `"0"` in every current producer, and no
+producer varies contract by PO or payment). NIGP and geo region are functions of vendor, so they are CAR.
+
+**Reading the three numbers:** (1) GL rows = what a typical GL holds and which questions it can
+answer; (2) `capacity` = the pre-materialised space needed to answer arbitrary pivots (still an upper
+bound: dependencies are removed, the remaining dimensions are multiplied as independent); (3) ledger
+rows (step 3) = what the Instrument Ledger holds, which are only the combinations that occurred. A
+pivot that is not CAR (for example injectivity) is one the IL cannot answer.
+
+**Superseded:** until 2026-11-10 step 21 keyed on GL key plus vendor and reported 1.2–2.5x the GL
+rows. That number could never exceed the ledger row count, so it is not an explosion measure and
+must not be cited for Paper 1.
 
 **Known measurement conservatism:** The CCP1 sort (Step 2) uses the same vendor-bearing
 SortedJE key as CCP2, which slightly overstates legacy GL sort cost. The CCP1→CCP2 delta is
 therefore a lower bound on the true architectural cost difference.
 
 **Required metrics (`process_metrics.csv`):** `records_read`, `output_rows` (GL rows for
-step 20; permutation rows for step 21), `wall_seconds`, `peak_rss_bytes`.
+step 20; GL keys for step 21), `wall_seconds`, `cpu_user_seconds`, `cpu_system_seconds`,
+`cpu_total_seconds`, `peak_rss_bytes`. CPU seconds come from `/usr/bin/time` around the `sbt` process
+tree (includes sbt/JVM start-up) and do not inflate when lanes overlap, unlike wall seconds. Step 21
+`RESULT` also carries `vendor_rows`, `capacity`, `capacity_independent`, `varying_dims`, `car_dims`
+and `dropped_dims`.
 
-**Status:** ✅ Steps 20 and 21 implemented, tested (7/7 GLPostSpec). Not yet run on corpus.
+**Status:** Steps 20 and 21 revised 2026-11-11 and unit tested (GLPostSpec 13, suite 78/78). Run on
+the FY03 small fixture only (27 GL keys, capacity 6,292 = independent bound, CPU seconds populated).
+Not yet run on the corpus in the revised form.
 
 ### CCP2 — Instrument Ledger
 

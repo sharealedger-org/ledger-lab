@@ -92,7 +92,7 @@ import scala.io.Source
 //   28  transStatisticAmount   = "0"
 //   29  tranRuleSetID          = " "
 //   30  transRuleID            = " "
-//   31  transDirVsOffsetFlg    = "D"
+//   31  transDirVsOffsetFlg    = "D" on line 1 (debit), "O" on line 2 (offset)
 //   32  transReconcileFlg      = "N"
 //   33  transAdjustFlg         = "N"
 //   34  transExtensionIDAuditTrail = " "
@@ -351,7 +351,7 @@ object standardizeAndSort {
     val outBytes  = new File(outFile).length()
     val peakRss   = Runtime.getRuntime.totalMemory()
     println(s"RESULT step=2 year=$year rc=0 records_read=$jrnlID records_written=$rowsWritten elapsed_s=$elapsedS input_bytes=$inBytes output_bytes=$outBytes")
-    println(s"RESOURCE step=2 year=$year peak_rss_bytes=$peakRss")
+    println(s"RESOURCE step=2 year=$year jvm_heap_bytes=$peakRss")
 
     println("*" * 100)
     println(s"Process End Time: ${Calendar.getInstance.getTime}")
@@ -562,7 +562,7 @@ object standardizeAndSort {
     println(f"  Spill files used    : $spillCount%d")
     println(f"  Sum of all amounts  : $totalAmt%.2f  (should be 0.00)")
     println(s"\nRESULT step=2p year=$yearStr rc=0 records_read=${reader.logicalRecords} records_written=$rowsWritten records_accepted=$sourceRows skipped_quarantine=$skippedRows reader_rejects=$readerRejects physical_lines=${reader.physicalLines} elapsed_s=$elapsedS input_bytes=$inBytes output_bytes=$outBytes")
-    println(s"RESOURCE step=2p year=$yearStr peak_rss_bytes=$peakRss")
+    println(s"RESOURCE step=2p year=$yearStr jvm_heap_bytes=$peakRss")
     println("STATUS: COMPLETE")
     println("*" * 100)
     println(s"Process End Time: ${java.util.Calendar.getInstance.getTime}")
@@ -608,7 +608,7 @@ object standardizeAndSort {
       clean(agency), "0000", clean(nigpCode), PRODUCT_ID, if (lineId == "1") "COMMIT" else "0000", ALT_ACCOUNT,
       CCY_SRC, CCY_TYPE_SRC, CCY_TGT, CCY_TYPE_TGT,
       clean(year), clean(acctDate), clean(transDate), amount,
-      clean(uomCode), price, qty, " ", " ", "D", "N", "N", " ", " ", " ", " ", " "
+      clean(uomCode), price, qty, " ", " ", if (lineId == "1") "D" else "O", "N", "N", " ", " ", " ", " ", " "
     ).mkString(",")
   }
 
@@ -800,7 +800,7 @@ object standardizeAndSort {
       clean(agency), clean(fund), clean(objCode), PRODUCT_ID, clean(nominalAcct), ALT_ACCOUNT,
       CCY_SRC, CCY_TYPE_SRC, CCY_TGT, CCY_TYPE_TGT,
       clean(year), clean(acctDate), clean(transDate), amount,
-      " ", "0", "0", clean(ruleSetId), clean(ruleId), "D", "N", "N", " ", " ", " ", " ", " "
+      " ", "0", "0", clean(ruleSetId), clean(ruleId), if (lineId == "1") "D" else "O", "N", "N", " ", " ", " ", " ", " "
     ).mkString(",")
   }
 
@@ -1287,7 +1287,7 @@ object standardizeAndSort {
         val outBytes = new File(outFile).length()
         val peakRss  = Runtime.getRuntime.totalMemory()
         println(s"\nRESULT step=ttl year=$yearStr rc=0 records_read=$totalSourceRows records_written=$totalSjeRows elapsed_s=$elapsedS input_bytes=$inBytes output_bytes=$outBytes")
-        println(s"RESOURCE step=ttl year=$yearStr peak_rss_bytes=$peakRss")
+        println(s"RESOURCE step=ttl year=$yearStr jvm_heap_bytes=$peakRss")
       } else if (periodGranularity == "monthly") {
         // Expenditure monthly: one output file per discovered source month.
         for ((inFile, quarter, calMonth) <- files) {
@@ -1319,7 +1319,7 @@ object standardizeAndSort {
         println(s"  SJE rows produced     : $totalSjeRows  (= ~2 × source rows)")
         println(s"  Unresolved ref lookups: $totalUnresolved")
         println(s"\nRESULT step=ttl year=$yearStr rc=0 records_read=$totalSourceRows records_written=$totalSjeRows elapsed_s=$elapsedS input_bytes=$inBytes output_bytes=$outBytes")
-        println(s"RESOURCE step=ttl year=$yearStr peak_rss_bytes=$peakRss")
+        println(s"RESOURCE step=ttl year=$yearStr jvm_heap_bytes=$peakRss")
         println("STATUS: COMPLETE")
       }
     }

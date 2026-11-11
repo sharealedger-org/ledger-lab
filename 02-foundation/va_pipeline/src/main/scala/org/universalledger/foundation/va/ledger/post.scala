@@ -526,7 +526,7 @@ object post {
     val elapsedS   = ((System.currentTimeMillis() - t0) / 1000).max(1)
     val peakRss    = Runtime.getRuntime.totalMemory()
     println(s"RESULT step=3 year=$reportYear rc=0 records_read=$totalJrnlRowsRead records_written=$totalLdgrRowsWritten elapsed_s=$elapsedS input_bytes=$inBytes output_bytes=$outBytes")
-    println(s"RESOURCE step=3 year=$reportYear peak_rss_bytes=$peakRss")
+    println(s"RESOURCE step=3 year=$reportYear jvm_heap_bytes=$peakRss")
 
   }
 }

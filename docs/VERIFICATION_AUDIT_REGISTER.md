@@ -269,6 +269,49 @@ Run: `scripts/run_full_corpus.sh`, FY2003-FY2016, 4 prep lanes plus one serial p
 
 See `SESSION_HANDOFF.md`, "Plan for the next session".
 
+## 2026-11-11 Steps 20 and 21 redefined: the permutation row count was not an explosion measure (Bob, Mac)
+
+Trigger: the owner asked why permutation rows were not larger than GL rows. Evidence: `run_20261110_123303` `process_metrics_all_years.csv` and the step 20/21 source.
+
+### Claim tested and result
+
+| Claim | State | Evidence | Remaining gap |
+|---|---|---|---|
+| Step 21 permutation rows (GL key + vendor) can exceed ledger rows | **refuted by construction and by data** | Its key is a subset of the 15-field ledger key (`post.scala` line 213), so its distinct count cannot be larger. FY03-FY16: permutation / ledger = 0.71 to 1.00 in every year; permutation / GL = 1.23 to 2.49. | The cause of the 25-29% shortfall against the ledger in FY06+ is inferred (object, which the step ignored, and product-like dimensions), not counted on real data. |
+| The "debit only" filter in steps 20 and 21 selected debit lines | **refuted** | `transStandardize.scala` lines 396 and 422 and `standardizeAndSort.scala` line 803 write `D` on both lines of each pair, so the filter removed nothing and offset rows (nominal `0000`) were already in the GL and permutation counts. | Size of the offset share of the 4.0M GL rows not counted (output files are not on this machine). |
+| The step 20 header claim of "a few thousand" account keys | **refuted** | 275,632 to 308,180 GL rows per year. | None; comment corrected. |
+
+### Changes (implemented, unit tested; NOT yet run on the corpus)
+
+- `GLPost`: key is now agency, fund, object, nominal, period; all lines accumulated; `RESULT` adds `net_amount`; header gains `object_id`.
+- `PermutationGenerator`: now reports capacity per GL key (product of per-dimension distinct counts over all SJE columns except GL key and columns 3, 25, 27, 28); one row per GL key; `RESULT` adds `vendor_rows`, `capacity`, `varying_dims`. Counts only, nothing materialised. Capacity is an independence upper bound.
+- `run_pipeline.sh`, `write_canonical_evidence.sh`: `permutation_rows` is now the sum of distinct vendors per GL key; new `permutation_capacity` column in `cost_surface.csv` and `run_manifest.csv` (decimal string sum in awk; verified against a value above 64 bits).
+- `GLPostSpec` rewritten (10 tests); full suite 75/75 passes (`sbt test` in `02-foundation/va_pipeline`).
+
+### Architecture-gate declaration (AGENTIC_ARCHITECTURE_GATES.md section 1)
+
+Owner 02-foundation (CCP1). Input: the same merged SJE, one read per step, no new pass boundary; steps 20 and 21 stay two bounded Scala processes (fusing was considered and rejected so the CCP1 baseline stays comparable). Controls: `net_amount` = 0.00; PERM_TBL key set equals GL key set; `records_read` equal in steps 20 and 21. Memory: whole-file maps keyed by GL key (order of 300K keys per year before object was added); step 21 keeps per-key sets only for dimensions that take a second value. Heap not yet measured for the revised steps.
+
+### Follow-up changes, same day (owner instructions; implemented, tested)
+
+| Change | Evidence |
+|---|---|
+| `transDirVsOffsetFlg` is a GL field: `D` on line 1, `O` on line 2 (`transStandardize` lines 269/422/545, `standardizeAndSort` `makeRow`/`makePORow`); in the GL key (`dir_flag` column in `GL20YY.csv` and `PERM_TBL20YY.csv`). Legacy `scripts/standardize_and_sort.py` still writes `D` on both lines; it is a pre-Scala producer and was not changed. | `run_repo_fixture_smoke_test.sh` passes: 1520 payment rows, 442 ledger rows, sum 0.00 (the flag is not in the ledger key, so counts did not move). Mini run of steps 2,20,21: GL has `D` and `O` rows, 27 GL keys, `net_amount=0.00`. `StandardizeAndSortPOSpec` fixtures updated (`O` on offset rows). |
+| Awk big-number summation removed from `run_pipeline.sh`. Step 21 writes `PERM_SUMMARY20YY.csv`; new Scala step `21s` (`PermutationSummary`, BigInt) sums years; the shell only parses its `RESULT` line. | `GLPostSpec` test "PermutationSummary sums per-year summaries as BigInt" (values above `Long.MaxValue`, missing-year reporting). Mini run printed `RESULT step=21s ... capacity=6292`. |
+| Capacity tightened with functional dependencies detected in Scala (`FdTracker`); `capacity_independent`, `car_dims`, `dropped_dims`, `capacity_dims` added to the `RESULT`. `transContractID` is declared CAR. | Unit test: vendor-determined business event is dropped (capacity 4 vs independent 8) and reported CAR; date is not CAR. On the FY03 small fixture the only dropped pair was `transJrnlLineID <- transJrnlDescript` (capacity equals the independent bound, 6,292), so the tightening is small there; effect on the corpus is unmeasured. |
+| CPU seconds captured: `run_pipeline.sh` parses user/sys from `/usr/bin/time -l` (macOS) or `-v` (GNU) and adds `cpu_user_seconds`, `cpu_system_seconds`, `cpu_total_seconds` to the `RESOURCE` line; `write_canonical_evidence.sh` writes them to `process_metrics.csv`. Empty when `time` gives none. | Parse checked on real `/usr/bin/time -l` output. Smoke test `RESOURCE` line: `cpu_total_seconds=8.94` for step 3. The GNU branch is untested on this machine. |
+| `scripts/fit_noninjectivity.py` updated (owner approved) for the new schemas: reads the GL key including `object_id` and `dir_flag`, vendors per GL key from `d_transIPID` (1 if the column is absent), refuses old-schema files. | Ran on the mini-run output: CCP1_GL and CCP1_PERM 27 keys, 442 vendor patterns, 20 keys with more than one vendor. The CCP2 side was skipped (no `LDGR` in that run). |
+
+The inline Python used earlier to rewrite `GLPostSpec.scala` is moot; no Python was used for the follow-up edits.
+
+### Not done
+
+- Rerun on the corpus; confirm the elapsed cost of the revised step 21 (now also tracking dependencies) and its heap high-water mark.
+- The dependency tracker keeps one int array per distinct value of each non-constant dimension; on the corpus that includes the description column. Its memory is not measured and could be large.
+- Contract by PO or payment: no producer varies it, so CAR-by-contract is declared, not observed.
+- The 15,400 s step total in the section above still comes from overlapped lanes. CPU seconds are now captured but the run-2 archive has none.
+
+
 
 ## 2026-11-10 Full-corpus rerun preparation: PO reader, one-read rule, cross-year 5v (Bob, Mac)
 
@@ -932,3 +975,39 @@ The `ttl` `records_read` for FY2003-FY2006 equals the parse-only count for the s
 **Action taken:** the run was stopped on purpose for a hardware check; the queue driver was killed, partial FY07/FY08 output and symlinks were removed. No other output was deleted.
 
 **State:** folder match `partially_verified` (fixed, tested, proven on the real corpus by row accounting). FY2004-FY2016 sort, balance and posting `unknown`.
+
+## 2026-11-10 Memory measures separated: OS peak RSS, macOS footprint, JVM heap (Bob, Mac)
+
+**Claim tested:** after the change, `process_metrics.csv` reports OS peak RSS and JVM heap as separate columns, and `peak_rss_bytes` is never filled with the JVM heap value.
+
+**Change (owner-approved list in `SESSION_HANDOFF.md`; no engine behaviour changed):**
+- Scala: the printed `RESOURCE` field was renamed `peak_rss_bytes` to `jvm_heap_bytes` at 12 emit sites (`CKBViews`, `GLPost`, `PermutationGenerator`, `post`, `LedgerApp`, `standardizeAndSort`) and in three header comments. The value is unchanged (`Runtime.getRuntime.totalMemory()`).
+- `run_pipeline.sh`: captures `jvm_heap_bytes` from the Scala line, captures the macOS `peak memory footprint` from `time -l`, and the fallback that put the JVM heap into `LAST_PEAK_RSS_BYTES` is deleted. The log line is now `RESOURCE step=… year=… peak_rss_bytes=… peak_memory_footprint_bytes=… jvm_heap_bytes=…`.
+- `write_canonical_evidence.sh`: fills `peak_jvm_heap_bytes`; `peak_memory_footprint_bytes` is a new last column (27 columns).
+- `docs/MEASUREMENT_AND_LOGGING.md`: three measures defined, and the sbt start-up overhead and the 26-versus-27-column rule documented.
+
+**Result:** `sbt -batch test` 73 of 73 pass. `bash -n` clean on both scripts. Fixture smoke test: 442 ledger rows, amount sum 0.00, metric checks passed. Fixture `process_metrics.csv` has 27 columns. Step 2: `peak_rss_bytes` 541,802,496, footprint 528,404,160, heap 1,073,741,824. Step 3: 571,080,704, 546,115,328, 1,073,741,824. `peak_rss_bytes` is no longer 1,073,741,824.
+
+**Supersedes in part:** the "JVM heap, not OS RSS" limitation at the 2026-11-05 and 2026-11-06 entries above is resolved only for runs made after this change. Older entries keep the old meaning: where they report `peak_rss_bytes=1073741824` it is JVM heap. Run 2 (`run_20261110_123303`) predates this change, but its `peak_rss_bytes` values came from `/usr/bin/time -l` and are OS RSS; its `peak_jvm_heap_bytes` column is empty.
+
+**Not verified:**
+- The OS figure is the maximum resident set of the whole `sbt` process tree, so it includes sbt start-up. The fixture steps show about 540 to 570 MB, with a one-row workload, so most of that is the JVM and sbt, not data. The size of that overhead on a real step was not measured separately.
+- The Windows path was not run. There `peak_rss_bytes` and the footprint stay empty by design.
+- `--seedFromCommitted` copies the earlier generation's `metrics/` folder. A chain step seeded from a generation made before this change would append 27-column rows to a 26-column file. Not tested. Use the same script version for the prep and chain steps of one run. `archive_corpus_run_evidence.sh` combines files by header of the first file and was not changed.
+- The `5v` re-run comparison against the 2026-11-10 real-data figures (RSS 1,353,891,840; footprint 1,326,723,072) is assigned to the other Mac and has not been done.
+
+**State:** memory-measure separation `partially_verified` (fixture only; real-corpus run pending).
+
+## 2026-11-10 AIM3 walk-forward + hold-out script and result (Bob, Mac)
+
+**Gate declaration (AGENTS.md, Python):** post-engine work on a bounded summary table (`view_vendor_year_survival.csv`, 773,397 rows). Owner approval to write the Python was given in the session on 2026-11-10 (local time). Scala/GenevaERS could not do it: the logistic fit and permutation test are statistical fitting on a bounded summary table, the case AGENTS.md reserves for Python.
+
+| Claim | Status | Evidence |
+|---|---|---|
+| The earlier AIM3 FAIL (C 0.6125, `fit_vendor_survival.py`) reflects the hypothesis | contradicted | The old script counts FY2016 vendor-years as churned (100% "churn" in FY2016, 30,014 rows) because FY2017 has no data; its log line "excl. censored FY2016" is wrong. Re-run of the new script with `--legacy-censoring` reproduces this: in-sample C 0.6236. With correct censoring, in-sample C is 0.7699. |
+| AIM3 passes the locked thresholds on a hold-out | partially_verified | `scripts/fit_vendor_survival_windows.py` on `output_5v_fixed_fy10`: train FY2010-FY2013 (71,220), test FY2014-FY2015 (52,448): C 0.7527, permutation p 0.001 (999 permutations). Walk-forward C 0.7546 to 0.7713 over 4 windows. Evidence `data/test_evidence/AIM3_survival_windows.csv`. |
+| The locked 7-window, FY2003-FY2016 protocol was followed | contradicted | Eligible years leave a contiguous run FY2010-FY2015 (FY2009 absent, FY2016 has no next-year data), so 4 windows with at least 2 training years, not 7. Printed in the script log. |
+
+**Not verified:** the design decisions (censoring rule, expanding window, hold-out definition, label-permutation test in place of refitting) have not been confirmed by the owner one by one. The test cannot separate vendor-specific signal from a time trend (churn rises from 24% to 33% over FY2012-FY2015). The old evidence file `AIM3_survival_results.csv` was not changed or flagged. The input views still contain old-reader rows for FY06 and FY11-FY12 (see the handoff).
+
+**State:** AIM3 hold-out `partially_verified`; the earlier FAIL `contradicted` as a statement about the hypothesis.
