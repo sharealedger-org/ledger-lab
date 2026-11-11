@@ -29,6 +29,31 @@ Updated 2026-11-11. Full evidence and gate declaration: `docs/VERIFICATION_AUDIT
 5. `scripts/standardize_and_sort.py` (legacy Python producer) still writes `D` on both lines; not used by the Scala pipeline, left unchanged.
 
 
+## 2026-11-10 (latest, night) FY10 forced into `5v` without a full re-chain; AIM1/AIM3/AIM4 run on the 14-year views; FY10 fix does not change the model results (Bob, Mac)
+
+Pulled `origin/main` first (fast-forward to `d2a1809`, `sbt test` 73/73). No code was changed in this entry. No new Python was written; the three existing owner-approved AIM scripts were run as they are.
+
+**1. FY10 forced into `5v` (owner asked: is a re-run needed, can 5v use the fix?).** The FY10 `2p` PO output from the fixed reader (`output_fy10_recheck/FY10/SortedJEFY10q1PO.csv`) was merged by `2m` with the existing 12 FY10 payment files (symlinked, unchanged) into `output_fy10_recheck/FY10_merge/SortedJEFY10merged.csv`: 17,401,382 rows, all 39 fields, amount column sums to -0.00 (the old merged file had 17,401,408 rows and sum 80.00). `5v` over FY03-FY16 with this one file swapped in: `records_read=224072560` (was 224072586; 26 fewer rows), 1,221 s, `buffer_overflow=true`, `reduction_ratio=0.0201`. Output: `output_5v_fixed_fy10`, log `~/workspace/va_fresh_logs/analysis/5v_fixed_fy10.log`.
+- **What this is not:** FY10 `3`, `20`, `21` were not re-run, so the FY10 *ledger*, GL and permutation files on disk are still from the old reader and `ledger_balance` for FY10 still reads FAIL (+60.00). The views and the ledger are now from different FY10 inputs. Close that gap before citing any FY10 ledger figure.
+- **Effect on the views:** diff against the first 14-year run: monthly, vendor and commodity views lose 5 rows each, payment view loses 1 row. Removed rows are FY10 rows keyed by a bare `10` or `10/01` period (no `2010/..` form) and the two junk View D keys with `TXN`/`BASE-LE` in the fiscal-year column. One value changed in form only (`0` to `0.00` in a min-amount column). The five removed monthly rows I inspected sum to about 3,540 in committed amount; I did not total the full diff.
+
+**2. Model runs on the 14-year views (both passes identical).**
+- **AIM4 (ordering seasonality):** FAIL. Top 5 classes 615, 175, 495, 393, 000; Q4 ratios 0.99, 1.03, 1.11, 1.02, 1.14. "Significant" for 2 of 5 (495 p=0.043, 000 p=0.0); the locked rule needs at least 3 of 5. Output of the first pass: `~/workspace/va_fresh_logs/analysis/aim/`; fixed pass: `.../aim_fixed/`.
+- **AIM3 (vendor survival):** FAIL. 181,886 vendor-year observations, 63,378 vendors, annual churn 39.7%, logistic regression C-statistic 0.6125 against the locked floor of 0.65; permutation p = 0.001 (passes the p < 0.05 test). Slow: the 999 permutation refits on 182K rows ran for well over an hour of wall time on this Mac while other jobs were running (not timed in isolation).
+- **AIM1 (non-injectivity), FY2012 only, first pass:** IL keys with more than one pattern 17,163; PERM keys with more than one vendor 12,965; gap 4,198 (non-zero, so supports non-injectivity; AIM1 has no threshold). GL 298,135 balance rows, 48,432 merge more than one vendor (max 975). Not re-run after the FY10 fix: FY12 is unaffected by it.
+- **The FY10 fix changed none of the AIM3/AIM4 numbers.** Every printed figure is the same in both passes. So the +80.00 imbalance did not matter for these models and a full FY10 re-chain was not needed for them. It is still needed for ledger-level claims about FY10.
+
+**3. Caveats on reading these FAILs (do not cite as a proof).**
+- The earlier audit in this file (see the entry around "AIM dates shifted") says the scripts do not implement the locked protocol: AIM3 is fit **in-sample**, not the 7-window longitudinal protocol or the FY2015-16 hold-out; AIM4 uses a Q4-ratio test, not STL with the majority-of-agencies rule. The C-statistic here is therefore not comparable to the locked 0.65 floor. A FAIL on these scripts is a result of the scripts as written; it is not yet a verdict on the hypotheses.
+- The eligible-year rule was applied (`2006-2008,2010-2017`; FY2016 censored). 10 fiscal years were present.
+- AIM2, AIM5 and the three-model experiment (Posted-FineTune vs IL-Native) were not run. AIM2 needs the AIM5 reconciliation table first.
+
+**4. Open data-quality item found along the way (not caused by the FY10 defect).** The fixed views still contain a few rows whose fiscal period is in the short form: 17 vendor-year rows (FY06 1, FY11 3, FY12 1, FY13 3, FY14 3, FY15 6) plus matching short-form rows in the commodity and monthly views (I counted the vendor view only for the per-year split), and 2 junk View D keys (`BASE-LE`, `TXN` with `$2,535.00; 3/28/07` in the object-code column). These are not the comma defect: PO files for FY06, FY11-FY15 have zero rows with a field count other than 39. Cause not found; the rows come from a different parse path. Their weight is tiny (17 vendor-year rows in 773,397, versus 22 in the first pass) but it would have shown up as a vendor-year with the wrong fiscal year in AIM3's input.
+
+**Files and logs:** `output_fy10_recheck/FY10_merge`, `output_5v_fixed_fy10`, `~/workspace/va_fresh_logs/analysis/{aim,aim_fixed}/`, `fy10_2m_recheck.log`, `fy10_merged_recheck_sum.txt`, `5v_fixed_fy10_inpaths.txt`. All outside git.
+
+**Next, in order of cost:** (a) find the source of the 17 short-form vendor-year rows (and 2 junk View D keys); (b) implement the locked AIM3 protocol (Python is owner-approval only, so propose it first) or decide the in-sample FAIL is the Part 1 illustration; (c) FY10 `3,20,21` through the orchestrator so the ledger balances for all 14 years; (d) the memory-column re-run after the RSS change (still pending from the previous entry).
+
 ## 2026-11-10 (for a new session, owner to consider) Fusing steps `3`, `20`, `21`: what it does to the cost curves; not decided (Bob, Mac)
 
 **Nothing was changed.** This records a discussion so a fresh session can start from it. The owner wants to re-read the graph designs (`docs/COST_GRAPH_DESIGN.md`, "Process Graph: CCP1 to CCP5" and the Mix/bowl graph; `docs/TEST_DESIGN.md` §CCP1) before deciding.
