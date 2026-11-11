@@ -1163,3 +1163,20 @@ Limits: the machine was not idle. OneDrive was syncing the gold files, `fileprov
 ## 2026-11-11 Track D input check (Bob, Mac)
 
 All 385 files in `~/workspace/va_control_root` were hashed with `shasum -a 256` and compared with `~/workspace/va_track_d_handoff/MANIFEST.csv`: 385 files, empty diff, 233 s. No file in the tree is writable. `ENVIRONMENT.md` free-disk figure updated from about 199 GB to about 212 GB. Result file: `trackd_sha_check_result.txt` in the run 4 archive. Not done: reboot (owner) and handover to Codex.
+
+## 2026-11-11 Timing test 2: one FY12 chain alone on a quiet machine (Bob, Mac)
+
+Claim tested (from the `aim-three-model` handoff, "RUN 3 ANALYSIS"): the +15% chain CPU of the run-2 layout over the serial baseline is overlap between lanes (contention), not a code or data change. Falsifier: if the chain run alone costs about as much CPU as run 3's FY12, the cause is not overlap. Evidence: `data/test_evidence/corpus_runs/run_20261111_064052/timing_test2_fy12_chain_alone.txt` and `timing_test2_process_metrics_rows.txt`.
+
+Setup: run 4's committed FY12 tree was cloned (`cp -c`) into `~/workspace/va_fresh_root/test2_scratch/FY12`, without `LDGR`, `GL` or `PERM` files, then `run_pipeline.sh --years 12 --steps 3,20,21 --curve CCP1 --seedFromCommitted` ran with the same arguments as the chain worker in `run_full_corpus.sh`. Start commit `be1e396` (engine unchanged since `d500af4`). Run 11:01:51 to 11:13:03 (672 s wall including the post-pipeline tail; "Pipeline complete" at 11:06:45). Nothing else of the pipeline ran. Spotlight indexing had been turned off by the owner (`sudo mdutil -i off /`), OneDrive and VS Code were closed, the load average at start was 2.7, and the machine was 80% idle. The IBM Bob IDE helpers (about 20% each) and WindowServer were still running.
+
+| FY12 step, CPU seconds | Baseline `20261110_210721` (serial) | Run 3 (2 chains + lanes) | Run 4 (2 chains + lanes) | **Alone (this test)** |
+|---|---|---|---|---|
+| step 3 | 66.38 | 96.32 | 97.71 | **69.48** |
+| step 20 (`gl-post`) | 75.28 | 90.54 | 87.65 | **77.78** |
+| step 21 (`permutation-generator`) | 125.19 | 162.43 | 172.33 | **120.61** |
+| Sum | 266.85 | 349.29 (+30.9%) | 357.69 (+34.0%) | **267.87 (+0.4%)** |
+
+The alone run is within 0.4% of the baseline in total (step 3 +4.7%, step 20 +3.3%, step 21 -3.7%) and 24% below run 3's and run 4's FY12 chain CPU. The falsifier did not fire: CPU is not constant for the same code and data, it depends on what else runs, and the extra CPU seen in runs 3 and 4 is overlap. Outputs `LDGR2012.csv`, `GL2012.csv`, `PERM_TBL2012.csv` and `PERM_SUMMARY2012.csv` are byte-identical to run 4's. No `RETRY`, `WARNING` or `FAIL` line. Peak RSS for step 21 was 1,339,224,064 bytes, in line with the other runs.
+
+Status: `partially_verified` (one year, one run alone, measured once; the quiet-machine condition is a measured load average, not a controlled one). It supports the earlier reading that CPU seconds are not contention-proof on this 4-CPU machine: FY12 chain CPU was 34% higher in the parallel layout than alone. Consequence for the cost curve: any CPU figure from the run-2 layout carries a contention premium of that size on this machine; the serial baseline and the alone run are the comparable engine cost, the parallel runs are the comparable wall clock. The earlier +4.8% all-steps CPU rise and +15% chain CPU rise (whole corpus) were averages across years; FY12 alone shows +34% for the run 4 pair, so the premium is not uniform by year. Not tested: other years, a width-1 chain with lanes running, and whether `5v` overlap adds to it.
