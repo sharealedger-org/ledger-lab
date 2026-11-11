@@ -20,7 +20,7 @@ Updated 2026-11-10. This file is a concise state snapshot; use the linked design
 - [x] Reboot: not required for this run (the Track D reboot is for the other machine).
 - [x] The launcher moves stale `run2_*.log` aside by itself (`prev_run2_before_<stamp>/`); nothing to do by hand. The baseline logs and wall-clock CSV stay in `~/workspace/va_fresh_logs/` and are also archived in git.
 
-**Launch (new session).** From the repo root, with the tool's background mode (a plain `nohup ... &` died last time). Reboot is not required:
+- [x] Added after the preflight check (same day, pushed): (1) `run_pipeline.sh` retries the `21s` permutation-summary launch on a boot-socket collision and logs a `WARNING` with the reason if it yields no RESULT (FY03's `cost_surface` permutation columns were 0 in the baseline); fixture-tested only. (2) `scripts/corpus_totals.py` (Python, owner approved, post-run reporting) is called by `archive_corpus_run_evidence.sh` and writes `corpus_totals.csv` into the run archive; baseline copy is in `data/test_evidence/corpus_runs/run_20261110_210721/`. Check after the run: no `WARNING step=21s` lines, and `permutation_capacity_sum` equals the `cost_surface` sum.**Launch (new session).** From the repo root, with the tool's background mode (a plain `nohup ... &` died last time). Reboot is not required:
 `bash scripts/run_full_corpus.sh > ~/workspace/va_fresh_logs/run2_corpus.log 2>&1 < /dev/null`
 then `bash scripts/open_run_windows.sh`. Confirm lanes are alive after 60 s (`pgrep -fl run_pipeline`). Wall-clock header must read `chain_width=2 views_early=Y caffeinate=on`.
 
