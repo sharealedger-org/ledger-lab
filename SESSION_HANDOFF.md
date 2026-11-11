@@ -2,6 +2,20 @@
 
 Updated 2026-11-10. This file is a concise state snapshot; use the linked design contracts for details.
 
+## 2026-11-11 (BRANCH `aim-three-model`) Step 3 done: labels, splits, D8 sample, metrics and results writer, fixtures only (Bob, M1 Mac)
+
+**Done (uncommitted).** `scripts/three_model_core.py`, `scripts/three_model_results.py`, `scripts/test_three_model_core.py`. `python3 -m unittest scripts/test_three_model_core.py scripts/test_three_model_verbalize.py` from the repo root: 37 tests pass (25 new). Python standard library only (numpy / scikit-learn are not installed). Owner approved Python for this work; scope restated at the top of each script. No corpus data read, nothing downloaded or installed.
+- **D8 recorded** in `docs/THREE_MODEL_EXPERIMENT_PLAN.md` section 4: entity-hash sample, seed 42, one fraction for FY2010-FY2013, target about 20,000 records per substrate; LDGR entity = `ldgrIPID` (which is the vendor id), GL entity = agency|account|fund|object. The target of 20,000 and the choice of unit are the agent's judgment (owner delegated D1-D8); change before the first real run, not after.
+- **Forecasting-target check:** both sides use debit lines (`D`) per agency and fiscal year; `compare_totals` reports any difference. Proven only on constructed fixtures. Not yet run on real files.
+- **Split check:** with eligible FY 2006-2008,2010-2017 and last complete FY 2016 the code gives train 2010-2013, test 2014-2015, 4 walk-forward windows, as D4 says.
+
+**Open, in order.**
+1. **Data (step 4).** Gold set must be on this machine; verify SHA-256 and row counts (plan section 3), then check: real GL `fiscal_year` / LDGR `ldgrLedgerPeriod` really are `YYYY/MM` (the code raises on anything else; the fixtures have two-digit periods); the GL-vs-LDGR debit totals agree; LDGR `ldgrIPID` presence by fiscal year matches the `5v` vendor-year view (the survival label comes from the view, as AIM3).
+2. **Net income ground truth** is undefined (chart-of-accounts classification); only the scoring function exists. Needs a definition before the task can be run; ask the owner or record it as a decision.
+3. Step 5 IL-Native, step 6 model choice (verify Apache 2.0 model, versions, advisories first), step 7 results and audit register entry. Not started.
+4. The older items (last CCP run timing checks, merge conflicts at the top of this file and the audit register) are in the entry below.
+
+
 ## 2026-11-11 (BRANCH `aim-three-model`) Three-model experiment: plan written, decisions D1-D7 recorded, step 2 (verbalizer) done; start the next session here (Bob, M1 Mac)
 
 **Where to work.** Branch `aim-three-model` (pushed by the owner at `73a1d11`; later commits are local until pushed). `main` was left alone because the other machine (4 CPUs) is running the last CCP run and will commit its evidence to `main`; the top of this file and the end of `docs/VERIFICATION_AUDIT_REGISTER.md` will conflict on merge, so resolve those two by hand. Do not touch the branch or working tree on the machine that is running.
