@@ -951,9 +951,27 @@ done
 # Permutation totals exceed 64-bit integers.  Step 21 writes one PERM_SUMMARY20YY.csv per year and
 # Scala step 21s sums them (BigInt); this shell only forwards the RESULT line it prints.
 if [[ ",$STEPS," == *",21,"* ]]; then
-  perm_summary_out=$(cd "$SBT_PROJECT" && sbt -batch \
-    "run --step 21s --outPath $(to_jvm_path "$OUT_PATH") --years $YEARS" 2>&1) || perm_summary_out=""
+  # Same boot-socket retry as the engine launches (sbt start-up only, before any engine code runs).
+  # Before 2026-11-11 this call had no retry and discarded its output on failure, which left FY03's
+  # permutation_rows/capacity at 0 in the 2026-11-10 baseline cost surface. A failure is now logged
+  # with its reason; it stays non-fatal, as before.
+  perm_summary_attempt=0; perm_summary_max=6
+  while true; do
+    perm_summary_attempt=$((perm_summary_attempt + 1)); perm_summary_rc=0
+    perm_summary_out=$(cd "$SBT_PROJECT" && sbt -batch \
+      "run --step 21s --outPath $(to_jvm_path "$OUT_PATH") --years $YEARS" 2>&1) || perm_summary_rc=$?
+    if [[ $perm_summary_rc -ne 0 && $perm_summary_attempt -lt $perm_summary_max && "$perm_summary_out" == *"ServerAlreadyBootingException"* ]]; then
+      log "RETRY  step=21s years=$YEARS sbt boot-socket collision (rc=$perm_summary_rc); launch attempt $perm_summary_attempt of $perm_summary_max, retrying"
+      sleep $(( 5 + RANDOM % 11 ))
+      continue
+    fi
+    break
+  done
   perm_summary_line=$(printf '%s\n' "$perm_summary_out" | grep -E "RESULT step=21s " | tail -1 || true)
+  if [[ -z "$perm_summary_line" ]]; then
+    log "WARNING step=21s years=$YEARS produced no RESULT line (rc=$perm_summary_rc, attempts=$perm_summary_attempt); permutation_rows and permutation_capacity stay 0 in cost_surface. Last output:"
+    printf '%s\n' "$perm_summary_out" | tail -8 | while IFS= read -r l; do log "  21s> $l"; done
+  fi
   perm_rows=$(printf '%s\n' "$perm_summary_line" | sed -nE 's/.*vendor_rows=([0-9]+).*/\1/p')
   perm_cap=$(printf '%s\n' "$perm_summary_line" | sed -nE 's/.* capacity=([0-9]+).*/\1/p')
   [[ -n "$perm_rows" ]] && PERMUTATION_ROWS="$perm_rows"
