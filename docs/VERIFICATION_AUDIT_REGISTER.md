@@ -997,3 +997,17 @@ The `ttl` `records_read` for FY2003-FY2006 equals the parse-only count for the s
 - The `5v` re-run comparison against the 2026-11-10 real-data figures (RSS 1,353,891,840; footprint 1,326,723,072) is assigned to the other Mac and has not been done.
 
 **State:** memory-measure separation `partially_verified` (fixture only; real-corpus run pending).
+
+## 2026-11-10 AIM3 walk-forward + hold-out script and result (Bob, Mac)
+
+**Gate declaration (AGENTS.md, Python):** post-engine work on a bounded summary table (`view_vendor_year_survival.csv`, 773,397 rows). Owner approval to write the Python was given in the session on 2026-11-10 (local time). Scala/GenevaERS could not do it: the logistic fit and permutation test are statistical fitting on a bounded summary table, the case AGENTS.md reserves for Python.
+
+| Claim | Status | Evidence |
+|---|---|---|
+| The earlier AIM3 FAIL (C 0.6125, `fit_vendor_survival.py`) reflects the hypothesis | contradicted | The old script counts FY2016 vendor-years as churned (100% "churn" in FY2016, 30,014 rows) because FY2017 has no data; its log line "excl. censored FY2016" is wrong. Re-run of the new script with `--legacy-censoring` reproduces this: in-sample C 0.6236. With correct censoring, in-sample C is 0.7699. |
+| AIM3 passes the locked thresholds on a hold-out | partially_verified | `scripts/fit_vendor_survival_windows.py` on `output_5v_fixed_fy10`: train FY2010-FY2013 (71,220), test FY2014-FY2015 (52,448): C 0.7527, permutation p 0.001 (999 permutations). Walk-forward C 0.7546 to 0.7713 over 4 windows. Evidence `data/test_evidence/AIM3_survival_windows.csv`. |
+| The locked 7-window, FY2003-FY2016 protocol was followed | contradicted | Eligible years leave a contiguous run FY2010-FY2015 (FY2009 absent, FY2016 has no next-year data), so 4 windows with at least 2 training years, not 7. Printed in the script log. |
+
+**Not verified:** the design decisions (censoring rule, expanding window, hold-out definition, label-permutation test in place of refitting) have not been confirmed by the owner one by one. The test cannot separate vendor-specific signal from a time trend (churn rises from 24% to 33% over FY2012-FY2015). The old evidence file `AIM3_survival_results.csv` was not changed or flagged. The input views still contain old-reader rows for FY06 and FY11-FY12 (see the handoff).
+
+**State:** AIM3 hold-out `partially_verified`; the earlier FAIL `contradicted` as a statement about the hypothesis.
