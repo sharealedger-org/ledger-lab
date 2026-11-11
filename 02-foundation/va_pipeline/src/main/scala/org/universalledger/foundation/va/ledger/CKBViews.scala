@@ -107,7 +107,7 @@ package org.universalledger.foundation.va.ledger
 //    Controls emitted:
 //      RESULT step=5v year=... rc=0 records_read=N rows_skipped_short=N files_read=N
 //             view_monthly=N view_vendor=N view_agency_commodity=N view_agency_payment=N elapsed_s=N
-//      RESOURCE step=5v year=... peak_rss_bytes=N
+//      RESOURCE step=5v year=... jvm_heap_bytes=N
 //
 //  Canonical state vs analytical output: these files are analytical outputs only.
 //  They are not SJE, are not posted, and do not require balancing controls.
@@ -540,7 +540,7 @@ object CKBViews {
     println(s"View C rows (agency-year commodity mix) : $nCommodity")
     println(s"View D rows (agency-year payments)      : $nPayment")
     println(s"RESULT step=5v year=$yearStr rc=0 records_read=$totalRecordsRead rows_skipped_short=$rowsSkippedShort files_read=${jeFiles.size} view_monthly=$nMonthly view_vendor=$nVendor view_agency_commodity=$nCommodity view_agency_payment=$nPayment elapsed_s=$elapsedS aggregation_buffer_peak_keys=$peakViewDKeys buffer_overflow=${viewDSpillFiles.nonEmpty} partial_aggregate_rows=$finalReduceRows final_reduce_rows=$finalReduceRows final_reduce_seconds=$finalReduceSeconds reduction_ratio=${"%.4f".format(reductionRatio)}")
-    println(s"RESOURCE step=5v year=$yearStr peak_rss_bytes=$peakRss")
+    println(s"RESOURCE step=5v year=$yearStr jvm_heap_bytes=$peakRss")
     println("Process End Time: " + Calendar.getInstance.getTime)
     println("*" * 100)
   }

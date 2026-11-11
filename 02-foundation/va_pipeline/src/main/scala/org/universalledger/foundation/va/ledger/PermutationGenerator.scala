@@ -48,7 +48,7 @@ import scala.io.Source
 //  ------------------------------
 //  RESULT step=21 year=YYYY rc=0 records_read=N records_written=M elapsed_s=E
 //         input_bytes=B output_bytes=O
-//  RESOURCE step=21 year=YYYY peak_rss_bytes=R
+//  RESOURCE step=21 year=YYYY jvm_heap_bytes=R
 //
 //  CLI invocation (via LedgerApp dispatcher):
 //    sbt "run --step 21 --inPath data/output/ --outPath data/output/ --year 2014"
@@ -169,7 +169,7 @@ object PermutationGenerator {
     println(s"  Output                   : ${outFile.getPath}")
     println("STATUS: COMPLETE")
     println(s"RESULT step=21 year=$yearStr rc=0 records_read=$totalRead records_written=$permutationRows elapsed_s=$elapsedS input_bytes=$totalInputBytes output_bytes=$outBytes")
-    println(s"RESOURCE step=21 year=$yearStr peak_rss_bytes=$peakRss")
+    println(s"RESOURCE step=21 year=$yearStr jvm_heap_bytes=$peakRss")
 
     println("*" * 100)
     println(s"Process End Time: ${Calendar.getInstance.getTime}")

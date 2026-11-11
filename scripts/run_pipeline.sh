@@ -602,22 +602,30 @@ run_step() {
   end_epoch=$(date +%s)
   local elapsed=$(( end_epoch - start_epoch ))
   LAST_ELAPSED=$elapsed  # exported for TOTAL_COMPUTE_S accumulation in main loop
+  # Three different measures, kept apart (see docs/MEASUREMENT_AND_LOGGING.md):
+  #   LAST_PEAK_RSS_BYTES        OS maximum resident set size of the `sbt` process tree under
+  #                              /usr/bin/time (includes sbt start-up). Empty when `time` gives none.
+  #   LAST_PEAK_FOOTPRINT_BYTES  macOS "peak memory footprint" from `time -l`. Empty elsewhere.
+  #   LAST_JVM_HEAP_BYTES        JVM committed heap at the end of the step, as printed by the Scala
+  #                              RESOURCE line (Runtime.totalMemory). Not a peak and not RSS.
+  # No value is ever substituted for another: an empty field means "not measured".
   LAST_PEAK_RSS_BYTES=""
+  LAST_PEAK_FOOTPRINT_BYTES=""
+  LAST_JVM_HEAP_BYTES=""
   if [[ "$time_mode" == "macos" ]]; then
     LAST_PEAK_RSS_BYTES=$(printf '%s\n' "$out" | awk '/maximum resident set size/ { print $1; exit }')
+    LAST_PEAK_FOOTPRINT_BYTES=$(printf '%s\n' "$out" | awk '/peak memory footprint/ { print $1; exit }')
   elif [[ "$time_mode" == "gnu" ]]; then
     local rss_kb
     rss_kb=$(printf '%s\n' "$out" | awk -F': ' '/Maximum resident set size/ { print $2; exit }' | awk '{print $1}')
     [[ "$rss_kb" =~ ^[0-9]+$ ]] && LAST_PEAK_RSS_BYTES=$((rss_kb * 1024))
   fi
-  # Fallback: parse the JVM-emitted RESOURCE line from sbt stdout (available on all platforms).
-  # The Scala code emits: RESOURCE step=N year=YYYY peak_rss_bytes=<jvm_heap_bytes>
-  if [[ -z "$LAST_PEAK_RSS_BYTES" ]]; then
-    local jvm_rss
-    jvm_rss=$(printf '%s\n' "$out" | grep -E "RESOURCE step=${step} " | \
-      sed -nE 's/.*peak_rss_bytes=([0-9]+).*/\1/p' | tail -1)
-    [[ "$jvm_rss" =~ ^[0-9]+$ ]] && LAST_PEAK_RSS_BYTES="$jvm_rss"
-  fi
+  [[ "$LAST_PEAK_RSS_BYTES" =~ ^[0-9]+$ ]] || LAST_PEAK_RSS_BYTES=""
+  [[ "$LAST_PEAK_FOOTPRINT_BYTES" =~ ^[0-9]+$ ]] || LAST_PEAK_FOOTPRINT_BYTES=""
+  # JVM heap: parse the Scala-emitted line (available on all platforms).
+  LAST_JVM_HEAP_BYTES=$(printf '%s\n' "$out" | grep -E "RESOURCE step=${step} " | \
+    sed -nE 's/.*jvm_heap_bytes=([0-9]+).*/\1/p' | tail -1)
+  [[ "$LAST_JVM_HEAP_BYTES" =~ ^[0-9]+$ ]] || LAST_JVM_HEAP_BYTES=""
 
   local records_written
   case "$step" in
@@ -742,7 +750,7 @@ run_step() {
     done
   fi
   log "$result_line"
-  log "RESOURCE step=$step year=$year peak_rss_bytes=${LAST_PEAK_RSS_BYTES:-}"
+  log "RESOURCE step=$step year=$year peak_rss_bytes=${LAST_PEAK_RSS_BYTES:-} peak_memory_footprint_bytes=${LAST_PEAK_FOOTPRINT_BYTES:-} jvm_heap_bytes=${LAST_JVM_HEAP_BYTES:-}"
 
   if [[ $rc -ne 0 ]]; then
     log "ERROR  step=$step year=$year exited with code $rc — pipeline halted"
