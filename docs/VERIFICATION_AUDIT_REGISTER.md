@@ -1131,3 +1131,55 @@ Read-only comparison of `data/test_evidence/corpus_runs/run_20261111_014229` (ru
 **Status effect of run 3 (owner discussion, 2026-11-11).** Run 3 is an output replicate of the baseline `20261110_210721`: `LDGR*`, `PERM_SUMMARY*` and the four view files are byte-identical, and row, byte and quarantine totals match. It therefore proves the same thing about what is computed, and it changes **no CCP output status and no AIM status** (the AIM re-run on the new corpus is still pending and is not advanced or set back by it). Limits: merged SJE, `GL` and `PERM_TBL` were not compared, so "all outputs identical" is not claimed. For cost, run 3 is a separate, differently labelled cost point (run-2 layout: chain width 2, early `5v`; CPU +4.8%, wall clock -30.3%), not a replacement for the baseline and not comparable to it by `total_compute_s` or `total_cost_proxy`. Whether it replaces the baseline on the cost curve is the owner's decision and is not made here.
 
 **AIM scope note (owner, 2026-11-11).** The primary AIM evidence, the three-model experiment (Posted-FineTune, IL-FineTune and IL-Native, per `docs/RESEARCH_OBJECTIVES.md` §4 and `docs/TEST_DESIGN.md`), has not been run: no models have been trained on the corpus data and compared with the natively built IL models. So run 3 leaves that experiment `not run`, and nothing in the run 3 evidence bears on its result. The earlier AIM1, AIM3 and AIM4 script outputs remain provisional, as already recorded in `SESSION_HANDOFF.md`.
+
+## 2026-11-11 Full corpus run 4, FY2003-FY2016, run-2 layout replicate (run tag `20261111_064052`) (Bob, Mac)
+
+Claim tested: a second run of the run-2 layout (chain pool width 2, early `5v`, `caffeinate`) passes every control and reproduces run 3's final output files byte for byte. Falsifier: any non-zero exit, failed control, a final file whose SHA-256 differs from the gold `MANIFEST.csv`, or a `RETRY`/`WARNING`/`FAIL` line. Start commit `9d54cd8`, clean tree (`dirty_files=0`); engine and scripts unchanged since run 3's `d500af4` (`git diff d500af4 9d54cd8` over `01-` to `05-` and `scripts/` is empty). Header `chain_width=2 views_early=Y caffeinate=on`, host `Kips-MacBook-Pro.local`, 4 CPUs. Evidence: `data/test_evidence/corpus_runs/run_20261111_064052/` (archived automatically; logs in `run_logs_20261111_064052.tar.gz`, a tarball because `.gitignore` excludes `*.log`).
+
+| Claim | Status | Evidence | Remaining gap |
+|---|---|---|---|
+| All 14 prep lanes, 14 chains and `5v` exit 0 | `partially_verified` | Orchestrator exit 0. `corpus_start` 06:40:52, `views_end` 08:55:51, `corpus_end` 09:03:16. No `RETRY`, `WARNING`, `FAIL` or nonzero `rc` in the 29 `run2_*.log` files or `launch_stdout.out`. | Two runs with this layout. |
+| 42 of 42 controls pass | `verified` for this run | 42 `PASS`, 0 other, in `reconciliation_results_all_years.csv`. | Controls are still the awk totals in Bash (owner decision). |
+| Final outputs identical to the gold copy (run 3) | `verified` for the files compared | 74 files (`LDGR*`, `GL*`, `PERM_TBL*`, `PERM_SUMMARY*`, `POQuarantineFY*`, four views) SHA-256 equal to `gold/MANIFEST.csv`; 0 different, 0 missing. The 30 `cost_surface.csv` / `pipeline_results.log` files were excluded (timings and run ids differ by design). This also covers `GL*` and `PERM_TBL*`, which run 3 and the baseline were not compared on. | Merged SJE (56.7 GB) not compared. |
+| Step 21 summary reaches `cost_surface` in every year | `partially_verified` | `permutation_capacity_sum_cost_surface` = `permutation_capacity_sum` = 503,118,463,033,110; `permutation_rows` 10,651,908 = ledger rows. | The retry path was not triggered in either run. |
+| Corpus totals | `verified` for this run | `corpus_totals.csv` row counts equal run 3's (ledger 10,651,908; GL keys 6,433,714; merged SJE 224,072,410; quarantine counts FY03-FY16 identical). | None. |
+| A failing year stops new years | `unknown` | Not exercised. | Fixture test needed. |
+
+Timing, three runs (same machine class, 4 CPUs; the baseline was serial):
+
+| Measure | Baseline `20261110_210721` | Run 3 `20261111_014229` | Run 4 `20261111_064052` |
+|---|---|---|---|
+| Corpus wall clock | 11,695 s | 8,147 s | 8,544 s (+4.9% vs run 3) |
+| Prep complete | 5,710 s | 6,191 s | 6,388 s |
+| `5v` wall (`cost_surface`) | 1,285 s | 1,551 s | 1,696 s |
+| Step CPU, all steps excl. `5v` | 10,670 s | 11,179 s | 11,207 s (+0.3% vs run 3) |
+| Chain CPU (steps 3 + 20 + 21) | 3,913 s | 4,506 s | 4,593 s (+1.9% vs run 3) |
+| Max step peak RSS | 1,348,485,120 | 1,351,610,368 | 1,362,649,088 (`step-ttl`) |
+
+CPU seconds reproduce within 0.3% (all steps) and 1.9% (chains) between the two run-2-layout runs, so the +15% chain CPU over the baseline is repeatable and layout-related, not a one-off. Wall clock varied by 397 s. Possible causes, none tested: the Mac ran at 0% battery charge on AC ("not charging") the whole run, `XprotectService` and the IBM Bob helpers used CPU alongside the pipeline, and swap use was 2.2 GB of 3 GB mid-run. The run-3 sleep incident (45 s) did not recur: `caffeinate` held both assertions and `pmset -g log` shows no sleep between 06:40 and 09:03; the first sleep after the run is 09:12:26. The charger was changed at about 06:39, before launch, which caused one sleep outside the run.
+
+**State:** run `verified` as a byte-identical replicate of run 3 on the 74 final data files compared. Open: failure path, designed symlink-swap test, merged SJE comparison.
+
+## 2026-11-11 Timing test 1: post-pipeline tail of one chain, FY12 of run 4 (Bob, Mac)
+
+Claim tested (from the `aim-three-model` handoff, "RUN 3 ANALYSIS"): the unmetered tail after "Pipeline complete" in each chain is the single-threaded `awk` controls plus `wc -l` / `shasum` in `write_canonical_evidence.sh`, not the generation commit or prune. Falsifier: the controls take less than about half of the FY12 tail. Evidence: `data/test_evidence/corpus_runs/run_20261111_064052/tail_timing_fy12.txt`.
+
+| Item | Seconds |
+|---|---|
+| FY12 chain wall clock in run 4 (`chain_start_fy12` 08:24:43 to `chain_end_fy12` 08:38:52) | 849 |
+| of which inside `run_pipeline.sh` (to "Pipeline complete" 08:31:23) | 400 |
+| of which after it (the tail) | 449 |
+| `awk` `sje_balance` over `SortedJEFY12merged.csv` (4.9 GB), first pass / warm pass | 396 / 365 |
+| `shasum -a 256` of the merged file (both passes) | 40 |
+| `wc -l` of the merged file | 11 |
+| `awk` `ledger_balance` over `LDGR2012.csv` | 12 |
+| `shasum` of `LDGR2012.csv` | 1 |
+| `wc -l` of `GL2012.csv` and `PERM_TBL2012.csv`, and `interpret_run.sh` | under 1 each |
+
+The listed controls add up to about 460 s, which is at least the 449 s tail, so the falsifier did not fire: the tail is the controls, and the `sje_balance` `awk` alone is about 80% of it. The commit and prune part is too small to separate from the timing noise. Status: `partially_verified` (one year, one run).
+
+Limits: the machine was not idle. OneDrive was syncing the gold files, `fileproviderd` took 76 to 84% CPU, load was 5 to 7, and the `awk` ran at 55 to 89% of one core, so the absolute seconds are inflated and not a clean measure. The helper clock has 1 s resolution, so sub-second items show as 0. The measurement ran the same commands the script runs but not the script itself. Run 3's FY12 tail was 415 s (from the handoff). Per AGENTS.md the awk controls stay in Bash; this entry only makes the orchestration overhead identifiable.
+
+## 2026-11-11 Track D input check (Bob, Mac)
+
+All 385 files in `~/workspace/va_control_root` were hashed with `shasum -a 256` and compared with `~/workspace/va_track_d_handoff/MANIFEST.csv`: 385 files, empty diff, 233 s. No file in the tree is writable. `ENVIRONMENT.md` free-disk figure updated from about 199 GB to about 212 GB. Result file: `trackd_sha_check_result.txt` in the run 4 archive. Not done: reboot (owner) and handover to Codex.

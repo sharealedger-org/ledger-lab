@@ -1,0 +1,14 @@
+start 2026-11-11 09:31:44 load=5.40 4.61 4.73
+wc_l_merged 11.0s
+wc_c_merged 0.0s
+shasum_merged 40.0s
+awk_sje_balance 396.0s
+awk_ledger_balance 12.0s
+wc_l_ldgr 0.0s
+shasum_ldgr 1.0s
+wc_l_gl_perm 0.0s
+interpret_run 0.0s
+second pass (warm cache):
+awk_sje_balance_warm 365.0s
+shasum_merged_warm 40.0s
+end 2026-11-11 09:46:09 load=6.20 6.10 5.71
