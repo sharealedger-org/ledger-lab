@@ -2,6 +2,37 @@
 
 Updated 2026-11-10. This file is a concise state snapshot; use the linked design contracts for details.
 
+## 2026-11-10 (for a new session, owner to consider) Fusing steps `3`, `20`, `21`: what it does to the cost curves; not decided (Bob, Mac)
+
+**Nothing was changed.** This records a discussion so a fresh session can start from it. The owner wants to re-read the graph designs (`docs/COST_GRAPH_DESIGN.md`, "Process Graph: CCP1 to CCP5" and the Mix/bowl graph; `docs/TEST_DESIGN.md` §CCP1) before deciding.
+
+**Question.** Does fusing Post, GL Balance and Permutation into one CKB pass (the earlier to-do) damage the cost-curve measurement, now that cost points can be whole-corpus runs so lanes can run in parallel? And is there a metric that keeps GL and permutation generation independent?
+
+**What was read (headers and design docs, not `post.scala`):**
+- `GLPost` (step 20) and `PermutationGenerator` (step 21) each read the same SortedJE partition and write their own file. Neither reads the other's output. Each is a full-file accumulator in a bounded in-memory map, not order-dependent. GL key is agency x nominal account x fund x fiscal period (no vendor). Permutation key adds the vendor ID. `docs/TEST_DESIGN.md` says "Steps 20 and 21 read the same SortedJE stream independently."
+- CCP1 = `2,2p,2m,3,20,21`; CCP2 = `2,2p,2m,3`. So the CCP1 to CCP2 delta is exactly the marginal cost of steps 20 and 21: two extra full reads plus the GL and permutation outputs. Fused, the extra scans disappear and the delta shrinks.
+- The doc already calls the CCP1 to CCP2 delta a lower bound (CCP1's step 2 sort is vendor-keyed, which overstates legacy GL sort cost). A fused CCP1 would weaken the bound further.
+- No document says why 20 and 21 are separate steps. Unconfirmed whether that is a deliberate baseline or how it was first built. **This is the owner's question to answer.**
+
+**What is and is not affected by fusing or by parallel lanes:**
+- Unaffected, deterministic counts: GL row count and `permutation_rows` (the Paper 1 cost-explosion figure).
+- Affected: rows and bytes read for 20/21; per-step wall seconds, which are inflated when lanes overlap (the run checklist says load 30 to 55 on 4 CPUs, "not comparable with serial baselines") and cannot be separated once fused.
+- A CCP1 versus CCP2 wall-clock delta can then only come from two separate whole-corpus runs, one with `20,21` and one without, run the same way. It cannot come from subtracting step times inside one run.
+
+**Candidate metrics that keep the two independent:** (1) the GL and permutation row counts; (2) bytes read; (3) CPU seconds per step; (4) corpus wall clock, CCP2-only run versus CCP1 run.
+
+**Gap found:** `cpu_user_seconds`, `cpu_system_seconds` and `cpu_total_seconds` are empty in all 84 rows of `data/test_evidence/corpus_runs/run_20261110_123303/process_metrics_all_years.csv`, although `/usr/bin/time -l` reports user and sys time and `run_pipeline.sh` already parses RSS from the same output. CPU seconds do not inflate with overlap the way wall seconds do. Capturing them would be a small change in `run_pipeline.sh` and `write_canonical_evidence.sh` (same place as the 2026-11-10 RSS change). Not done; the 27-column header would need CPU filled, not a new column.
+
+**Options for the owner:**
+- A. Keep 20 and 21 separate as the labelled CCP1 baseline. If speed is wanted, add a fused step as a new, labelled configuration and keep it off the same curve (`AGENTS.md`: do not compare runs as the same engine).
+- B. Fuse and redefine CCP1. Then document that the delta no longer includes the extra scans, and re-baseline CCP1 (no results under the old definition are comparable).
+- C. Either way, capture CPU seconds first so every later comparison has a metric that survives parallel lanes.
+
+**Where this sits with the other to-dos:** parallel posting (below) is separate and is unaffected by this decision if 20 and 21 stay separate; fusing would change the dashboard's three posting columns into one.
+
+**Also unresolved and relevant:** `post.scala` has not been read for shared state with 20 or 21; the three steps' independence of step 3 is unconfirmed.
+
+
 ## 2026-11-10 (latest, last) OS peak-RSS change list and step banner done on this Mac; committed for the old Mac to pull (Bob, Mac)
 
 The owner had this Mac do section B of the entry below instead of the other Mac. All five requested changes are made, and nothing outside the list was touched (no `5v` logic, no cost-surface columns, no `run_full_corpus.sh`).
