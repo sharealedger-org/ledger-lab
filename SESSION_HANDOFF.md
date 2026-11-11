@@ -16,7 +16,7 @@ Updated 2026-11-10. This file is a concise state snapshot; use the linked design
 
 **To do next.**
 1. Owner: re-enable Spotlight with `sudo mdutil -i on /` (it was turned off for test 2).
-2. Owner approval to delete the two 110 GB outputs (`output_full` and `output_full_run3_20261111_014229`); the merged SJE (56.7 GB) is not in the gold copy and was not compared byte for byte between runs.
+2. Owner approval to delete the two 110 GB outputs (`output_full` and `output_full_run3_20261111_014229`); the merged SJE (56.7 GB) is not in the gold copy and was not compared byte for byte between runs. SJE hashes taken: run 3 and run 4 merged SJE are identical (14 of 14, 926 s); saved as `gold/MANIFEST_SJE.csv` (git and OneDrive). Nothing has been deleted.
 3. Reboot, then hand Track D to Codex (`~/workspace/va_track_d_handoff/`, own repo `ledger-lab-control` cloned at `~/workspace/sharealedger/ledger-lab-control`). Gate 0 in that repo uses file paths that do not exist in `va_control_root`; Codex needs the manifest, not the Gate 0 example.
 4. Merge `aim-three-model` when the owner decides (worktree at `../ledger-lab-aim`, branch tracks `origin/aim-three-model`).
 
