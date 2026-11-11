@@ -2,7 +2,7 @@
 
 Updated 2026-11-10. This file is a concise state snapshot; use the linked design contracts for details.
 
-## 2026-11-11 (latest, RUN 3 DONE) 14-year run with the run-2 layout finished: exit 0, 42/42 controls PASS, outputs identical to the baseline; evidence archived (Bob, Mac)
+## 2026-11-11 (RUN 3 DONE) 14-year run with the run-2 layout finished: exit 0, 42/42 controls PASS, outputs identical to the baseline; evidence archived (Bob, Mac)
 
 **Result (run tag `20261111_014229`, start commit `d500af4`, header `chain_width=2 views_early=Y caffeinate=on`).** Orchestrator exit 0. Corpus wall clock 8,147 s (2 h 15 m 47 s) against the baseline's 11,695 s (3 h 14 m 55 s), -30.3%; 8,102 s after subtracting a 45 s machine sleep (02:07:41 to 02:08:26; the true loss is 45 to 75 s because DarkWake began 02:07:11). Prep done at 6,191 s (baseline 5,710 s), `5v` 1,551 s (baseline 1,285 s), step CPU 11,179 s (baseline 10,670 s, +4.8%). More work per step, less total time. Compare by CPU seconds and total wall clock, not per-step `elapsed_s`.
 - No `RETRY`, `WARNING` (including `step=21s`), `FAIL` or nonzero `rc` in any log. `permutation_capacity_sum` equals the `cost_surface` sum (503,118,463,033,110), so the FY03 baseline gap did not recur. The retry path itself was not triggered.
