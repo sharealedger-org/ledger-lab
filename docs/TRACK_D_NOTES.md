@@ -1,6 +1,6 @@
 # Track D: Unrestrained AI Subject Engine — Summary & Assessment
 
-**State:** Gate 3 Arm B prototype implemented and verified on the golden acceptance fixture in the companion repository [`sharealedger-org/ledger-lab-control`](https://github.com/sharealedger-org/ledger-lab-control) (commit `c3ec922d`). Ready for full-corpus execution on the designated benchmark machine.
+**State:** Gate 3 Arm B prototype implemented and verified on the golden acceptance fixture in the companion repository [`sharealedger-org/ledger-lab-control`](https://github.com/sharealedger-org/ledger-lab-control) (commit `c3ec922821f37a2c69a5c7a89892b9b3993f7693`). Ready for full-corpus execution on the designated benchmark machine.
 
 ---
 
