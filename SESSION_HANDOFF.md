@@ -2,6 +2,18 @@
 
 Updated 2026-11-10. This file is a concise state snapshot; use the linked design contracts for details.
 
+## 2026-11-11 (BRANCH `aim-three-model`) Step 4 first pass: Gold set verified, period format defect fixed, forecasting target needs an owner decision (Bob, M1 Mac)
+
+**Done.** `main` merged into this branch (`942d8ee`, conflicts in this file and the audit register resolved by keeping both sides; pushed). Gold set on this machine: 104 of 104 files match `MANIFEST.csv`. Real-file checks, evidence in the audit register entry "Gold set checks for the three-model experiment":
+- **Defect found and fixed:** periods are not all `YYYY/MM`. Payment rows carry `00YY/MM` (`0003/05`), PO rows `YYYY/MM`. The old `fiscal_year_of` did not raise on `0003/05`; it returned year 3 (about half of all ledger rows would have had a wrong fiscal year). Fixed in `scripts/three_model_core.py` (`00YY/MM` is 2000+YY; `last_complete_fy` counts months), 2 tests added, 39 tests pass.
+- **GL vs LDGR debit totals agree** per agency and fiscal year, 14 of 14 years (awk), FY2003 and FY2016 also in Python. Use `compare_totals(..., tolerance=Decimal("0.005"))`; the default 0 flags 2e-20 noise.
+- **LDGR vendor presence equals the `5v` view:** 199,727 vendor-year pairs each, 0 on either side only. The survival label can come from the view.
+
+**Open, needs the owner.** The forecasting target "debit lines per agency and fiscal year" is not coherent: payments (`EXP`) use numeric agency codes, PO rows (`COMMIT`) use agency names, no value in common, and the sum adds commitments to expenditures. Proposed (agent's judgment): `EXP` debits per agency code. It changes D3, so it is not applied until the owner agrees. Then: net income ground truth (still undefined), step 5 IL-Native, step 6 model choice (verify first), step 7 results.
+
+**Other machine.** One more test is running there and will be committed to `main`; this branch is pushed so that `main` can be updated from it, but `main` itself was not touched here.
+
+
 ## 2026-11-11 (BRANCH `aim-three-model`) Step 3 done: labels, splits, D8 sample, metrics and results writer, fixtures only (Bob, M1 Mac)
 
 **Done (uncommitted).** `scripts/three_model_core.py`, `scripts/three_model_results.py`, `scripts/test_three_model_core.py`. `python3 -m unittest scripts/test_three_model_core.py scripts/test_three_model_verbalize.py` from the repo root: 37 tests pass (25 new). Python standard library only (numpy / scikit-learn are not installed). Owner approved Python for this work; scope restated at the top of each script. No corpus data read, nothing downloaded or installed.

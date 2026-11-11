@@ -44,6 +44,17 @@ class FiscalYear(unittest.TestCase):
         self.assertEqual(c.fiscal_year_of("2014/07"), 2015)
         self.assertEqual(c.fiscal_year_of("2014/12"), 2015)
 
+    def test_payment_file_period_is_the_fiscal_year_label(self):
+        # Gold set: payment rows carry 00YY/MM, YY is the file's fiscal year, month does not shift it.
+        self.assertEqual(c.fiscal_year_of("0003/05"), 2003)
+        self.assertEqual(c.fiscal_year_of("0003/07"), 2003)
+        self.assertEqual(c.fiscal_year_of("0016/12"), 2016)
+
+    def test_last_complete_counts_months_across_both_formats(self):
+        mixed = {2016: [f"00{16}/{m:02d}" for m in range(1, 13)] + ["2015/07", "2016/03"],
+                 2017: ["0017/01", "0017/02", "2016/07", "2017/01"]}
+        self.assertEqual(c.last_complete_fy(mixed), 2016)
+
     def test_rejects_bare_year_short_form_and_bad_month(self):
         for bad in ("2014", "03", "14/07", "2014/7", "2014/13", "2014/00", "", "abcd/ef"):
             with self.assertRaises(ValueError, msg=bad):

@@ -20,9 +20,12 @@ Decisions implemented (docs/THREE_MODEL_EXPERIMENT_PLAN.md section 4):
   D7  "cannot answer" is the status NOT_ANSWERABLE, never a score of zero.
   D8  training sample (see sample_fraction / keep_entity below).
 
-Fiscal year: a period is 'YYYY/MM'; Virginia fiscal year runs July-June (month >= 7 belongs to
-the next calendar year).  A bare year, a two-digit period or any other shape is rejected with
-ValueError (plan control 3: the old PO reader defect must not reach a model).
+Fiscal year: a period is 'YYYY/MM' (purchase-order rows); Virginia fiscal year runs July-June
+(month >= 7 belongs to the next calendar year).  Payment rows carry a file period '00YY/MM' whose
+leading '00YY' is the fiscal-year label itself (Gold set, all 14 years: 0 mismatches against the
+file's year; CKBViews.scala header line 50), so '00YY/MM' maps to 2000+YY with no July rule.  A bare
+year, a two-digit period or any other shape is rejected with ValueError (plan control 3: the old
+PO reader defect must not reach a model).
 """
 
 import hashlib
@@ -37,14 +40,17 @@ NOT_ANSWERABLE = "not_answerable"
 
 
 def fiscal_year_of(period: str) -> int:
-    """'YYYY/MM' -> Virginia fiscal year (July-June).  Anything else raises ValueError."""
+    """'YYYY/MM' -> Virginia fiscal year (July-June); '00YY/MM' (payment file period) -> 2000+YY.
+    Anything else raises ValueError."""
     text = (period or "").strip()
     parts = text.split("/")
     if len(parts) != 2 or len(parts[0]) != 4 or len(parts[1]) != 2 or not (parts[0] + parts[1]).isdigit():
-        raise ValueError(f"fiscal period must be YYYY/MM, got {period!r}")
+        raise ValueError(f"fiscal period must be YYYY/MM or 00YY/MM, got {period!r}")
     year, month = int(parts[0]), int(parts[1])
     if not 1 <= month <= 12:
         raise ValueError(f"fiscal period month out of range: {period!r}")
+    if parts[0].startswith("00"):
+        return 2000 + year
     return year + 1 if month >= 7 else year
 
 
@@ -58,8 +64,10 @@ def parse_fy_spec(spec: str) -> set:
 
 
 def last_complete_fy(periods_by_fy: dict):
-    """Latest fiscal year with at least 12 distinct periods; None if there is none."""
-    complete = sorted(fy for fy, periods in periods_by_fy.items() if len(set(periods)) >= 12)
+    """Latest fiscal year with all 12 distinct months; None if there is none.  Months are counted,
+    not period strings, because one fiscal year mixes 'YYYY/MM' and '00YY/MM' strings."""
+    complete = sorted(fy for fy, periods in periods_by_fy.items()
+                      if len({p.split("/")[-1] for p in periods}) >= 12)
     return complete[-1] if complete else None
 
 
