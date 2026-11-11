@@ -1,6 +1,6 @@
 # Three-Model Experiment: Working Plan
 
-Status: **proposal, 2026-11-11, branch `aim-three-model`.** Nothing here has been run. The experiment definition is in [TEST_DESIGN.md](TEST_DESIGN.md) §2 and §5a and [RESEARCH_OBJECTIVES.md](RESEARCH_OBJECTIVES.md) (Part 2). This file does not change that definition; it turns it into ordered work and lists the decisions the design leaves open. Items marked **DECIDE** need the owner.
+Status: **plan with decisions recorded, 2026-11-11, branch `aim-three-model`.** Nothing here has been run. The experiment definition is in [TEST_DESIGN.md](TEST_DESIGN.md) §2 and §5a and [RESEARCH_OBJECTIVES.md](RESEARCH_OBJECTIVES.md) (Part 2). This file does not change that definition; it turns it into ordered work and records the decisions the design leaves open. The owner delegated D1-D7 to the agent on 2026-11-11 ("I have no opinions... your guidance will be accepted on all the points"), so they are the agent's judgment calls, written down with reasons so a human reviewer can challenge them. They are fixed before any real-data run; a change after that is logged as a deviation, with the reason.
 
 ## 1. Approvals and boundaries
 
@@ -28,23 +28,23 @@ Status: **proposal, 2026-11-11, branch `aim-three-model`.** Nothing here has bee
 3. No bare-year or short-form fiscal periods and no row with the wrong field count (the old PO reader defect; the fixed reader gave none in run 3).
 4. The same train/test split, label rule and censoring rule are applied to all three models and written to the results file.
 
-## 4. Open decisions
+## 4. Decisions (delegated by the owner; agent's judgment, 2026-11-11)
 
-| # | Decision | Why it matters | Proposed default (to confirm) |
+| # | Decision | Why it matters | Decision |
 |---|---|---|---|
-| D1 | **DECIDE** Which pretrained LLM, and which fine-tuning method, for models 1 and 2. | The design names none. Both must use the same base model and settings, or the 1→2 gap measures the setup. The 16 GB M1 here limits this to small models and parameter-efficient methods; the other machine is smaller. | One small open-weight model, the same adapter-style fine-tune for both, fixed seeds. Final choice is the owner's; I have not checked licences or current versions. |
-| D2 | **DECIDE** Verbalization schema (structured record to text). | TEST_DESIGN.md §5a defers it to "when scripts are written". It decides what each fine-tuned model can see. | One template per substrate listing only that substrate's columns, in fixed order; no derived fields. Written and fixture-tested before any training. |
-| D3 | **DECIDE** Task definitions and labels. | "Same tasks" needs identical targets. | Vendor survival: the AIM3 label and censoring rule from `fit_vendor_survival_windows.py`. Forecasting: next fiscal year amount per agency, from the same split. Net Income: the logical derivation, scored pass/fail per model. |
-| D4 | **DECIDE** Train/test split. | Prevents leakage; the locked 7 windows is not available on PO-derived tests. | Reuse the hold-out already used for AIM3: train FY2010-FY2013, test FY2014-FY2015 (4 walk-forward windows as a stability check). Same split for all three models. |
-| D5 | **DECIDE** Metrics. | The gap columns need one metric per task. | Survival: C-statistic and the AIM3 permutation test. Forecasting: sMAPE and RMSE, with a naive last-year baseline. Net Income: correct or not. |
-| D6 | **DECIDE** Form of IL-Native. | "Structured model, no pretrained LLM" can be many things. | A plain structured model on IL-derived features (the AIM3 features are the starting point), so the 2→3 gap isolates the language prior and not a bigger model. |
+| D1 | Which pretrained LLM, and which fine-tuning method, for models 1 and 2. | The design names none. Both must use the same base model and settings, or the 1→2 gap measures the setup. The 16 GB M1 here limits this to small models and parameter-efficient methods; the other machine is smaller. | One small open-weight base model under **Apache 2.0** (the project's licence; Sharealedger uses Apache 2.0), the same LoRA adapter fine-tune for both models, same hyperparameters, fixed seeds. Candidate families: IBM Granite small models, or Qwen2.5 sizes that are Apache 2.0 (not every Qwen2.5 size is). Training stack: Hugging Face `transformers` + `peft` in a virtual environment with a lock file, run on this M1 only (not timed). **Not yet verified, and verified when the model is chosen at step 6, not before:** the exact model identifier and release, that its licence is Apache 2.0 on the model card, that it is maintained (release within about 6 months), and the latest stable library versions with no open high-severity advisories (security.md). No model or library has been downloaded or installed. |
+| D2 | Verbalization schema (structured record to text). | TEST_DESIGN.md §5a defers it to "when scripts are written". It decides what each fine-tuned model can see. | One template per substrate listing only that substrate's columns, in fixed order; no derived fields. Written and fixture-tested before any training. |
+| D3 | Task definitions and labels. | "Same tasks" needs identical targets. | Vendor survival: the AIM3 label and censoring rule from `fit_vendor_survival_windows.py`. Forecasting: next fiscal year amount per agency, from the same split. Net Income: the logical derivation, scored pass/fail per model. |
+| D4 | Train/test split. | Prevents leakage; the locked 7 windows is not available on PO-derived tests. | Reuse the hold-out already used for AIM3: train FY2010-FY2013, test FY2014-FY2015 (4 walk-forward windows as a stability check). Same split for all three models. |
+| D5 | Metrics. | The gap columns need one metric per task. | Survival: C-statistic and the AIM3 permutation test. Forecasting: sMAPE and RMSE, with a naive last-year baseline. Net Income: correct or not. |
+| D6 | Form of IL-Native. | "Structured model, no pretrained LLM" can be many things. | A plain structured model on IL-derived features (the AIM3 features are the starting point), so the 2→3 gap isolates the language prior and not a bigger model. |
 | D7 | How "cannot answer" is scored. | Posted-FineTune has no vendor field, so survival is not answerable from its substrate. | Report `not_answerable` as a result, not as a score of zero. |
 
 ## 5. Work in order
 
 Steps 1-3 need no corpus data and can run on this machine now (fixtures only):
 
-1. Settle D1-D7 and record them here.
+1. D1-D7 are decided in section 4 (done 2026-11-11). Open check carried into step 3: the forecasting target is computed from `GL` (for model 1) and from `LDGR` (models 2 and 3); the two must agree on a common basis (for example debit lines only), or the difference is reported. If they cannot be reconciled, the target is redefined on the common basis and logged as a deviation.
 2. Write the verbalizer (GL and LDGR) with tests on the public fixtures. Fixture LDGR output comes from the existing fixture smoke test (442 ledger rows, amount sum 0.00).
 3. Write the label, split and metric code with tests on fixtures, and the results-file writer (one row per model, task, metric; gap columns computed from model pairs).
 4. Once the gold copy has synced: run controls in section 3 on the real files.
