@@ -1,4 +1,4 @@
-﻿# Ledger Lab
+# Ledger Lab
 
 Ledger Lab is the public research successor to the Universal Ledger proof of concept. It is an
 Apache-2.0 research prototype for examining how financial events, instrument-level state,
@@ -30,6 +30,8 @@ repo>`; record IDs and test status are in
 **New to Ledger Lab?** Read [`LEDGER_LAB_OVERVIEW.md`](./LEDGER_LAB_OVERVIEW.md) — a plain-English explanation of what all the tests are trying to show and why, grouped by claim rather than by technical name. No prior knowledge of the research papers required. The Overview connects back to the papers for anyone who wants the full argument.
 
 **Already familiar with the research?** For a map of all experiments across both papers, start with [`docs/RESEARCH_OBJECTIVES.md`](docs/RESEARCH_OBJECTIVES.md). Detailed specifications are in [`docs/TEST_DESIGN.md`](docs/TEST_DESIGN.md) (unified CCP cost-curve workloads and AIM model evidence tests).
+
+**Want to know what has actually been run, and how far to trust it?** Read [`docs/CURRENT_RESULTS.md`](docs/CURRENT_RESULTS.md): current results with a status on every claim, what is not yet run, and statements elsewhere that have since been shown wrong.
 
 ## Research Questions
 
