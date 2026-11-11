@@ -2,6 +2,25 @@
 
 Updated 2026-11-10. This file is a concise state snapshot; use the linked design contracts for details.
 
+## 2026-11-11 (BRANCH `aim-three-model`) Three-model experiment: plan written, decisions D1-D7 recorded, step 2 (verbalizer) done; start the next session here (Bob, M1 Mac)
+
+**Where to work.** Branch `aim-three-model` (pushed by the owner at `73a1d11`; later commits are local until pushed). `main` was left alone because the other machine (4 CPUs) is running the last CCP run and will commit its evidence to `main`; the top of this file and the end of `docs/VERIFICATION_AUDIT_REGISTER.md` will conflict on merge, so resolve those two by hand. Do not touch the branch or working tree on the machine that is running.
+
+**Read first:** `docs/THREE_MODEL_EXPERIMENT_PLAN.md` (the working plan; section 4 has D1-D7, section 5 the ordered steps, section 3 the controls). Experiment definition: `docs/TEST_DESIGN.md` §2 and §5a, `docs/RESEARCH_OBJECTIVES.md` Part 2.
+
+**Done this session.**
+- Run 3 compared with the baseline (read-only): outputs identical, CPU +4.8% (chain steps 3/20/21 +15%, inferred contention), wall -30.3%, and a 7,635 s unmetered tail after "Pipeline complete" (54% of chain wall). Run 3 is an output replicate of the baseline, so no CCP output or AIM status change; its cost point is separate and not comparable by `total_compute_s` or `total_cost_proxy`. Entry at the top of this file's previous section and in the audit register.
+- The three-model experiment (Posted-FineTune, IL-FineTune, IL-Native) has not been run; nothing in run 3 bears on it. The earlier AIM1/AIM3/AIM4 outputs remain provisional.
+- **Owner approvals recorded:** Python is approved for the three-model training and evaluation scripts, not timed; the owner delegated D1-D7 to the agent ("your guidance will be accepted on all the points"), so they are the agent's judgment calls, fixed before any real-data run, with later changes logged as deviations. Base model must be Apache 2.0 (the project licence).
+- Step 2 done: `scripts/three_model_verbalize.py` + `scripts/test_three_model_verbalize.py` (12 tests, pass; `python3 -m unittest scripts/test_three_model_verbalize.py` from the repo root) + fixture rows in `data/three_model_fixture/`.
+
+**Open, in order.**
+1. **Step 3** (fixtures only, no corpus data needed): label, split and metric code with tests, and the results-file writer for `data/test_evidence/three_model_experiment_results.csv`. Carries two items: **D8**, the training-sample rule (an LDGR text is about 700 characters; the corpus has 10.65M ledger rows and 6.43M GL keys, so a fixed-seed sample is needed, same rule for both substrates), and the **forecasting-target check** (GL-derived and LDGR-derived targets must agree on a common basis, or the difference is reported).
+2. **Data:** the OneDrive gold set (`~/Library/CloudStorage/OneDrive-Personal/LedgerLabOutputs-Gold/`, 104 files, 2.5 GB, `MANIFEST.csv` has SHA-256) was not on this machine when checked and the upload on the other machine may not be finished. Steps 4-7 of the plan need it. The verbalizer's expected headers come from the Scala sources and the fixture; they have not been compared with the real files (the verbalizer refuses a mismatch).
+3. **When the last CCP run ends and the other machine is idle** (owner asked for these to be logged, not started; details in the previous section): time `write_canonical_evidence.sh` and `interpret_run.sh` part by part on FY12; run one chain alone to compare CPU; add the last run to the run 3 comparison.
+4. **Before choosing a model (step 6):** verify the exact model identifier and release, Apache 2.0 on the model card, maintenance (release within about 6 months), and latest stable library versions with no high-severity advisories. Nothing has been downloaded or installed; `python3` is 3.13.0 with none of the ML packages installed; `ollama` is present. The 16 GB M1 limits models 1 and 2 to small models with LoRA.
+
+
 ## 2026-11-11 (RUN 3 ANALYSIS, TO DO AFTER THE LAST CCP RUN) Run 3 against the baseline: what the numbers say, and three checks to run once the machine is idle (Bob, analysis only)
 
 **Nothing was run or changed.** Read-only comparison of `run_20261111_014229` (run 3) against `run_20261110_210721` (baseline). The Mac running the last CCP run is a different machine, so the checks below wait for it to finish. Full evidence table: `docs/VERIFICATION_AUDIT_REGISTER.md`, "2026-11-11 Run 3 against the baseline: CPU and the unmetered chain tail".
