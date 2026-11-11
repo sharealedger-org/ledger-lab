@@ -1011,3 +1011,20 @@ The `ttl` `records_read` for FY2003-FY2006 equals the parse-only count for the s
 **Not verified:** the design decisions (censoring rule, expanding window, hold-out definition, label-permutation test in place of refitting) have not been confirmed by the owner one by one. The test cannot separate vendor-specific signal from a time trend (churn rises from 24% to 33% over FY2012-FY2015). The old evidence file `AIM3_survival_results.csv` was not changed or flagged. The input views still contain old-reader rows for FY06 and FY11-FY12 (see the handoff).
 
 **State:** AIM3 hold-out `partially_verified`; the earlier FAIL `contradicted` as a statement about the hypothesis.
+
+## 2026-11-11 Step 21 recoded: extract-time summarisation (bounded buffer, sorted spill runs, k-way reduce)
+
+Claim tested: replacing the whole-year maps in `PermutationGenerator` with the `5v` View D pattern leaves `PERM_TBL20YY.csv` and `PERM_SUMMARY20YY.csv` unchanged. Cheapest falsifier: run the old implementation (`a5beb88`) and the new one on the same merged files and compare bytes.
+
+| Claim | Status | Evidence | Remaining gap |
+|---|---|---|---|
+| New step 21 gives the same `PERM_TBL` and `PERM_SUMMARY` as the old step 21 | `verified` for FY03 and FY04 only | Byte-identical on both years (FY03 292,669 GL keys, capacity 1,544,407,169; FY04 276,850 GL keys, capacity 261,568,885). New runs spilled (38 and 34 files), so the spill path was in the comparison. | Other years untested. Compare again on the full run's smallest and largest years. |
+| Spilled output equals in-memory output | `verified` (unit test, plus the FY03/FY04 spill runs above) | `GLPostSpec`: `permBufferCapacity=2` against the default. | None known. |
+| Vendor-determined (CAR) detection is exact and reports an unordered vendor input | `verified` (unit tests) | `GLPostSpec` FD/CAR test and the `vendor_order=violated` test. | Real years: `vendor_order` must read `ok`. |
+| Determinants above `permFdCap` are reported, and capacity can only grow | `verified` (unit test); `partially_verified` on data | FY03 untracked `transCommitmentID;transJrnlDescript;transTransDate`; FY04 `transJrnlDescript;transTransDate`; capacity unchanged in both. | Record `fd_untracked_dims` per year in the full run; capacity is an upper bound by that much when non-empty. |
+| Step 21 memory is bounded | `unknown` | No heap or RSS measured on the corpus. Fixture step-21 RSS 684,498,944 is not informative. | FY12 probe before the full run. |
+| Suite and scripts | `verified` | `sbt -batch test` 81/81; `bash -n` clean on four scripts; fixture smoke test 442 rows sum 0.00; fixture steps 2,3,20,21 end to end. | Smoke test does not run step 21; use the end-to-end fixture command in the handoff. |
+
+Defect found by the check: the first version listed extra `d_` columns (dimensions varying year-wide but not within any one GL key). Fixed; header and rows now match the old output.
+
+Process finding: two source edits were applied with inline Python text replacement without owner approval (see `SESSION_HANDOFF.md`).

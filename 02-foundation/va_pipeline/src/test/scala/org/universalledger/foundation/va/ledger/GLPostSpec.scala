@@ -273,7 +273,7 @@ class GLPostSpec extends AnyFunSuite {
 
   // ── PermutationGenerator tests ────────────────────────────────────────────────
 
-  private def runPerm(rows: Seq[String], prefix: String)
+  private def runPerm(rows: Seq[String], prefix: String, extra: Map[String, String] = Map.empty)
       : (Vector[String], Vector[Map[String, String]], String) = {
     var result: (Vector[String], Vector[Map[String, String]], String) = null
     withTempDirectory(prefix) { tmpDir =>
@@ -282,7 +282,7 @@ class GLPostSpec extends AnyFunSuite {
       writeSortedJE(inDir, "2014", rows)
       val baos = new java.io.ByteArrayOutputStream()
       Console.withOut(new java.io.PrintStream(baos, true, "UTF-8")) {
-        PermutationGenerator(Map("inPath" -> inDir.toString, "outPath" -> outDir.toString, "year" -> "2014"))
+        PermutationGenerator(Map("inPath" -> inDir.toString, "outPath" -> outDir.toString, "year" -> "2014") ++ extra)
       }
       val (hdr, data) = readCsv(outDir.resolve("PERM_TBL2014.csv").toFile)
       result = (hdr, data, baos.toString("UTF-8"))
@@ -368,6 +368,51 @@ class GLPostSpec extends AnyFunSuite {
     assert(carDims.contains("transBusinessEventCode"), s"event is vendor-determined, so CAR: $carDims")
     assert(carDims.contains("transContractID"), s"contract is CAR by definition: $carDims")
     assert(!carDims.contains("transAcctDate"), s"date varies within a vendor, so it is not CAR: $carDims")
+  }
+
+  test("PermutationGenerator spilled runs give the same output as the in-memory buffer") {
+    // Vendor-ordered input over 3 GL keys.  Date starts to vary late, so earlier GL keys need the retroactive fact.
+    def row(v: String, obj: String, d: String, j: String) =
+      makeJERow(v, "AGY", "FND", obj, "2014", "10.00", "D", acctDate = d, jrnlId = j)
+    val rows = Seq(
+      row("V001", "O1", "2014/03/01", "1"), row("V001", "O2", "2014/03/01", "2"), row("V001", "O3", "2014/03/01", "3"),
+      row("V002", "O1", "2014/03/01", "4"), row("V002", "O1", "2014/06/01", "5"), row("V002", "O2", "2014/06/01", "6"),
+      row("V003", "O3", "2014/09/01", "7"), row("V003", "O3", "2014/03/01", "8"), row("V003", "O1", "2014/03/01", "9"))
+    val (hMem, dMem, lMem) = runPerm(rows, "permgen-mem-")
+    val (hSp,  dSp,  lSp)  = runPerm(rows, "permgen-spill-", Map("permBufferCapacity" -> "2"))
+    assert(lMem.contains("buffer_overflow=false spill_files=0 "), lMem)
+    assert(lSp.contains("buffer_overflow=true "), lSp)
+    assert(!lSp.contains("spill_files=0 "), lSp)
+    assert(hSp == hMem)
+    assert(dSp == dMem)
+    def res(log: String, k: String) = s"$k=([^ ]*)".r.findFirstMatchIn(log).get.group(1)
+    for (k <- Seq("capacity", "capacity_independent", "vendor_rows", "car_dims", "dropped_dims", "varying_dims"))
+      assert(res(lSp, k) == res(lMem, k), s"$k differs")
+    // O1 holds V001, V002 (two dates), V003: 3 vendors x 2 dates = 6; date is not vendor-determined
+    assert(dMem.find(r => r("nominal_account_id") == "O1").get("capacity") == "6")
+  }
+
+  test("PermutationGenerator reports vendor_order=violated when a vendor reappears") {
+    val rows =
+      pair("V001", "AGY", "FND", "EXP001", "10.00") ++ pair("V002", "AGY", "FND", "EXP001", "20.00") ++
+      pair("V001", "AGY", "FND", "EXP001", "30.00")
+    val (_, _, log) = runPerm(rows, "permgen-order-")
+    assert(log.contains("vendor_order=violated"), log)
+    val ordered = runPerm(pair("V001", "AGY", "FND", "EXP001", "10.00"), "permgen-order-ok-")._3
+    assert(ordered.contains("vendor_order=ok"), ordered)
+  }
+
+  test("PermutationGenerator stops tracking a determinant past permFdCap and reports it") {
+    // Vendor and event are both dimensions; date has 3 distinct values > cap 2, so date stops determining.
+    def row(v: String, evt: String, d: String, j: String) =
+      withCol(makeJERow(v, "AGY", "FND", "EXP001", "2014", "10.00", "D", acctDate = d, jrnlId = j), 5, evt)
+    val rows = Seq(
+      row("V001", "E1", "2014/01/01", "1"), row("V001", "E1", "2014/02/01", "2"),
+      row("V002", "E2", "2014/03/01", "3"), row("V002", "E2", "2014/04/01", "4"))
+    val (_, _, log) = runPerm(rows, "permgen-fdcap-", Map("permFdCap" -> "2"))
+    assert(log.contains("fd_untracked_dims=transAcctDate"), log)
+    // vendor-determined detection is exact and unaffected by the cap
+    assert(log.contains("transBusinessEventCode<-transIPID"), log)
   }
 
   test("PermutationSummary sums per-year summaries as BigInt") {
