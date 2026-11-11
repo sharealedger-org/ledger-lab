@@ -1049,3 +1049,19 @@ Quarantined PO rows (14 files): FY03 20, FY04 1, FY05 3, FY06 1,987, FY07 1,675,
 Boundary note: the SJE and ledger control totals are computed by `awk` in Bash. AGENTS.md puts control totals produced as part of financial processing in Scala. Owner decision needed before changing it. This run's wall time for posting includes that pass, so cost points that use chain wall time include orchestration overhead and must not be read as engine time; use the `RESOURCE` CPU seconds.
 
 **State:** run `partially_verified` as a baseline (one run, serial posting, `5v` after posting).
+
+## 2026-11-11 Run-2 orchestration: chain pool (width 2), early `5v`, `caffeinate` (Bob, Mac)
+
+Claim tested: running the `3,20,21` chains through a width-2 pool and starting `5v` when every prep has committed leaves every output unchanged. Cheapest falsifier: bounded run (FY04+FY05, separate root `~/workspace/va_test_root`, nothing under the live output) and byte comparison with the 21:07 baseline and with a serial `5v`.
+
+| Claim | Status | Evidence | Remaining gap |
+|---|---|---|---|
+| Pool and early `5v` give the same per-year outputs as the serial baseline | `partially_verified` (2 years) | `cksum` identical for `LDGR`, `GL`, `PERM_TBL`, `PERM_SUMMARY` and merged SJE of FY04 and FY05 against `run_20261110_210721`. | 14 years under width 2 not run. |
+| Early `5v` gives the same views as `5v` run on its own | `partially_verified` (2 years) | All four view files identical to a separate serial `5v` over the same inputs. `5v` ran 00:44:01 to 00:47:44 beside two chains. | The `FY<yy>` symlink swap during a `5v` read was not exercised (`5v` finished first). Inputs are the same inode in both generations (checked for 14 years) and are opened once, which makes a problem unlikely but is not a test. |
+| Chain starts as soon as its own prep commits | `verified` (2 years) | FY05 chain started 00:42:31 while FY04 prep was running; `prep_all_done` 00:43:55. | Failure path (a failing year stops new years) was not run. |
+| `caffeinate` is started by the launcher | `verified` | `caffeinate -i -s -w <pid>` seen with the launcher's pid; header records `caffeinate=on`. | None. |
+| The ~5 min per year after the engine is the control-total `awk` | `partially_verified` | During FY04, `awk -F, '{ total += $26 }'` over the merged SJE had used 1:45 of CPU after 2:08 wall, still running. FY05 chain: step 21 result 00:46:45, `chain_end` 00:50:31. | Not timed end to end; per-year share not separated from the sbt launches. Owner decided awk stays for now. |
+
+Track D control tree: SHA-256 of all 385 files in `~/workspace/va_control_root` match `data/corpus_profile/source_catalog.csv` (empty diff, 2026-11-11 00:36).
+
+**State:** run-2 layout `partially_verified` on 2 years. The first corpus run with it is a new baseline, not a replicate.

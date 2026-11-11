@@ -147,8 +147,13 @@ with sleeps of about 25 seconds or less.
 
 ### 4.1 Full-corpus launch and watch (`scripts/run_full_corpus.sh`)
 
-Added 2026-11-10 from the run that used 4 prep lanes plus a serial posting chain. The launcher
-needs an empty `output_full`: it refuses to start while any `FY*` entry exists. It also moves any
+Added 2026-11-10 from the run that used 4 prep lanes plus a serial posting chain. **Changed
+2026-11-11 (run 2):** posting is a pool (`--chainWidth`, default 2), `5v` starts when every
+`prep_<yy>.ok` exists and overlaps posting, and the launcher runs `caffeinate -i -s -w <pid>`.
+The 2026-11-10 21:07 run (serial chain, `5v` after the chain, no `caffeinate` for the first
+~1 h) is the baseline for comparison, commit `70b6781`. The wall-clock header records
+`chain_width=`, `views_early=Y` and `caffeinate=` so the two layouts cannot be confused.
+The launcher needs an empty `output_full`: it refuses to start while any `FY*` entry exists. It also moves any
 existing `run2_*.log` in the logs directory to `prev_run2_before_<stamp>/` (never deletes), because
 the dashboard and the evidence archive read those logs by fixed name and a stale one is shown as
 this run's result (seen 2026-11-10: a new run's dashboard reported `DONE` from the previous run's logs).
@@ -191,10 +196,14 @@ of Java processes.
 
 **Projection line (rough).** For each of the six steps the dashboard takes the mean of the last 3
 completed years, sums what is left (a running step counts only its remaining part), divides JE
-generation by the lane count and treats posting as serial. It prints an estimated clock time for the
-end of JE generation and of posting. It excludes the `5v` pass, assumes today's contention, and later
-fiscal years are larger, so expect the real finish to be later. Posting finishing well after JE
-generation means the serial posting chain is the bottleneck.
+generation by the lane count and posting by the chain width. Posting work per year uses the
+observed chain wall time (`chain_end_fy` minus `chain_start_fy` in the wall-clock record, mean of
+the last 3 years), so the non-engine evidence time is included; before any year has finished it
+falls back to the sum of step times, which was 2.5 times too small in the baseline. It prints an
+estimated clock time for the end of JE generation and of posting. `5v` is shown but not projected,
+the projection assumes today's contention, and later fiscal years are larger, so expect the real
+finish to be later. Posting finishing well after JE generation means posting is the bottleneck.
+`VA_LOGS` and `VA_OUT` override the log and output directories (used to watch a test root).
 
 **Open the watch windows automatically (macOS).** After launching the run:
 
@@ -224,8 +233,9 @@ cat ~/workspace/va_fresh_logs/corpus_wallclock_*.csv                            
 the final cross-year `5v` pass. Markers live in `markers_<stamp>/`; the newest directory is the
 current run, and older ones belong to earlier attempts.
 
-**Reading a failure.** The first failing step stops new work and the `5v` pass is not started
-(`STOPPED: prep rc=... chain rc=...` in the orchestrator log). Running steps finish. Find the
+**Reading a failure.** The first failing step writes a `*.fail` marker. No new chain year starts and
+`5v` is not started if it has not begun (`STOPPED: prep rc=... chain rc=... views rc=...` in the
+orchestrator log). Running steps, including a `5v` already under way, finish. Find the
 year with `FAIL` on the dashboard or a `.fail` marker, then read the tail of that year's log.
 `rc=2` from a step is not necessarily an engine error: on 2026-11-10 it was an sbt boot-socket
 collision (`ServerAlreadyBootingException ... Address already in use`) when two lanes launched
@@ -233,7 +243,9 @@ sbt at the same instant. `run_pipeline.sh` now relaunches on exactly that messag
 and logs a `RETRY` line each time; any other nonzero exit stops the run.
 
 **Timing.** Per-step `elapsed_s` is inflated when lanes overlap (load average was 30 to 55 on
-4 CPUs) and is not comparable with serial baselines. Compare runs by the wall-clock CSV.
+4 CPUs) and is not comparable with serial baselines. Compare runs by the wall-clock CSV and by the
+`RESOURCE` CPU seconds. In run 2 the `5v` pass overlaps posting, so its `elapsed_s` is not
+comparable with the baseline's 1,285 s; compare its CPU seconds (baseline 1,433 s).
 The dashboard and the log commands read files only and start no engine step.
 
 ## 5. When a run fails or is stopped
@@ -288,8 +300,17 @@ reading source only; none of it has been run.
 - [ ] Replicates: Stage 4 calls for 3 replicates for each of CCP1, CCP2 and CCP3.
 - [ ] Re-baseline: the `applyPO` fix changed the PO workload, so the locked 2026-11-06 CCP figures
       are not comparable. Record these runs as a new baseline, not a replicate.
-- [ ] **Investigate parallel posting (added 2026-11-10, not started).** `chain()` in
-      `scripts/run_full_corpus.sh` runs `3,20,21` for one year at a time. Once prep ends the 4 CPUs
+- [ ] **Parallel posting: implemented 2026-11-11 and tested on FY04+FY05 only; not yet run on the
+      corpus.** Owner approved width 2. `run_full_corpus.sh` now runs the `3,20,21` chains through
+      `xargs -P` (`--chainWidth`, default 2), each worker waiting for its own `prep_<yy>.ok`;
+      a failing worker exits 255 so no further year starts. Bounded test (separate root
+      `~/workspace/va_test_root`, logs `~/workspace/va_test_logs`, `--years 04,05 --lanes 2`): exit 0;
+      FY05's chain started at 00:42:31 while FY04's prep was still running; `LDGR`, `GL`, `PERM_TBL`,
+      `PERM_SUMMARY` and the merged SJE of both years are byte-identical (`cksum`) to the 21:07
+      baseline. Not tested: more than two years, a failing year, 14-year load. Steps `20` and `21`
+      within a year still run one after the other (not changed). Original investigation notes
+      follow. `chain()` in
+      `scripts/run_full_corpus.sh` ran `3,20,21` for one year at a time. Once prep ends the 4 CPUs
       are mostly idle during posting (about 3 minutes per year in the 12:33 run, 10 years left at
       that point), so running more than one posting lane may shorten the corpus wall clock. Not
       measured. Do not edit the script while a run is in progress.
@@ -336,8 +357,17 @@ reading source only; none of it has been run.
       - It changes the workload shape (overlapping posting). Record any parallel run as a new
         baseline, not a replicate, and keep the serial figures separate (see the re-baseline item).
       - Keep it in Bash job control; no financial logic in the script.
-- [ ] **Investigate starting `5v` in parallel with posting (added 2026-11-10, owner's idea, not
-      started).** `run_full_corpus.sh` starts the VIEWS pass only after the whole chain
+- [ ] **`5v` in parallel with posting: implemented 2026-11-11 and tested on FY04+FY05 only.**
+      The launcher starts `5v` when every `prep_<yy>.ok` exists (`views_start`, `views_end` stamps).
+      In the bounded test `5v` started 00:44:01 with both chains running and finished 00:47:44
+      (222 s for 20.4M records, exit 0); its four view files are byte-identical to a separate
+      serial `5v` over the same two years (`test_root/output_5v_serial`). Symlink-swap safety:
+      checked by file identity, not by a race. For all 14 years the `SortedJE*` files in the prep and
+      posting generations are the same inode (hard links, `ls -i`), `CKBViews` opens every input once at
+      start, and `commit_attempt` swaps the link with an atomic `mv`. In the test, though, `5v` ended
+      before either chain committed, so a swap while `5v` was reading was **not** exercised.
+      Open: first corpus run is the real check. Original notes follow.
+      `run_full_corpus.sh` started the VIEWS pass only after the whole chain
       (`chain_all_done`), but `5v` may not need posting output at all.
       - Read from `CKBViews.scala` (header and file selection): it reads only `SortedJE*` files,
         one merged file per year (`SortedJEInputs.oneRead`), and no ledger, GL or permutation

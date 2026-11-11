@@ -9,9 +9,12 @@
 #
 # Total column: sum of the year's finished step times plus the running step's elapsed time (step time, not wall clock).
 # Projection (rough): for each of the six steps, the mean of the last 3 completed years; remaining work is the sum over unfinished
-# steps (a running step counts only what is left). JE generation is divided across the lanes, posting is serial. It excludes the
-# final 5v pass, ignores contention changes as lanes drain, and later fiscal years are larger, so treat it as an estimate.
-L="$HOME/workspace/va_fresh_logs"; O="$HOME/workspace/va_fresh_root/output_full"
+# steps (a running step counts only what is left). JE generation is divided across the lanes, posting across the chain width
+# (chain_width= in the wall-clock header; 1 if absent, as in the serial baseline). Posting work per year is the observed chain wall
+# time (chain_end - chain_start in the wall-clock record, mean of the last 3 years) when available, so it includes non-engine
+# overhead; otherwise the sum of step times. 5v starts when every prep has committed and may overlap posting; it is shown but not
+# projected. Ignores contention changes as lanes drain, and later fiscal years are larger, so treat it as an estimate.
+L="${VA_LOGS:-$HOME/workspace/va_fresh_logs}"; O="${VA_OUT:-$HOME/workspace/va_fresh_root/output_full}"   # VA_LOGS / VA_OUT override for a test root
 N="${1:-30}"
 
 # stat <logfile> <step>  ->  sets ST (none|run|ok|fail), SV (seconds, or rc for fail), RI/RO (records_read / records_written)
@@ -62,6 +65,7 @@ while true; do
   YEARS=$(sed -nE 's/^# years=([0-9,]+).*/\1/p' "$W" 2>/dev/null)
   YEARS="${YEARS:-03,04,05,06,07,08,09,10,11,12,13,14,15,16}"
   LANES=$(sed -nE 's/^# years=.* lanes=([0-9]+).*/\1/p' "$W" 2>/dev/null); LANES="${LANES:-4}"
+  CW=$(sed -nE 's/^# chain_width=([0-9]+).*/\1/p' "$W" 2>/dev/null); CW="${CW:-1}"
   T0=$(awk -F, '$1=="corpus_start"{print $2}' "$W" 2>/dev/null); now=$(date +%s)
 
   # ── collect every year's six steps first (ST/SV per step), so the table and the projection use one snapshot ──
@@ -100,6 +104,17 @@ while true; do
     done
   done
   post_year=$(( REF[3] + REF[4] + REF[5] ))
+  # observed chain wall per finished year (non-engine overhead included); mean of the last 3
+  cw_sum=0; cw_cnt=0
+  for (( j=ntot-1; j>=0 && cw_cnt<3; j-- )); do
+    cs=$(awk -F, -v k="chain_start_fy${yl[j]}" '$1==k{print $2}' "$W" 2>/dev/null)
+    ce=$(awk -F, -v k="chain_end_fy${yl[j]}" '$1==k{print $2}' "$W" 2>/dev/null)
+    if [[ -n "$cs" && -n "$ce" ]]; then cw_sum=$(( cw_sum + ce - cs )); cw_cnt=$((cw_cnt+1)); fi
+  done
+  (( cw_cnt > 0 )) && post_year=$(( cw_sum / cw_cnt ))
+  chain_left=0
+  for (( j=0; j<ntot; j++ )); do [[ "${SS[j*6+5]}" == ok ]] || chain_left=$((chain_left+1)); done
+  post_rem=$(( chain_left * post_year / CW ))
   je_fin=$(( je_rem / LANES + post_year ))
   eta=$post_rem; (( je_fin > eta )) && eta=$je_fin
 
@@ -141,13 +156,13 @@ while true; do
     done
   fi
   printf -- '-------+----------------------------------+----------------------------------+---------+---------------\n'
-  printf 'VIEWS  | %-10s (5v, all %s years: one pass over the merged files)%s\n' "$vcell" "$ntot" "$( [[ "$vst" == none ]] && echo '  - waiting for posting' )"
+  printf 'VIEWS  | %-10s (5v, all %s years: one pass over the merged files)%s\n' "$vcell" "$ntot" "$( [[ "$vst" == none ]] && echo '  - waiting for every JE-generation year to commit' )"
   (( vtot > 0 )) && printf '  rows | %s read>written%s   (total %s)\n' "$vrows" "${vdet:+;$vdet}" "$(fmt_n "$vtot")"
   echo
   case "$vst" in none) vword=waiting ;; run) vword=running ;; ok) vword=done ;; fail) vword=FAILED ;; esac
   echo "JE generation done: $nprep/$ntot    posting done: $nchain/$ntot    views (5v): $vword"
   echo "rows handled (read + written, all finished steps, all years): $(printf '%s' "$grows" | awk '{s=$1; o=""; while (length(s)>3) {o="," substr(s,length(s)-2) o; s=substr(s,1,length(s)-3)} print s o}')"
-  if (( nchain == ntot )); then
+  if (( nchain == ntot )) && [[ "$vst" != none ]]; then
     case "$vst" in
       none) echo "projection: all years posted; the 5v pass has not started (no estimate)" ;;
       run) echo "projection: all years posted; 5v running (no estimate)" ;;
