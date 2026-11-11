@@ -2,6 +2,31 @@
 
 Updated 2026-11-10. This file is a concise state snapshot; use the linked design contracts for details.
 
+## 2026-11-11 (latest, RUN 3 PREFLIGHT) Baseline run finished and committed; run-2 layout built and tested on 2 years; preflight for the 14-year run NOT complete (Bob, Mac)
+
+**Where things stand.**
+- Baseline run `20261110_210721` (serial chain, `5v` after posting, start commit `70b6781`): exit 0, 42/42 control rows PASS, `5v` rc 0 (1,285 s, 224,072,410 records). Evidence `data/test_evidence/corpus_runs/run_20261110_210721/`, audit entry "2026-11-11 Full corpus run FY2003-FY2016". Counts as a new baseline, not a replicate.
+- Run-2 layout (`2fac4c1`): `3,20,21` chains through `xargs -P` (`--chainWidth`, default 2), `5v` starts when every `prep_<yy>.ok` exists, `caffeinate -i -s -w <pid>` in the launcher, dashboard projection updated (`VA_LOGS`/`VA_OUT` override). Tested on FY04+FY05 only, in `~/workspace/va_test_root`: exit 0, 14/14 `cksum` comparisons identical (evidence `data/test_evidence/run2_orchestration_test_20261111/`). The first 14-year run with it is another new baseline.
+- Owner decisions this session: awk control totals stay as they are; width 2; test `5v` then proceed; `caffeinate` in the launcher permanently.
+- Track D: `trackD` merged into `main` (`2a89f45`) and the branch deleted (local and remote). Environment text `ENVIRONMENT.md` and `MANIFEST.csv` (385 rows, SHA-256 verified against the catalog) are in `~/workspace/va_track_d_handoff/`, outside the repo; the other machine passes them to Codex. Output directory `~/workspace/va_control_out/` exists and is empty.
+
+**Preflight status for the 14-year run (checked 2026-11-11 about 01:10 local).**
+- [x] Engine unchanged since the baseline: no diff under `01-` to `05-` between `70b6781` and `HEAD`. Only `scripts/run_full_corpus.sh` and `scripts/dashboard_full_corpus.sh` changed. `bash -n` clean on both.
+- [x] Step 21 real-data probe (the old "FY12 probe"): superseded by the baseline, which ran step 21 on all 14 years, `vendor_order=ok` in every year, highest peak RSS 1.34 GB with the 1 GB heap.
+- [x] Source data: `va_fresh_root` names and sizes match the catalog; `VA_opendata_FY2009.txt` placeholder present (0 bytes). Nothing running (`run_pipeline`, `sbt`, `java`, `python`, `caffeinate`).
+- [x] Disk: 199 GB free. `output_full` is 110 GB and `output_full_prev_20261110` is 109 GB; the new run needs about 110 GB, so it fits with about 89 GB left.
+- [ ] **`output_full` must be emptied of `FY*` first and the launcher refuses otherwise. Moving it aside breaks its symlinks.** The `FY<yy>` and `VIEWS` entries are *absolute* symlinks into `output_full/<name>.generations/`. `output_full_prev_20261110` (moved on 2026-11-10 without asking) already has dangling `FY*` links; the data is intact in its `*.generations/` directories. The same will happen to the baseline output if it is renamed. Options for the owner: (a) rename and then repoint the links relative to the new directory; (b) delete the 12:33 run's `output_full_prev_20261110` (superseded, its `5v` failed) and keep the baseline; (c) run in a new root, as the test root does, with `--root`, `--logs`. Not done; needs the owner's decision.
+- [ ] **Dropbox:** a Dropbox helper process (`garcon`, the Finder extension) is running. The checklist says to quit Dropbox and OneDrive before a run (disk-bound). I could not tell whether the main app is running. Owner to quit it.
+- [ ] Reboot not done (the Track D reboot is for the other machine's run).
+- [ ] The launcher moves stale `run2_*.log` aside by itself (`prev_run2_before_<stamp>/`); nothing to do by hand.
+
+**Launch (new session, after the three open items above).** From the repo root, with the tool's background mode (a plain `nohup ... &` died last time):
+`bash scripts/run_full_corpus.sh > ~/workspace/va_fresh_logs/run2_corpus.log 2>&1 < /dev/null`
+then `bash scripts/open_run_windows.sh`. Confirm lanes are alive after 60 s (`pgrep -fl run_pipeline`). Wall-clock header must read `chain_width=2 views_early=Y caffeinate=on`.
+
+**Watch for in this run (not exercised in the test).** (1) Two chains at once on 14 years: sbt boot-socket `RETRY` lines (expected few); (2) a `FY<yy>` symlink swap while `5v` is reading (inputs are hard links with one inode and are opened once, so a problem is unlikely, but it was not tested); (3) a failing year must stop new years (not tested); (4) load and memory with 4 prep lanes plus 2 chains plus `5v`; (5) the identical step 3 and step 21 peak RSS maximum in the baseline (check the two `RESOURCE` lines come from different processes). Compare against the baseline by CPU seconds and wall-clock, not per-step `elapsed_s`. After the run: audit register entry, archive is automatic, commit, push.
+
+
 ## 2026-11-11 (latest, CODE + PREFLIGHT) Step 21 recoded with extract-time summarisation; preflight done; ready for the full re-run in a new session (Bob, Mac)
 
 **Baseline Commit Locked:** Tagged as `ccp-baseline-20261111` at commit `63e7900fb180a4d36c4c746999df30601c5d0b07`. This commit contains the verified Step 21 extract-time summarisation (81/81 unit tests passing) and represents the exact codebase running for the first full CCP benchmark points.
