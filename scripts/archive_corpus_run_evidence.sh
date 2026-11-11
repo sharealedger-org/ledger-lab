@@ -105,6 +105,12 @@ combine_csv "run_manifest_all_years.csv" "metrics/run_manifest.csv"
 combine_csv "partition_catalog_all_years.csv" "metrics/partition_catalog.csv"
 combine_csv "sort_events_all_years.csv" "metrics/sort_events.csv"
 
+# The cross-year 5v pass writes to $ROOT/VIEWS, not to a FY<yy> tree, so it is not in the combined tables above.
+if [[ -f "$ROOT/VIEWS/cost_surface.csv" ]]; then
+  cp "$ROOT/VIEWS/cost_surface.csv" "$OUT/views_cost_surface.csv"
+  echo "  Copied 5v cost surface"
+fi
+
 # 3. Quarantine summary
 QUARANTINE_SUMMARY="$OUT/quarantine_summary.csv"
 echo "fiscal_year,quarantine_file,rows" > "$QUARANTINE_SUMMARY"
@@ -120,6 +126,14 @@ for ydir in "${YEAR_DIRS[@]}"; do
   done
 done
 echo "  Written quarantine summary ($QUARANTINE_SUMMARY)"
+
+# 3b. Corpus-level size and row totals (post-run Python reporting, not part of the measured engine)
+if command -v python3 >/dev/null 2>&1; then
+  python3 "$SCRIPT_DIR/corpus_totals.py" --archive "$OUT" --root "$ROOT" \
+    --catalog "$REPO/data/corpus_profile/source_catalog.csv" > /dev/null \
+    && echo "  Written corpus totals ($OUT/corpus_totals.csv)" \
+    || echo "  WARNING: corpus_totals.py failed; no corpus_totals.csv" >&2
+fi
 
 # 4. Generate Markdown summary
 cat <<EOF > "$OUT/RUN_SUMMARY.md"

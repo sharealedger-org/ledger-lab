@@ -1067,3 +1067,16 @@ Test evidence (kept in the repo): `data/test_evidence/run2_orchestration_test_20
 Track D control tree: SHA-256 of all 385 files in `~/workspace/va_control_root` match `data/corpus_profile/source_catalog.csv` (empty diff, 2026-11-11 00:36).
 
 **State:** run-2 layout `partially_verified` on 2 years. The first corpus run with it is a new baseline, not a replicate.
+
+## 2026-11-11 Corpus-level totals file; two gaps found in the baseline's size and permutation records (Bob, Mac)
+
+Owner asked whether input and output sizes are recorded for the Track D comparison. Answer: per step and per year yes, corpus-level no. Added `scripts/corpus_totals.py` (Python approved by the owner for this; post-run reporting over the archived tables and a file-size walk, no engine work). `archive_corpus_run_evidence.sh` now calls it, copies the `5v` cost surface to `views_cost_surface.csv`, and writes `corpus_totals.csv`. Run on the baseline archive: `data/test_evidence/corpus_runs/run_20261110_210721/corpus_totals.csv` (every row names its source).
+
+| Claim | Status | Evidence | Remaining gap |
+|---|---|---|---|
+| Corpus totals are recorded and traceable | `partially_verified` | Raw input 385 files, 27,843,834,731 bytes; source rows 96,465,442 (expenditure) + 15,603,041 (PO); merged SJE 224,072,410 rows, 56,686,707,487 bytes; ledger 10,651,908 rows, 1,714,799,024 bytes; GL keys and permutation keys 6,433,714; `5v` views 289,160,418 bytes; committed output 116,062,810,362 apparent bytes (du shows 110 GiB). Cross-checked: ledger rows equal the PERM vendor rows (10,651,908), GL keys equal across step 20 and step 21. | Computed from the archived tables after the run, not written by the run itself. |
+| `step-ttl` input bytes are recorded | `contradicted` | 0 in 11 of 14 years in `process_metrics`. The raw size comes from the catalog instead. | Fix in `run_pipeline.sh`/Scala metrics is not done. |
+| `cost_surface` `total_storage_bytes` can be summed across years | `contradicted` | Each row is a whole generation directory and posting hard-links the prep files, so the sum (229 GB over both curves) is about twice the 116 GB on disk. | Flagged `NOT_ADDITIVE` in the totals file. |
+| The permutation summary reaches `cost_surface` in every year | `contradicted` for FY03 | FY03 row has `permutation_rows=0`, `permutation_capacity=0`; the `RESULT step=21s` line in `run2_chain_fy03.log` is empty. `PERM_SUMMARY2003.csv` is correct (292,669 GL keys, capacity 1,544,407,169) and a manual `21s` run reproduces it. The 14-year capacity sum is 503,118,463,033,110 from the summary files, against 503,116,918,625,941 from `cost_surface` (short by FY03's 1,544,407,169). | Cause not proven. The `21s` sbt call in `run_pipeline.sh` (line 954) is not wrapped in the boot-socket retry and discards its output on failure; FY03's call ran at 21:32 while other lanes were starting sbt. Not changed; owner decision whether to add a retry. The totals file uses the summary files and says so. |
+
+**State:** totals file `partially_verified`; the two record gaps are open and are carried into the next run's checks.
