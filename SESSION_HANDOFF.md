@@ -2,6 +2,29 @@
 
 Updated 2026-11-10. This file is a concise state snapshot; use the linked design contracts for details.
 
+## 2026-11-11 (RUN 3 ANALYSIS, TO DO AFTER THE LAST CCP RUN) Run 3 against the baseline: what the numbers say, and three checks to run once the machine is idle (Bob, analysis only)
+
+**Nothing was run or changed.** Read-only comparison of `run_20261111_014229` (run 3) against `run_20261110_210721` (baseline). The Mac running the last CCP run is a different machine, so the checks below wait for it to finish. Full evidence table: `docs/VERIFICATION_AUDIT_REGISTER.md`, "2026-11-11 Run 3 against the baseline: CPU and the unmetered chain tail".
+
+**Findings.**
+- Outputs, ledger rows (10,651,908), ledger bytes, quarantine counts and committed bytes are the same. The baseline `permutation_rows` / capacity sum was short by exactly FY03 (396,858 rows; 1,544,407,169 capacity); run 3 is complete.
+- Wall clock -30.3% (11,695 s to 8,147 s); step CPU +4.8% (10,670 s to 11,179 s). Prep CPU is -1.2% (6,757 to 6,673). Chain CPU (steps 3, 20, 21) is +15.2% (3,913 to 4,506): step 3 +17.5%, step 20 +9.7%, step 21 +17.1%. Engine code is unchanged, so this is contention. By year: FY03-10 +9%, FY11-14 +31% (the years that overlapped `5v`), FY15-16 +8%. The `5v` link is an inference, not tested. CPU seconds are therefore not contention-proof on this 4-CPU machine.
+- `cost_surface` `total_compute_s` is summed step wall time: CCP1 +50% (3,861 to 5,808 s), CCP2 +7%. `total_cost_proxy` = compute seconds + storage MB, and storage (about 95% of it) is unchanged, so the CCP1 proxy rise of +1.6% is an artifact of contention-inflated elapsed seconds. Do not quote either as a cost change between these runs.
+- **Unmetered chain tail.** The two chain lanes were about 97% busy, so chain throughput is the critical path. Over 14 years the chains' wall time was 14,102 s: 6,464 s inside the pipeline (to "Pipeline complete") and 7,635 s after it (255 s for FY16 to 844 s for FY08 per year). The tail is the post-pipeline part of `run_pipeline.sh`: `write_canonical_evidence.sh` (single-threaded `awk` over each merged SJE file for `sje_balance`, plus `wc -l` / `shasum`), `interpret_run.sh`, and the generation commit and prune. That is inferred from the code, not timed. It appears in no step metric and no `cost_surface` field. The baseline's per-year logs are not in git, so its tail can only be estimated (chain wall 9,355 s minus step wall 3,861 s).
+
+**To do when the last CCP run has finished and the machine is idle (owner asked for these to be logged, not started).**
+1. **Time the tail.** Run `write_canonical_evidence.sh` alone on one year's output (FY12 suggested: 19.4M merged rows) and time `wc -l`, `shasum`, each `awk` control, and `interpret_run.sh` separately. Falsifier: if the controls are less than about half of the 415 s FY12 tail, the cause is elsewhere (commit or prune). Awk controls stay in Bash (owner decision); this only measures them so orchestration overhead is identifiable, as AGENTS.md requires. Optional follow-up for the owner: stamp "pipeline complete" and "chain end" in the wall-clock CSV so the tail is recorded every run.
+2. **Isolate the contention.** Run one chain alone (for example FY12 `3,20,21`, `--seedFromCommitted`) on the quiet machine and compare its CPU with run 3's FY12 (steps 3 / 20 / 21: 96 / 91 / 162 CPU s) and the baseline's (66 / 75 / 125). If the quiet CPU matches the baseline, the +15% is overlap, not a code or data change.
+3. **Record the CPU caveat.** The audit register entry above does this; when the last run is archived, add its chain CPU and tail to the same comparison, and say whether it ran in the run-2 layout.
+
+**Status effect (owner discussion).** Run 3 is an output replicate of the baseline (`LDGR*`, `PERM_SUMMARY*`, four views byte-identical; merged SJE, `GL`, `PERM_TBL` not compared). No change to CCP output status or AIM status; the AIM re-run is still pending. For cost it is a separate, differently labelled point (run-2 layout), not comparable to the baseline by `total_compute_s` or `total_cost_proxy`. Whether it replaces the baseline on the cost curve is the owner's call.
+
+**AIM scope (owner).** The three-model experiment (train Posted-FineTune and IL-FineTune on the data and compare them with the natively built IL-Native models; `docs/RESEARCH_OBJECTIVES.md` §4) has not been run. Nothing in run 3 bears on it. The earlier AIM1/AIM3/AIM4 script outputs stay provisional.
+
+
+**Not examined:** the earlier run `20261110_123303` (old step 20/21 definition, failed `5v`, no CPU data) was used only as context.
+
+
 ## 2026-11-11 (RUN 3 DONE) 14-year run with the run-2 layout finished: exit 0, 42/42 controls PASS, outputs identical to the baseline; evidence archived (Bob, Mac)
 
 **Result (run tag `20261111_014229`, start commit `d500af4`, header `chain_width=2 views_early=Y caffeinate=on`).** Orchestrator exit 0. Corpus wall clock 8,147 s (2 h 15 m 47 s) against the baseline's 11,695 s (3 h 14 m 55 s), -30.3%; 8,102 s after subtracting a 45 s machine sleep (02:07:41 to 02:08:26; the true loss is 45 to 75 s because DarkWake began 02:07:11). Prep done at 6,191 s (baseline 5,710 s), `5v` 1,551 s (baseline 1,285 s), step CPU 11,179 s (baseline 10,670 s, +4.8%). More work per step, less total time. Compare by CPU seconds and total wall clock, not per-step `elapsed_s`.
