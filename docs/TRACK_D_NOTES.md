@@ -1,12 +1,14 @@
-# Track D: Working Notes (2026-11-10)
+# Track D: Unrestrained AI Subject Engine — Experimental Design & Gating Protocol
 
-State: **idea stage. Nothing has been run. No AI subject has been used.** Branch `trackD`, cut from `main`
-and fast-forwarded to `be1c150` on 2026-11-10. Work on this track waits until `5v` finishes on the old Mac
-(owner decision, 2026-11-10). Nothing here changes the Scala engine, Bash orchestration or any measured
-cost curve.
+State: **Drafting protocol on branch `trackD`.**
+Branch `trackD`, synced with `main` as of 2026-11-11.
+Work on this track evaluates how an unconstrained AI engine (Codex / Claude / GPT-4o) designs and builds
+a financial transformation engine when given Papers 1 and 2, raw data schemas, and stated hardware bounds,
+without exposure to Ledger Lab CKB internal engine code or `AGENTS.md` constraints.
 
-This file is a record of a design discussion. It is not a pre-registration. Predictions below are the
-owner's stated bets, written down before any run, and they are not results.
+This file establishes the **gated information feed**, **hardware specification**, and **pre-registered scoring rubric**
+to ensure methodological independence and provide empirical coordinates for the second ("twisted") cost curve in
+Charlie Anderson's model.
 
 ## 1. Genesis
 
@@ -86,51 +88,86 @@ Open design points:
    the owner does not have.
 4. **Historical-choice test (current candidate).** See section 5.
 
-## 5. Current candidate: does the historical choice persist?
+## 5. Staged Gating Protocol for the AI Subject (Codex / Isolated Repo)
 
-Reasoning from the owner: Paper 2 is about historical choices (summarize early, keep balances, drop the event)
-being carried into financial processes. AI training data is another instance of the same inheritance,
-continuing into the AI era. A test should look for that persistence. It does not need a hardware test.
+The experiment is conducted in an independent, clean repository (`sharealedger-org/track-d-engine` or sandbox directory).
+Information is fed to the subject AI in strict, staged gates:
 
-Sketch:
+```mermaid
+flowchart TD
+    G0["Gate 0: Hardware Specs & Raw Schemas"] --> G1["Gate 1: Conceptual Papers 1 & 2 (The Problem & Goals)"]
+    G1 --> G2["Gate 2: Target Financial Queries & AI Workloads"]
+    G2 --> G3["Gate 3: Build, Code Generation & Execution"]
+    G3 --> G4["Gate 4: Measurement & Curve Twisting Scoring"]
+```
 
-1. State generous resources (for example 400 GB disk, ample time) so the old cost reason is absent.
-2. Ask a business question that needs event detail, with no architecture named. Example: which vendors appear
-   in both Agency A and Agency B spending, and which stopped trading with the state.
-3. Design only. No build, no run.
-4. Score the design for the habit: aggregates to balances before keeping vendor or instrument detail; drops
-   event order or the original record; treats a summary table as the primary store; justifies this by cost
-   or space after being told they are not scarce.
-5. Compare against a variant adding "keep every source event".
+### Gate 0 — Hardware Environment Specification & Raw Schemas
+* **Available Hardware Profile:**
+  * Host: Commodity machine (16 GB RAM, 4 CPU threads/cores, 400 GB available SSD storage).
+  * Runtime Environment: Standard Linux/macOS toolchain (Java/JVM, Python, Spark, DuckDB, C++, etc. — language unconstrained).
+  * Memory Bound: Hard limit of 1 GB to 4 GB heap/working set per process to prevent unbounded swapping.
+* **Corpus Scale & Layout:**
+  * Scale: 14 fiscal years of state government data (FY2003–FY2016), $\approx 100\text{M}$ raw source records ($\approx 190\text{M}$ journal lines, $\approx 20\text{ GB}$ uncompressed CSV/TSV).
+  * Schemas: Monthly expenditure files (9 columns: Agency, Amount, Fund, Locality, Object, Program, Vendor Name, Voucher Number, Voucher Date); Monthly revenue files (7 columns); Annual PO files (19 columns).
+  * Input layout: Flat files organized by fiscal year.
 
-Cautions:
+### Gate 1 — Conceptual Monograph Papers (Problem & Theoretical Goals)
+* **What is provided:**
+  * `Paper_1.md` (*The Minimum-Cost Accounting Architecture*): Explains the economic cost bowl, the permutation explosion of GLs, why pre-computing balances is expensive, and why an interior minimum movement store must exist.
+  * `Paper_2.md` (*Business Event Repositories as Training Corpora for Enterprise AI*): Explains why pre-hierarchy transaction events contain essential signal for AI that traditional accounting balances destroy, and why event lineage must be queryable.
+* **What is strictly excluded (No Contamination):**
+  * Zero Scala pipeline code (`post.scala`, `GLPost.scala`, `PermutationGenerator.scala`, `CKBViews.scala`).
+  * Zero GenevaERS / SAFR internal architecture text.
+  * Zero CKB sorted-merge engine execution models or `AGENTS.md` rules.
 
-- Neutral wording needs several variants, tested by the owner first.
-- A few runs show a tendency, not a rate. Keep claims modest.
-- Scoring is judgment. Write the checklist before any run. A second scorer who has not read the repo is better.
-- This tests the Paper 2 thesis. It is separate from the CKB code anecdote (footnote, line 304) and from the
-  Spark engine comparison (Paper 1), which belongs with the `5v` and Run 2 reference work.
+### Gate 2 — Target Financial & AI Reporting Workloads
+The subject AI is asked to design and build an engine that answers five mandatory query workloads across the 14-year corpus:
+1. **W1 (Monthly Financial Actuals):** Agency $\times$ Fund $\times$ Object $\times$ Fiscal Period expenditure and revenue totals.
+2. **W2 (Vendor Survival Tracking - AIM3):** Longitudinal panel of active vendor spend, first order year, order count, and year-over-year retention.
+3. **W3 (Commodity Mix Analysis - AIM2):** Agency $\times$ Commodity (NIGP code) order volume over time.
+4. **W4 (Ordering Seasonality - AIM4):** Monthly order commitment volume vs. payment volume to capture agency budget cycles.
+5. **W5 (Ad Hoc Audit & Non-Injectivity - AIM1):** Given an account summary balance, retrieve all supporting vendor purchase orders without loss of lineage.
 
-## 6. Open decisions (owner)
+### Gate 3 — Architecture & Code Generation
+* The AI subject is instructed to implement the pipeline end-to-end in its chosen language/framework (e.g., PySpark, DuckDB, Python/Polars, Java, C++).
+* Output must produce the required analytical tables and balance ledgers from raw inputs.
 
-- Which claim Track D supports: the Paper 2 thesis (habit persists), the narrower CKB anecdote, or the Paper 1
-  Spark engine comparison. They are separate tests.
-- Subject tool or tools (Codex was mentioned) and how many replicates.
-- Whether any Spark run needs an explicit exception to `README.md` (Spark excluded from the cost curves).
-- What multiple of the Scala wall clock counts as "slow" (P2).
-- Who writes any knowledge text given to a subject, and who scores the outputs.
+---
 
-## 7. Rules that still apply
+## 6. Pre-Registered Evaluation Rubric & Scoring Checklist
 
-- Python needs owner approval before any script is written (`AGENTS.md`). None has been proposed here.
-- Any subject-AI run happens in an empty directory with no `AGENTS.md` above it, and is saved here afterward
-  as evidence labelled illustrative. It stays outside the measured cost curves.
-- Do not compare Spark and Scala runs as the same engine measurement (`AGENTS.md`, Measurement Integrity).
-- Do not edit `5v`, `CKBViews.scala` or pipeline scripts on this branch while `main` is being worked.
+The AI subject's architecture and code are evaluated against five pre-registered criteria:
 
-## 8. Next steps
+| Category | # | Question / Check | Hypothesis / Expected Habit | CKB Baseline Score | Subject AI Score |
+| :--- | :---: | :--- | :--- | :---: | :---: |
+| **1. Aggregation Reflex** | S1.1 | Does it aggregate into account-grain summary tables early in the pipeline? | Yes (Legacy data warehouse habit) | No (Retains movements per instrument) | [TBD] |
+| | S1.2 | Does it discard vendor/lineage detail during ingestion or initial rollups? | Yes | No | [TBD] |
+| **2. Memory & Shuffling** | S2.1 | Does it use in-memory accumulators (`groupByKey`, Pandas DataFrames, Spark shuffles)? | Yes (`groupBy` / shuffle stages) | No ($O(1)$ streaming match-merge) | [TBD] |
+| | S2.2 | Does it sort/shuffle repeatedly for different analytical views? | Yes ($N$ passes for $N$ views) | No (Single sorted pass extracts 4 views) | [TBD] |
+| **3. Sort Exploitation** | S3.1 | Does it recognize and exploit pre-sorted input streams without re-sorting? | No (Forces shuffle-sort) | Yes | [TBD] |
+| **4. Operational Footprint** | S4.1 | Peak RSS / Working Set Memory during 14-year run | $> 16\text{ GB}$ (OOM risk) | $< 1.35\text{ GB}$ | [TBD] |
+| | S4.2 | Disk Spill / Temporary Shuffle Buffer Size | Large ($> 50\text{ GB}$) | $0\text{ GB}$ (Spill only for large hash views) | [TBD] |
+| | S4.3 | Total Wall-Clock Time across 14 years | $> 3\text{h}$ (or cluster required) | $\approx 21\text{m}$ (Laptop) | [TBD] |
+| **5. Curve Twisting** | S5.1 | Position on Cost Bowl: Left Wall height ($Q \times \text{Scan}$) | Elevated ($10\times\text{–}50\times$) | Flat sequential stream | [TBD] |
+| | S5.2 | Position on Cost Bowl: Minimum cost height | High ($> \$500$ cluster time) | Low ($\approx \$5$ laptop run) | [TBD] |
 
-1. Wait for `5v` to finish on the old Mac; pull `main` into `trackD`.
-2. Update section 2 with the `5v` outcome and wall clock.
-3. Owner picks the claim in section 6, then a pre-registration (claim, prediction, outcome classes, scoring
-   checklist) is committed before any subject run.
+---
+
+## 7. Rules and Boundaries
+
+- **Strict Isolation:** The Track D experiment runs in its own external repository (`track-d-engine`).
+- **No Engine Contamination:** No Scala code from `02-foundation/va_pipeline` or CKB contracts may be committed or referenced in the Track D repository.
+- **Evidence Labeling:** All Track D measurements are archived under `data/test_evidence/track_d/` and explicitly labelled as **"Illustrative AI Engine (Unrestrained Subject)"**, completely separate from the canonical CKB Scala cost curve points (CCP1–CCP5).
+- **Charlie Anderson Model Integration:** Track D metrics (shuffle overhead, wall-clock time, cluster footprint) will populate **Curve 3 ("Twisted Curve - Unrestrained AI")** in the Charlie Anderson Excel model.
+
+---
+
+## 8. Next Steps
+
+1. Commit this gating protocol and evaluation rubric on branch `trackD`.
+2. Prepare the clean distribution bundle for the new repository:
+   - `Paper_1.md` and `Paper_2.md`
+   - `Corpus_Schemas_and_Layout.md`
+   - `Target_Workload_Specs.md`
+   - `Hardware_Environment.md`
+3. Initialize the separate repository and run Codex / subject AI through Gate 0 to Gate 3.
