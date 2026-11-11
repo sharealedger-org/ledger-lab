@@ -2,6 +2,20 @@
 
 Updated 2026-11-10. This file is a concise state snapshot; use the linked design contracts for details.
 
+## 2026-11-11 (latest, RUN 3 DONE) 14-year run with the run-2 layout finished: exit 0, 42/42 controls PASS, outputs identical to the baseline; evidence archived (Bob, Mac)
+
+**Result (run tag `20261111_014229`, start commit `d500af4`, header `chain_width=2 views_early=Y caffeinate=on`).** Orchestrator exit 0. Corpus wall clock 8,147 s (2 h 15 m 47 s) against the baseline's 11,695 s (3 h 14 m 55 s), -30.3%; 8,102 s after subtracting a 45 s machine sleep (02:07:41 to 02:08:26; the true loss is 45 to 75 s because DarkWake began 02:07:11). Prep done at 6,191 s (baseline 5,710 s), `5v` 1,551 s (baseline 1,285 s), step CPU 11,179 s (baseline 10,670 s, +4.8%). More work per step, less total time. Compare by CPU seconds and total wall clock, not per-step `elapsed_s`.
+- No `RETRY`, `WARNING` (including `step=21s`), `FAIL` or nonzero `rc` in any log. `permutation_capacity_sum` equals the `cost_surface` sum (503,118,463,033,110), so the FY03 baseline gap did not recur. The retry path itself was not triggered.
+- `cksum` of `LDGR*` and `PERM_SUMMARY*` (14 years, 28 files) and the four view files are identical to the baseline. Not compared this time: merged SJE, `GL`, `PERM_TBL`.
+- Chains for FY11 to FY14 committed while `5v` was reading (03:25:43 to 03:51:39); views identical, so no harm seen. This is not a designed test of the symlink swap.
+- Peak RSS maxima come from different processes (step 21 1,351,610,368 at FY12; `step-ttl` 1,350,295,552).
+- Evidence: `data/test_evidence/corpus_runs/run_20261111_014229/` (archived automatically; includes `corpus_totals.csv` and `sleep_windows_20261111_014229.csv`). Audit register entry "2026-11-11 Full corpus run 3". Output: `~/workspace/va_fresh_root/output_full/` (110 GB). The baseline output `output_full_baseline_20261110_210721/` (110 GB) is still there; 215 GB free.
+- Misplaced log: the launch command redirected the launcher's stdout to `run2_corpus.log`, and the launcher then moved that file aside with the other stale `run2_*.log` files, so the run's own log is `~/workspace/va_fresh_logs/prev_run2_before_20261111_014229/run2_corpus.log`. Next launch: redirect to `launch_stdout.out`, not a `run2_*.log` name. The archive and evidence are unaffected.
+- Sleep: `caffeinate` held both assertions and the Mac still slept once (cause not proven; the lid is the likely one). Keep the lid open or use an external display on long runs.
+
+**Open.** Failure path (a failing year stops new years) not run; a designed symlink-swap test; a replicate of this layout; awk control totals remain in Bash (owner decision: they stay). Owner to decide whether to delete `output_full_baseline_20261110_210721`.
+
+
 ## 2026-11-11 (RUN 3 PREFLIGHT) Baseline run finished and committed; run-2 layout built and tested on 2 years; preflight for the 14-year run COMPLETE, ready to launch in a new session (Bob, Mac)
 
 **Where things stand.**
