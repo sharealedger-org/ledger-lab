@@ -67,10 +67,38 @@ input_partition_ids,output_partition_ids,ckb_process_id,pass_id,
 start_time,end_time,wall_seconds,cpu_user_seconds,cpu_system_seconds,
 cpu_total_seconds,peak_rss_bytes,peak_jvm_heap_bytes,pageins,
 context_switches,input_rows,input_bytes,output_rows,output_bytes,
-spill_bytes,status
+spill_bytes,status,peak_memory_footprint_bytes
 ```
 
 CPU, RSS, page, and context-switch values are process-level operating-system metrics. Financial row and byte counts are emitted by the Scala process.
+
+### Memory measures
+
+Three different memory measures are recorded and are never substituted for one another. An empty field
+means "not measured".
+
+| Column | Meaning | Source |
+|---|---|---|
+| `peak_rss_bytes` | OS maximum resident set size of the whole `sbt` process tree, under `/usr/bin/time -l` (macOS) or `-v` (Linux). It includes sbt start-up as well as the step's JVM. | `run_pipeline.sh` |
+| `peak_memory_footprint_bytes` | macOS "peak memory footprint" from `time -l`. Empty on Linux and Windows. | `run_pipeline.sh` |
+| `peak_jvm_heap_bytes` | JVM committed heap (`Runtime.getRuntime.totalMemory()`) at the end of the step. **Not a peak and not RSS.** The column name is kept for compatibility; the Scala RESOURCE field is `jvm_heap_bytes`. | Scala `RESOURCE` line |
+
+The orchestrator log line is
+`RESOURCE step=… year=… peak_rss_bytes=… peak_memory_footprint_bytes=… jvm_heap_bytes=…`.
+`peak_rss_bytes=` stays first with its OS meaning. There is no fallback: on a platform where `time` gives no
+figure (for example Windows) `peak_rss_bytes` stays empty.
+
+`peak_memory_footprint_bytes` is appended after `status`, so earlier positional reads are unchanged.
+
+Runs made before 2026-11-10 (this change) carry `peak_rss_bytes=1073741824` on platforms where the `time`
+parse was empty, and the older Scala RESOURCE field was also named `peak_rss_bytes`. In those runs the
+value is JVM heap, not RSS. The Run 2 archive (`run_20261110_123303`) predates this change; its
+`peak_rss_bytes` values come from `/usr/bin/time -l` and are OS RSS, and its `peak_jvm_heap_bytes` column is empty.
+
+Do not put 26-column and 27-column `process_metrics.csv` files in one combined file. A run made after this
+change writes 27 columns. `--seedFromCommitted` copies the earlier generation's `metrics/` folder, so a
+chain step seeded from a generation made before this change would append 27-column rows to a 26-column file.
+Make the prep and chain steps of one run with the same version of the scripts.
 
 ## Sort Events
 

@@ -932,3 +932,25 @@ The `ttl` `records_read` for FY2003-FY2006 equals the parse-only count for the s
 **Action taken:** the run was stopped on purpose for a hardware check; the queue driver was killed, partial FY07/FY08 output and symlinks were removed. No other output was deleted.
 
 **State:** folder match `partially_verified` (fixed, tested, proven on the real corpus by row accounting). FY2004-FY2016 sort, balance and posting `unknown`.
+
+## 2026-11-10 Memory measures separated: OS peak RSS, macOS footprint, JVM heap (Bob, Mac)
+
+**Claim tested:** after the change, `process_metrics.csv` reports OS peak RSS and JVM heap as separate columns, and `peak_rss_bytes` is never filled with the JVM heap value.
+
+**Change (owner-approved list in `SESSION_HANDOFF.md`; no engine behaviour changed):**
+- Scala: the printed `RESOURCE` field was renamed `peak_rss_bytes` to `jvm_heap_bytes` at 12 emit sites (`CKBViews`, `GLPost`, `PermutationGenerator`, `post`, `LedgerApp`, `standardizeAndSort`) and in three header comments. The value is unchanged (`Runtime.getRuntime.totalMemory()`).
+- `run_pipeline.sh`: captures `jvm_heap_bytes` from the Scala line, captures the macOS `peak memory footprint` from `time -l`, and the fallback that put the JVM heap into `LAST_PEAK_RSS_BYTES` is deleted. The log line is now `RESOURCE step=… year=… peak_rss_bytes=… peak_memory_footprint_bytes=… jvm_heap_bytes=…`.
+- `write_canonical_evidence.sh`: fills `peak_jvm_heap_bytes`; `peak_memory_footprint_bytes` is a new last column (27 columns).
+- `docs/MEASUREMENT_AND_LOGGING.md`: three measures defined, and the sbt start-up overhead and the 26-versus-27-column rule documented.
+
+**Result:** `sbt -batch test` 73 of 73 pass. `bash -n` clean on both scripts. Fixture smoke test: 442 ledger rows, amount sum 0.00, metric checks passed. Fixture `process_metrics.csv` has 27 columns. Step 2: `peak_rss_bytes` 541,802,496, footprint 528,404,160, heap 1,073,741,824. Step 3: 571,080,704, 546,115,328, 1,073,741,824. `peak_rss_bytes` is no longer 1,073,741,824.
+
+**Supersedes in part:** the "JVM heap, not OS RSS" limitation at the 2026-11-05 and 2026-11-06 entries above is resolved only for runs made after this change. Older entries keep the old meaning: where they report `peak_rss_bytes=1073741824` it is JVM heap. Run 2 (`run_20261110_123303`) predates this change, but its `peak_rss_bytes` values came from `/usr/bin/time -l` and are OS RSS; its `peak_jvm_heap_bytes` column is empty.
+
+**Not verified:**
+- The OS figure is the maximum resident set of the whole `sbt` process tree, so it includes sbt start-up. The fixture steps show about 540 to 570 MB, with a one-row workload, so most of that is the JVM and sbt, not data. The size of that overhead on a real step was not measured separately.
+- The Windows path was not run. There `peak_rss_bytes` and the footprint stay empty by design.
+- `--seedFromCommitted` copies the earlier generation's `metrics/` folder. A chain step seeded from a generation made before this change would append 27-column rows to a 26-column file. Not tested. Use the same script version for the prep and chain steps of one run. `archive_corpus_run_evidence.sh` combines files by header of the first file and was not changed.
+- The `5v` re-run comparison against the 2026-11-10 real-data figures (RSS 1,353,891,840; footprint 1,326,723,072) is assigned to the other Mac and has not been done.
+
+**State:** memory-measure separation `partially_verified` (fixture only; real-corpus run pending).
