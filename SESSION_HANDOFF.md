@@ -2,6 +2,22 @@
 
 Updated 2026-11-10. This file is a concise state snapshot; use the linked design contracts for details.
 
+## 2026-11-11 (BRANCH `aim-three-model`) Step 4 second pass: forecasting target fixed on the expenditure basis, net income proposal D9; start the next session here (Bob, M1 Mac)
+
+**Done.** Forecasting target changed (plan D3, logged deviation) to expenditure debit lines: dir flag `D` on a nominal account starting `EXP`, per numeric agency code and fiscal year. On it `GL` and `LDGR` agree to the cent in 14 of 14 years (awk) and with maximum difference 0.00 in FY2003, FY2010 and FY2016 (Python). `scripts/three_model_core.py` and its tests updated, 40 tests pass. Evidence: audit register entry "Forecasting target moved to the expenditure basis". Branch pushed.
+
+**Found.** The Gold GL and LDGR contain only `EXP*`, `COMMIT` and the `0000` offset accounts in all 14 years. No revenue accounts, so a revenue-minus-expense net income cannot be derived.
+
+**Open, in order (next session starts here).**
+1. **Owner: D9, net income.** Proposed: net expenditure per agency and fiscal year, `EXP*` debits only, `COMMIT` and offset excluded (full text in `docs/THREE_MODEL_EXPERIMENT_PLAN.md` D9). Also decide whether the `nominal_account_id` / `ldgrNominalAccountID` text stays in the verbalized records; if it stays, the "cannot answer from events alone" claim holds only for raw events.
+2. **Verbalizer check on real headers.** The verbalizer refuses a file whose header differs from the expected one. The real Gold headers (GL: `agency,nominal_account_id,fund,object_id,fiscal_year,dir_flag,total_amount`; LDGR: 31 columns from `ldgrIPID`) match the field names the core uses, but the verbalizer itself was not run on a real file. PERM_TBL FY2009 has 11 columns (others 13); not used by this experiment.
+3. **Step 5 IL-Native** on fixtures first, then on Gold. **Step 6** model choice (Apache 2.0, version and advisories verified first). **Step 7** fine-tune, score, results file `data/test_evidence/three_model_experiment_results.csv`.
+4. **Step 3 note:** D4 split (train FY2010-FY2013, test FY2014-FY2015) is unchanged; PO rows near a year boundary fall in a neighbouring fiscal year (about 0.5%), as the first-pass entry says.
+
+**Other machine.** Track D (Codex) is in development there; run 3 and run 4 outputs were deleted (458 GiB free). Not touched from here. `main` has the merged-SJE hashes and the deletion record, merged into this branch.
+
+**Python note.** This session used short Python and awk one-offs for read-only data inspection and for doc edits; no Python was added to the measured path.
+
 ## 2026-11-11 (BRANCH `aim-three-model`) Step 4 first pass: Gold set verified, period format defect fixed, forecasting target needs an owner decision (Bob, M1 Mac)
 
 **Done.** `main` merged into this branch (`942d8ee`, conflicts in this file and the audit register resolved by keeping both sides; pushed). Gold set on this machine: 104 of 104 files match `MANIFEST.csv`. Real-file checks, evidence in the audit register entry "Gold set checks for the three-model experiment":

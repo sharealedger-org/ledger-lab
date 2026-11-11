@@ -175,8 +175,16 @@ class ForecastTargets(unittest.TestCase):
         self.assertEqual(report["max_abs_diff"], Decimal("0.50"))
         self.assertEqual(c.compare_totals(gl, ld, tolerance=Decimal("1"))["n_mismatch"], 0)
 
+    def test_commitment_debits_are_not_in_the_target(self):
+        rows = [
+            {"agency": "267", "nominal_account_id": "EXP312", "fiscal_year": "0012/03", "dir_flag": "D", "total_amount": "10"},
+            {"agency": "Department of X", "nominal_account_id": "COMMIT", "fiscal_year": "2012/03", "dir_flag": "D", "total_amount": "999"},
+            {"agency": "267", "nominal_account_id": "0000", "fiscal_year": "0012/03", "dir_flag": "O", "total_amount": "-10"},
+        ]
+        self.assertEqual(c.agency_year_debit_totals("gl", rows), {("267", 2012): Decimal(10)})
+
     def test_bad_amount_and_bad_period_raise(self):
-        row = {"agency": "1", "fiscal_year": "2011/08", "dir_flag": "D", "total_amount": "x"}
+        row = {"agency": "1", "nominal_account_id": "EXP1", "fiscal_year": "2011/08", "dir_flag": "D", "total_amount": "x"}
         with self.assertRaises(ValueError):
             c.agency_year_debit_totals("gl", [row])
         row.update(total_amount="1", fiscal_year="03")

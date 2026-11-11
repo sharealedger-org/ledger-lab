@@ -171,26 +171,35 @@ def select_training_rows(substrate: str, rows, train_fys, seed: int, fraction: f
 # ---------------------------------------------------------------------------
 # D3: forecasting target on a common basis (plan step 1 open check)
 # ---------------------------------------------------------------------------
-# Target for agency a and fiscal year t = the sum of DEBIT-line amounts (dir flag D) in t+1.
-# GL basis  : agency, fiscal_year (period), dir_flag == D, total_amount
-# LDGR basis: ldgrLegalEntityID, ldgrLedgerPeriod, ldgrDirVsOffsetFlg == D, ldgrTransAmount
+# Target for agency a and fiscal year t = the sum of EXPENDITURE DEBIT-line amounts in t+1: dir
+# flag D on a nominal account starting 'EXP' (deviation from the first D3 wording, agent's
+# judgment under the owner's delegation, 2026-11-11: the Gold set has two disjoint agency key
+# spaces; payment rows (EXP accounts) carry numeric agency codes and PO rows (COMMIT account)
+# carry agency names, so 'all debit lines' added commitments to expenditures and split one
+# agency in two).
+# GL basis  : agency, nominal_account_id, fiscal_year (period), dir_flag == D, total_amount
+# LDGR basis: ldgrLegalEntityID, ldgrNominalAccountID, ldgrLedgerPeriod, ldgrDirVsOffsetFlg == D,
+#             ldgrTransAmount
 # Both are the same SJE lines (GLPost.scala sums them by key), so the two totals should agree to
 # the cent.  compare_totals() reports any difference.  A pair (a, t) has a target only when the
 # agency has a debit total in both t and t+1 (otherwise there is no defined next-year amount);
 # the number of dropped pairs is returned, not hidden.
 
+EXPENDITURE_ACCOUNT_PREFIX = "EXP"
+
 _BASIS = {
-    "gl": ("agency", "fiscal_year", "dir_flag", "total_amount"),
-    "ldgr": ("ldgrLegalEntityID", "ldgrLedgerPeriod", "ldgrDirVsOffsetFlg", "ldgrTransAmount"),
+    "gl": ("agency", "fiscal_year", "dir_flag", "total_amount", "nominal_account_id"),
+    "ldgr": ("ldgrLegalEntityID", "ldgrLedgerPeriod", "ldgrDirVsOffsetFlg", "ldgrTransAmount",
+             "ldgrNominalAccountID"),
 }
 
 
 def agency_year_debit_totals(substrate: str, rows) -> dict:
-    """{(agency, fiscal_year): Decimal} over debit lines."""
-    agency_col, period_col, flag_col, amount_col = _BASIS[substrate]
+    """{(agency, fiscal_year): Decimal} over expenditure (EXP account) debit lines."""
+    agency_col, period_col, flag_col, amount_col, account_col = _BASIS[substrate]
     totals = {}
     for row in rows:
-        if row[flag_col].strip() != "D":
+        if row[flag_col].strip() != "D" or not row[account_col].strip().startswith(EXPENDITURE_ACCOUNT_PREFIX):
             continue
         try:
             amount = Decimal(row[amount_col].strip())
