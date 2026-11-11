@@ -1,0 +1,79 @@
+[2026-11-11 01:43:29] ======================================================================
+[2026-11-11 01:43:29] Universal Ledger Pipeline Run  [run_20261111_014329_21906]
+[2026-11-11 01:43:29]   curve              = CCP2
+[2026-11-11 01:43:29]   config             = fullcorpus-run2-prep-fy03
+[2026-11-11 01:43:29]   profile            = legacy
+[2026-11-11 01:43:29]   materialization    = unspecified
+[2026-11-11 01:43:29]   period_granularity = monthly
+[2026-11-11 01:43:29]   inPath  = /Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/
+[2026-11-11 01:43:29]   outPath = /Users/ktwitchell001/workspace/va_fresh_root/output_full/FY03.generations/run_20261111_014329_21906/
+[2026-11-11 01:43:29]   years   = 03
+[2026-11-11 01:43:29]   steps   = ttl,2p,2m
+[2026-11-11 01:43:29]   logFile = /Users/ktwitchell001/workspace/va_fresh_root/output_full/FY03.generations/run_20261111_014329_21906/pipeline_results.log
+[2026-11-11 01:43:29] ======================================================================
+[2026-11-11 01:43:29] ------  Year 03  -------------------------------------------------------
+[2026-11-11 01:43:29] START  step=ttl  year=03  quarter=01
+[2026-11-11 01:49:23] RESULT step=ttl year=03 quarter=01 elapsed_s=347 rc=0 records_read=5758480 records_written=11516960 input_bytes=0 output_bytes=0 outPath_bytes=2881491731
+[2026-11-11 01:49:24] RESOURCE step=ttl year=03 peak_rss_bytes=1341079552 peak_memory_footprint_bytes=1314508800 jvm_heap_bytes=1073741824 cpu_user_seconds=237.73 cpu_system_seconds=23.69 cpu_total_seconds=261.42
+[2026-11-11 01:49:24] START  step=2p  year=03  quarter=01
+[2026-11-11 01:49:47] RESULT step=2p year=03 quarter=01 elapsed_s=23 rc=0 records_read=52440 records_written=104840 input_bytes=16269579 output_bytes=27953891 outPath_bytes=2909456150 records_accepted=52420 skipped_quarantine=20 reader_rejects=20 physical_lines=66652
+[2026-11-11 01:49:47] RESOURCE step=2p year=03 peak_rss_bytes=972148736 peak_memory_footprint_bytes=956141568 jvm_heap_bytes=1073741824 cpu_user_seconds=29.64 cpu_system_seconds=2.25 cpu_total_seconds=31.89
+[2026-11-11 01:49:47] START  step=2m  year=03  quarter=01
+[2026-11-11 01:51:30] RESULT step=2m year=03 quarter=01 elapsed_s=94 rc=0 records_read=0 records_written=11621800 input_bytes=221440827 output_bytes=2909444164 outPath_bytes=5818900847
+[2026-11-11 01:51:30] RESOURCE step=2m year=03 peak_rss_bytes=1021591552 peak_memory_footprint_bytes=989220864 jvm_heap_bytes=1073741824 cpu_user_seconds=67.47 cpu_system_seconds=9.55 cpu_total_seconds=77.02
+[2026-11-11 01:51:30] ======================================================================
+[2026-11-11 01:51:30] Pipeline complete.  [run_20261111_014329_21906]
+[2026-11-11 01:51:30]   total_compute_s     = 464
+[2026-11-11 01:51:30]   total_storage_bytes = 5818901240
+[2026-11-11 01:51:30]   master_file_count   = 0  (enabled=Y rows in ViewSpec.csv)
+[2026-11-11 01:51:30]   capability_layer    = CCP2
+[2026-11-11 01:51:30]   period_granularity  = monthly
+[2026-11-11 01:51:30]   materialization     = unspecified
+[2026-11-11 01:51:30]   ldgr_row_count      = 0
+[2026-11-11 01:51:30]   ldgr_file_bytes     = 0
+[2026-11-11 01:51:30]   view_file_bytes     = 0
+[2026-11-11 01:51:30]   permutation_rows    = 0
+[2026-11-11 01:51:30]   permutation_capacity = 0
+[2026-11-11 01:51:30]   cost_surface        = /Users/ktwitchell001/workspace/va_fresh_root/output_full/FY03.generations/run_20261111_014329_21906/cost_surface.csv
+[2026-11-11 01:51:30] ======================================================================
+[2026-11-11 01:51:30] Cost point recorded → /Users/ktwitchell001/workspace/va_fresh_root/output_full/FY03.generations/run_20261111_014329_21906/cost_surface.csv
+[2026-11-11 01:58:40] ======================================================================
+[2026-11-11 01:58:40] Universal Ledger Pipeline Run  [run_20261111_015840_39994]
+[2026-11-11 01:58:40]   curve              = CCP1
+[2026-11-11 01:58:40]   config             = fullcorpus-run2-chain-fy03
+[2026-11-11 01:58:40]   profile            = legacy
+[2026-11-11 01:58:40]   materialization    = unspecified
+[2026-11-11 01:58:41]   period_granularity = monthly
+[2026-11-11 01:58:41]   inPath  = /Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/
+[2026-11-11 01:58:41]   outPath = /Users/ktwitchell001/workspace/va_fresh_root/output_full/FY03.generations/run_20261111_015840_39994/
+[2026-11-11 01:58:41]   years   = 03
+[2026-11-11 01:58:41]   steps   = 3,20,21
+[2026-11-11 01:58:41]   logFile = /Users/ktwitchell001/workspace/va_fresh_root/output_full/FY03.generations/run_20261111_015840_39994/pipeline_results.log
+[2026-11-11 01:58:41] ======================================================================
+[2026-11-11 01:58:41] ------  Year 03  -------------------------------------------------------
+[2026-11-11 01:58:41] START  step=3  year=03  quarter=01
+[2026-11-11 02:01:06] RESULT step=3 year=03 quarter=01 elapsed_s=137 rc=0 records_read=11621800 records_written=396858 input_bytes=2909444164 output_bytes=57768135 outPath_bytes=5876682674
+[2026-11-11 02:01:06] RESOURCE step=3 year=03 peak_rss_bytes=1019490304 peak_memory_footprint_bytes=1005912064 jvm_heap_bytes=1073741824 cpu_user_seconds=69.78 cpu_system_seconds=6.05 cpu_total_seconds=75.83
+[2026-11-11 02:01:06] START  step=20  year=03  quarter=01
+[2026-11-11 02:03:20] RESULT step=20 year=03 quarter=01 elapsed_s=123 rc=0 records_read=11621800 records_written=292669 input_bytes=2909444164 output_bytes=11407744 outPath_bytes=5888090873
+[2026-11-11 02:03:20] RESOURCE step=20 year=03 peak_rss_bytes=1008869376 peak_memory_footprint_bytes=1079328768 jvm_heap_bytes=1073741824 cpu_user_seconds=68.12 cpu_system_seconds=5.27 cpu_total_seconds=73.39
+[2026-11-11 02:03:20] START  step=21  year=03  quarter=01
+[2026-11-11 02:07:13] RESULT step=21 year=03 quarter=01 elapsed_s=224 rc=0 records_read=11621800 records_written=292669 input_bytes=2909444164 output_bytes=13619669 outPath_bytes=5901711102
+[2026-11-11 02:07:13] RESOURCE step=21 year=03 peak_rss_bytes=1223389184 peak_memory_footprint_bytes=1261445120 jvm_heap_bytes=1073741824 cpu_user_seconds=114.77 cpu_system_seconds=6.90 cpu_total_seconds=121.67
+[2026-11-11 02:07:34] RESULT step=21s years=03 rc=0 gl_keys=292669 vendor_rows=396858 capacity=1544407169 capacity_independent=1544407169 years_missing=none
+[2026-11-11 02:07:34] ======================================================================
+[2026-11-11 02:07:34] Pipeline complete.  [run_20261111_015840_39994]
+[2026-11-11 02:07:34]   total_compute_s     = 484
+[2026-11-11 02:07:34]   total_storage_bytes = 5901711503
+[2026-11-11 02:07:34]   master_file_count   = 0  (enabled=Y rows in ViewSpec.csv)
+[2026-11-11 02:07:34]   capability_layer    = CCP1
+[2026-11-11 02:07:34]   period_granularity  = monthly
+[2026-11-11 02:07:34]   materialization     = unspecified
+[2026-11-11 02:07:34]   ldgr_row_count      = 396858
+[2026-11-11 02:07:34]   ldgr_file_bytes     = 57768135
+[2026-11-11 02:07:34]   view_file_bytes     = 0
+[2026-11-11 02:07:34]   permutation_rows    = 396858
+[2026-11-11 02:07:34]   permutation_capacity = 1544407169
+[2026-11-11 02:07:34]   cost_surface        = /Users/ktwitchell001/workspace/va_fresh_root/output_full/FY03.generations/run_20261111_015840_39994/cost_surface.csv
+[2026-11-11 02:07:34] ======================================================================
+[2026-11-11 02:07:34] Cost point recorded → /Users/ktwitchell001/workspace/va_fresh_root/output_full/FY03.generations/run_20261111_015840_39994/cost_surface.csv

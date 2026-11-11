@@ -1,0 +1,33 @@
+[2026-11-11 03:25:43] ======================================================================
+[2026-11-11 03:25:43] Universal Ledger Pipeline Run  [run_20261111_032543_9270]
+[2026-11-11 03:25:43]   curve              = CCP3
+[2026-11-11 03:25:43]   config             = fullcorpus-run2-views
+[2026-11-11 03:25:43]   profile            = legacy
+[2026-11-11 03:25:43]   materialization    = unspecified
+[2026-11-11 03:25:43]   period_granularity = monthly
+[2026-11-11 03:25:43]   inPath  = /Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/
+[2026-11-11 03:25:43]   outPath = /Users/ktwitchell001/workspace/va_fresh_root/output_full/VIEWS.generations/run_20261111_032543_9270/
+[2026-11-11 03:25:43]   years   = 16
+[2026-11-11 03:25:43]   steps   = 5v
+[2026-11-11 03:25:43]   logFile = /Users/ktwitchell001/workspace/va_fresh_root/output_full/VIEWS.generations/run_20261111_032543_9270/pipeline_results.log
+[2026-11-11 03:25:43] ======================================================================
+[2026-11-11 03:25:43] ------  Year 16  -------------------------------------------------------
+[2026-11-11 03:25:43] START  step=5v  year=16  quarter=01
+[2026-11-11 03:51:35] RESULT step=5v year=16 quarter=01 elapsed_s=1551 rc=0 records_read=224072410 records_written=6726526 input_bytes=0 output_bytes=57762165 outPath_bytes=289161863
+[2026-11-11 03:51:35] RESOURCE step=5v year=16 peak_rss_bytes=1360080896 peak_memory_footprint_bytes=1323974656 jvm_heap_bytes=1073741824 cpu_user_seconds=1740.89 cpu_system_seconds=59.15 cpu_total_seconds=1800.04
+[2026-11-11 03:51:35] ======================================================================
+[2026-11-11 03:51:35] Pipeline complete.  [run_20261111_032543_9270]
+[2026-11-11 03:51:35]   total_compute_s     = 1551
+[2026-11-11 03:51:35]   total_storage_bytes = 289162260
+[2026-11-11 03:51:35]   master_file_count   = 0  (enabled=Y rows in ViewSpec.csv)
+[2026-11-11 03:51:35]   capability_layer    = CCP3
+[2026-11-11 03:51:35]   period_granularity  = monthly
+[2026-11-11 03:51:35]   materialization     = unspecified
+[2026-11-11 03:51:35]   ldgr_row_count      = 0
+[2026-11-11 03:51:35]   ldgr_file_bytes     = 0
+[2026-11-11 03:51:35]   view_file_bytes     = 289160418
+[2026-11-11 03:51:35]   permutation_rows    = 0
+[2026-11-11 03:51:35]   permutation_capacity = 0
+[2026-11-11 03:51:35]   cost_surface        = /Users/ktwitchell001/workspace/va_fresh_root/output_full/VIEWS.generations/run_20261111_032543_9270/cost_surface.csv
+[2026-11-11 03:51:35] ======================================================================
+[2026-11-11 03:51:35] Cost point recorded → /Users/ktwitchell001/workspace/va_fresh_root/output_full/VIEWS.generations/run_20261111_032543_9270/cost_surface.csv

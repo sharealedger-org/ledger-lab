@@ -1,0 +1,3 @@
+"run_id","run_timestamp","curve","config_description","years","steps",total_compute_s,total_storage_bytes,master_file_count,total_cost_proxy,"capability_layer","period_granularity","materialization_scope",ledger_row_count,ldgr_file_bytes,view_file_bytes,permutation_rows,permutation_capacity
+"run_20261111_014309_21450","2026-11-11 01:43:09","CCP2","fullcorpus-run2-prep-fy06","06","ttl,2p,2m",539,7070912773,0,7609.91,"CCP2","monthly","unspecified",0,0,0,0,0
+"run_20261111_021850_70757","2026-11-11 02:18:50","CCP1","fullcorpus-run2-chain-fy06","06","3,20,21",422,7256208720,0,7678.21,"CCP1","monthly","unspecified",821693,132959582,0,821693,5649309885721
