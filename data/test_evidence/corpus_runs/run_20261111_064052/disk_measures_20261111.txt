@@ -29,3 +29,7 @@ OneDrive LedgerLabOutputs-Gold (104 data files + README + MANIFEST):           d
 ## Not measured
 Peak disk use during a run. No df sampling was taken during runs 3 or 4, so the high-water mark while superseded generations were still held (prune keeps the last two) is unknown. The final-state size is known; the peak is not.
 Merged SJE bytes are identical in run 3 and run 4 (same size per file); hash comparison is in sje_hash_run3_vs_run4 (see the audit register).
+
+## After deleting the run 3 and run 4 outputs (2026-11-11 14:19 local)
+Removed: output_full (run 4) and output_full_run3_20261111_014229 (run 3), about 109 GiB each by du; rm took 14 s. A new empty output_full/ was created.
+df -k available: 252,853,028 KB before, 480,296,196 KB after (241 GiB to 458 GiB, gain about 217 GiB).
