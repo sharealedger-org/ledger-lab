@@ -2,6 +2,33 @@
 
 Updated 2026-11-10. This file is a concise state snapshot; use the linked design contracts for details.
 
+## 2026-11-11 (latest, PLAN) Owner decisions after the AIM3 round; assessment of steps 20/21; plan for the full re-run (Bob, Mac)
+
+**Owner decisions (2026-11-11 session):**
+1. **AIM3 4-year window: agreed.** The 4 walk-forward windows over FY2010-FY2015 stand in place of the locked 7. The owner is not sure about the censoring rule or walk-forward and treats agreement on the 4-year window as covering them; they are therefore *accepted for now, not independently confirmed*. The permutation-test choice was settled in an earlier session and is kept.
+2. **Do not judge any AIM result from this round.** Too many code changes since the views were built (PO reader fix, steps 20/21 redefinition, RSS/CPU columns). The AIM3 PASS (C 0.7527) and the AIM4 FAIL (2 of 5) are provisional evidence on an inconsistent input and must not be cited. Re-run the corpus first.
+3. **Python approved by the owner** for (a) AIM4 to the locked protocol (STL decomposition per agency x NIGP class, Q4 test, majority-of-full-panel-agencies rule) and (b) the agency reconciliation (AIM5; `scripts/fit_agency_name_classifier.py` exists and is approved since 2026-11-04). Neither is written or run in this round. Before writing, restate the approval in the new session as AGENTS.md requires, and ask "could Scala do this?" (the STL fit on a bounded monthly table is Python; any aggregation feeding it belongs in `5v`).
+4. **Steps 20/21: Bob's check requested.** Then re-run from the top.
+
+**Assessment of steps 20/21 (read from the design text, the audit-register entry and `PermutationGenerator.scala` lines 100-325; NOT run on the corpus; sbt 78/78 passes on the merged tree).** I agree with the direction, with these points:
+- The refutation is sound: the old step-21 key (GL key + vendor) is a subset of the ledger key, so its row count could never exceed the ledger. Replacing it with per-GL-key capacity is the right measure.
+- Keeping 20 and 21 as two bounded Scala processes (no fusion) is consistent with AGENTS.md and keeps the CCP1 baseline comparable. Parallelising them by scheduling is orchestration only.
+- The flag change (`D`/`O`) is correct: `D` on both lines made the old "debit only" filter a no-op.
+- **Risks I could not clear:** (a) the dependency detector keeps a per-value id table for every non-constant dimension, including the journal description column; on a year with hundreds of thousands of distinct descriptions its heap use on the 1 GB JVM is unmeasured and could fail or distort elapsed time (the other Mac says the same). Measure it on FY12 before the full run. (b) "Capacity" multiplies the remaining distinct counts as if independent, so it is an upper bound and not a count of pivots any institution would hold; the headline must say so. (c) `car_dims` and the "vendor determines X" claim rest on year-wide dependencies from one year of data; a dependency that holds in one year can break in another, so the per-year `dropped_dims` lists should be compared across years before any cross-year capacity sum is cited. (d) Contract is CAR by declaration, not observation. (e) Step totals now include CPU seconds from `/usr/bin/time`; the GNU branch is untested.
+- **Agree or not:** I agree with it as implemented, conditional on a real-data check of heap and elapsed for step 21 before the full run.
+
+**Plan: full re-run from the top, in order**
+1. **Pre-checks (cheap, this Mac):** `git pull`, `sbt -batch test` (78/78 or more), `bash -n` on both scripts, fixture smoke test (442 rows, sum 0.00). Confirm no stale bare-year or odd-field rows in new PO SJE output.
+2. **Step-21 probe:** run steps `2p,2m,3,20,21` for FY12 only (largest recent GL), record heap high-water, elapsed and CPU seconds, `net_amount`, and that the PERM_TBL key set equals the GL key set. If heap fails, tell the owner before changing the tracker.
+3. **Full chain, FY2003 to FY2016,** through `scripts/run_full_corpus.sh` with the lane/admission settings the handoff records; keep Run 2 evidence untouched; write to a new output root. Use the per-step OS RSS, footprint and CPU columns. Check each year: `ledger_balance` PASS (FY10 included), quarantine counts, bare-year rows 0.
+4. **`5v` over all 14 years** on the new merged files. Compare memory figures with 2026-11-10: RSS 1,353,891,840, footprint 1,326,723,072. Run the spill vs in-memory byte comparison on one more year pair.
+5. **Only then** run the AIM scripts: AIM1 (all years), AIM3 old and windows script, AIM4 old script, then the new Python after the owner's go-ahead. Evidence goes to `data/test_evidence`, and the old `AIM3_survival_results.csv` is marked superseded.
+6. **Write the new AIM4 script (STL, Q4 test, majority-of-agencies) and run the agency reconciliation (AIM5)** after step 4; AIM2 follows AIM5.
+7. Update `VERIFICATION_AUDIT_REGISTER.md` and this handoff after each step; commit and push.
+
+**State of the repo at the time of writing:** `main` at `b0d75ec`, in sync with `origin/main`, nothing uncommitted. Work outside git: `output_fy{06,07,10,11,12,13,14,15}_recheck` (fixed-reader `2p` outputs), `output_fy10_recheck/FY10_merge`, `output_5v_fixed_fy10`, `output_5v_verify`, `output_gers003_test`, logs in `~/workspace/va_fresh_logs/analysis/`.
+
+
 ## 2026-11-11 (latest, AIM3 protocol) AIM3 walk-forward + hold-out script added and run: PASS, opposite to the in-sample FAIL; short-form fiscal-year rows traced to the old PO reader (Bob, Mac)
 
 Pulled `origin/main` to `a5beb88` first (steps 20/21 redefinition, CPU seconds, RSS columns). Validated on the merged tree: `sbt -batch test` 78/78, `bash -n` clean on both scripts, fixture smoke test 442 ledger rows sum 0.00, fixture `process_metrics.csv` 27 columns with `peak_rss_bytes` 652,103,680 / 577,114,112 (not 1 GiB), `peak_memory_footprint_bytes` and `cpu_user_seconds`/`cpu_system_seconds` filled (20.88/1.66 s and 21.71/1.66 s). The GNU `time` branch and steps 20/21 on real data are untested here. The pull did not touch the AIM3 script or the protocol text.
