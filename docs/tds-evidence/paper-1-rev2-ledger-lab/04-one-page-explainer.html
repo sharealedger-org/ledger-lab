@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Ledger Lab: the experiment on one page</title>
+<style>
+  body { margin:0; background:#ffffff; color:#1f2328; font-family:-apple-system,"Segoe UI",system-ui,sans-serif; font-size:14.5px; line-height:1.6; }
+  .wrap { max-width:760px; margin:0 auto; padding:32px 20px 24px; }
+  h1 { font-size:24px; margin:0 0 4px; }
+  h2 { font-size:16px; margin:28px 0 8px; padding-top:14px; border-top:1px solid #e5e7eb; }
+  .sub { color:#57606a; margin:0 0 16px; }
+  ul { margin:6px 0 6px; padding-left:20px; }
+  li { margin:4px 0; }
+  .tag { color:#57606a; font-size:12.5px; margin:4px 0 10px; }
+  table { border-collapse:collapse; width:100%; margin:8px 0; font-size:13.5px; }
+  th, td { border:1px solid #e5e7eb; padding:6px 8px; text-align:left; vertical-align:top; }
+  th { background:#f7f8fa; }
+  .num { text-align:right; white-space:nowrap; }
+  .chart { width:720px; height:370px; max-width:100%; overflow:hidden; }
+  footer { margin-top:32px; padding-top:10px; border-top:1px solid #e5e7eb; text-align:center; font-size:12px; color:#57606a; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>Ledger Lab: the experiment on one page</h1>
+<p class="sub">State as of 2026-11-12 (Revision 2). Public Virginia purchase order and expenditure data, FY2003 to FY2016.</p>
+
+<h2>1. The question</h2>
+<ul>
+  <li>A General Ledger (GL) posts business events and keeps totals. The vendor, the order date and the event sequence are thrown away.</li>
+  <li>To answer questions the GL cannot, organisations add more balance tables, sub-ledgers and cubes. Each one must be kept in step with the others.</li>
+  <li><b>Paper 1 asks about cost:</b> is there a cheaper place to sit, where events are kept in a payments subledger keyed by vendor, and answers are built at query time?</li>
+  <li><b>Paper 2 asks about learning:</b> can a model trained on posted GL data recover what posting threw away?</li>
+</ul>
+
+<h2>2. The cost bowl (Paper 1, Mix graph)</h2>
+
+<svg class="chart" width="720" height="370" role="img" aria-label="Model: cost per year on a log scale across the events-to-balances dial. Minimum at the monthly payments subledger, 16 dollars a year.">
+<g transform="scale(0.9474)">
+  <rect x="0" y="0" width="760" height="390" fill="#ffffff"/>
+
+  <rect x="300" y="40" width="80" height="260" fill="#7c5cd8" fill-opacity="0.08"/>
+
+  <g stroke="#e5e7eb" stroke-width="1">
+    <line x1="80" y1="300" x2="740" y2="300"/>
+    <line x1="80" y1="267.5" x2="740" y2="267.5"/>
+    <line x1="80" y1="235" x2="740" y2="235"/>
+    <line x1="80" y1="202.5" x2="740" y2="202.5"/>
+    <line x1="80" y1="170" x2="740" y2="170"/>
+    <line x1="80" y1="137.5" x2="740" y2="137.5"/>
+    <line x1="80" y1="105" x2="740" y2="105"/>
+    <line x1="80" y1="72.5" x2="740" y2="72.5"/>
+    <line x1="80" y1="40" x2="740" y2="40"/>
+  </g>
+  <g font-size="11.5" fill="#57606a" text-anchor="end">
+    <text x="72" y="304">$1</text>
+    <text x="72" y="271.5">$10</text>
+    <text x="72" y="239">$100</text>
+    <text x="72" y="206.5">$1,000</text>
+    <text x="72" y="174">$10,000</text>
+    <text x="72" y="141.5">$100,000</text>
+    <text x="72" y="109">$1 million</text>
+    <text x="72" y="76.5">$10 million</text>
+    <text x="72" y="44">$100 million</text>
+  </g>
+  <text x="14" y="170" font-size="12" fill="#57606a" transform="rotate(-90 14 170)" text-anchor="middle">Total cost per year (log scale)</text>
+
+  <path d="M100,194.05 C120,196.70 180,198.88 220,209.98 C260,221.09 300,260.79 340,260.68 C380,260.57 420,224.23 460,209.33 C500,194.43 540,196.01 580,171.30 C620,146.59 680,79.47 700,61.10"
+        fill="none" stroke="#3b82d4" stroke-width="3" stroke-linecap="round"/>
+
+  <g fill="#3b82d4" stroke="#ffffff" stroke-width="2">
+    <circle cx="100" cy="194.05" r="6"/>
+    <circle cx="220" cy="209.98" r="6"/>
+    <circle cx="460" cy="209.33" r="6"/>
+    <circle cx="580" cy="171.30" r="6"/>
+    <circle cx="700" cy="61.10" r="6"/>
+  </g>
+  <circle cx="340" cy="260.68" r="8" fill="#7c5cd8" stroke="#ffffff" stroke-width="2"/>
+
+  <g font-size="13" fill="#1f2328" text-anchor="middle" font-weight="bold">
+    <text x="100" y="178">$1,830</text>
+    <text x="220" y="194">$583</text>
+    <text x="340" y="284" fill="#7c5cd8">$16</text>
+    <text x="460" y="193">$617</text>
+    <text x="580" y="155">$9,018</text>
+    <text x="700" y="45" text-anchor="end">$22 million</text>
+  </g>
+
+  <g font-size="12" fill="#57606a">
+    <text x="90" y="126">Left wall: replay</text>
+    <text x="90" y="141">every event per question</text>
+    <text x="410" y="108">Right wall: every extra</text>
+    <text x="410" y="123">store must be reconciled</text>
+    <text x="340" y="56" text-anchor="middle" fill="#7c5cd8" font-weight="bold">Bowl minimum</text>
+  </g>
+
+  <g font-size="12" fill="#1f2328" text-anchor="middle">
+    <text x="100" y="322">P1: Events</text>
+    <text x="100" y="337" fill="#57606a">replay all</text>
+    <text x="220" y="322">P2: Annual</text>
+    <text x="220" y="337" fill="#57606a">+ event scans</text>
+    <text x="340" y="322" fill="#7c5cd8" font-weight="bold">P3: Monthly (LDGR)</text>
+    <text x="340" y="337" fill="#7c5cd8" font-weight="bold">Ledger (CCP2)</text>
+    <text x="460" y="322">P4: Cubes</text>
+    <text x="460" y="337" fill="#57606a">+ rollup cubes</text>
+    <text x="580" y="322">P5: Posted (GL)</text>
+    <text x="580" y="337" fill="#57606a">+ 5 subledgers (CCP1)</text>
+    <text x="700" y="322">P6: Permuted</text>
+    <text x="700" y="337" fill="#57606a">(capacity bound)</text>
+  </g>
+
+  <line x1="100" y1="362" x2="700" y2="362" stroke="#57606a" stroke-width="1.2"/>
+  <polygon points="700,362 692,358 692,366" fill="#57606a"/>
+  <polygon points="100,362 108,358 108,366" fill="#57606a"/>
+  <text x="400" y="381" font-size="12" fill="#57606a" text-anchor="middle">Dial: use all events (left)  to  pre-compute every balance (right)</text>
+</g>
+</svg>
+<p class="tag">MODEL OUTPUT, not a measurement. The data sizes are measured. The unit rates ($0.02/GB scan, $50 per pair of stores per month) and the query volumes (1,000 annual, 500 sub-annual, 100 dimensional a year) are assumptions.</p>
+
+<ul>
+  <li><b>Left wall:</b> keep only events and replay them for every question. Cheap to store, costly to ask.</li>
+  <li><b>Bottom:</b> a monthly payments subledger keyed by vendor, separate from the general ledger. One row per vendor and month. Questions are answered by joining reference data when asked.</li>
+  <li><b>Right wall:</b> pre-compute a balance for each anticipated question. Every extra store must be reconciled with the others, so cost climbs with the number of pairs.</li>
+  <li><b>The depth of the bottom depends on an assumption.</b> If nobody asked sub-annual questions, the annual subledger would be as cheap as the monthly one.</li>
+</ul>
+
+<h2>3. What was built and measured</h2>
+<ul>
+  <li>A Scala pipeline reads 385 raw files (27.8 GB) and produces balanced journal entries: <b>224 million rows</b>. Bash only sequences the jobs.</li>
+  <li>From those it posts two ledgers: the <b>payments subledger</b> (10.65 million rows, 1.7 GB) and the <b>general ledger</b> (6.43 million keys).</li>
+  <li>It counts the <b>permutation capacity</b>: how many balances a general ledger would need to hold to answer what the payments subledger answers. The total is 5.0 x 10<sup>14</sup>, an upper bound.</li>
+  <li>The whole corpus runs on one 4-CPU, 16 GB laptop with a 1 GB heap. Highest process memory was 1.36 GB.</li>
+  <li>Every year balances to zero: 42 of 42 controls pass in each full run. Three full runs were made. Two give identical outputs file for file.</li>
+</ul>
+
+<table>
+  <tr><th>Run</th><th class="num">Wall clock</th><th class="num">CPU seconds</th><th>Layout</th></tr>
+  <tr><td>Baseline</td><td class="num">11,695 s</td><td class="num">10,670</td><td>Years in sequence</td></tr>
+  <tr><td>Run 3</td><td class="num">8,147 s</td><td class="num">11,179</td><td>Two years at once</td></tr>
+  <tr><td>Run 4</td><td class="num">8,544 s</td><td class="num">11,207</td><td>Same as run 3</td></tr>
+</table>
+<ul>
+  <li>Running two years at once saves 27 to 30% of the wall time and costs 5% more CPU. Run alone, one year costs the same CPU as in the baseline (+0.4%), so the extra is lanes competing, not different code.</li>
+  <li>Preparing the data costs about 30 CPU seconds per million rows, steady across all years. Posting does not scale as cleanly, and the reason is not yet tested.</li>
+  <li>The general ledger has about 0.58 keys for every payments subledger row in the years with purchase orders: it is smaller, and it has lost the vendor.</li>
+</ul>
+
+<h2>4. Paper 2: what a model can learn</h2>
+<ul>
+  <li>Three models get the same tasks. <b>1:</b> a language model tuned on general ledger records. <b>2:</b> the same model tuned on payments subledger records. <b>3:</b> an ordinary structured model on the payments subledger.</li>
+  <li>The gap between 1 and 2 shows what posting lost. The gap between 2 and 3 shows what the language model's prior knowledge costs.</li>
+  <li>A smaller test already predicts which vendors stop trading with the state: C-statistic 0.75, permutation p = 0.001 on held-out years. It is provisional (four training years, simple features).</li>
+  <li>Done so far: plan, text conversion, scoring code, data checks (the general ledger and payments subledger agree to the cent in all 14 years). <b>No model has been trained yet.</b></li>
+</ul>
+
+<h2>5. How far to trust this</h2>
+<table>
+  <tr><th>Item</th><th>Status</th></tr>
+  <tr><td>Pipeline runs the full corpus; every year balances</td><td>Verified for these runs; one machine</td></tr>
+  <tr><td>Layout effect on wall time and CPU</td><td>Measured; one machine, no replicates</td></tr>
+  <tr><td>The cost bowl</td><td>Hypothesis, drawn from a model with assumed rates</td></tr>
+  <tr><td>Later process layers (revaluation, allocation) stay near the bottom</td><td>Fixture-scale tests only; not run on the corpus</td></tr>
+  <tr><td>Conventional-engine comparison (Track D)</td><td>Built elsewhere; no corpus run yet</td></tr>
+  <tr><td>Three-model result</td><td>Not run</td></tr>
+</table>
+
+<h2>6. What is open</h2>
+<ul>
+  <li>Run each cost point three times before quoting any cost.</li>
+  <li>Run revaluation and allocation (CCP4, CCP5) on the full corpus.</li>
+  <li>Run the conventional engine on the same data to give the second curve.</li>
+  <li>Decide how net income is defined (the data holds expenditure accounts only), then train and score the three models.</li>
+  <li>Re-run the smaller model tests on the final data.</li>
+</ul>
+
+<footer>Made with IBM Bob</footer>
+</div>
+</body>
+</html>

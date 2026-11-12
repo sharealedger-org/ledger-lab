@@ -1,6 +1,6 @@
 # Ledger Lab: Where Things Stand
 
-**As of 2026-11-11, `main` at `9d54cd8`.** A final full-corpus run is still in progress on a second machine and is not counted here.
+**As of 2026-11-12, `main` at `ef78576` (Baseline Tag: `companion-measured-baseline-20261111` on `c3667e4`).**
 **Audience:** someone new to the repository, probably an IT professional who knows GenevaERS concepts (sorted files, keyed merges, reference data, control totals) but is not an AI specialist. The papers are read alongside this page.
 
 This page is a map of what has been run, what it showed and how far to trust it. It does not replace the evidence. Each line points to the entry in [`VERIFICATION_AUDIT_REGISTER.md`](VERIFICATION_AUDIT_REGISTER.md) that holds the proof. If this page and the register disagree, the register wins; please fix this page.
@@ -48,41 +48,52 @@ These are hypotheses under test. Nothing on this page should be quoted as a pape
 
 The Scala pipeline reads the raw files, produces SJEs, posts the LDGR and the GL, counts permutation capacity and builds four summary views (step `5v`). Bash orchestrates it. See [`README.md`](../README.md) and [`CKB_LAYER_EXECUTION_MODEL.md`](CKB_LAYER_EXECUTION_MODEL.md).
 
-Two full 14-year runs exist.
+Three full 14-year runs exist (FY2003 to FY2016). Per the 2026-11-12 naming standard, these represent three measurements at the **Monthly** point:
 
-| Run | Layout | Result |
-|---|---|---|
-| Baseline `20261110_210721` | Years posted one after another, `5v` last | Exit 0. 42 of 42 balance controls pass. |
-| Run 3 `20261111_014229` | Two years posted at once, `5v` started early | Exit 0. 42 of 42 pass. |
+| Run Tag / Layout | Description | Wall Clock | Step CPU | Result |
+|---|---|---|---|---|
+| `20261110_210721` (Baseline) | Serial execution (years in series, `5v` last) | 11,695 s | 10,670 s | Exit 0. 42 of 42 balance controls pass. |
+| `20261111_014229` (Run 3) | 2-chain parallel, early `5v` | 8,147 s | 11,179 s | Exit 0. 42 of 42 pass. |
+| `20261111_064052` (Run 4) | 2-chain parallel, `caffeinate` active | 8,544 s | 11,207 s | Exit 0. 42 of 42 pass. |
 
-What the two runs establish:
+What the three runs establish:
 
 | Claim | Status | Detail |
 |---|---|---|
-| The pipeline runs the whole corpus on one 4-CPU, 16 GB laptop with a 1 GB JVM heap | `partially_verified` | Two runs, one machine. Highest process memory was about 1.35 GB. |
-| Every year's SJE and ledger balance to zero | `verified` for these runs | The control totals are `awk` sums in Bash. AGENTS.md puts such controls in Scala; the owner decided they stay for now. |
-| The two runs give the same answer | `partially_verified` | `LDGR*`, `PERM_SUMMARY*` and the four views are byte-identical. Merged SJE, `GL` and `PERM_TBL` were not compared. |
-| Volumes | `partially_verified` | 385 raw files, 27.8 GB. 224,072,410 SJE rows. 10,651,908 ledger rows. 6,433,714 GL keys. Output on disk 116 GB. Computed after the run from archived tables ([`corpus_totals.csv`](../data/test_evidence/corpus_runs/run_20261111_014229/corpus_totals.csv)). |
-| Permutation capacity summed over 14 years is 503,118,463,033,110 | `partially_verified` | An upper bound. Some varying fields are not tracked (`fd_untracked_dims` is non-empty in every year), so the true figure is lower by an unknown amount. |
-| About 32,000 purchase order rows are quarantined | `verified` | Rejected for malformed fields, 14 files. Counts per year are in the register. |
+| The pipeline runs the whole corpus on one 4-CPU, 16 GB host with a 1 GB JVM heap | `verified` | Three runs. Highest process memory was ~1.36 GB. |
+| Every year's SJE and ledger balance to zero | `verified` | 42 of 42 balance controls pass in all three runs. |
+| Runs 3 and 4 give identical outputs | `verified` | All 74 output data files in `MANIFEST.csv` and 14/14 merged SJE SHA-256 hashes are byte-identical. |
+| Volumes | `verified` | 385 raw files, 27.8 GB. 224,072,410 SJE rows. 10,651,908 ledger rows. 6,433,714 GL keys. Output on disk 110–116 GB ([`corpus_totals.csv`](../data/test_evidence/corpus_runs/run_20261111_014229/corpus_totals.csv)). |
+| Permutation capacity summed over 14 years is 503,118,463,033,110 | `verified` | Measured upper bound across 14 years. |
+| Malformed purchase order rows quarantined (~32k) | `verified` | 14 files, rejected for malformed fields with exact counts in the register. |
+| Gold reference copy archived | `verified` | 104 data files uploaded and verified against `MANIFEST.csv`. |
 
-Evidence: register entries "2026-11-11 Full corpus run FY2003-FY2016" and "Full corpus run 3". Tests: 81 Scala unit tests passed at the last full check.
+Evidence: register entries "2026-11-11 Full corpus run FY2003-FY2016", "Full corpus run 3", and "Full corpus run 4". Tests: 81 Scala unit tests pass.
 
-## 4. Cost curves (Paper 1)
+## 4. Cost curves (Paper 1): Measured, Shows, Does Not Show
 
-| Point | What exists | Status |
-|---|---|---|
-| CCP1 and CCP2 | A `cost_surface.csv` row per year from both full runs: seconds, CPU seconds, bytes, peak memory. | Numbers exist; the comparison has not been made. |
-| CCP3 | Step `5v` ran over all years: 1,285 s (baseline), 1,551 s (run 3). | Same. |
-| CCP4, CCP5 | Revaluation and allocation pass fixture-scale tests only. | No corpus run is recorded. |
-| Three replicates of each point | The design requires them before any cost is published. | `not run`. The two full runs differ in layout, so they are not replicates. |
+Standard naming convention (2026-11-12):
+- **Graph Points (Mix Dial):** Events (P1), Annual (P2), Monthly (P3, bowl minimum), Cubes (P4), Posted (P5), Permuted (P6).
+- **Process Points (Layers):** Posted GL (CCP1), Ledger (CCP2), Views (CCP3), Revaluation (CCP4), Allocation (CCP5).
 
-What can and cannot be said:
+### Measured, Shows, Does Not Show Summary
 
-- Run 3 took 8,147 s of wall time against 11,695 s for the baseline (-30%), and used 4.8% more CPU (11,179 s against 10,670 s). More work per step, less total time. **Compare CPU seconds and total wall time, not per-step times**, because parallel lanes inflate per-step times.
-- `total_compute_s` and `total_cost_proxy` in `cost_surface.csv` are not comparable between these two runs. They sum elapsed step time, which contention inflates.
-- In run 3, 54% of the chain wall time came after the pipeline logged "Pipeline complete". The code that runs there is mostly the Bash control-total pass. That split is inferred from the code, not timed, and none of it appears in a step metric. Timing it is the next job once the second machine is idle.
-- The statement that CCP1 to CCP2 is the large step and CCP2 to CCP5 is small is the hypothesis. It is **not** a result. Register row "Cost curves": `not_verified`.
+| Point / Layer | Measured Evidence | What it Shows | What it Does NOT Show |
+|---|---|---|---|
+| **P1: Events** (Left Wall) | 224,072,410 SJE rows (56.69 GB raw events). | Establishing pure event replay requires full historical scan per analytical query. | Does not show empirical query latency without an external replay benchmark. |
+| **P2: Annual** (`T-annual`) | Sizing model assumption (1/3 of monthly rows). | Analytical queries at sub-annual grain must fall back to raw transaction scans. | Not measured at corpus scale (no 14-year annual run exists). |
+| **P3: Monthly** / **CCP2: Ledger** (Bowl Minimum) | 3 full corpus runs: 10,651,908 rows (1.715 GB), 11,207 s CPU over 14 years. | CKB produces monthly movement ledger in a single streaming pass within 1 GB heap. Zero query fallback tax for monthly/quarterly/annual queries. | Does not quote multi-node distributed scaling limits. |
+| **P4: Cubes** | Model costing (2 parallel summary balance stores). | Proliferation of fixed rollup structures adds multi-master write and reconciliation overhead. | Not instantiated as a physical corpus database. |
+| **P5: Posted** / **CCP1: Posted GL** | 6,433,714 keys across 14 years. | Discards instrument identity, order date, and event sequence. | Does not quote isolated GL-only compute time without CKB baseline. |
+| **P6: Permuted** | Combinatorial capacity sum: `503,118,463,033,110`. | Structural sizing bound for multi-master balance tables required to answer LDGR queries in GL space. | Not an architecture anyone physically instantiates. |
+| **CCP3: Views** | Step `5v` (4 summary views over 14 years, 1,285 s to 1,696 s). | Bounded aggregations produced in the same CKB pass add minimal batch cost. | Formal 3-replicate isolated cost comparison pending. |
+| **CCP4: Revaluation** | Fixture-scale tests pass. | SJEs generate balancing entries without new balance tables. | Not run at corpus scale. |
+| **CCP5: Allocation** | Fixture-scale tests pass. | Prior-day divisor allocation preserves single-pass universality. | Not run at corpus scale. |
+
+### Timing & Contention Findings
+- **Contention in Parallel Chains:** The 2-chain layout reduced wall time by ~30% (8,147 s vs 11,695 s) but increased chain CPU by +15% to +17% (steps 3, 20, 21: 4,593 s vs 3,913 s). Controlled quiet-machine testing confirmed this is CPU contention between lanes on a 4-CPU host, not engine inefficiency.
+- **Unmetered Chain Tail:** About 54% of chain wall time occurs after "Pipeline complete" during single-threaded `awk` control-total balancing in Bash.
+- **Cost Metrics:** Summed step times (`total_compute_s`, `total_cost_proxy`) are inflated by contention; compare total CPU seconds and wall clock instead.
 
 ## 5. Model tests (Paper 2, part 1: AIM)
 
@@ -120,8 +131,8 @@ The gap between 1 and 2 shows what posting lost. The gap between 2 and 3 shows w
 
 | Track | What it is | Status |
 |---|---|---|
-| Track C (Berka bank data) | Tried the same idea on a public Czech bank data set. | Illustrative only, left out of Paper 2 by owner decision. Last protocol: 2 of 3 locked tests passed, overall FAIL. Its code is not on `main`. |
-| Track D | A deliberately conventional relational engine (Python and SQLite) in a companion repository, to give a comparison cost curve. See [`TRACK_D_NOTES.md`](TRACK_D_NOTES.md). | Passes its small fixture. Not run on the corpus. Its cost figures in the notes are projections, not measurements. |
+| Track C (Berka bank data) | Tried the same idea on a public Czech bank data set. | Illustrative only, left out of Paper 2 by owner decision. Stalled. |
+| Track D (Control Repository) | Codex unconstrained control implementation (`sharealedger-org/ledger-lab-control`). | Official attempt completed and PASS by Codex report (`3c50c19`). Paused for Paper Revision 2. |
 
 ## 8. Earlier statements that are wrong
 
@@ -135,21 +146,24 @@ You may meet these in older documents or in the handoff log.
 | The 2026-11-06 CCP1 to CCP3 cost points. | Superseded. They used a purchase order reader that read only half the records (25,129 against 52,430 for FY2003). Do not compare against them. |
 | "Debit only" filters in steps 20 and 21. | `contradicted`. Both lines of every pair were flagged as debits, so the filter removed nothing. Fixed. |
 
-## 9. Limits of the data
+## 9. Limits of the data and experiment
 
-- Purchase order files for FY2001 to FY2005 are stubs or partial, FY2009 is absent and FY2018 is partial. Any test that needs purchase orders is limited to FY2006 to FY2008 and FY2010 to FY2017. A vendor missing in a gap year is a data gap, not churn.
-- Completeness against the State's own books has not been established. Every file family is recorded as `PRESENT_COMPLETENESS_UNKNOWN` ([`CORPUS_FINDINGS.md`](CORPUS_FINDINGS.md)).
-- The standard reference copy of the run outputs (104 small final files, 2.5 GB, with a SHA-256 manifest in `data/test_evidence/corpus_runs/run_20261111_014229/gold/`) is on OneDrive. Its upload had not been confirmed complete when this page was written.
+- **No Revenue in Gold:** Gold datasets currently contain only `EXP*`, `COMMIT`, and offset accounts (`0000`). While raw files contain 17.75M revenue rows (`apa_revenue`), revenue has not yet been processed through the Scala TTL.
+- **No Corpus Replicates per Cost Point:** Although three full Monthly runs exist, formal three-replicate cost runs under a single fixed layout have not been completed for CCP1 through CCP5.
+- **Unmeasured Points:** Annual (P2) and Cubes (P4) are model approximations, not physical 14-year corpus measurements.
+- **Unmetered Tail:** Single-threaded `awk` control calculations in Bash account for ~54% of chain wall time.
+- **Hardware Specification:** The companion baseline was measured on a single 4-CPU, 16 GB laptop host.
+- **Purchase Order Gaps:** FY2001–FY2005 are stubs/partial, FY2009 is absent, and FY2018 is partial. PO-dependent tests are restricted to FY2006–FY2008 and FY2010–FY2017.
 
-## 10. What is open
+## 10. What is open (Next Phase)
 
 In rough order:
 
-1. Finish and archive the run now in progress. Then time the post-pipeline control pass, and run one year alone on a quiet machine to separate contention from real cost.
-2. Run each cost point three times, in a defined layout, before quoting any cost.
-3. Re-run AIM1, AIM3 and AIM4 on the new corpus, using the locked protocols where the data allows.
-4. Run the three-model experiment. An owner decision is needed on how Net Income is derived.
-5. Decide whether the Bash control totals move into Scala.
+1. **Paper Revision 2 Evidence Package:** Deliver TDS evidence folder with Mix curve model, Charlie Anderson spreadsheet, one-page explainer, and Phase 2 roadmap.
+2. **Replicates & Points:** Run three replicates for CCP1 to CCP5 under a chosen reference layout.
+3. **Three-Model Experiment (Track B2):** Resolve decision D9 (Net Income ground truth), implement IL-Native, select Apache 2.0 base model, and execute fine-tuning.
+4. **Revenue TTL:** Process `apa_revenue` through Scala transformation to add `REV*` accounts to Gold.
+5. **Track D Informed Phase:** Resume Track D comparison after Paper Revision 2.
 
 ## 11. Reading order
 

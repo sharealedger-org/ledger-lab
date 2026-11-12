@@ -6,6 +6,21 @@ Updated 2026-11-12. This file is a dated log, newest entry first; use the linked
 - **Older entries** (run 3 preflight and everything before it, back to 2026-09-30) were moved unchanged to [`docs/archive/SESSION_HANDOFF_ARCHIVE_2026-11.md`](docs/archive/SESSION_HANDOFF_ARCHIVE_2026-11.md). Other documents that cite a `SESSION_HANDOFF.md` entry by name (for example "Corpus Work Assignment to Bob", "Plan for the next session", the 2026-11-06 entries) mean the archive.
 - When this file passes about 500 lines, move all but the newest few entries to the archive in the same way.
 
+## 2026-11-12 (TRACK B1) Handoff: Paper Revision 2 Evidence Folder Completed (Bob, M1 Mac)
+
+**Read first in the next session:** [`STATUS.md`](STATUS.md), then [`tracks/B1-cost/STATUS.md`](tracks/B1-cost/STATUS.md).
+
+**Delivered this session:**
+- **Refreshed [`docs/CURRENT_RESULTS.md`](docs/CURRENT_RESULTS.md):** Updated baseline tag (`companion-measured-baseline-20261111` on `c3667e4`), incorporated Run 4 completed evidence, added full "Measured, Shows, Does Not Show" table per cost point (P1–P6, CCP1–CCP5), updated timing & contention diagnostics, and documented experiment limits.
+- **Created TDS Paper Revision 2 Evidence Folder (`docs/tds-evidence/paper-1-rev2-ledger-lab/`):**
+  1. [`README.md`](docs/tds-evidence/paper-1-rev2-ledger-lab/README.md): Document inventory, status taxonomy (`verified`, `partially_verified`, etc.), and 2026-11-12 naming key.
+  2. [`01-measured-results-summary.md`](docs/tds-evidence/paper-1-rev2-ledger-lab/01-measured-results-summary.md): 14-year corpus metrics (224.07M SJE rows, 10.65M LDGR rows, 6.43M GL keys, 1.715 GB ledger store, 503.1T capacity bound, 3 Monthly runs, byte-identical deterministic outputs).
+  3. [`02-mix-cost-curve-model.md`](docs/tds-evidence/paper-1-rev2-ledger-lab/02-mix-cost-curve-model.md): Mathematical formulations, measured constants vs. assumed rates, cost coordinates across dial $X \in [0, 100]$.
+  4. [`03-charlie-anderson-model.xlsx`](docs/tds-evidence/paper-1-rev2-ledger-lab/03-charlie-anderson-model.xlsx): 4-sheet interactive Excel workbook (`Model_Parameters`, `Cost_Equations`, `Cost_Bowl_Data`, `Multi_Substrate_Comparison`) built and validated with Office tools, 0 formula errors.
+  5. [`04-one-page-explainer.html`](docs/tds-evidence/paper-1-rev2-ledger-lab/04-one-page-explainer.html): Browser-ready one-page visual explainer updated with standard naming conventions.
+  6. [`05-limits-and-phase2-roadmap.md`](docs/tds-evidence/paper-1-rev2-ledger-lab/05-limits-and-phase2-roadmap.md): Scope limits (no revenue in gold, unmeasured annual/cubes runs, 54% Bash tail) and Phase 2 milestone plan.
+- Updated [`tracks/B1-cost/STATUS.md`](tracks/B1-cost/STATUS.md) and [`TODO.md`](TODO.md).
+
 ## 2026-11-12 (END OF SESSION, TRACKS B1 + D + INFRASTRUCTURE) Handoff: paper revision 2 evidence folder is next; Track D paused (Bob, M1 Mac)
 
 **Read first in the next session:** [`STATUS.md`](STATUS.md), then [`tracks/B1-cost/STATUS.md`](tracks/B1-cost/STATUS.md). Track D is paused; its page carries a resume checklist.

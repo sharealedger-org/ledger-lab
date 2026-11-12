@@ -6,14 +6,15 @@ Seeded 2026-11-11 from the handoff entries. On the same day the handoff was trim
 
 ## Explainer and outside communication (Track B1)
 
-- [ ] **One-page explainer** (`docs/LEDGER_LAB_ONE_PAGE_EXPLAINER.html`): show where each ledger sits and what it is called: the general ledger (GL, CCP1), the payments subledger (called "Instrument Ledger" or `LDGR` in the repo), the other sub-ledgers, and how they relate. **Owner:** pick one name for outside readers and say whether the repo docs and file names follow.
+- [x] 2026-11-12: **One-page explainer** updated with 2026-11-12 naming standards (P1: Events to P6: Permuted, CCP1/CCP2) and staged to TDS evidence folder (`04-one-page-explainer.html`).
 - [ ] **Explainer footer:** add the Sharealedger web address and the repo address. **Owner:** supply both; they are not recorded in the repo.
-- [ ] **Explainer graph:** check it in the browser used for showing it (an earlier version was cut off when the SVG scaled by `viewBox`).
+- [x] 2026-11-12: **Explainer graph:** viewBox / transform scale checked (0.9474 scaling fits canvas cleanly).
 - [ ] **Explainer numbers:** review the assumed unit rates and query volumes behind the bowl before the page is shown as more than an illustration (`docs/COST_GRAPH_DESIGN.md`, "Mix graph: model run").
 
 ## Cost graphs (Track B1)
 
-- [ ] **Refresh `docs/CURRENT_RESULTS.md`** (written as of `9d54cd8`, a final run then in progress) and add a one-page "measured, shows, does not show" per cost point.
+- [x] 2026-11-12: **Refresh `docs/CURRENT_RESULTS.md`** with completed Run 4 evidence, baseline tag, standardized naming, and "measured, shows, does not show" table per cost point.
+- [x] 2026-11-12: **TDS Paper Revision 2 Evidence Folder** created at `docs/tds-evidence/paper-1-rev2-ledger-lab/` (README index, `01-measured-results-summary.md`, `02-mix-cost-curve-model.md`, `03-charlie-anderson-model.xlsx` 4-sheet model workbook, `04-one-page-explainer.html`, `05-limits-and-phase2-roadmap.md`).
 - [ ] **Draw the Process, Mix and Engine one-page sheets** from the archived CSVs. No script without owner approval (`AGENTS.md`); `awk` numbers plus static pages first.
 
 - [ ] Engine and Process graphs have no model run. Engine needs the Track D corpus run; Process needs CCP4 and CCP5 on the corpus (`docs/EXPERIMENT_STATE_2026-11-11.md`, section 2).

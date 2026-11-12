@@ -24,7 +24,7 @@
 <div class="wrap">
 
 <h1>Ledger Lab: the experiment on one page</h1>
-<p class="sub">State as of 2026-11-11. Public Virginia purchase order and expenditure data, FY2003 to FY2016.</p>
+<p class="sub">State as of 2026-11-12 (Revision 2). Public Virginia purchase order and expenditure data, FY2003 to FY2016.</p>
 
 <h2>1. The question</h2>
 <ul>
@@ -96,18 +96,18 @@
   </g>
 
   <g font-size="12" fill="#1f2328" text-anchor="middle">
-    <text x="100" y="322">Event store</text>
+    <text x="100" y="322">P1: Events</text>
     <text x="100" y="337" fill="#57606a">replay all</text>
-    <text x="220" y="322">Annual subledger</text>
+    <text x="220" y="322">P2: Annual</text>
     <text x="220" y="337" fill="#57606a">+ event scans</text>
-    <text x="340" y="322" fill="#7c5cd8" font-weight="bold">Payments subledger</text>
-    <text x="340" y="337" fill="#7c5cd8" font-weight="bold">monthly (CCP2)</text>
-    <text x="460" y="322">Subledger</text>
+    <text x="340" y="322" fill="#7c5cd8" font-weight="bold">P3: Monthly (LDGR)</text>
+    <text x="340" y="337" fill="#7c5cd8" font-weight="bold">Ledger (CCP2)</text>
+    <text x="460" y="322">P4: Cubes</text>
     <text x="460" y="337" fill="#57606a">+ rollup cubes</text>
-    <text x="580" y="322">General ledger (GL)</text>
-    <text x="580" y="337" fill="#57606a">+ 5 sub-ledgers (CCP1)</text>
-    <text x="700" y="322">Every permutation</text>
-    <text x="700" y="337" fill="#57606a">(upper bound)</text>
+    <text x="580" y="322">P5: Posted (GL)</text>
+    <text x="580" y="337" fill="#57606a">+ 5 subledgers (CCP1)</text>
+    <text x="700" y="322">P6: Permuted</text>
+    <text x="700" y="337" fill="#57606a">(capacity bound)</text>
   </g>
 
   <line x1="100" y1="362" x2="700" y2="362" stroke="#57606a" stroke-width="1.2"/>

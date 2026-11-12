@@ -18,11 +18,10 @@ Read the numbers by CPU seconds and total wall time, not per-step times; content
 
 ## Next actions
 
-0. **Build the paper revision 2 evidence folder** for TDS (newest `SESSION_HANDOFF.md` entry has the contents list). Use the point names: Events, Annual, Monthly, Cubes, Posted, Permuted; Posted GL, Ledger, Views, Revaluation, Allocation. The three complete corpus runs are three measurements at the Monthly point.
-
-1. Refresh `CURRENT_RESULTS.md` (still says "as of `9d54cd8`, a final run in progress") and add a one-page "measured, shows, does not show" per cost point.
-2. Draw the Process, Mix and Engine one-page sheets from the archived CSVs. No script unless the owner approves one (`AGENTS.md`).
-3. Finish the explainer to-dos in `TODO.md` ("Explainer and outside communication").
+0. ~~**Build the paper revision 2 evidence folder** for TDS~~ Done 2026-11-12 (`docs/tds-evidence/paper-1-rev2-ledger-lab/`: README index, `01-measured-results-summary.md`, `02-mix-cost-curve-model.md`, `03-charlie-anderson-model.xlsx`, `04-one-page-explainer.html`, `05-limits-and-phase2-roadmap.md`).
+1. ~~**Refresh `CURRENT_RESULTS.md`**~~ Done 2026-11-12 with completed Run 4 evidence, standardized naming, and "measured, shows, does not show" summary.
+2. Owner review and transfer of the evidence folder into TDS (`01-evidence/practitioner/Sharealedger/`).
+3. Phase 2 execution: 3-replicate isolated cost runs and revenue transformation TTL.
 
 ## Decisions waiting (owner)
 

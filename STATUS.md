@@ -16,7 +16,7 @@ Updated 2026-11-12. One page. A session starts here, then reads only the `STATUS
 
 - **Working copy:** the Dropbox folder, on branch `main`. There are no long-lived feature branches; `aim-three-model` was merged into `main` on 2026-11-12 and is kept only as history. `trackC` and `trackD` branches are old; their content is on `main` or is stalled.
 - **Baseline for the control comparison:** annotated tag `companion-measured-baseline-20261111` on `c3667e4`. Record: [`docs/COMPANION_BASELINE_RECORD_2026-11-12.md`](docs/COMPANION_BASELINE_RECORD_2026-11-12.md).
-- **Open work:** [`TODO.md`](TODO.md), grouped by track. **Dated log:** [`SESSION_HANDOFF.md`](SESSION_HANDOFF.md) (newest first; older entries in `docs/archive/`). **Evidence:** [`docs/VERIFICATION_AUDIT_REGISTER.md`](docs/VERIFICATION_AUDIT_REGISTER.md). **Results for a newcomer:** [`docs/CURRENT_RESULTS.md`](docs/CURRENT_RESULTS.md) (needs a refresh). **All documents:** [`docs/README.md`](docs/README.md).
+- **Open work:** [`TODO.md`](TODO.md), grouped by track. **Dated log:** [`SESSION_HANDOFF.md`](SESSION_HANDOFF.md) (newest first; older entries in `docs/archive/`). **Evidence:** [`docs/VERIFICATION_AUDIT_REGISTER.md`](docs/VERIFICATION_AUDIT_REGISTER.md). **Results for a newcomer:** [`docs/CURRENT_RESULTS.md`](docs/CURRENT_RESULTS.md). **All documents:** [`docs/README.md`](docs/README.md).
 - **Rules:** [`AGENTS.md`](AGENTS.md). Scala is the engine, Bash orchestrates, Python only after owner approval for post-engine analysis.
 
 ## Ground rules for sessions
@@ -33,8 +33,8 @@ Updated 2026-11-12. One page. A session starts here, then reads only the `STATUS
 - ~~`AGENTS.md` line pointing here~~ Done 2026-11-12.
 - Track decisions are listed on each track page.
 
-## Next session (updated 2026-11-12, end of day)
+## Next session (updated 2026-11-12)
 
-**Build the paper revision 2 evidence folder** for TDS (plan in the newest `SESSION_HANDOFF.md` entry; track page [`tracks/B1-cost/STATUS.md`](tracks/B1-cost/STATUS.md)): index and naming key, measured results, the Mix curve, a spreadsheet with formulas for Charlie Anderson, the one-page explainer, refreshed `CURRENT_RESULTS.md`, limits, Phase 2 list. Revision 2 leaves out the control's results and the Part B questions. Track D is paused (resume checklist on its page).
+**Paper revision 2 evidence folder complete** for TDS (`docs/tds-evidence/paper-1-rev2-ledger-lab/`: index and naming key, measured results, the Mix curve, spreadsheet with formulas for Charlie Anderson, one-page explainer, refreshed `CURRENT_RESULTS.md`, limits, Phase 2 list). Revision 2 leaves out the control's results and the Part B questions. Next: owner review and copy to TDS (`01-evidence/practitioner/Sharealedger/`), then Phase 2 replicate runs and revenue TTL.
 
 **Names (owner, 2026-11-12).** Graph points: Events, Annual, Monthly, Cubes, Posted, Permuted. Process points: Posted GL, Ledger, Views, Revaluation, Allocation (CCP tags kept for finding material). The three complete corpus runs are three measurements at the Monthly point; stop numbering runs.

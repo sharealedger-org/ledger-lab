@@ -6,7 +6,8 @@ Updated 2026-11-12. Start at [`../STATUS.md`](../STATUS.md). This page sorts eve
 
 | File | Use |
 |---|---|
-| [`CURRENT_RESULTS.md`](CURRENT_RESULTS.md) | Where things stand, status per claim, for a newcomer. **Needs refresh** (written as of `9d54cd8`, with a final run still in progress). |
+| [`CURRENT_RESULTS.md`](CURRENT_RESULTS.md) | Where things stand, status per claim, for a newcomer. Refreshed 2026-11-12 with completed run 4 evidence. |
+| [`tds-evidence/paper-1-rev2-ledger-lab/`](tds-evidence/paper-1-rev2-ledger-lab/README.md) | Paper 1 (Revision 2) Evidence Package for TDS: measured results summary, Mix cost curve model, Charlie Anderson Excel workbook, one-page explainer, limits and Phase 2 roadmap. |
 | [`VERIFICATION_AUDIT_REGISTER.md`](VERIFICATION_AUDIT_REGISTER.md) | The evidence ledger, newest entries last. The register wins any disagreement. |
 | [`COMPANION_BASELINE_RECORD_2026-11-12.md`](COMPANION_BASELINE_RECORD_2026-11-12.md) | The preserved baseline for the control comparison, and the exposure log. |
 | [`EXPERIMENT_STATE_2026-11-11.md`](EXPERIMENT_STATE_2026-11-11.md) | Measured facts and what each Paper 1 graph can show. |
