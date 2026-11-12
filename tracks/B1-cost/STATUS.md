@@ -18,6 +18,8 @@ Read the numbers by CPU seconds and total wall time, not per-step times; content
 
 ## Next actions
 
+0. **Build the paper revision 2 evidence folder** for TDS (newest `SESSION_HANDOFF.md` entry has the contents list). Use the point names: Events, Annual, Monthly, Cubes, Posted, Permuted; Posted GL, Ledger, Views, Revaluation, Allocation. The three complete corpus runs are three measurements at the Monthly point.
+
 1. Refresh `CURRENT_RESULTS.md` (still says "as of `9d54cd8`, a final run in progress") and add a one-page "measured, shows, does not show" per cost point.
 2. Draw the Process, Mix and Engine one-page sheets from the archived CSVs. No script unless the owner approves one (`AGENTS.md`).
 3. Finish the explainer to-dos in `TODO.md` ("Explainer and outside communication").

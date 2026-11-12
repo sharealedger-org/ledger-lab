@@ -6,6 +6,43 @@ Updated 2026-11-12. This file is a dated log, newest entry first; use the linked
 - **Older entries** (run 3 preflight and everything before it, back to 2026-09-30) were moved unchanged to [`docs/archive/SESSION_HANDOFF_ARCHIVE_2026-11.md`](docs/archive/SESSION_HANDOFF_ARCHIVE_2026-11.md). Other documents that cite a `SESSION_HANDOFF.md` entry by name (for example "Corpus Work Assignment to Bob", "Plan for the next session", the 2026-11-06 entries) mean the archive.
 - When this file passes about 500 lines, move all but the newest few entries to the archive in the same way.
 
+## 2026-11-12 (END OF SESSION, TRACKS B1 + D + INFRASTRUCTURE) Handoff: paper revision 2 evidence folder is next; Track D paused (Bob, M1 Mac)
+
+**Read first in the next session:** [`STATUS.md`](STATUS.md), then [`tracks/B1-cost/STATUS.md`](tracks/B1-cost/STATUS.md). Track D is paused; its page carries a resume checklist.
+
+**What happened this session (all committed locally on `main`; nothing pushed, 29 commits ahead of `origin/main`).**
+- Tagged the companion baseline `companion-measured-baseline-20261111` on `c3667e4`, a merge of `origin/main` (`727f2e9`) and the never-pushed local commit `0ff9255` (`CURRENT_RESULTS.md`). Record, exposure log and comparability items: [`docs/COMPANION_BASELINE_RECORD_2026-11-12.md`](docs/COMPANION_BASELINE_RECORD_2026-11-12.md). **Correction made:** the companion runs were on an Intel Mac (4 CPUs, 16 GB), the same class as the control host, per the owner; the run evidence records only "4-CPU, 16 GB", not the CPU model. An earlier line saying "Apple Silicon M1" was wrong and is fixed.
+- Merged `aim-three-model` into `main` (`d356143`); the Dropbox folder is on `main`; the second worktree is gone. The local `aim-three-model` branch is now redundant (delete after pushing).
+- Reorganised: root [`STATUS.md`](STATUS.md), [`tracks/`](tracks) pages for B1, B2, C, D, [`docs/README.md`](docs/README.md) document map, `TODO.md` grouped by track. Track A has no page here (protected data; results return in synthesised form).
+- **Track D result digested** (control repo `3c50c19`): Codex's official attempt passed (implementation `892a068`). Read twice, logged, nothing incorporated. Facts and the CPU table are in [`tracks/D-control/STATUS.md`](tracks/D-control/STATUS.md) and [`tracks/D-control/COMPARISON_PLAN.md`](tracks/D-control/COMPARISON_PLAN.md). On CPU seconds the control used about 1.6 times the companion's, with 8 times less memory and 0.65 cores busy on average; scopes differ (revenue, six full reports, no Bash control passes counted in the companion), so no efficiency conclusion is drawn yet.
+- **Track D paused by the owner** while the paper is revised.
+
+**Owner decisions made this session (do not re-ask).**
+1. Tracks are folders on `main`, not branches. Track A needs no page.
+2. Paper 1 is replaced by an updated version (**revision 2**), keeping earlier versions. Papers are edited in TDS, `/Users/kiptwitchell/Workspace/GHEGenevaERS/TDS-AI-Models` (behind the IBM firewall, with the source documents). This repository supplies an **evidence folder** for TDS's open tier, `01-evidence/practitioner/Sharealedger/` (convention: `<name>-evidence-summary.md`). **Copy nothing from TDS into this public repository.**
+3. Revision 2 is written **without the control's influence** (the control result will shape a later revision, with Track D). Blindness matters for the control, not for the CKB experiment; the CKB should adapt to new information, and the two are not in competition. Informed changes are still logged.
+4. Part B (novel-permutation challenge) is **deferred**; its questions stay out of anything the control can see. Idea for later: give one Codex instance **read access to CKB** (not write access to the control) to help formulate the questions and reduce AI-engine bias. Also on resume: ask Codex Development to preserve the control's 183.5 GB database.
+5. The control has seen Papers 1 and 2 only (Gate 1). The monograph introduction (`00-…`) was withheld on purpose.
+6. **Names.** Stop numbering runs ("run 3", "run 4" collide with "Run A/B" on the graph). Name the points on the graphs. Prefer the CCP **names** in prose; keep the CCP numbers as tags for finding material.
+   - Cost-curve (Mix) points: **Events** (P1), **Annual** (P2, Run A), **Monthly** (P3, Run B, the bowl minimum), **Cubes** (P4), **Posted** (P5, GL plus sub-ledgers), **Permuted** (P6).
+   - Process points: **Posted GL** (CCP1), **Ledger** (CCP2), **Views** (CCP3), **Revaluation** (CCP4), **Allocation** (CCP5).
+   - The three complete corpus runs are three measurements at the **Monthly** point (years in series once; two chains twice). The early incomplete or failed runs are left out of the paper and the methods say why. Run tags remain only in evidence paths, with one mapping table.
+
+**Next work: build the revision 2 evidence folder** (staging path proposed: `docs/tds-evidence/paper-1-rev2-ledger-lab/`; the owner copies it into TDS). Not polished; each document carries a status. Planned contents:
+1. `README` index: what each document is, status words (`verified`, `partially_verified`, `owner-reported`, `inferred`, `not run`), the naming key (graph name, CCP name, CCP tag, run tags).
+2. Measured results summary: Monthly point (three runs, CPU seconds and wall, 10,651,908 ledger rows, 224,072,410 SJE rows, identical outputs), Posted GL (6,433,714 keys), Views, permutation capacity as an upper bound (503,118,463,033,110). Revaluation and Allocation marked "fixture only, not run at corpus scale".
+3. The **Mix curve**, labelled a model with assumed rates and measured constants (`docs/COST_GRAPH_DESIGN.md`, "Mix graph: model run").
+4. A **spreadsheet with formulas** for Charlie Anderson (four sheets specified in `COST_GRAPH_DESIGN.md`: `Model_Parameters`, `Cost_Equations`, `Cost_Bowl_Data`, `Multi_Substrate_Comparison`). Build with the Office tools (the `office-insights` skill), no Python. The multi-substrate sheet holds only the measured CKB curve until the control is added in a later revision.
+5. The **one-pager** for human readers: `docs/LEDGER_LAB_ONE_PAGE_EXPLAINER.html`. Its open items are in `TODO.md` (one outside-reader name for the payments subledger, footer addresses, browser check of the graph, review of the assumed rates).
+6. A refreshed `CURRENT_RESULTS.md` (still says "as of `9d54cd8`, a final run in progress") and a limits section: no revenue, no replicates per point beyond the three Monthly measurements, Bash control passes outside the step metrics (about 54% of chain wall time), Annual and Cubes not measured, hardware recorded only as "4-CPU, 16 GB".
+7. **Phase 2** list: the future points (Annual, Cubes, Revaluation and Allocation at corpus scale, revenue, replicates, then Track D and Part B).
+8. **Leave out** all control results and the Part B questions in revision 2.
+
+**Still open for the owner.** Push `main` and the tag. Pointer text for the control's handoff (repository name, tag, commit, no results). Whether `AGENTS.md` "Before Editing" gains a line pointing to `STATUS.md` (not edited). Whether to delete local `aim-three-model` after the push. Three-model work (B2) stays on hold; D9 is open. `sudo mdutil -i on /` still pending.
+
+**Housekeeping notes.** Temporary clones `/tmp/llc_remote` and `/tmp/llc_verify` can be deleted. One `python3` call with an empty script ran by mistake in a shell command (no Python was written); all other Python use was the control's own existing tests, run in `/tmp`. Slow Dropbox-wide searches time out; search `ledger-lab` or a named folder instead.
+
+
 ## 2026-11-12 (INFRASTRUCTURE) Session 1 of the reorganisation: root status page, track folders, document map (Bob, M1 Mac)
 
 **Owner decisions (2026-11-12).** Tracks are folders on `main`, not long-lived branches. Track A (protected P&C data) gets no status page here; it progresses in another repository and returns results in synthesised form. Work is organised under B1 (Paper 1 cost), B2 (Paper 2 models, on hold) and D (control), with C parked.

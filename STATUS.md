@@ -33,6 +33,8 @@ Updated 2026-11-12. One page. A session starts here, then reads only the `STATUS
 - Whether `AGENTS.md` "Before Editing" gains a line pointing here.
 - Track decisions are listed on each track page.
 
-## Next session
+## Next session (updated 2026-11-12, end of day)
 
-Session 2 of [`docs/PROJECT_ORGANIZATION_PLAN.md`](docs/PROJECT_ORGANIZATION_PLAN.md) is done in part (the merge). Remaining in order: refresh `CURRENT_RESULTS.md` and add one-page results (B1); draw the three graph sheets from archived CSVs (B1); Track D digest and comparison plan (D); three-model steps once D9 is decided (B2).
+**Build the paper revision 2 evidence folder** for TDS (plan in the newest `SESSION_HANDOFF.md` entry; track page [`tracks/B1-cost/STATUS.md`](tracks/B1-cost/STATUS.md)): index and naming key, measured results, the Mix curve, a spreadsheet with formulas for Charlie Anderson, the one-page explainer, refreshed `CURRENT_RESULTS.md`, limits, Phase 2 list. Revision 2 leaves out the control's results and the Part B questions. Track D is paused (resume checklist on its page).
+
+**Names (owner, 2026-11-12).** Graph points: Events, Annual, Monthly, Cubes, Posted, Permuted. Process points: Posted GL, Ledger, Views, Revaluation, Allocation (CCP tags kept for finding material). The three complete corpus runs are three measurements at the Monthly point; stop numbering runs.
