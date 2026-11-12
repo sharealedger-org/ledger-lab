@@ -6,6 +6,17 @@ Updated 2026-11-12. This file is a dated log, newest entry first; use the linked
 - **Older entries** (run 3 preflight and everything before it, back to 2026-09-30) were moved unchanged to [`docs/archive/SESSION_HANDOFF_ARCHIVE_2026-11.md`](docs/archive/SESSION_HANDOFF_ARCHIVE_2026-11.md). Other documents that cite a `SESSION_HANDOFF.md` entry by name (for example "Corpus Work Assignment to Bob", "Plan for the next session", the 2026-11-06 entries) mean the archive.
 - When this file passes about 500 lines, move all but the newest few entries to the archive in the same way.
 
+## 2026-11-12 (INFRASTRUCTURE) Session 1 of the reorganisation: root status page, track folders, document map (Bob, M1 Mac)
+
+**Owner decisions (2026-11-12).** Tracks are folders on `main`, not long-lived branches. Track A (protected P&C data) gets no status page here; it progresses in another repository and returns results in synthesised form. Work is organised under B1 (Paper 1 cost), B2 (Paper 2 models, on hold) and D (control), with C parked.
+
+**Created.** [`STATUS.md`](STATUS.md) (read first), [`tracks/B1-cost/`](tracks/B1-cost/STATUS.md), [`tracks/B2-models/`](tracks/B2-models/STATUS.md), [`tracks/C-berka/`](tracks/C-berka/STATUS.md), [`tracks/D-control/`](tracks/D-control/STATUS.md) (each one page), [`docs/README.md`](docs/README.md) (every file in `docs/` sorted by track and purpose). `TODO.md` headings now name their track, with new Track D and refresh/graphics items. Track D page records the digest procedure and the last control revision read, `51f16a6`.
+
+**Not done, needs the owner.** Push `main` and the tag (22 local commits, nothing pushed). Pointer text in the control's handoff. A line in `AGENTS.md` pointing to `STATUS.md` (not edited without approval). The older handoff entries were already archived on 2026-11-11, so no further split was made: this file is about 180 lines.
+
+**Next.** Refresh `docs/CURRENT_RESULTS.md` and write the one-page results (B1), then the three graph sheets, then the Track D comparison plan. Entries from now on carry a track id in the heading.
+
+
 ## 2026-11-12 (BRANCH `main`) Companion baseline tagged and recorded for the control comparison; Codex Track D progress read (Bob, M1 Mac)
 
 **Done.** Followed the request in `ledger-lab-control` (`docs/EXPERIMENT_BASELINE_AND_KNOWLEDGE_SHARING.md`, `7554427`). Local `main` had diverged from `origin/main` (ahead 1, behind 9): `0ff9255` (`docs/CURRENT_RESULTS.md`, the run-result assessment) had never been pushed, and `origin/main` (`727f2e9`) lacked it. Merged them cleanly into **`c3667e4`** (tree = `727f2e9` + `README.md` + `CURRENT_RESULTS.md`; no engine or script change since run 4 started at `9d54cd8`). Annotated tag **`companion-measured-baseline-20261111`** on it. The older `ccp-baseline-20261111` (`63e7900`, code preflight) is unchanged. Record: [`docs/COMPANION_BASELINE_RECORD_2026-11-12.md`](docs/COMPANION_BASELINE_RECORD_2026-11-12.md) (measured runs and start commits, where the evidence is, chronology, exposure log, comparability items).

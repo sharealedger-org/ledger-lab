@@ -1,23 +1,26 @@
 # Ledger Lab To-Do List
 
-This is the single list of open work. `SESSION_HANDOFF.md` is a dated log and is long; do not leave to-dos only there. When an item is done, tick it and add the date and a pointer to the evidence. Owner decisions are marked **Owner**.
+This is the single list of open work. `SESSION_HANDOFF.md` is a dated log and is long; do not leave to-dos only there. When an item is done, tick it and add the date and a pointer to the evidence. Owner decisions are marked **Owner**. Each section heading names its track (see [`STATUS.md`](STATUS.md)); the track page says what comes first.
 
 Seeded 2026-11-11 from the handoff entries. On the same day the handoff was trimmed and its older entries moved unchanged to `docs/archive/SESSION_HANDOFF_ARCHIVE_2026-11.md`; the open items found in them are in the last two sections.
 
-## Explainer and outside communication
+## Explainer and outside communication (Track B1)
 
 - [ ] **One-page explainer** (`docs/LEDGER_LAB_ONE_PAGE_EXPLAINER.html`): show where each ledger sits and what it is called: the general ledger (GL, CCP1), the payments subledger (called "Instrument Ledger" or `LDGR` in the repo), the other sub-ledgers, and how they relate. **Owner:** pick one name for outside readers and say whether the repo docs and file names follow.
 - [ ] **Explainer footer:** add the Sharealedger web address and the repo address. **Owner:** supply both; they are not recorded in the repo.
 - [ ] **Explainer graph:** check it in the browser used for showing it (an earlier version was cut off when the SVG scaled by `viewBox`).
 - [ ] **Explainer numbers:** review the assumed unit rates and query volumes behind the bowl before the page is shown as more than an illustration (`docs/COST_GRAPH_DESIGN.md`, "Mix graph: model run").
 
-## Cost graphs (Paper 1)
+## Cost graphs (Track B1)
+
+- [ ] **Refresh `docs/CURRENT_RESULTS.md`** (written as of `9d54cd8`, a final run then in progress) and add a one-page "measured, shows, does not show" per cost point.
+- [ ] **Draw the Process, Mix and Engine one-page sheets** from the archived CSVs. No script without owner approval (`AGENTS.md`); `awk` numbers plus static pages first.
 
 - [ ] Engine and Process graphs have no model run. Engine needs the Track D corpus run; Process needs CCP4 and CCP5 on the corpus (`docs/EXPERIMENT_STATE_2026-11-11.md`, section 2).
 - [ ] Replicate each cost point three times before any cost is quoted. **Owner:** which layout is the reference.
 - [ ] Measure an annual-granularity (Run A) corpus run, or keep it labelled as an assumption.
 
-## Three-model experiment (Paper 2)
+## Three-model experiment (Track B2, on hold 2026-11-12)
 
 - [ ] **Owner:** decide D9, net income (proposed: net expenditure per agency and fiscal year, `EXP*` debits only; `docs/THREE_MODEL_EXPERIMENT_PLAN.md`). Reopened 2026-11-12: raw `apa_revenue` exists (17.75M rows) and the TTL has a revenue path with no real-corpus run, so "no revenue" is a Gold limit, not a corpus limit. Candidates: reserves per fund (cash or encumbrance basis) or the statement tie-out (plan section 8).
 - [ ] **Owner:** pick the first anchor figure for the statement tie-out (plan section 8). The ACFR is published for FY2002 to FY2025; FY2012 sections G and L were read. See `docs/VA_AUDITED_AND_PUBLIC_DATA_SURVEY_2026-11-12.md`.
@@ -32,16 +35,27 @@ Seeded 2026-11-11 from the handoff entries. On the same day the handoff was trim
 - [ ] Step 7, fine-tune, score, write `data/test_evidence/three_model_experiment_results.csv`.
 - [ ] Re-run AIM1, AIM3, AIM4 on the final views.
 
-## Repo and machine housekeeping
+## Track D: control comparison (Track D)
 
-- [ ] Commit the 2026-11-11 documentation changes on `aim-three-model` (the `main` merge is already committed).
-- [ ] **Owner:** decide when to merge `aim-three-model` into `main`.
+- [ ] **Owner:** pointer in the control repository's handoff: repository name, tag `companion-measured-baseline-20261111`, commit `c3667e4`; no results. Branch and wording are the owner's call. Not written.
+- [ ] Digest the control repository from `51f16a6` at the start of each Track D session; update the revision in `tracks/D-control/STATUS.md` and log the reading (`docs/COMPANION_BASELINE_RECORD_2026-11-12.md` section 2).
+- [ ] Reconcile before any whole-run comparison: revenue, PO quarantine sets, year populations, timed scope, hardware (baseline record section 3). Write `tracks/D-control/COMPARISON_PLAN.md` when the first item is closed.
+- [ ] When the official attempt is accepted: one-page comparison on reconciled populations. The Engine graph waits for it.
+- [ ] **Owner:** when to give Codex access to this repository for the informed phase.
+
+## Repo and machine housekeeping (all tracks)
+
+- [x] 2026-11-12: `aim-three-model` merged into `main` (`d356143`); the working copy is on `main`. Only `SESSION_HANDOFF.md` conflicted.
+- [x] 2026-11-12: root `STATUS.md`, `tracks/*/STATUS.md` and `docs/README.md` created (session 1 of `docs/PROJECT_ORGANIZATION_PLAN.md`).
+- [ ] **Owner:** push `main` and the tag `companion-measured-baseline-20261111` (22 local commits; nothing pushed).
+- [ ] **Owner:** may `AGENTS.md` "Before Editing" gain a line pointing to `STATUS.md`?
+- [ ] Delete the merged local branch `aim-three-model` once `main` is pushed; `trackC` and `trackD` stay as history.
 - [ ] **Owner:** re-enable Spotlight with `sudo mdutil -i on /` (turned off for timing test 2).
-- [ ] Hand Track D to Codex (`~/workspace/va_track_d_handoff/`); it needs the manifest, not the Gate 0 example.
+- [x] Hand Track D to Codex: done earlier; the control repository and its Intel host are running (see `tracks/D-control/STATUS.md`).
 - [x] `SESSION_HANDOFF.md` trimmed from 3,794 to about 135 lines on 2026-11-11; older entries moved unchanged to `docs/archive/SESSION_HANDOFF_ARCHIVE_2026-11.md` (byte-checked: the two files together equal the original).
 - [ ] Other documents cite old handoff entries by name (`docs/CORPUS_SCHEMAS.md`, `docs/FULL_CORPUS_RUN_CHECKLIST.md`, `docs/VERIFICATION_AUDIT_REGISTER.md`, Scala comments in `CorpusProfile.scala` and `CKBViews.scala`). The handoff header says these now mean the archive. Update the links if wanted.
 
-## Engine and cost-curve items (from the handoff, collected 2026-11-11)
+## Engine and cost-curve items (Track B1; from the handoff, collected 2026-11-11)
 
 Source entries are in `SESSION_HANDOFF.md` (run 3 and run 4) or in the archive (the others). Check the source before acting; some were written before runs 3 and 4.
 
@@ -55,13 +69,13 @@ Source entries are in `SESSION_HANDOFF.md` (run 3 and run 4) or in the archive (
 - [ ] Optional: stamp "pipeline complete" and "chain end" in the wall-clock CSV so the unmetered post-pipeline tail is recorded every run (about 54% of chain wall in run 3; the `sje_balance` awk is most of it). **Owner:** the awk controls stay in Bash.
 - [ ] Windows validation is still pending (archive, "Windows Validation (pending)").
 
-## Model tests (AIM) from the archive
+## Model tests (AIM) from the archive (Track B2)
 
 - [ ] **AIM4** (STL decomposition per agency x NIGP class, Q4 test, majority-of-agencies rule) and **AIM5** agency reconciliation (`scripts/fit_agency_name_classifier.py` exists), then AIM2: not run to the locked protocol. Python was approved earlier for these; restate the approval and ask "could Scala do this?" before writing anything (`AGENTS.md`).
 - [ ] AIM3 caveat: churn rises from 24% to 33% over FY2012-FY2015, so some of the 0.7527 hold-out signal could be a time trend, not vendor information. The script does not separate the two. The hold-out also uses only four training years and four features.
 - [ ] The AIM3 walk-forward uses 4 windows in place of the locked 7. **Owner:** agreed "for now", not independently confirmed (archive, 2026-11-11 PLAN entry).
 
-## Low priority and unchecked
+## Low priority and unchecked (mixed; Track C for Berka)
 
 - [ ] Berka authors' terms of use (Track C is illustrative only, not Paper 2 evidence).
 - [ ] Older unresolved items last mentioned in the 2026-11-04 to 2026-11-06 entries, not re-checked since: stale seed ledger gives a ledger sum of 6.00; the PRICE guard quarantines 17 rows, not 4 (empty-price rows); Windows `commit_attempt` copies instead of symlinking. Check whether later work resolved them before spending time.
