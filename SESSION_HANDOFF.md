@@ -10,7 +10,7 @@ Updated 2026-11-12. This file is a dated log, newest entry first; use the linked
 
 **Read first in the next session:** [`STATUS.md`](STATUS.md), then [`tracks/B1-cost/STATUS.md`](tracks/B1-cost/STATUS.md). Track D is paused; its page carries a resume checklist.
 
-**What happened this session (all committed locally on `main`; nothing pushed, 29 commits ahead of `origin/main`).**
+**What happened this session (all committed locally on `main`; nothing pushed, 30 commits ahead of `origin/main` including this entry).**
 - Tagged the companion baseline `companion-measured-baseline-20261111` on `c3667e4`, a merge of `origin/main` (`727f2e9`) and the never-pushed local commit `0ff9255` (`CURRENT_RESULTS.md`). Record, exposure log and comparability items: [`docs/COMPANION_BASELINE_RECORD_2026-11-12.md`](docs/COMPANION_BASELINE_RECORD_2026-11-12.md). **Correction made:** the companion runs were on an Intel Mac (4 CPUs, 16 GB), the same class as the control host, per the owner; the run evidence records only "4-CPU, 16 GB", not the CPU model. An earlier line saying "Apple Silicon M1" was wrong and is fixed.
 - Merged `aim-three-model` into `main` (`d356143`); the Dropbox folder is on `main`; the second worktree is gone. The local `aim-three-model` branch is now redundant (delete after pushing).
 - Reorganised: root [`STATUS.md`](STATUS.md), [`tracks/`](tracks) pages for B1, B2, C, D, [`docs/README.md`](docs/README.md) document map, `TODO.md` grouped by track. Track A has no page here (protected data; results return in synthesised form).
