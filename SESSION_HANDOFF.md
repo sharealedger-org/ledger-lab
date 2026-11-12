@@ -1,10 +1,24 @@
 # Ledger Lab Handoff
 
-Updated 2026-11-11. This file is a dated log, newest entry first; use the linked design contracts for details.
+Updated 2026-11-12. This file is a dated log, newest entry first; use the linked design contracts for details.
 
 - **Open work is in [`TODO.md`](TODO.md).** Add new to-dos there, not here.
 - **Older entries** (run 3 preflight and everything before it, back to 2026-09-30) were moved unchanged to [`docs/archive/SESSION_HANDOFF_ARCHIVE_2026-11.md`](docs/archive/SESSION_HANDOFF_ARCHIVE_2026-11.md). Other documents that cite a `SESSION_HANDOFF.md` entry by name (for example "Corpus Work Assignment to Bob", "Plan for the next session", the 2026-11-06 entries) mean the archive.
 - When this file passes about 500 lines, move all but the newest few entries to the archive in the same way.
+
+## 2026-11-12 (BRANCH `aim-three-model`) Statement tie-out idea recorded; Virginia audited and public data surveyed; D9 reopened (Bob, M1 Mac)
+
+**Owner direction.** Audited financial statements are the gold standard. A subledger query by PO or vendor should tie to a statement number, with vendor totals plus an "other" built from named adjustment records, never a computed plug. This is a candidate later paper test: `docs/THREE_MODEL_EXPERIMENT_PLAN.md` section 8.
+
+**Found.** The raw corpus has `apa_revenue` (17.75M rows) and `apa_budget` (116,782 rows); only expenditure and PO reached Gold, so "no revenue" is a Gold limit. The Department of Accounts publishes the ACFR for FY2002 to FY2025. FY2012 sections G and L were read: statements by fund, and an itemised original-to-final budget walk with a cash-basis to GAAP fund balance reconciliation. The same General Fund shows 1,683,412 on the budget basis and 512,359 on the GAAP basis ($ thousands), so any reserves target needs a named basis. Other sources (USAspending, Taxation, APA local comparative report, Data Point salaries, DPB chart of accounts, eVA 2016 to 2027) are in `docs/VA_AUDITED_AND_PUBLIC_DATA_SURVEY_2026-11-12.md`, each marked Read, Probed or Listed.
+
+**Not found / limits.** Raw `VARawFiles` (including the budget files) are not on the M1 Mac. Corpus FY2012 expenditure and revenue sums are about $12B above the ACFR governmental-funds totals; the reason is not established. The sums come from `file_profile.csv` with `awk` and were not cross-checked. No source file was saved in the repository.
+
+**Open.** Moved to [`TODO.md`](TODO.md): D9 basis decision, anchor figure, location of the raw files, FY2012 General Fund mapping, USAspending comparison, one-year revenue run (architecture-gate declaration first).
+
+**Python note.** One short inline `python3` snippet listed links from a downloaded HTML page before owner approval; read-only, nothing saved, nothing in the measured path.
+
+
 
 ## 2026-11-11 (BRANCH `aim-three-model`) One-page explainer saved; further edits are a to-do (Bob, M1 Mac)
 

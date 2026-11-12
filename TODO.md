@@ -19,7 +19,13 @@ Seeded 2026-11-11 from the handoff entries. On the same day the handoff was trim
 
 ## Three-model experiment (Paper 2)
 
-- [ ] **Owner:** decide D9, net income (proposed: net expenditure per agency and fiscal year, `EXP*` debits only; `docs/THREE_MODEL_EXPERIMENT_PLAN.md`).
+- [ ] **Owner:** decide D9, net income (proposed: net expenditure per agency and fiscal year, `EXP*` debits only; `docs/THREE_MODEL_EXPERIMENT_PLAN.md`). Reopened 2026-11-12: raw `apa_revenue` exists (17.75M rows) and the TTL has a revenue path with no real-corpus run, so "no revenue" is a Gold limit, not a corpus limit. Candidates: reserves per fund (cash or encumbrance basis) or the statement tie-out (plan section 8).
+- [ ] **Owner:** pick the first anchor figure for the statement tie-out (plan section 8). The ACFR is published for FY2002 to FY2025; FY2012 sections G and L were read. See `docs/VA_AUDITED_AND_PUBLIC_DATA_SURVEY_2026-11-12.md`.
+- [ ] **Owner:** state the basis for any reserves or net income target (cash/budget, encumbrance, modified accrual); the same fund differs by basis in the ACFR.
+- [ ] **Owner:** say where the raw `VARawFiles` (including the 14 `Budget FY20NN.csv`) are; they were not found on the M1 Mac. Budget has no Gold stage and no workload declared.
+- [ ] Draft a one-fund, one-year ACFR-to-corpus mapping (General Fund FY2012) with the difference itemised; read ACFR sections K and O first.
+- [ ] Compare USAspending federal awards to Virginia state recipients (FY2012) with the ACFR federal revenue line and the `apa_revenue` Federal source rows.
+- [ ] Run APA revenue through the Scala TTL for one year (for example FY2012) so Gold has `REV*` accounts; check GL, LDGR and raw revenue sums agree. Declare workload and CKB placement per `docs/AGENTIC_ARCHITECTURE_GATES.md` first.
 - [ ] **Owner:** decide whether the account text stays in the verbalized records, and whether the period text (`0016/01`, `2015/07`) is normalised.
 - [ ] Step 5, IL-Native on fixtures, then on Gold.
 - [ ] Step 6, choose the model (Apache 2.0; check version and advisories first).

@@ -66,3 +66,25 @@ Steps 1-3 need no corpus data and can run on this machine now (fixtures only):
 ## 7. Other items that also wait for the data
 
 AIM1, AIM3 and AIM4 re-runs on the new corpus (the AIM1, AIM3 and AIM4 results to date are provisional; see SESSION_HANDOFF.md), and the AIM4 STL and AIM5 reconciliation work. They are not part of this plan.
+
+## 8. Later paper candidate: statement tie-out (owner direction, 2026-11-12; not decided, not run)
+
+**Problem.** The audited financial statements are the gold standard. A user who queries the subledger by PO or vendor wants the result to tie to a number in those statements. Adjustments that carry no vendor (aggregates, allocations, currency effects) always exist. Fragmented ledger systems can only show vendor detail and a statement total as separate figures; any difference is computed, not explained.
+
+**Pass condition.** For a statement figure S (for example total expenditure for a fund and fiscal year): `S = Σ vendor/PO lines + Σ named adjustment lines`. The "other" part must be built from adjustment records that carry rule identity, source and effective date. It must not be `S − Σ vendor lines`. A result that needs a computed plug fails.
+
+**Why it fits this repo.** The register already requires manual adjustments to be "instrument-anchored or explicitly suspense-anchored", and specifies a residual-reporting view that does not plug (`VERIFICATION_AUDIT_REGISTER.md`, top table). GL and LDGR `EXP` totals already agree in 14 of 14 years (internal tie-out). Non-vendor content exists in the corpus: `Payroll` and aggregate labels, `UNMATCHED_<hex8>` vendors, agency key `"0"`, negative reversals.
+
+**What is missing before it can be run.**
+1. No audited statements are in the repo. The likely source is the Virginia Comptroller's Annual Comprehensive Financial Report (ACFR). **Owner:** supply the document and choose the first anchor figure.
+2. A written mapping from the statement line to fund, agency and object. The APA files are a transaction extract and will not equal the statement exactly. The documented difference, itemised to named lines, is the experiment.
+3. Revenue is not in Gold (the TTL revenue path exists but has no real-corpus run). Needed only if the anchor is net or reserves-based. An expenditure-only anchor can go first.
+4. Allocation and currency adjustments have no real-corpus run (allocation is `partially_verified` on a smoke profile only). They are the intended long-term content of the "other" part and belong to a later test.
+
+**Relation to D9.** D9 (net income) stays open. Reserves (revenue minus expenditure, cash or encumbrance basis, per fund) is one candidate target; this tie-out is another. Choose after the anchor figure is known.
+
+**Update, same day: the anchor exists and the corpus has a budget stage.** Source details, figures and status per source are in [`VA_AUDITED_AND_PUBLIC_DATA_SURVEY_2026-11-12.md`](VA_AUDITED_AND_PUBLIC_DATA_SURVEY_2026-11-12.md).
+- The Department of Accounts publishes the ACFR for FY2002 to FY2025. The FY2012 statements (by fund) and the budget-versus-actual schedule (original budget, final budget, actual; named reconciling steps) were read.
+- The corpus covers budget (`apa_budget`), commitment (eVA PO files), payment (`apa_expenditure`) and revenue (`apa_revenue`). Only commitment and payment are in Gold. The audited anchor can be tied at each stage.
+- **Basis must be named.** The ACFR budget schedule is principally cash basis; the GAAP statements are modified accrual. General Fund balance is 1,683,412 on one and 512,359 on the other ($ thousands, FY2012), reconciled by named lines. D9 and any reserves target must state the basis.
+- Corpus FY2012 expenditure and revenue sums are about $12B above the ACFR governmental-funds totals; the reason is not established. Raw budget rows were not available on the M1 Mac.
