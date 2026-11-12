@@ -28,9 +28,9 @@ Updated 2026-11-12. One page. A session starts here, then reads only the `STATUS
 
 ## Waiting on the owner (all tracks)
 
-- Push `main` and the baseline tag (22 local commits; nothing pushed).
-- Pointer text and branch for the control repository's handoff (repository name, tag, commit; no results).
-- Whether `AGENTS.md` "Before Editing" gains a line pointing here.
+- ~~Push `main` and the baseline tag~~ Done 2026-11-12 (`main` at `ef78576`; tag pushed; `aim-three-model` deleted, local and remote).
+- Pointer in the control repository's `SESSION_HANDOFF.md`, written when the repository is opened to Codex: repository name, tag, and the SHA of the commit holding the results evaluation of the control's work.
+- ~~`AGENTS.md` line pointing here~~ Done 2026-11-12.
 - Track decisions are listed on each track page.
 
 ## Next session (updated 2026-11-12, end of day)

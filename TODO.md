@@ -48,9 +48,9 @@ Seeded 2026-11-11 from the handoff entries. On the same day the handoff was trim
 
 - [x] 2026-11-12: `aim-three-model` merged into `main` (`d356143`); the working copy is on `main`. Only `SESSION_HANDOFF.md` conflicted.
 - [x] 2026-11-12: root `STATUS.md`, `tracks/*/STATUS.md` and `docs/README.md` created (session 1 of `docs/PROJECT_ORGANIZATION_PLAN.md`).
-- [ ] **Owner:** push `main` and the tag `companion-measured-baseline-20261111` (22 local commits; nothing pushed).
-- [ ] **Owner:** may `AGENTS.md` "Before Editing" gain a line pointing to `STATUS.md`?
-- [ ] Delete the merged local branch `aim-three-model` once `main` is pushed; `trackC` and `trackD` stay as history.
+- [x] 2026-11-12: `main` and the tag `companion-measured-baseline-20261111` pushed (`main` at `ef78576`).
+- [x] 2026-11-12: `AGENTS.md` "Before Editing" now says to read `STATUS.md` first.
+- [x] 2026-11-12: `aim-three-model` deleted (local and remote; it was merged into `main`). `trackC` and `trackD` stay as history.
 - [ ] **Owner:** re-enable Spotlight with `sudo mdutil -i on /` (turned off for timing test 2).
 - [x] Hand Track D to Codex: done earlier; the control repository and its Intel host are running (see `tracks/D-control/STATUS.md`).
 - [x] `SESSION_HANDOFF.md` trimmed from 3,794 to about 135 lines on 2026-11-11; older entries moved unchanged to `docs/archive/SESSION_HANDOFF_ARCHIVE_2026-11.md` (byte-checked: the two files together equal the original).

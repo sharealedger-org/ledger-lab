@@ -38,7 +38,7 @@ Updated 2026-11-12. This file is a dated log, newest entry first; use the linked
 7. **Phase 2** list: the future points (Annual, Cubes, Revaluation and Allocation at corpus scale, revenue, replicates, then Track D and Part B).
 8. **Leave out** all control results and the Part B questions in revision 2.
 
-**Still open for the owner.** Push `main` and the tag. Pointer text for the control's handoff (repository name, tag, commit, no results). Whether `AGENTS.md` "Before Editing" gains a line pointing to `STATUS.md` (not edited). Whether to delete local `aim-three-model` after the push. Three-model work (B2) stays on hold; D9 is open. `sudo mdutil -i on /` still pending.
+**Done after this entry (2026-11-12, owner asked):** `main` and the baseline tag pushed (`main` at `ef78576`); `aim-three-model` deleted locally and on the remote; `AGENTS.md` now says to read `STATUS.md` first. **Still open for the owner.** Pointer in the control's `SESSION_HANDOFF.md`, written when the repository is opened to Codex: repository name, tag, and the SHA of the commit holding the results evaluation of the control's work, so Codex sees the assessment of its own work. Three-model work (B2) stays on hold; D9 is open. `sudo mdutil -i on /` still pending.
 
 **Housekeeping notes.** Temporary clones `/tmp/llc_remote` and `/tmp/llc_verify` can be deleted. One `python3` call with an empty script ran by mistake in a shell command (no Python was written); all other Python use was the control's own existing tests, run in `/tmp`. Slow Dropbox-wide searches time out; search `ledger-lab` or a named folder instead.
 
