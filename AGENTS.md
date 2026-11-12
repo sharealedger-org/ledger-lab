@@ -87,6 +87,7 @@ Engines read and generate SJE partitions. Perspectives aggregate only; they do n
 
 ## Before Editing
 
+- Read [`STATUS.md`](STATUS.md) first, then the `STATUS.md` of the track you are working on (`tracks/<id>/STATUS.md`), before opening the handoff, the audit register or other long files. Update that track page before ending the session.
 - Read the relevant layer README and nearby implementation before changing code.
 - Read [AGENTIC_ARCHITECTURE_GATES.md](docs/AGENTIC_ARCHITECTURE_GATES.md) and declare the workload, record contracts, CKB placement, materialization profile, controls, and evidence before implementing a new engine or perspective.
 - For verification work, follow [VERIFICATION_SESSION_PROTOCOL.md](docs/VERIFICATION_SESSION_PROTOCOL.md): reconstruct actual producers and consumers, state one falsifiable claim, and run the cheapest falsifier before editing.

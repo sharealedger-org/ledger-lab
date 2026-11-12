@@ -37,7 +37,7 @@ Seeded 2026-11-11 from the handoff entries. On the same day the handoff was trim
 
 ## Track D: control comparison (Track D)
 
-- [ ] **Owner:** pointer in the control repository's handoff: repository name, tag `companion-measured-baseline-20261111`, commit `c3667e4`; no results. Branch and wording are the owner's call. Not written.
+- [ ] **Owner:** pointer in the control repository's `SESSION_HANDOFF.md`, written when this repository is opened to Codex (owner, 2026-11-12): repository name, tag `companion-measured-baseline-20261111` (`c3667e4`), and **the SHA of the commit that holds the results evaluation of the control's work** (the comparison, once written), so that Codex sees the assessment of its own work. The evaluation commit does not exist yet; fill in its SHA then. Branch and wording are the owner's call. Not written.
 - [ ] Digest the control repository from `3c50c19` at the start of each Track D session; update the revision in `tracks/D-control/STATUS.md` and log the reading (`docs/COMPANION_BASELINE_RECORD_2026-11-12.md` section 2).
 - [ ] **Owner:** approve [`tracks/D-control/COMPARISON_PLAN.md`](tracks/D-control/COMPARISON_PLAN.md) (Part A compare; Part B novel-permutation challenge before exposing Codex).
 - [ ] Reconcile before any whole-run comparison: revenue, PO quarantine sets, year populations, timed scope, hardware (baseline record section 3). Write `tracks/D-control/COMPARISON_PLAN.md` when the first item is closed.
