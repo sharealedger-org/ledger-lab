@@ -1,6 +1,6 @@
 # Track D: Codex unconstrained control
 
-Updated 2026-11-12. A separate repository, `sharealedger-org/ledger-lab-control`, with its own handoff and journal. This page is Bob's digest of it. Do not copy its journal here and do not re-read it whole.
+Updated 2026-11-12. **PAUSED by the owner (2026-11-12) while the companion measured-results paper is drafted; see the resume checklist below.** A separate repository, `sharealedger-org/ledger-lab-control`, with its own handoff and journal. This page is Bob's digest of it. Do not copy its journal here and do not re-read it whole.
 
 ## What it is
 
