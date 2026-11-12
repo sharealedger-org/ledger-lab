@@ -44,7 +44,7 @@ Not on `main`: `docs/EXPERIMENT_STATE_2026-11-11.md` and the cost-graph model ru
 
 ### Execution and input conditions
 
-- **Host:** Apple Silicon Mac (M1), 4 CPUs, 16 GB RAM, JVM heap 1 GB, a Scala process topology orchestrated by Bash. Run tag, start commit and header (`chain_width`, `views_early`, `caffeinate`) are in each register entry.
+- **Host:** an Intel Mac with 4 CPUs and 16 GB RAM, the same class of machine as the control's host, per the owner (2026-11-12). The run evidence records "4-CPU, 16 GB" but not the CPU model. (An earlier version of this line said Apple Silicon M1; that was wrong. The M1 is only the machine Bob's later sessions ran on.) JVM heap 1 GB, a Scala process topology orchestrated by Bash. Run tag, start commit and header (`chain_width`, `views_early`, `caffeinate`) are in each register entry.
 - **Input:** FY2003 to FY2016, expenditure and purchase orders. 385 raw files, 27.8 GB in the Zenodo archive; 224,072,410 SJE rows; 10,651,908 ledger rows; 6,433,714 GL keys (`partially_verified`, from `corpus_totals.csv`). **Revenue was not processed.** The raw corpus has `apa_revenue` (17.75M rows), but only expenditure and purchase orders reached Gold.
 - **Launch commands:** in the handoff entry for each run and in `docs/FULL_CORPUS_RUN_CHECKLIST.md`, not collected in one place here.
 - **Scope timed:** the Scala pipeline from raw files to the four views. The Bash control passes sit outside every step metric (about 54% of chain wall time in run 3, `inferred` from the code; timing test 1 put 396 s of a 449 s FY12 tail in the `sje_balance` awk).
@@ -79,8 +79,8 @@ Delivery, confirmed reading and incorporation are different events.
 | When | 2026-11-12, about 19:40 to 19:50 UTC (12:40 to 12:50 -0700) |
 | Sender and recipient | Codex Development (Intel) published the entries "Information-only progress report to AI Bob" (08:07 AZT) and "Completed official result" (12:25 PM AZT), stating that publication does not establish receipt. Recipient: Bob, via the owner's prompt in this session. |
 | Source revision | GitHub `origin/main` `3c50c19`, read from a temporary clone in `/tmp` |
-| Read | The two new `SESSION_HANDOFF.md` entries, the new `CODEX_REFLECTIONS.md` entry, the `docs/ACTIVE_WORK_20261111.md` change, `docs/OFFICIAL_MEASUREMENT_20261112/README.md`. Event type: **confirmed reading**. |
-| Not read | `review.json`, `status.json`, `query_summary.csv`, `plot_data.json`, the plots, and all code |
+| Read | The two new `SESSION_HANDOFF.md` entries, the new `CODEX_REFLECTIONS.md` entry, the `docs/ACTIVE_WORK_20261111.md` change, `docs/OFFICIAL_MEASUREMENT_20261112/README.md`; later in the session, `review.json` (phase metrics), `plot_data.json`, `query_summary.csv`, the first part of `query_metadata.json`, and the host lines of `status.json`. Event type: **confirmed reading**. |
+| Not read | `final_validation.json`, `disk_measures.txt`, the plots, and all code |
 | Incorporation | **None.** No companion commit, decision or number changed. |
 
 ### Informed changes after the baseline
@@ -96,7 +96,7 @@ Facts from the two records side by side. None is a conclusion.
 - **Subcent revenue.** The control found 43,599 subcent revenue records. Revenue was not run in the companion, so the question does not arise there yet.
 - **Years.** Companion: FY2003 to FY2016. Control: 349 benchmark files, FY2009 PO absent, partial years kept without being declared complete. The populations have not been reconciled.
 - **What is timed.** The control's official measurement starts at ingestion; development is not measured. The companion's cost points start at the Scala pipeline on files already present, with the Bash control passes outside the step metrics.
-- **Machines.** Companion: Apple Silicon M1. Control: Intel MacBook Pro, two cores, four threads.
+- **Machines.** Same class: both on Intel Macs with 16 GB and four logical threads (owner, 2026-11-12). The control host has two physical cores. The companion runs do not record the CPU model, so the match rests on the owner's statement.
 - **Control status.** At `51f16a6` the control's fresh official attempt (`892a068`) was RUNNING. No accepted result existed, so no comparison of results is made.
 
 ## 4. Open (owner decides)

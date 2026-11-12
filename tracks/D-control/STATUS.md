@@ -28,6 +28,8 @@ An unconstrained AI subject (Codex, Python and SQLite, Arm B) builds and runs a 
 
 ## Next actions
 
+0. Draft for the owner: [`COMPARISON_PLAN.md`](COMPARISON_PLAN.md) (Part A compare what is measured; Part B a blind novel-permutation challenge before any exposure of this repository to Codex).
+
 1. Owner: pointer in the control handoff (repository name, tag, commit; no results). Not written.
 2. Before any whole-run comparison, reconcile (baseline record section 3): revenue (companion did not process it), PO quarantine sets (about 32,000 companion rows against 7,551 control candidates after quote-aware recovery), year populations (FY2009 PO absent), timed scope (control starts at ingestion; companion at the Scala pipeline), hardware.
 3. When the official result is accepted: a one-page comparison on reconciled populations, not a diff of totals. The Engine graph (B1) waits for it.
