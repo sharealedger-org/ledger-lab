@@ -26,6 +26,16 @@ An unconstrained AI subject (Codex, Python and SQLite, Arm B) builds and runs a 
 1. **Original companion against control (now).** Companion baseline = tag `companion-measured-baseline-20261111` (`c3667e4`). Chronology is owner-reported; commit times are consistent with it.
 2. **Informed companion against original (later).** Any change that follows a control finding is logged in the baseline record section 2 with its source entry. Codex gets access to this repository for that phase; the owner said it is cooperative, not adversarial, and the timing is the owner's.
 
+## Resume checklist (Track D is paused; this is everything needed to restart)
+
+1. **Control repo digest:** last read `3c50c19`. Run the digest procedure above.
+2. **Frozen control result:** implementation `892a068`; evidence committed in the control repo under `docs/OFFICIAL_MEASUREMENT_20261112/`; full run (183.5 GB database, exports, traces) at `/Users/ktwitchell001/workspace/ledger-control-output/official-20261112-892a068` on the Intel host. **Keep that directory until Part B of the comparison plan is done**: the novel-permutation challenge needs the control's database. The owner would need to ask Codex Development not to delete it; Bob does not write to the control repo.
+3. **Companion baseline:** tag `companion-measured-baseline-20261111` (`c3667e4`). The final outputs were deleted to free disk; Part B needs the chain re-run (about 2.5 h on the paired layout). Gold hashes: `data/test_evidence/corpus_runs/run_20261111_014229/gold/MANIFEST.csv`, `MANIFEST_SJE.csv`.
+4. **Plan:** [`COMPARISON_PLAN.md`](COMPARISON_PLAN.md) (Part A compare, Part B blind novel-permutation challenge, decisions 1 to 5 still open).
+5. **Paper 1 as the control saw it:** `docs/GATE_1_PAPER_1_MINIMUM_COST_CURVE.md` in the control repo (from Gate 1, 2026-11-10) is byte-identical to `members/research/01-minimum-cost-curve.md`. It is the control's specification and the pre-measurement statement of the claims to test.
+6. **Exposure so far:** Codex has seen no companion code or results; Bob has read the control's results twice (baseline record section 2). When the new measured-results draft goes to Codex, log it there as a delivery event.
+7. **Keep the Part B question set out of any paper sent to Codex**, so the challenge stays blind.
+
 ## Next actions
 
 0. Draft for the owner: [`COMPARISON_PLAN.md`](COMPARISON_PLAN.md) (Part A compare what is measured; Part B a blind novel-permutation challenge before any exposure of this repository to Codex).

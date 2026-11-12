@@ -10,7 +10,7 @@ Updated 2026-11-12. One page. A session starts here, then reads only the `STATUS
 | **B1** | Virginia public data, Paper 1: cost curve (CCP1 to CCP5) | Baseline measured and tagged. CCP4/CCP5 corpus runs and replicates not done. | [`tracks/B1-cost/STATUS.md`](tracks/B1-cost/STATUS.md) |
 | **B2** | Virginia public data, Paper 2: AIM tests and the three-model experiment | Steps 1 to 4 done. **On hold** during the reorganisation; D9 decision open. | [`tracks/B2-models/STATUS.md`](tracks/B2-models/STATUS.md) |
 | **C** | Berka bank data | Stalled. Illustrative only; not Paper 2 evidence. | [`tracks/C-berka/STATUS.md`](tracks/C-berka/STATUS.md) |
-| **D** | Codex unconstrained control, a separate repository (`sharealedger-org/ledger-lab-control`) | Official attempt complete and PASS by Codex's report (`3c50c19`); comparison not yet made. | [`tracks/D-control/STATUS.md`](tracks/D-control/STATUS.md) |
+| **D** | Codex unconstrained control, a separate repository (`sharealedger-org/ledger-lab-control`) | Official attempt complete and PASS by Codex's report (`3c50c19`). **Paused 2026-11-12**; resume checklist on its page. | [`tracks/D-control/STATUS.md`](tracks/D-control/STATUS.md) |
 
 ## Where things are
 
