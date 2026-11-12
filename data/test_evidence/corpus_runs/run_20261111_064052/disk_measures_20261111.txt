@@ -1,0 +1,35 @@
+# Disk measures, ledger-lab corpus runs (taken 2026-11-11 11:26 local, after run 4, from the Mac that ran them)
+# Method: df -k and du -sk are as reported by macOS (APFS: used space is shared by clones and hard links, so du can differ from apparent bytes).
+# Apparent bytes count each inode once (find ... stat %z %i, sorted by inode).
+
+volume /System/Volumes/Data (df -k): total 976,900,220 KB, used 702,502,544 KB, available 252,721,304 KB (about 241 GiB)
+
+## Output trees, all FY<yy> + VIEWS + *.generations, each inode once
+output_full (run 4, tag 20261111_064052):               apparent 116,063,021,047 bytes   du 114,547,160 KB
+output_full_run3_20261111_014229 (run 3):               apparent 116,063,020,314 bytes   du 114,484,656 KB
+(the two apparent sizes differ by 733 bytes; both match output_retained_apparent_bytes in corpus_totals.csv for run 4: 116,063,021,047)
+
+## By file class, per run (same in both runs)
+merged SJE (SortedJEFY*merged.csv, 14 files):           56,686,707,487 bytes
+sorted PO (SortedJEFY*q1PO.csv, 14 files):               8,464,272,596 bytes
+monthly expenditure SJE (SortedJEFY*_NN_exp.csv):       48,222,434,891 bytes
+(merged SJE = corpus_totals merged_sje_bytes; monthly expenditure = catalogued_bytes_01-transformation)
+
+## Other trees
+va_control_root (Track D input, APFS clones of the source files, read-only):   du 27,192,000 KB (apparent 27,843,834,731 bytes)
+va_fresh_root/VARawFiles:                                                      du 21,325,552 KB
+va_fresh_root/VAPOData:                                                        du  5,866,464 KB
+OneDrive LedgerLabOutputs-Gold (104 data files + README + MANIFEST):           du  2,626,448 KB
+
+## Free space on the volume at known times (from df, GiB)
+2026-11-11 06:37, before launching run 4:       322 free
+2026-11-11 09:22, after run 4, both outputs present: 213 free   (difference 109 GiB = run 4's output)
+2026-11-11 11:26, after OneDrive cleanup and test scratch removed: about 241 free
+
+## Not measured
+Peak disk use during a run. No df sampling was taken during runs 3 or 4, so the high-water mark while superseded generations were still held (prune keeps the last two) is unknown. The final-state size is known; the peak is not.
+Merged SJE bytes are identical in run 3 and run 4 (same size per file); hash comparison is in sje_hash_run3_vs_run4 (see the audit register).
+
+## After deleting the run 3 and run 4 outputs (2026-11-11 14:19 local)
+Removed: output_full (run 4) and output_full_run3_20261111_014229 (run 3), about 109 GiB each by du; rm took 14 s. A new empty output_full/ was created.
+df -k available: 252,853,028 KB before, 480,296,196 KB after (241 GiB to 458 GiB, gain about 217 GiB).
