@@ -1,6 +1,6 @@
 # Cost Graph Design — Working Notes
 
-**Status:** Updated design conversation, 2026-11-11.
+**Status:** Updated design conversation, 2026-11-11. Corpus constants and the Mix-graph points were updated the same day to the measured values from the three full 14-year runs (see "Mix graph: model run with measured corpus constants" below). The bowl curves are model output, not measurements.
 **Purpose:** Capture the agreed graph designs, mathematical formulas, and spreadsheet model specifications so Charlie Anderson and other researchers have the exact calculated values and equations.
 **Companion:** [`docs/TEST_DESIGN.md`](TEST_DESIGN.md) — CCP/AIM measurement specs that sit underneath these graphs.
 
@@ -12,7 +12,7 @@ Three graphs — **Mix**, **Engine**, **Process** — constitute the Paper 1 arg
 the argument. CCP labels, AIM tests, and pipeline step IDs are evidence that sits underneath
 them. Start here when explaining the research to any new audience.
 
-The y-axis on every graph is **total cost to produce** (compute + storage + reconciliation).
+The y-axis on every graph is **total cost to produce** (batch + storage + query + reconciliation).
 Not benefit — cost. Each graph uses the same bowl shape; only the x-axis dial changes.
 
 ---
@@ -70,15 +70,15 @@ $$\text{Total Cost}(P) = \text{Cost}_{\text{batch}}(P) + \text{Cost}_{\text{stor
 
 #### 2. Run A (`T-annual`) vs. Run B (`T-monthly`): Where Run A Actually Sits
 * **Run A is NOT on the Left Wall:** Run A produces an Instrument Ledger at annual granularity (`LDGR20YY.csv`, 1 row per instrument-year). It sits at the **left edge of the bowl bottom**, not at $X = 0$.
-* **Batch Time Equivalence:** Under CKB streaming (`post.scala`), reading the sorted SJE stream to produce annual movements (Run A, $\approx 350\text{k}$ rows, $40\text{ MB}$) takes the same single pass and elapsed time ($\approx 50\text{ s}$) as producing monthly movements (Run B, $\approx 1.2\text{M}$ rows, $120\text{ MB}$).
+* **Batch Time Equivalence (not measured at corpus scale):** Under CKB streaming (`post.scala`), reading the sorted SJE stream to produce annual movements takes the same single pass and elapsed time as producing monthly movements. This was stated from the early FY2003 work and has not been re-measured. **No annual-granularity run exists at corpus scale.** The corpus runs are all monthly (Run B): 345,609 to 979,181 ledger rows per year, 10,651,908 in total, 1.71 GB (about 161 bytes per row). The earlier figures in this note ($\approx 350\text{k}$ and $\approx 1.2\text{M}$ rows, $40\text{ MB}$ and $120\text{ MB}$, $\approx 50\text{ s}$) were earlier estimates and are superseded by the corpus runs. The Run A size used in the model below (0.57 GB, one third of Run B) is an assumption carried over from that ratio, not a measurement.
 * **Query Time Divergence (The Transaction Fallback Tax):**
-  * **Run B (`T-monthly`):** Answers monthly, quarterly, and annual questions directly by range-summing 1 to 12 movement rows from the $120\text{ MB}$ ledger. $\text{Scan Cost} = 0$.
+  * **Run B (`T-monthly`):** Answers monthly, quarterly, and annual questions directly by range-summing 1 to 12 movement rows from the monthly ledger (1.71 GB over 14 years). $\text{Scan Cost} = 0$.
   * **Run A (`T-annual`):** Can answer annual questions directly, but **cannot answer monthly or quarterly questions** because it destroyed sub-annual time boundaries. Any sub-annual query must fall back to scanning the multi-gigabyte raw `SortedJE` files:
     $$\text{Cost}_{\text{query}}(\text{Run A}) = |Q_{\text{annual}}| \times \text{Seek}(\text{LDGR}) + |Q_{\text{subannual}}| \times \text{Scan}(\text{Raw SortedJE})$$
 * **Finding:** Run B is the natural bowl minimum for the Virginia corpus because it completely eliminates the transaction fallback tax at zero extra batch pass cost.
 
 #### 3. The Right Wall: Steps 20, 21, and Multi-Master Proliferation ($X \to 100$)
-* **Step 20 (`GLPost`):** Collapses dimensions into an account key `(agency, fund, object, nominal, period, dir_flag)`, producing $\approx 300\text{k}$ rows. It is cheap to compute, but suffers complete structural information loss (AIM1/3/4 fail).
+* **Step 20 (`GLPost`):** Collapses dimensions into an account key `(agency, fund, object, nominal, period, dir_flag)`, producing 276,850 to 564,242 keys per year (6,433,714 over 14 years; about 0.58 of the ledger row count in the years with purchase orders). It is cheap to compute, but discards vendor, order date and event sequence. The AIM tests that illustrate the loss (AIM1, AIM3, AIM4) are provisional and are not shown on these graphs; the AIM3 hold-out passes (C = 0.7527), so do not cite an AIM "fail" here.
 * **Step 21 (`PermutationGenerator`):** Acts as a **structural sizing instrument** for externalized upstream cost. It calculates the combinatorial capacity:
   $$\text{Capacity} = \sum_{k \in \text{GL Keys}} \left( \prod_{d \in \text{Independent Dims}} |V_d(k)| \right)$$
 * **Physical Enterprise Reality:** To answer queries outside the GL key in balance space, enterprises instantiate $M$ separate subledgers, OLAP cubes, and data marts.
@@ -123,6 +123,39 @@ as a check that the period-key wiring is correct — not as a cost-of-granularit
 
 ---
 
+## Mix graph: model run with measured corpus constants
+
+This section turns the formulas above into numbers. **Measured inputs** are from the full runs (evidence in `data/test_evidence/corpus_runs/`). **Assumed inputs** are unit rates and query volumes chosen for illustration and are the owner's to change. Cost is dollars per year of operation over the 14-year history. The curve is therefore a model; only the corpus constants are measured.
+
+| Input | Value | Basis |
+|---|---|---|
+| Raw events (merged SJE) | 56.69 GB, 224,072,410 rows | measured |
+| Monthly ledger (Run B) | 1.715 GB, 10,651,908 rows | measured |
+| GL | 6,433,714 keys, about 1.04 GB at 161 B per row | rows measured; size estimated at the ledger row width |
+| Permutation capacity | 503,118,463,033,110 | measured, upper bound |
+| Engine CPU (all steps) | 11,207 s over 14 years | measured (run 4) |
+| Scan, seek, storage, reconcile rates | $0.02/GB, $0.0001/query, $0.023/GB-month, $50/pair-month | assumed (Sheet 1) |
+| Ingest rate | $0.05 per CPU-hour | assumed |
+| Queries per year | 1,000 annual, 500 sub-annual, 100 dimensional | assumed |
+
+| X | Point | Stores (M) | Cost per year | log10 |
+|---|---|---|---|---|
+| 0 | P1 Pure event store | 0 | $1,830 | 3.26 |
+| 15 | P2 Run A, annual ledger + sub-annual scans | 1 | $583 | 2.77 |
+| 30 | P3 Run B / CCP2, monthly ledger + CAR | 1 | **$16.29** | **1.21** |
+| 60 | P4 Ledger + rollup cubes | 2 | $617 | 2.79 |
+| 90 | P5 CCP1 status quo, GL + 5 sub-ledgers | 6 | $9,018 | 3.96 |
+| 100 | P6 Full key permutation (storing the capacity bound) | | $22.4 million | 7.35 |
+
+Reading it:
+
+- The minimum is at P3. Everything to its right is dominated by reconciliation ($600 per pair per year at the assumed rate) and, at P6, by storing the capacity bound, which is an upper bound and not a design anyone would build.
+- **The left wall is set by the sub-annual query volume, not by the ledger.** With 500 sub-annual queries a year P2 costs $583. With none, P2 costs $15.92 and sits slightly below P3 ($16.29). The case for monthly granularity therefore rests on sub-annual questions being asked, which is an assumption about the user, not a corpus measurement.
+- At corpus scale the CKB batch cost is cents a year. The model's walls come from assumed query and reconciliation rates. Changing `Cost_Reconcile_per_Pair` or the query mix moves the walls and the minimum's depth; it does not move the minimum from P3 unless sub-annual queries fall to zero.
+- Plot on a log y-axis; the points span eight orders of magnitude.
+
+---
+
 ## Engine Graph — Pattern: Naive → CKB
 
 **Shape:** The same bowl as the Mix graph. Single curve. Same y-axis (total cost to produce).
@@ -147,6 +180,10 @@ all three dials interact.
 **Note:** This is not yet a CCP label. It is a new experimental axis — same financial logic,
 two engine substrates, CKB patterns introduced incrementally. Requires owner approval before
 writing any Python mainline code (see AGENTS.md).
+
+**Measured state (2026-11-11):** only the CKB end of the dial is measured: three full 14-year
+runs on one 4-CPU, 16 GB laptop, 1 GB heap, highest process memory 1.36 GB. The naive end has no
+corpus run; the "10x to 50x" lift below is a design estimate with no measurement behind it.
 
 **Second curve — mainframe / TDS (open invitation):** The Engine graph currently shows one
 curve — VA corpus, laptop, measured. A second curve representing a z/OS mainframe running
@@ -181,6 +218,11 @@ consolidation) generates more outputs — which could mean more pre-computed bal
 rightward up the right wall. The claim is that each layer stays near the bowl bottom because
 each is one more bounded pass over movement rows, not a new balance table.
 
+**Measured state (2026-11-11):** CCP1 and CCP2 have a `cost_surface.csv` row per year in each of
+three runs; CCP3 (`5v`) ran over all years (1,285 s baseline, 1,696 s run 4). CCP4 and CCP5 have
+fixture-scale tests only. No point has three replicates. Use CPU seconds and total wall time, not
+`total_compute_s` or `total_cost_proxy`, which contention inflates.
+
 - **CCP1 (GL baseline):** on the right wall. The GL architecture pre-computes account-keyed
   balances and discards instrument identity — exactly the permutation explosion the bowl
   describes.
@@ -207,12 +249,15 @@ cost up the right wall.
 To allow Charlie Anderson to execute and manipulate the underlying mathematical model in Excel, the workbook is organized into four interconnected sheets:
 
 ### Sheet 1: `Model_Parameters` (Corpus Constants & Unit Rates)
-* `N_events_yr`: Raw SJE transaction volume per year ($\approx 16\text{M}$ rows/yr).
-* `S_raw_GB_yr`: Raw SJE file size per year ($\approx 5.0\text{ GB}$/yr).
-* `N_vendors`: Distinct active instrument count ($\approx 65\text{k}$).
-* `N_ldgr_ann_yr`: Run A annual ledger row count ($\approx 350\text{k}$ rows/yr, $40\text{ MB}$).
-* `N_ldgr_mon_yr`: Run B monthly ledger row count ($\approx 1.2\text{M}$ rows/yr, $120\text{ MB}$).
-* `Perm_Capacity`: Step 21 combinatorial capacity bound ($\approx 10^{9} \text{ to } 10^{12}$).
+Measured values from the full runs (run 4, `20261111_064052`), 2026-11-11:
+
+* `N_events_yr`: merged SJE rows, 9.3M to 19.5M per year, 224,072,410 over 14 years (average 16.0M).
+* `S_raw_GB_yr`: merged SJE size, 56.69 GB over 14 years (average 4.05 GB per year).
+* `N_vendors`: not measured as a distinct count. The ledger holds 199,727 vendor-year pairs over FY03-FY16.
+* `N_ldgr_ann_yr`: **not measured** (no annual run at corpus scale). Model assumption: one third of the monthly size.
+* `N_ldgr_mon_yr`: Run B monthly ledger, 345,609 to 979,181 rows per year, 10,651,908 total, 1.715 GB.
+* `N_gl_keys`: GL keys, 276,850 to 564,242 per year, 6,433,714 total.
+* `Perm_Capacity`: Step 21 capacity bound, 10^8 to 10^14 per year, 503,118,463,033,110 summed; upper bound.
 * `Cost_Scan_per_GB`: Unit scan cost for raw events (e.g. $\$0.02/\text{GB}$).
 * `Cost_Seek_per_Q`: Unit lookup cost in narrow LDGR + CAR (e.g. $\$0.0001/\text{query}$).
 * `Cost_Store_per_GB_mo`: Enterprise storage rate (e.g. $\$0.023/\text{GB-month}$).
@@ -232,7 +277,7 @@ Coordinates plotted across the Mix Dial ($X \in [0, 100]$):
 1. **Point 1 ($X=0$):** Pure Event Store (Left Wall).
 2. **Point 2 ($X=15$):** Run A (`T-annual` Movement Store + Sub-annual Event Scans).
 3. **Point 3 ($X=30$):** Run B / CCP2 (Instrument Ledger Monthly Movements + CAR — Bowl Minimum).
-4. **Point 4 ($X=60$):** Run D (Movement Ledger + Pre-computed Rollup Cubes).
+4. **Point 4 ($X=60$):** Run D (Movement Ledger + Pre-computed Rollup Cubes). No Run D exists; the model costs it as two stores.
 5. **Point 5 ($X=90$):** CCP1 Status Quo GL + 5 Subledgers.
 6. **Point 6 ($X=100$):** Full Key Permutation Explosion (Right Wall).
 
@@ -243,7 +288,9 @@ Plotted comparison of Curve 1 (CKB / GenevaERS on Laptop), Curve 2 (GenevaERS on
 
 ## Open questions from the design conversation
 
-1. **Engine Graph — Python implementation:** to run this experiment requires a Python
+1. **Engine Graph — conventional implementation (superseded by Track D):** the naive engine is
+   now Track D, run in a separate repository on another machine; it has not run on the corpus.
+   Original note: to run this experiment requires a Python
    implementation of the same financial processing logic. Owner approval required before
    writing (AGENTS.md). The graph design is agreed; the experiment is not yet scheduled.
 
