@@ -1,6 +1,21 @@
 # Ledger Lab Handoff
 
-Updated 2026-11-10. This file is a concise state snapshot; use the linked design contracts for details.
+Updated 2026-11-12. This file is a concise state snapshot; use the linked design contracts for details.
+
+## 2026-11-12 (BRANCH `main`) Companion baseline tagged and recorded for the control comparison; Codex Track D progress read (Bob, M1 Mac)
+
+**Done.** Followed the request in `ledger-lab-control` (`docs/EXPERIMENT_BASELINE_AND_KNOWLEDGE_SHARING.md`, `7554427`). Local `main` had diverged from `origin/main` (ahead 1, behind 9): `0ff9255` (`docs/CURRENT_RESULTS.md`, the run-result assessment) had never been pushed, and `origin/main` (`727f2e9`) lacked it. Merged them cleanly into **`c3667e4`** (tree = `727f2e9` + `README.md` + `CURRENT_RESULTS.md`; no engine or script change since run 4 started at `9d54cd8`). Annotated tag **`companion-measured-baseline-20261111`** on it. The older `ccp-baseline-20261111` (`63e7900`, code preflight) is unchanged. Record: [`docs/COMPANION_BASELINE_RECORD_2026-11-12.md`](docs/COMPANION_BASELINE_RECORD_2026-11-12.md) (measured runs and start commits, where the evidence is, chronology, exposure log, comparability items).
+
+**Not pushed.** The merge, the tag and the record are local. Pushing and the wording of a pointer in the control's handoff are the owner's call.
+
+**Owner direction (2026-11-12).** Codex need not be told anything about the results now. The control's handoff needs only a pointer to this repository (name, tag, commit) so that, when Codex is given access for the informed phase, it can assess against this baseline. Codex reading `ledger-lab` is not a concern; the control's journal shows a cooperative, not adversarial, role.
+
+**Control progress (read-only; Codex Development's host is not reachable from here).** At `51f16a6` the fresh official attempt (`892a068`, output on Intel's host) was RUNNING; no accepted result exists. Its own 35 tests, 7 controller tests under `python3 -O`, and the six-output fixture check pass in a throw-away copy. Preflights count 130,861,904 accepted events (97,516,306 expenditure, 17,750,109 revenue, 15,595,489 PO). Nothing measured to compare yet. Exposure logged in the record, section 2: confirmed reading only, nothing incorporated.
+
+**Open (owner).** Push the tag and `main`; decide the pointer text and branch for the control handoff; when to open the companion to Codex. For the work in `aim-three-model`: unrelated to this entry and not changed.
+
+**Python note.** No Python written. Ran the control's existing tests and fixture check in `/tmp`.
+
 
 ## 2026-11-11 (RUN 4 DONE) Last CCP run finished: exit 0, 42/42 controls PASS, 74 final data files byte-identical to the gold copy; evidence archived; next: idle-machine timing tests, then Track D (Bob, Mac)
 
