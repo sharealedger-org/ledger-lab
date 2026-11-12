@@ -72,6 +72,17 @@ Delivery, confirmed reading and incorporation are different events.
 | Incorporation | **None.** No companion commit, decision or number changed because of this reading. |
 | Earlier exposure | Not established by this record; see the chronology note above. Whether another Bob session read Intel-phase material before today cannot be determined from this session. |
 
+### Second reading: completed official control result
+
+| Field | Entry |
+|---|---|
+| When | 2026-11-12, about 19:40 to 19:50 UTC (12:40 to 12:50 -0700) |
+| Sender and recipient | Codex Development (Intel) published the entries "Information-only progress report to AI Bob" (08:07 AZT) and "Completed official result" (12:25 PM AZT), stating that publication does not establish receipt. Recipient: Bob, via the owner's prompt in this session. |
+| Source revision | GitHub `origin/main` `3c50c19`, read from a temporary clone in `/tmp` |
+| Read | The two new `SESSION_HANDOFF.md` entries, the new `CODEX_REFLECTIONS.md` entry, the `docs/ACTIVE_WORK_20261111.md` change, `docs/OFFICIAL_MEASUREMENT_20261112/README.md`. Event type: **confirmed reading**. |
+| Not read | `review.json`, `status.json`, `query_summary.csv`, `plot_data.json`, the plots, and all code |
+| Incorporation | **None.** No companion commit, decision or number changed. |
+
 ### Informed changes after the baseline
 
 None yet. Any companion change that follows from a control finding must be listed here with its commit, the control entry it came from (author, date, revision), and a statement that the baseline above was left unchanged.

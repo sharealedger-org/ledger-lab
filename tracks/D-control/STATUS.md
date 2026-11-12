@@ -8,16 +8,18 @@ An unconstrained AI subject (Codex, Python and SQLite, Arm B) builds and runs a 
 
 ## Digest procedure (the context saver)
 
-1. Last revision of the control repo that Bob read: **`51f16a6`** (2026-11-12 04:52 -0700).
-2. Next session: `git log --format='%h %ad %an %s' 51f16a6..origin/main` on a clone, read only those entries' diffs, then update the revision above.
+1. Last revision of the control repo that Bob read: **`3c50c19`** (2026-11-12 12:26 -0700). Read: the two new handoff entries, the two journal additions, and `docs/OFFICIAL_MEASUREMENT_20261112/README.md`. Not read: the JSON/CSV evidence, plots, code.
+2. Next session: `git log --format='%h %ad %an %s' 3c50c19..origin/main` on a clone, read only those entries' diffs, then update the revision above.
 3. Log each reading in `docs/COMPANION_BASELINE_RECORD_2026-11-12.md` section 2 (delivery, confirmed reading, incorporation are separate events). Do not write into the control repository from here without the owner's say-so; its journal is append-only and authored by each agent.
 
-## State at `51f16a6`
+## State at `3c50c19`: official attempt complete (Codex's report; Bob has not verified the data)
 
-- Fresh official full-corpus attempt (`892a068`) **RUNNING** on the Intel host, output outside this machine. No accepted result exists.
-- Controller fixes verified by Bob in a throw-away copy: the control's 35 tests, 7 controller tests under `python3 -O`, and the six-output fixture check pass.
-- Preflight counts: 130,861,904 accepted events (97,516,306 expenditure, 17,750,109 revenue, 15,595,489 PO) over 349 files, 26,887,407,880 bytes.
-- Not reviewed by Bob: `src/ledger_control.py` and the other scripts.
+- Official attempt on frozen implementation `892a068`: controller PASS, reconciliation PASS, disk accounting PASS. Launch 04:33 AZT, completion marker 11:58 AZT, about 7 h 25 min end to end, Intel host (2 cores, 4 threads, 16 GiB).
+- Population: 349 files, 130,861,904 accepted events (97,516,306 expenditure, 17,750,109 revenue, 15,595,489 PO), 8,064 quarantined candidates.
+- Measured phases (wall; peak RSS): build incl. ingestion, indexes, validation 17,687 s (164 MB); full six-report export 8,730 s (138 MB); keyed query driver 194 s; 6,660 requests at Q = 10, 100, 1,000 for six variants; plotting 14 s.
+- Retained storage 183.5 GB (database and indexes 182.9 GB). W1 debit = credit = 1,927,539,113,246.80; W2/W3/W4 commitment totals agree at 64,021,717,273.67.
+- Codex states: one run; no companion advantage and no repeatability claim; the next step is interpretation against permitted baseline evidence after reconciling workload, input and accounting differences. Evidence is committed under `docs/OFFICIAL_MEASUREMENT_20261112/`; the full database and exports stay on the Intel host.
+- Earlier: the control's 35 tests, 7 controller tests under `python3 -O` and the fixture check passed in a throw-away copy (Bob, at `51f16a6`). Not reviewed by Bob: `src/ledger_control.py` and the other scripts.
 
 ## Two comparisons, kept apart
 

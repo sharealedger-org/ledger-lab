@@ -38,7 +38,7 @@ Seeded 2026-11-11 from the handoff entries. On the same day the handoff was trim
 ## Track D: control comparison (Track D)
 
 - [ ] **Owner:** pointer in the control repository's handoff: repository name, tag `companion-measured-baseline-20261111`, commit `c3667e4`; no results. Branch and wording are the owner's call. Not written.
-- [ ] Digest the control repository from `51f16a6` at the start of each Track D session; update the revision in `tracks/D-control/STATUS.md` and log the reading (`docs/COMPANION_BASELINE_RECORD_2026-11-12.md` section 2).
+- [ ] Digest the control repository from `3c50c19` at the start of each Track D session; update the revision in `tracks/D-control/STATUS.md` and log the reading (`docs/COMPANION_BASELINE_RECORD_2026-11-12.md` section 2).
 - [ ] Reconcile before any whole-run comparison: revenue, PO quarantine sets, year populations, timed scope, hardware (baseline record section 3). Write `tracks/D-control/COMPARISON_PLAN.md` when the first item is closed.
 - [ ] When the official attempt is accepted: one-page comparison on reconciled populations. The Engine graph waits for it.
 - [ ] **Owner:** when to give Codex access to this repository for the informed phase.
