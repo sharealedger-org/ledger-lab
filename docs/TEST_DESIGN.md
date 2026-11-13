@@ -570,9 +570,9 @@ Stage 4 — Full 14-year corpus (FY2003–FY2016), 3 replicates each CCP
 |------|-------|--------|
 | APA expenditure files | FY2003–FY2016, 350 files, 20.3 GB, tab-delimited | `data/VARawFiles/` |
 | APA expenditure columns | `AGENCY_NAME, AMOUNT, FUND_NAME, LOCALITY, OBJECT_NAME, PROGRAM_NAME, VENDOR_NAME, VOUCHER_NUMBER, VOUCHER_DATE` | Header inspection |
-| eVA PO files | FY2002–FY2016, 12 usable fiscal years (FY2004/2005/2009 absent or stub) | `data/VAPOData/` |
+| eVA PO files | 17 files, FY2001–FY2018 (no FY2009 file; FY2001/2003/2004/2005 are stubs or partial); pipeline uses FY2006–FY2008 and FY2010–FY2016 (eligible-year rule) | `data/VAPOData/` |
 | eVA PO columns | `PONUMBER, AGENCY, ORDEREDDATE, QUANTITYORDERED, PRICE, VENDORID, VENDORNAME, NIGPCODE, …` | No Object/Fund code |
-| Total parsed PO records | 133.46M accepted + 326K quarantined (FY2006–FY2016) | `docs/CORPUS_FINDINGS.md` |
+| Total parsed PO records | **18,407,581 parsed; 18,081,738 accepted** (all 17 files, FY2001–FY2018 per `docs/CORPUS_FINDINGS.md`). Pipeline run FY2003–FY2016: 15,603,041 PO source rows (audit register, corpus run). *Note: the earlier figure "133.46M" was the all-family total (expenditure + revenue + budget + PO combined), not PO alone.* | `docs/CORPUS_FINDINGS.md`; `docs/VERIFICATION_AUDIT_REGISTER.md` |
 | Vendor-year rows | 210,496 (FY2002–FY2016) | `data/VAPOData/vendor_po_attributes_by_year.csv` |
 | Unique vendors | ~65,000; 27,736 single-year; 7,553 appear 8+ years | derived |
 | Single-year vendor churn | 43% | derived |
