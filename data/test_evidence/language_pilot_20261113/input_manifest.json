@@ -1,0 +1,35 @@
+{
+  "counts": {
+    "test": {
+      "available": 52448,
+      "positives": 172,
+      "selected": 256,
+      "unique_vendors": 256
+    },
+    "train": {
+      "available": 48560,
+      "positives": 386,
+      "selected": 512,
+      "unique_vendors": 511
+    },
+    "validation": {
+      "available": 22660,
+      "positives": 85,
+      "selected": 128,
+      "unique_vendors": 128
+    }
+  },
+  "fields": [
+    "po_count",
+    "agency_count",
+    "distinct_nigp_classes",
+    "total_amount"
+  ],
+  "last_complete_fy": 2016,
+  "limitation": "Latest monthly row only; not annual AIM3 features",
+  "sample_sha256": "0724bc9e7cb3296a191d0ba0d73057b1e3321e6a91575b8d68278088462ff2f1",
+  "source": "/Users/kiptwitchell/Library/CloudStorage/OneDrive-Personal/LedgerLabOutputs-Gold/VIEWS/view_vendor_year_survival.csv",
+  "source_rows": 773380,
+  "source_sha256": "174ef5c6ad64cc5550311a06c0d5185aaafec1cfb104d6453c437e825d7e4ebd",
+  "vendor_years": 199727
+}

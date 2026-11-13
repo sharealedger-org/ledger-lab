@@ -1,5 +1,29 @@
 # Ledger Lab Handoff
 
+## 2026-11-13 13:36:01 AZT (TRACK B2) Training-language pilot prepared; execution permission declined
+
+Owner authorized a field-label pilot. Design: `docs/TRAINING_LANGUAGE_PILOT.md`; code: `scripts/training_language_pilot.py`. Verified Gold survival-view hash and prepared 512/128/256 examples using latest monthly records without financial aggregation. Existing annual AIM3 baseline reproduced 0.7527; 43 preparation tests pass. Isolated model libraries installed under `/private/tmp/ckb-language-pilot-venv`; dependency audit clear. Download/training execution was declined, so no model scores or trained adapters exist; runtime implementation is unverified. Resume command and limitations are in the design. Owner subsequently suggested connecting the CKB passes and rerunning: discussion, not an implementation directive. Payment fiscal-period discrepancy remains unresolved; this pilot uses PO periods only.
+
+## 2026-11-13 12:49:02 AZT (TRACK D) Interim paper plan and corrected reflection
+
+Replaced the earlier revision brief with a concrete plan for circulation-ready Phase 1 Papers 1 and 2. Added reflection on the cross-domain pivot and foundation-before-Q2 sequence. At the owner's invitation abridged the mistaken-direction reflection and corrected its status/TODO/handoff consequences; no formal Track B closure is asserted. No papers drafted, source copies moved, experiments run, or control disclosures made. Next: evidence table and private-source drafting.
+
+## 2026-11-13 07:34:14 AZT (TRACK D/B) Version 2 research direction
+
+Correction recorded 2026-11-13: this entry originally mislabeled a suggested track organization as owner direction. The resulting documentation is corrected; no formal Track B closure was agreed. The revision plan now reflects the subsequent discussion: interim Phase 1 papers first, broader Phase 2 foundation before Q2. No experimental result was changed.
+
+## 2026-11-13 07:13:47 AZT (TRACK D) Full monograph reading
+
+Codex completed the owner-supplied introduction, Papers 1–9, epilogue, navigation guide, vocabulary, and README. Original analysis: `tracks/D-control/MONOGRAPH_READING_2026-11-13.md`; timestamped reflection and Track D status updated. Emphasis shifts toward validated discovery and cumulative cost under financial changes; incidental mathematical, scope, and evidence-version inconsistencies recorded. No private paper text copied, paper edits, control-side transfer, or engine/test changes. This is reading coverage, not external citation verification or implementation certification.
+
+## 2026-11-12 22:37:06 AZT (TRACK B2/D) Paper 2 evidence assessment
+
+Codex reviewed current AIM results, selected supplied Paper 2 passages, and the unrun three-model plan. Assessment: `tracks/D-control/PAPER2_ASSESSMENT_2026-11-12.md`; timestamped reflection added. Source discrepancy in balance/combined fiscal-year helpers is recorded in the audit register and TODO; the existing shared-core suite passed 28 tests. No new Python, model training, evidence rerun, or result edits. The proposed model gaps conflate inputs/model families and cannot yet isolate language prior. Follow-up belongs with Track B's ongoing evidence work; no control-side disclosure.
+
+## 2026-11-12 22:01:26 AZT (TRACK D) CKB execution-model evaluation
+
+Read the CKB execution model and traced `run_pipeline`/`LedgerApp` into legacy reclass and `5v`. Findings and Phase 2 implications are in `tracks/D-control/CKB_REVIEW_2026-11-12.md`; static source findings appended to the audit register. Reclass materializes/sorts/reposts rather than using the proposed delivery-group chain; its rewrite-before-post behavior needs a one-instrument expected-balance test. `5v` retains a completed-vendor set across groups. No code changed or runtime test run. Updated the timestamped Codex journal and provisional list; no control material sent or Track B evidence modified.
+
 Updated 2026-11-13. This file is a dated log, newest entry first; use the linked design contracts for details.
 
 - **Open work is in [`TODO.md`](TODO.md).** Add new to-dos there, not here.

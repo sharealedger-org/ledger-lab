@@ -1,5 +1,9 @@
 # Verification Audit Register
 
+## 2026-11-13 13:36:01 AZT — Field-label pilot preparation (B2)
+
+Claim: paired encodings preserve financial values and targets while changing field-label meaning. Producer: Scala CKBViews step 5v -> Gold survival view; consumer: `scripts/training_language_pilot.py prepare`. Gold SHA `174ef5c6ad64cc5550311a06c0d5185aaafec1cfb104d6453c437e825d7e4ebd` verified; 773,380 rows, 199,727 vendor-year pairs, complete outcome horizon FY2016. Selected latest monthly rows, not annual sums. 43 core/verbalizer/pilot tests pass. Preparation evidence: `data/test_evidence/language_pilot_20261113/`. Original AIM3 rerun separately reproduces C=0.7527; does not validate the new training implementation. State: preparation `partially_verified`; training `not_audited` and not run because execution permission was declined. Cheapest next falsifier: model/tokenizer load, answer-token and no-truncation checks, first forward/backward batch. No CKB engine changes or cost claims; payment-year discrepancy remains open.
+
 Status as of 2026-09-29. This is an evidence register, not a declaration that the repository is production-correct.
 
 | Area | Claim under test | Current state | Evidence | Open falsifier or gap |
@@ -1314,3 +1318,21 @@ Owner approved (this session) fixing the split in `scripts/fit_vendor_survival_b
 Changes to the balance script: the hold-out now takes the train and test years from the longest contiguous observable run, with the same rule as `fit_vendor_survival_windows.py`, and stops if they overlap; the commitment reference row is read from the commitment script's CSV (`--commitment-csv`) instead of being typed in.
 
 Not done: STL for AIM4, AIM2, a combined-feature AIM3 model, SHA-256 and `run_timestamp` columns inside each script's own CSV (the hashes are in `RUN_INPUTS.csv` beside them).
+
+## 2026-11-12 22:01:26 AZT — Track D CKB model/source trace (Codex)
+
+Scope: static review for Phase 2 design at HEAD `08bedfd`; no source changes or runtime tests. Detailed trace: [`CKB review`](../tracks/D-control/CKB_REVIEW_2026-11-12.md).
+
+| Claim | Evidence state | Cheapest check and result | Next falsifier |
+|---|---|---|---|
+| Step 9 uses in-buffer generation with terminal-only durable ledger publication | `contradicted` for the inspected legacy path; generalized reclass remains `unknown` | Traced `run_pipeline.sh` → `LedgerApp:228` → `arrangementReclass:215–373`: ledger rewrite, SJE materialization, external sort, then `post`. Generated output has a consumer but not target placement. | Declare and test a real generation/application/terminal path. |
+| Reclass source establishes temporal, rule, and per-journal balancing contracts | `not_verified`; source gaps identified | `arrangementReclass:387–429` uses wall-clock dates, blank rule fields, and per-line journal sequence IDs; the update's effective date does not enter this builder. | One balanced transfer with shared group identity, explicit effective date, rule lineage, and expected account balances. |
+| `5v` working memory depends only on current vendor and fixed aggregation capacity | `contradicted` as a strict whole-process claim | `CKBViews:301,320,344`: completed-vendor HashSet grows across groups. Existing View D spill path remains present; no measured run result changed here. | Hold per-vendor group size fixed and increase distinct vendors; measure retained state and RSS. |
+
+Additional source-derived risk, not reproduced: Step 9 rewrites old/new balances before posting its generated transfer. A one-instrument expected-balance test is required before reuse. No compile, fixture, corpus, or target GenevaERS capability claim is made by this entry.
+
+## 2026-11-12 22:37:06 AZT — Track B2 evidence review by CKB-side Codex
+
+Claim checked: balance/combined model fiscal-year normalization agrees with the corrected Gold period contract. **Contradicted by source inspection:** both local `fiscal_year_of` helpers add a July shift after normalizing a short numeric year; `three_model_core.py` explicitly returns `2000+YY` for `00YY/MM` without that shift. The existing core tests include `0003/07 → 2003`; `python3 -m unittest scripts/test_three_model_core.py` passed 28 tests. The affected helper branches imply 2004 for that input. No analysis rerun or new Python was written; score impact remains `unknown`. Next: use the agreed period contract and reproduce affected balance/combined comparisons, preserving prior evidence. No prior numeric result was overwritten.
+
+The combined CSV reports +0.0078 C on one split. Its permutation p tests the combined score against relabeling, not the incremental gain; the latter uses paired row resampling, not vendor-cluster resampling. Planned IL-Native inputs include views absent from IL-FineTune; the proposed gap cannot isolate language prior with different inputs/model families. Full scope and sources: [`Paper 2 assessment`](../tracks/D-control/PAPER2_ASSESSMENT_2026-11-12.md).

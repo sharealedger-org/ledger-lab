@@ -1,5 +1,7 @@
 # Track B1: Paper 1 cost curve (Virginia public data)
 
+**Correction, 2026-11-13:** The earlier closeout directive was an assistant misinterpretation of an owner suggestion. No formal track closure is asserted. The current [paper revision plan](../D-control/PAPER_VERSION_2_RESEARCH_PLAN.md) uses Phase 1 findings for interim Papers 1 and 2, preserving measured/modeled distinctions and unresolved comparability issues.
+
 Updated 2026-11-12. Hypothesis under test: keeping events in an instrument-keyed ledger (the CKB approach) sits at the minimum cost, and each added capability then costs little more, while a GL pays extra to rebuild what it lost. Cost points CCP1 to CCP5 each add one capability. Status words as in [`docs/CURRENT_RESULTS.md`](../../docs/CURRENT_RESULTS.md).
 
 ## State

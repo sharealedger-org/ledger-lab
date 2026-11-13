@@ -29,6 +29,8 @@ Seeded 2026-11-11 from the handoff entries. On the same day the handoff was trim
 
 ## Three-model experiment (Track B2, on hold 2026-11-12)
 
+- [ ] **Track B review prerequisite:** resolve `00YY/MM` payment-period handling in `fit_vendor_survival_balance.py` and `fit_vendor_survival_combined.py` against `three_model_core.py`, then rerun affected comparisons with old evidence preserved. Codex source finding, 2026-11-12 22:37 AZT; score impact unknown. Before LLM training, distinguish a practical model comparison from a language-prior ablation and fix input/inference contracts ([assessment](tracks/D-control/PAPER2_ASSESSMENT_2026-11-12.md)). No new Python authorized by this note.
+
 - [ ] **Owner:** decide D9, net income (proposed: net expenditure per agency and fiscal year, `EXP*` debits only; `docs/THREE_MODEL_EXPERIMENT_PLAN.md`). Reopened 2026-11-12: raw `apa_revenue` exists (17.75M rows) and the TTL has a revenue path with no real-corpus run, so "no revenue" is a Gold limit, not a corpus limit. Candidates: reserves per fund (cash or encumbrance basis) or the statement tie-out (plan section 8).
 - [ ] **Owner:** pick the first anchor figure for the statement tie-out (plan section 8). The ACFR is published for FY2002 to FY2025; FY2012 sections G and L were read. See `docs/VA_AUDITED_AND_PUBLIC_DATA_SURVEY_2026-11-12.md`.
 - [ ] **Owner:** state the basis for any reserves or net income target (cash/budget, encumbrance, modified accrual); the same fund differs by basis in the ACFR.
@@ -48,6 +50,8 @@ Seeded 2026-11-11 from the handoff entries. On the same day the handoff was trim
 - [x] 2026-11-13: Reconcile the eVA PO counts. `TEST_DESIGN.md` §8 corrected: "133.46M" was the all-family total, not PO alone. PO: 18,407,581 parsed / 18,081,738 accepted (all 17 files, `CORPUS_FINDINGS.md`); pipeline FY2003–FY2016: 15,603,041 PO source rows (audit register). eVA PO file range corrected to FY2001–FY2018 (17 files, no FY2009; FY2001/2003/2004/2005 stubs or partial). FY2002 is not usable (64,743 rows, majority outside FY); the pipeline eligible-year rule (FY2006–2008 + FY2010–2016) applies regardless.
 
 ## Track D: control comparison (Track D)
+
+- [ ] **Interim Papers 1 and 2 (2026-11-13):** follow `tracks/D-control/PAPER_VERSION_2_RESEARCH_PLAN.md`: evidence table, coherent revised papers, cross-paper claim review, and owner handoff. No formal Track B closure is implied; Phase 2 foundation work and Q2 remain distinct from this writing task.
 
 - [ ] **Codex:** develop Phase 2 proposals using the owner-requested [temporary working list](tracks/D-control/CODEX_PHASE2_WORKING_LIST.md) and [reflection journal](tracks/D-control/CODEX_REFLECTIONS.md). Only CKB-side Codex updates these files. They remain in this repository and are not a control-side handoff or finalized question set.
 

@@ -1,5 +1,9 @@
 # Track B2: Paper 2 models (AIM tests and the three-model experiment)
 
+**Active pilot, 2026-11-13 13:36:01 AZT:** Owner authorized the [training-language field-label pilot](../../docs/TRAINING_LANGUAGE_PILOT.md). Gold hash verified; 512/128/256 train/validation/test examples prepared; 43 preparation tests pass; original AIM3 baseline reproduced C=0.7527. Isolated training libraries installed and dependency audit clear. Model download/training permission was declined: **no training result**, and training implementation remains runtime-unverified. Next: authorized model load and first batch, then fixed three-condition/three-seed pilot. D9 remains open and does not block this vendor-presence pilot.
+
+**Correction, 2026-11-13:** The earlier closeout directive was an assistant misinterpretation of an owner suggestion. No formal track closure is asserted. The current [paper revision plan](../D-control/PAPER_VERSION_2_RESEARCH_PLAN.md) preserves failed, provisional, superseded, and unrun results for the interim papers. The fiscal-period issue requires verification or explicit qualification; this documentation change alters no result.
+
 Updated 2026-11-13. Claim under test: a model trained on posted (GL) data cannot recover what posting threw away; a model trained on the instrument ledger can.
 
 ## Three-model experiment
@@ -29,6 +33,8 @@ Updated 2026-11-13. Intel run (CSV timestamps 2026-11-12 20:37 to 20:43) reprodu
 | AIM5 | verified for its stated test | `scripts/fit_agency_name_classifier.py`, Precision 1.0 |
 
 ## Next actions (when D9 decided)
+
+**Codex assessment, 2026-11-12 22:37:06 AZT:** [Paper 2 evidence/training review](../D-control/PAPER2_ASSESSMENT_2026-11-12.md). New source finding: balance and combined scripts apply a July shift to payment periods `00YY/MM`, unlike the corrected `three_model_core` contract (28 existing core tests passed). Resolve this and rerun affected comparisons before relying on their magnitude; score impact is unknown. The planned IL-Native/IL-FineTune comparison also changes features and model family, so it does not isolate language prior. No training or result files changed in this review; D9 and other owner decisions remain open.
 
 1. **Owner decisions:** D9, verbalizer visibility of account text, period text normalisation, first anchor figure for the tie-out, where the raw `VARawFiles` and budget files are.
 2. ~~Finish AIM3 balance baseline~~ Done on ARM with a matched split (audit register, last entry). Open: combined balance plus view model against balance alone (owner approval needed before writing the Python). TDS evidence copies and the Paper 2 text are refreshed after owner review.

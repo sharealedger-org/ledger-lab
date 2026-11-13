@@ -125,11 +125,23 @@ Delivery, confirmed reading and incorporation are different events.
 | Incorporation | No control files or refs were changed. The CKB status now records `ab0f7f0` as this session's digest point; no new measurement or Q2 question set was produced. |
 
 
-### Informed changes after the baseline
+### Codex reading of the control reflection model (2026-11-12, Arizona)
+
+Owner requested a CKB-side reflection journal modeled on the control's. Read the headings and opening 120 lines of `CODEX_REFLECTIONS.md` from the adjacent checkout at `ab0f7f0d630faabd8307494d2a9e496b44d04ceb` (tool output was truncated, so not all requested lines were available). The local `ab0f7f0..origin/main` log was empty; no fetch was performed. This was a targeted journal reading, not a fresh code or result audit. No control files were changed. Incorporation: journal conventions and attributed accounts of design/data adaptations informed `tracks/D-control/CODEX_REFLECTIONS.md` and its provisional Phase 2 working list. No engine changes, new measurements, or finalized questions resulted; no CKB material was sent to the control.
 
 **Additional CKB orientation (2026-11-12, Arizona):** at the owner's request, Codex read the root and Track D status, comparison plan, this baseline record, architecture gates, verification protocol, foundation README, the CKB execution-model introduction, recent handoff entries, and the opening of Scala `post.scala`. Source: working tree at `0c05037`, with pre-existing documentation edits. No control checkout or corpus was read; no engine changes, measurements, or Q2 decisions resulted. This records this session's reading without replacing the earlier exposure entries.
 
-None yet. Any companion change that follows from a control finding must be listed here with its commit, the control entry it came from (author, date, revision), and a statement that the baseline above was left unchanged.
+### Owner-supplied monograph access — 2026-11-12 21:43:40 AZT
+
+Delivery: owner placed the full monograph copy in local, Git-ignored `session-run.tmp` for CKB-side Phase 2 design. Confirmed reading: directory inventory; opening of `00a-corpus-navigation-guide.md`; selected search excerpts in Papers 1/2; selected Paper 5 ARE/calculation-engine passages and Paper 6 Switch/Recast/Reclass, effective-date and backdating passages. Some tool output was truncated; this is not a claim to have read the complete papers or the monograph introduction. Incorporation: timestamped Codex reflection and provisional process candidates P2-09–P2-14. No papers copied to tracked files, no control reading or writing this turn, no finalized Q2 release.
+
+Source SHA-256 for the principal readings: Paper 5 `c4b707e0884ceb6d724e022c0a57eb86211b6383aadefde5dd6acd3eca5b5051`; Paper 6 `d9c8b4251361610ac14766495c9ee0a58b849e33b5a40cfabc735119aad9dc2f`. These identify the local supplied versions, not the earlier Gate 1 versions delivered to the control.
+
+### Informed changes after the baseline
+
+**Full monograph reading — 2026-11-13 07:13:47 AZT (Codex, CKB side).** Owner explicitly requested all papers including the introduction. Confirmed complete reading of the local introduction, Papers 1–9, epilogue, navigation guide, vocabulary, and README in ignored `session-run.tmp`; truncated outputs were completed with smaller reads. This supersedes the earlier partial-reading coverage only. Incorporation: `tracks/D-control/MONOGRAPH_READING_2026-11-13.md`, timestamped reflection, status, and handoff. No new control access or disclosure, no source papers copied to tracked files, no engine changes or Q2 release. Principal source SHA-256: introduction `e49c6eb13f04ea9ab988349741f8dab4af958a2faabed5dc6a904f1833fde671`; Paper 1 `060253f872382c7685790199d8e8b6b56b905dbf9f6e779aff54b3eaa42b6f5f`; Paper 2 `528a3f40b06dea2582fd3272c9b8c3dc4d8d47dd57eb4c01bf8fd4d05251c47a`; Papers 5/6 match the hashes above. No external evidence verification is implied.
+
+The journal and provisional design list above are documentation informed by the recorded readings. No financial implementation changes yet. Any companion engine change that follows from a control finding must be listed here with its commit, the control entry it came from (author, date, revision), and a statement that the baseline above was left unchanged.
 
 ## 3. Comparability items noted while reading (not resolved)
 
