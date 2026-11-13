@@ -1,0 +1,5 @@
+agency,nominal_account_id,fund,object_id,fiscal_year,dir_flag,total_amount
+237,0000,0000,0000,0003/07,O,-45.32
+237,EXP199,9271,199,0003/07,D,45.32
+273,0000,0000,0000,0003/07,O,-240
+273,REV1781,10288,0000,0003/07,D,240

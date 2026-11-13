@@ -247,6 +247,42 @@ class ApaTtlSpec extends AnyFunSuite {
     }
   }
 
+  test("combined monthly TTL preserves revenue and expenditure through posting") {
+    withTempDirectory("ttl-both-post-") { tempDir =>
+      val inDir = Files.createDirectory(tempDir.resolve("VARawFiles"))
+      val expDir = Files.createDirectory(inDir.resolve("FY 2003 Expenditure"))
+      val revDir = Files.createDirectory(inDir.resolve("FY 2003 Revenue"))
+      val refs = Files.createDirectory(tempDir.resolve("refs"))
+      val out = Files.createDirectory(tempDir.resolve("out"))
+      writeRefTables(refs)
+      writeExpFile(expDir, "Jul", expRowJul)
+      Files.write(revDir.resolve("Revenues Jul 2002.csv"),
+        (revHeader + "\n" + revRowJul.replace("HIGHER EDUCATION LOCAL FUNDS UNRESTRICTED", "HIGHER EDUCATION OPERATING") + "\n").getBytes("UTF-8"))
+      standardizeAndSort.applyAPA(Map("inPath" -> inDir.toString,
+        "refPath" -> refs.toString, "outPath" -> out.toString,
+        "year" -> "03", "type" -> "B", "periodGranularity" -> "monthly"))
+      def rows(file: File): Vector[Array[String]] = {
+        val source = Source.fromFile(file, "UTF-8")
+        try source.getLines().filter(_.nonEmpty).map(_.split(",", -1)).toVector
+        finally source.close()
+      }
+      val partitions = out.toFile.listFiles().filter(_.getName.startsWith("SortedJE"))
+      val sjes = partitions.toVector.flatMap(rows)
+      assert(sjes.size == 4)
+      assert(sjes.groupBy(_(3)).values.forall(_.map(r => BigDecimal(r(25))).sum == 0))
+      assert(sjes.filter(_(16).startsWith("REV")).map(r => BigDecimal(r(25))).sum == BigDecimal(240))
+      val receipt = sjes.find(_(16) == "REV801").get
+      assert(receipt(13) == "1552")
+      assert(receipt(24) == "07-31-02")
+      assert(sjes.filter(_(16).startsWith("EXP")).map(r => BigDecimal(r(25))).sum == BigDecimal("45.32"))
+      post(out.toString + "/", out.toString + "/", "03")
+      val ledger = rows(out.resolve("LDGR2003.csv").toFile).tail
+      assert(ledger.map(r => BigDecimal(r(19))).sum == 0)
+      assert(ledger.filter(_(12).startsWith("REV")).map(r => BigDecimal(r(19))).sum == BigDecimal(240))
+      assert(ledger.filter(_(12).startsWith("EXP")).map(r => BigDecimal(r(19))).sum == BigDecimal("45.32"))
+    }
+  }
+
   // ── Test 7: RESULT and RESOURCE log lines emitted ──────────────────────────
   test("Step ttl: RESULT step=ttl and RESOURCE step=ttl are emitted to stdout") {
     withTempDirectory("ttl-metrics-") { tempDir =>

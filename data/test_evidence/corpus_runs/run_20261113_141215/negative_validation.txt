@@ -1,0 +1,1 @@
+VALIDATION FAILED: invalid or failing controls evidence: /private/tmp/ckb-connected-smoke/validation-negative/FY03/metrics/reconciliation_results.csv

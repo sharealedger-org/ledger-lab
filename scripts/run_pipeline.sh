@@ -18,6 +18,8 @@
 #                          Default: IN_PATH, else IN_PATH/payment when it has the file.
 #    -o, --outPath  DIR    Output data root (default: /VAdata/data/)
 #    -y, --years    LIST   Comma-separated two-digit fiscal years (default: 03)
+#        --ttlType  E|R|B APA expenditure, revenue, or both (default: E).
+#        --vendorMaster FILE Explicit existing identity/name master for TTL and step 2.
 #                          e.g.  --years 03,04,05
 #    -s, --steps    LIST   Comma-separated step numbers to run   (default: 2,3)
 #                          e.g.  --steps 2,3,5,4
@@ -125,6 +127,8 @@ PO_PATH=""
 PAYMENT_PATH=""
 SEED_FROM_COMMITTED="N"
 VIEW_IN_PATHS=""
+TTL_TYPE="E"
+VENDOR_MASTER=""
 
 # ── arg parsing ───────────────────────────────────────────────────────────────
 while [[ $# -gt 0 ]]; do
@@ -143,10 +147,17 @@ while [[ $# -gt 0 ]]; do
     --paymentPath) PAYMENT_PATH="$2"; shift 2 ;;
     --seedFromCommitted) SEED_FROM_COMMITTED="Y"; shift ;;
     --viewInPaths) VIEW_IN_PATHS="$2"; shift 2 ;;
+    --ttlType)     TTL_TYPE="$2"; shift 2 ;;
+    --vendorMaster) VENDOR_MASTER="$2"; shift 2 ;;
     -h|--help)     grep '^#' "$0" | sed 's/^# \{0,2\}//'; exit 0 ;;
     *) echo "Unknown option: $1"; exit 1 ;;
   esac
 done
+
+case "$TTL_TYPE" in E|R|B) ;; *) echo "--ttlType must be E, R, or B" >&2; exit 1 ;; esac
+if [[ -n "$VENDOR_MASTER" && ! -f "$VENDOR_MASTER" ]]; then
+  echo "Vendor master not found: $VENDOR_MASTER" >&2; exit 1
+fi
 
 # ── derived values ────────────────────────────────────────────────────────────
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -374,6 +385,7 @@ run_step() {
   if [[ "$step" == "2" || "$step" == "ttl" ]]; then
     local vm_candidate
     for vm_candidate in \
+      "$VENDOR_MASTER" \
       "$IN_PATH/VendorMaster_full.csv" \
       "$IN_PATH/VendorMaster_enriched.csv" \
       "$IN_PATH/VendorMaster.csv" \
@@ -452,10 +464,12 @@ run_step() {
       input_bytes=0
       for sje_file in "$OUT_PATH/SortedJEFY${year}_"*"_exp.csv" \
                       "$OUT_PATH/SortedJEFY${year}q"*"exp.csv" \
+                      "$OUT_PATH/SortedJEFY${year}rev.csv" \
                       "$OUT_PATH/SortedJEFY${year}q"*"PO.csv" \
                       "$OUT_PATH/SortedJEFY${year}_"*"PO.csv"; do
         [[ -f "$sje_file" ]] || continue
         input_bytes=$((input_bytes + $(count_file_bytes "$sje_file")))
+        records_read=$((records_read + $(count_file_rows "$sje_file")))
       done
       ;;
     3)
@@ -510,7 +524,7 @@ run_step() {
       records_read=$(count_data_rows "$input_file")
       ;;
   esac
-  if [[ "$step" != "3" && "$step" != "20" && "$step" != "21" && "$step" != "ttl" ]]; then
+  if [[ "$step" != "3" && "$step" != "20" && "$step" != "21" && "$step" != "ttl" && "$step" != "2m" ]]; then
     input_bytes=$(count_file_bytes "$input_file")
   fi
 
@@ -562,6 +576,10 @@ run_step() {
   fi
 
   local period_arg=" --periodGranularity $PERIOD_GRANULARITY"
+  if [[ "$step" == "ttl" ]]; then
+    period_arg+=" --type $TTL_TYPE"
+    log "INPUT  step=ttl type=$TTL_TYPE vendorMaster=${vm_arg#* --vendormaster }"
+  fi
   # Step 5v can merge several years' output directories in one ordered pass (CKBViews inPaths).
   if [[ "$step" == "5v" && -n "$VIEW_IN_PATHS" ]]; then
     period_arg+=" --inPaths $VIEW_IN_PATHS"
@@ -581,7 +599,7 @@ run_step() {
         2>&1 | tee "$_tee_target") || rc=$?
     elif [[ "$time_mode" == "gnu" ]]; then
       out=$(cd "$SBT_PROJECT" && /usr/bin/time -v sbt -batch \
-        "run --step $step --inPath $jvm_in_path --outPath $jvm_out_path --year $year --quarter $quarter$jvm_ref_arg$allocation_rules_arg$fx_args$period_arg" \
+        "run --step $step --inPath $jvm_in_path --outPath $jvm_out_path --year $year --quarter $quarter$jvm_vm_arg$jvm_ref_arg$allocation_rules_arg$fx_args$period_arg" \
         2>&1 | tee "$_tee_target") || rc=$?
     else
       out=$(cd "$SBT_PROJECT" && sbt -batch \
@@ -653,11 +671,18 @@ run_step() {
       records_read=$(printf '%s\n' "$result_line_ttl" | sed -nE 's/.*records_read=([0-9]+).*/\1/p' | tail -1)
       [[ -n "$records_read" ]] || records_read="?"
       records_written=0
+      output_file_bytes=0
+      input_bytes=$(printf '%s\n' "$out" | sed -nE '/RESULT step=ttl /s/.*input_bytes=([0-9]+).*/\1/p' | awk '{ n += $1 } END { printf "%.0f", n }')
       # Count rows across both monthly (SortedJEFY{yr}_{YYYY}_{MM}_exp.csv) and
       # quarterly (SortedJEFY{yr}q{n}exp.csv) output files produced by this run.
       for sje_f in "$OUT_PATH/SortedJEFY${year}_"*"_exp.csv" \
-                   "$OUT_PATH/SortedJEFY${year}q"*"exp.csv"; do
-        [[ -f "$sje_f" ]] && records_written=$((records_written + $(count_file_rows "$sje_f")))
+                   "$OUT_PATH/SortedJEFY${year}q"*"exp.csv" \
+                   "$OUT_PATH/SortedJEFY${year}rev.csv"; do
+        if [[ -f "$sje_f" ]]; then
+          records_written=$((records_written + $(count_file_rows "$sje_f")))
+          output_file_bytes=$((output_file_bytes + $(count_file_bytes "$sje_f")))
+          output_file="$sje_f"
+        fi
       done
       [[ "$records_written" == "0" ]] && records_written=$(printf '%s\n' "$result_line_ttl" | sed -nE 's/.*records_written=([0-9]+).*/\1/p' | tail -1)
       [[ -n "$records_written" ]] || records_written="?"
@@ -744,7 +769,9 @@ run_step() {
       records_written=$(echo "$out" | grep -i "Records Written:" | tail -1 | grep -oE '[0-9]+' | tail -1 || echo "?")
       ;;
   esac
-  output_file_bytes=$(count_file_bytes "$output_file")
+  if [[ "$step" != "ttl" ]]; then
+    output_file_bytes=$(count_file_bytes "$output_file")
+  fi
 
   local out_bytes
   out_bytes=$(directory_bytes "$OUT_PATH")

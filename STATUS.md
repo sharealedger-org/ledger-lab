@@ -37,6 +37,8 @@ Updated 2026-11-12. One page. A session starts here, then reads only the `STATUS
 
 ## Next session (updated 2026-11-12)
 
+**Intel handoff, 2026-11-13:** Expanded revenue/vendor-attribute rerun and unattended execution preparation: [run handoff](docs/CKB_REVENUE_RERUN_2026-11-13.md). Revenue adapter fix and connected tiny fixture verified; full-corpus launch and actual vendor-name linkage await Intel preparation. Current cost-profile discussion is a proposal, not a measured curve or selected queue plan.
+
 **Paper revision 2 evidence folder complete** for TDS (`docs/tds-evidence/paper-1-rev2-ledger-lab/`: index and naming key, measured results, the Mix curve, spreadsheet with formulas for the CKB Cost Model, one-page explainer, refreshed `CURRENT_RESULTS.md`, limits, Phase 2 list). Revision 2 leaves out the control's results and the Part B questions. Owner review and copy to TDS (`01-evidence/practitioner/Sharealedger/`) remain open. **Track D is active by owner direction (2026-11-12):** Codex has first read access to the CKB for Phase 2 collaboration; comparison and population reconciliation remain open.
 
 Phase 2 replicate runs and revenue TTL also remain open.

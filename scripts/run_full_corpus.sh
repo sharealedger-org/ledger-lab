@@ -32,6 +32,8 @@
 #  USAGE:
 #    bash scripts/run_full_corpus.sh [--root DIR] [--logs DIR] [--years 03,04,...,16] [--lanes N]
 #                                    [--chainWidth N] [--periodGranularity monthly|annual]
+#                                    [--ttlType E|R|B] [--vendorMaster FILE]
+#                                    [--outRoot DIR] (default: ROOT/output_full)
 #    Defaults: root=$HOME/workspace/va_fresh_root  logs=$HOME/workspace/va_fresh_logs
 #              years=03..16  lanes=4  chainWidth=2  periodGranularity=monthly
 #    The output root ($ROOT/output_full) must hold no FY* entries; move or delete the old output first.
@@ -55,10 +57,13 @@ if [[ "${1:-}" == "--worker" ]]; then
       # Stagger sbt starts so several launchers do not hit project/target at the same moment.
       sleep $(( (10#$y % LANES) * 20 ))
       say "=== FY20$y prep start (ttl,2p,2m) ==="
+      master_args=()
+      [[ -z "$VENDOR_MASTER" ]] || master_args=(--vendorMaster "$VENDOR_MASTER")
       bash scripts/run_pipeline.sh \
         --inPath "$ROOT/VARawFiles" --outPath "$OUT_ROOT/FY$y" \
         --years "$y" --steps ttl,2p,2m --curve CCP2 \
-        --config "fullcorpus-run2-prep-fy$y" --periodGranularity "$GRANULARITY" \
+        --config "fullcorpus-prep-${TTL_TYPE}-fy$y" --periodGranularity "$GRANULARITY" \
+        --ttlType "$TTL_TYPE" "${master_args[@]}" \
         > "$LOGS/run2_prep_fy$y.log" 2>&1
       rc=$?
       say "=== FY20$y prep exit $rc ==="
@@ -94,6 +99,9 @@ YEARS="03,04,05,06,07,08,09,10,11,12,13,14,15,16"
 LANES=4
 CHAIN_WIDTH=2
 GRANULARITY="monthly"
+TTL_TYPE="E"
+VENDOR_MASTER=""
+OUT_ROOT=""
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --root)  ROOT="$2";  shift 2 ;;
@@ -102,16 +110,23 @@ while [[ $# -gt 0 ]]; do
     --lanes) LANES="$2"; shift 2 ;;
     --chainWidth) CHAIN_WIDTH="$2"; shift 2 ;;
     --periodGranularity) GRANULARITY="$2"; shift 2 ;;
+    --ttlType) TTL_TYPE="$2"; shift 2 ;;
+    --vendorMaster) VENDOR_MASTER="$2"; shift 2 ;;
+    --outRoot) OUT_ROOT="$2"; shift 2 ;;
     -h|--help) grep '^#' "$0" | sed 's/^# \{0,2\}//'; exit 0 ;;
     *) echo "Unknown option: $1" >&2; exit 1 ;;
   esac
 done
 
-OUT_ROOT="$ROOT/output_full"
+OUT_ROOT="${OUT_ROOT:-$ROOT/output_full}"
+case "$TTL_TYPE" in E|R|B) ;; *) echo "--ttlType must be E, R, or B" >&2; exit 1 ;; esac
+if [[ -n "$VENDOR_MASTER" && ! -f "$VENDOR_MASTER" ]]; then
+  echo "Vendor master not found: $VENDOR_MASTER" >&2; exit 1
+fi
 STAMP="$(date '+%Y%m%d_%H%M%S')"
 MARKERS="$LOGS/markers_$STAMP"
 WALL="$LOGS/corpus_wallclock_$STAMP.csv"
-export REPO ROOT LOGS OUT_ROOT MARKERS WALL LANES GRANULARITY
+export REPO ROOT LOGS OUT_ROOT MARKERS WALL LANES GRANULARITY TTL_TYPE VENDOR_MASTER
 say() { echo "[$(date '+%F %T')] $*"; }
 
 mkdir -p "$LOGS" "$MARKERS" "$OUT_ROOT"
@@ -138,6 +153,7 @@ CAFFEINATE=off
 if command -v caffeinate >/dev/null 2>&1; then caffeinate -i -s -w $$ & CAFFEINATE=on; fi
 {
   echo "# years=$YEARS lanes=$LANES periodGranularity=$GRANULARITY"
+  echo "# ttl_type=$TTL_TYPE vendor_master=${VENDOR_MASTER:-auto-discovery}"
   echo "# chain_width=$CHAIN_WIDTH views_early=Y caffeinate=$CAFFEINATE"
   echo "# git=$(cd "$REPO" && git rev-parse --short HEAD 2>/dev/null) dirty_files=$(cd "$REPO" && git status --porcelain 2>/dev/null | wc -l | tr -d ' ')"
   echo "# host=$(uname -n) cpus=$(sysctl -n hw.ncpu 2>/dev/null || nproc)"

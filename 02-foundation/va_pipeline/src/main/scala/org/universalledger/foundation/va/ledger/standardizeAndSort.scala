@@ -1342,9 +1342,8 @@ object standardizeAndSort {
       seqNo:          Int
   ): Seq[(String, Boolean, BigDecimal)] = {
     if (recType == "R") {
-      // revenue: reuse buildRevenuePairs with format "RA" (agencyKey, fundKey, srcKey, amount)
-      // normalized(4) = transDate — inject as col 4 so buildRevenuePairs sees it as RC-style
-      val cols = Array(normalized(0), normalized(1), normalized(2), normalized(3), normalized(4))
+      // RC consumes agency, amount, fund, source, date; normalized APA order differs.
+      val cols = Array(normalized(0), normalized(3), normalized(1), normalized(2), normalized(4))
       buildRevenuePairs(cols, "RC", vendorMap, accountingRule, year, acctDate, seqNo)
     } else {
       // expense: reuse buildExpensePairs with format "B" (agencyKey, fundKey, objKey, progKey, vendorName, amount, transDate)

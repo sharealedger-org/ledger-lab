@@ -1,0 +1,15 @@
+event,epoch_s,local_time
+corpus_start,1794604335,2026-11-13 14:12:15
+# years=03 lanes=1 periodGranularity=monthly
+# ttl_type=B vendor_master=/private/tmp/ckb-connected-smoke/VendorMaster.csv
+# chain_width=1 views_early=Y caffeinate=on
+# git=f3943f0 dirty_files=8
+# host=MacBookAir cpus=8
+prep_all_done,1794604360,2026-11-13 14:12:40
+views_start,1794604365,2026-11-13 14:12:45
+chain_start_fy03,1794604365,2026-11-13 14:12:45
+views_end,1794604374,2026-11-13 14:12:54
+chain_end_fy03,1794604419,2026-11-13 14:13:39
+chain_all_done,1794604419,2026-11-13 14:13:39
+views_all_done,1794604419,2026-11-13 14:13:39
+corpus_end,1794604419,2026-11-13 14:13:39

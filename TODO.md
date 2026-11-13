@@ -13,6 +13,9 @@ Seeded 2026-11-11 from the handoff entries. On the same day the handoff was trim
 
 ## Cost graphs (Track B1)
 
+- [ ] **Expanded Intel run:** verify source/master coverage, identify generated control outputs for authorized cleanup, deliver linked vendor names to consumers, and select the unattended plan. Revenue adapter and connected synthetic smoke are fixed/verified; see [handoff](docs/CKB_REVENUE_RERUN_2026-11-13.md).
+- [ ] **New cost-profile design:** define genuinely different retained outputs and expanded `5v` financial/AIM views over the same canonical SJEs. Measure incremental work/output, not an assumed zero cost. Freeze the resulting foundation before Phase 2 questions.
+
 - [x] 2026-11-12: **Refresh `docs/CURRENT_RESULTS.md`** with completed Run 4 evidence, baseline tag, standardized naming, and "measured, shows, does not show" table per cost point.
 - [x] 2026-11-12: **TDS Paper Revision 2 Evidence Folder** created at `docs/tds-evidence/paper-1-rev2-ledger-lab/` (README index, `01-measured-results-summary.md`, `02-mix-cost-curve-model.md`, `03-ckb-cost-model.xlsx` 4-sheet model workbook, `04-one-page-explainer.html`, `05-limits-and-phase2-roadmap.md`).
 - [ ] **Draw the Process, Mix and Engine one-page sheets** from the archived CSVs. No script without owner approval (`AGENTS.md`); `awk` numbers plus static pages first.

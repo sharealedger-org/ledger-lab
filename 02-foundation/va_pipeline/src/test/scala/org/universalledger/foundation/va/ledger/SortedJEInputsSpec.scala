@@ -11,7 +11,7 @@ class SortedJEInputsSpec extends AnyFunSuite {
 
   test("year with a merged file: 2m inputs (monthly, quarterly, PO) are skipped; merged and derived files are kept") {
     val in = files(
-      "SortedJEFY03_0003_07_exp.csv", "SortedJEFY03_0003_08_exp.csv", "SortedJEFY03q1PO.csv",
+      "SortedJEFY03_0003_07_exp.csv", "SortedJEFY03_0003_08_exp.csv", "SortedJEFY03q1PO.csv", "SortedJEFY03_rev.csv",
       "SortedJEFY03merged.csv", "SortedJEFY03_FXR.csv", "SortedJEFY03_ALLOC.csv")
     assert(names(SortedJEInputs.oneRead(in)) ==
       Seq("SortedJEFY03merged.csv", "SortedJEFY03_FXR.csv", "SortedJEFY03_ALLOC.csv"))
