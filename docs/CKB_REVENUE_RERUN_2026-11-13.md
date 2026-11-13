@@ -1,5 +1,28 @@
 # Connected CKB rerun: revenue and vendor attributes
 
+**Automatic sequential reporting handoff, 2026-11-13:** New queue launches can
+select `--reportAfterQueue` to invoke expanded reporting once after every planned
+run validates, including FY2016 posting. This remains outside replicate timings.
+For an already-running frozen queue, attach the separate gate without editing its
+processing code:
+
+```bash
+bash scripts/run_reporting_after_queue.sh \
+  --queueRoot /absolute/existing/queue \
+  --outPath /absolute/new/reporting-output \
+  --refPath /absolute/reference-directory --wait
+```
+
+The gate checks every ten minutes, stops on queue failure or STOP, revalidates the
+last successful population, pins each FY symlink to its physical generation, and
+invokes `run_reporting.sh` only then. It does not overlap reporting and corpus
+replicates, retry financial failures, copy SJEs, or change the active queue.
+Optional sorted canonical vendor/contract dimensions and reporting bounds can be
+supplied to the gate. The raw TTL master is deliberately not passed as a reporting
+dimension. Existing reporting guards remain active; the large unattributed group
+can still exceed the default row allowance. Such a failure retains diagnostics
+and is not evidence that corpus reporting succeeded.
+
 **Scope clarification, 2026-11-13 14:54:05 AZT:** Later owner discussion supersedes the narrower experimental proposals below. Three runs through FY2016 retain Phase 1 measurement boundaries with revenue/fiscal-date changes; one expanded reporting execution follows separately. Reporting combines canonical SJEs, posted balances, vendor/IP and available contract dimensions, and VA references, producing movement, balance and enriched output families. Larger cross-vendor cuts require bounded spills and explicit post-processing. These are exploratory runs before Phase 2, with refinement expected. See the [pre-design reflection](../tracks/D-control/CODEX_REFLECTIONS.md). Existing implementation/evidence statements below remain unchanged; the expanded reporting pass has not yet been designed or built.
 
 Owner direction, 2026-11-13: proceed with a richer CKB corpus; matching control's scope is not a constraint. Run on the Intel machine. Its generated control outputs may be removed to recover space, after identifying exact paths and retaining code and compact evidence. No deletion has occurred in this session.

@@ -2,6 +2,7 @@
 # Unattended full-run queue. Bash orchestration only; no financial calculations.
 # Usage: run_corpus_queue.sh --root RAW_ROOT --queueRoot NEW_DIR --plan PLAN.tsv
 #        [--vendorMaster FILE] [--years 03,...,16] [--minFreeGiB 140]
+#        [--reportAfterQueue] (one separately measured expanded report after all runs)
 # Plan: TAB-separated run_name, granularity (monthly|annual), TTL type (E|R|B); no header.
 # Every run gets independent output/log directories. No automatic deletion or retry.
 # Create QUEUE_ROOT/STOP to stop before the next run; the current run completes.
@@ -11,6 +12,7 @@ repo="$(cd "$script_dir/.." && pwd)"
 root=""; queue=""; plan=""; master=""
 years="03,04,05,06,07,08,09,10,11,12,13,14,15,16"
 minimum=140
+report_after=0
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --root) root="$2"; shift 2 ;;
@@ -19,6 +21,7 @@ while [[ $# -gt 0 ]]; do
     --vendorMaster) master="$2"; shift 2 ;;
     --years) years="$2"; shift 2 ;;
     --minFreeGiB) minimum="$2"; shift 2 ;;
+    --reportAfterQueue) report_after=1; shift ;;
     *) echo "Unknown argument: $1" >&2; exit 1 ;;
   esac
 done
@@ -89,3 +92,11 @@ while IFS=$'\t' read -r current granularity family; do
   printf '%s,VALIDATED,%s\n' "$current" "$(date -u +%FT%TZ)" >> "$queue/status.csv"
 done < "$queue/plan.tsv"
 echo "All requested runs validated; see $queue/status.csv"
+if (( report_after )); then
+  current=expanded_reporting
+  printf '%s,RUNNING,%s\n' "$current" "$(date -u +%FT%TZ)" >> "$queue/status.csv"
+  # Do not pass the raw TTL master as a sorted canonical-key report dimension.
+  bash "$script_dir/run_reporting_after_queue.sh" --queueRoot "$queue" \
+    --outPath "$queue/expanded_reporting" --refPath "$root" > "$queue/reporting.log" 2>&1
+  printf '%s,COMPLETE,%s\n' "$current" "$(date -u +%FT%TZ)" >> "$queue/status.csv"
+fi
