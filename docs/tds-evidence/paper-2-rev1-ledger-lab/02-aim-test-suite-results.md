@@ -38,10 +38,11 @@ The **AIM (Accounting Information Loss in Machine Learning)** test suite provide
   * **Training Cohort:** FY2010–FY2013 purchase order event sequences.
   * **Hold-Out Evaluation Set:** FY2014–FY2015 vendor activity.
   * **Target Definition:** Vendor churning in FY2015 (zero active transactions following regular historical activity).
+  * **Validation Windows:** Four expanding walk-forward windows (C from 0.7546 to 0.7713), not the seven originally locked. FY2009 has no PO file, which leaves FY2010–FY2015 as the only contiguous eligible run.
 * **Measured Result:**
   * **C-Statistic (AUC-ROC):** **`0.7527`** (exceeds locked threshold $C > 0.65$).
   * **Permutation Significance:** **`p = 0.001`** across 1,000 random label permutations (exceeds locked threshold $p < 0.05$).
-* **Significance:** Proves that pre-posting commitment sequences carry strong predictive power for vendor churn that cannot be captured once transactions are aggregated into annual General Ledger spend totals.
+* **Significance:** Shows that the commitment-pattern model passes the locked threshold on this hold-out. It does not yet show that commitment sequences add signal beyond posted totals, because no balance-derived baseline has been run. Caveats: four training years, four features, linear model; the churn rate rises from 24% to 33% over FY2012–FY2015, so some signal may be a time trend. The balance-derived baseline comparison and a re-run on the final views are pending (ledger-lab `TODO.md`).
 
 ---
 

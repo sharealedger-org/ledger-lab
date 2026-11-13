@@ -1,6 +1,6 @@
 # Track B2: Paper 2 models (AIM tests and the three-model experiment)
 
-Updated 2026-11-12. **On hold** during the reorganisation (owner, 2026-11-12). Claim under test: a model trained on posted (GL) data cannot recover what posting threw away; a model trained on the instrument ledger can.
+Updated 2026-11-13. Claim under test: a model trained on posted (GL) data cannot recover what posting threw away; a model trained on the instrument ledger can.
 
 ## Three-model experiment
 
@@ -21,7 +21,10 @@ AIM0 closed. AIM1 first pass on FY2012 only. AIM3 hold-out C = 0.7527, p = 0.001
 ## Next actions (when un-paused)
 
 1. Owner decisions: D9, verbalizer visibility of account text, period text normalisation, first anchor figure for the tie-out, where the raw `VARawFiles` and budget files are.
-2. Steps 5 to 7. Re-run AIM1, AIM3, AIM4 on the final views.
+2. Run AIM tests on the Intel machine (where python ML dependencies `numpy`, `scikit-learn`, `scipy`, `statsmodels` are installed):
+   - Re-run AIM1, AIM3, AIM4 on the final Gold views (`/Users/kiptwitchell/Library/CloudStorage/OneDrive-Personal/LedgerLabOutputs-Gold/VIEWS/`).
+   - Run AIM3 balance-derived baseline (GL/LDGR vendor-year aggregates and time-trend control).
+3. Steps 5 to 7.
 3. Revenue through the Scala TTL for one year needs the architecture-gate declaration first (`docs/AGENTIC_ARCHITECTURE_GATES.md`).
 
 Python scripts here are post-engine analysis; the owner approved them earlier, and a new one needs fresh approval and the "could Scala do this?" question (`AGENTS.md`). To-dos: `TODO.md` sections "Three-model experiment" and "Model tests (AIM)".

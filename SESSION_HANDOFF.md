@@ -6,6 +6,34 @@ Updated 2026-11-12. This file is a dated log, newest entry first; use the linked
 - **Older entries** (run 3 preflight and everything before it, back to 2026-09-30) were moved unchanged to [`docs/archive/SESSION_HANDOFF_ARCHIVE_2026-11.md`](docs/archive/SESSION_HANDOFF_ARCHIVE_2026-11.md). Other documents that cite a `SESSION_HANDOFF.md` entry by name (for example "Corpus Work Assignment to Bob", "Plan for the next session", the 2026-11-06 entries) mean the archive.
 - When this file passes about 500 lines, move all but the newest few entries to the archive in the same way.
 
+## 2026-11-13 (TRACK B2) Handoff: Track B2 resumed for AIM tests; handoff to Intel host (Bob, M1 Mac)
+
+**Read first in the next session:** [`STATUS.md`](STATUS.md), then [`tracks/B2-models/STATUS.md`](tracks/B2-models/STATUS.md).
+
+**Summary:** Track B2 opened for AIM test suite execution (AIM1, AIM3, AIM4, AIM3 balance-derived baseline, and walk-forward verification). Checked environment on M1 Mac: Python ML packages (`numpy`, `scikit-learn`, `scipy`, `statsmodels`) are not installed in this environment, but are present on the Intel host machine. Located full 14-year Gold data and views at `/Users/kiptwitchell/Library/CloudStorage/OneDrive-Personal/LedgerLabOutputs-Gold/` (104/104 files present, including `VIEWS/view_vendor_year_survival.csv` and `VIEWS/view_monthly_order_volume.csv`).
+
+**Next on Intel host:**
+1. Execute `scripts/fit_vendor_survival_windows.py` with `--view` pointing to Gold `view_vendor_year_survival.csv`.
+2. Implement and run the AIM3 balance-derived baseline (GL/LDGR vendor-year aggregates vs. commitment-pattern model, plus time-trend control).
+3. Re-run AIM1 (`scripts/fit_noninjectivity.py`) across all 14 years and AIM4 (`scripts/fit_ordering_seasonality.py`) on Gold monthly order volume.
+
+## 2026-11-13 (TRACK D, later) Handoff: control package agreed; launcher added; Bob's concurrence written (Bob, M1 Mac)
+
+Owner agreed the control-side package, said the control runs on the Intel host, and chose a launcher script over a read-only mount. In `ledger-lab-control` (all uncommitted): rule-file header now credits Codex Origin's amendments; `scripts/run_control.sh` (resolves `@CORPUS@`/`@OUT@` from `allowed_roots.txt`; only `python3 scripts|src/*.py` and `bash scripts/*.sh`; no `..`; logs to the output root) with `tests/test_run_control.py`; rule file gained a launcher section; Bob's own `git fetch origin` and digest from `3c50c19` (no correction to Codex Origin's digest; logged as the third reading in the baseline record); Bob's concurrence entry at the top of the control `SESSION_HANDOFF.md`, which marks hook loading in the live client, memory isolation and the OS gap as NOT VERIFIED. All 54 control tests pass on this machine (the launcher's real `check` exits 66 here because the Intel paths do not exist, as expected). **Not done:** commit (owner), live hook check and memory smoke test (fresh control-only task on the Intel host), Q2-draft questions and evaluation criteria. This session still knows the experiment and does not become the control builder. Python and Bash edits were confined to the control repository.
+
+
+
+## 2026-11-13 (TRACK D) Handoff: Phase 2 design discussed (agents swapped, change response); nothing started (Bob, M1 Mac)
+
+**Done.** Discussion, a read of the control's uncommitted Phase 2 package (checkout at `7554427`; the digest from `3c50c19` was **not** run), and Bob's protections added to the control working tree, uncommitted (`.bob/settings.json`, `.bob/hooks/`, `.bob/rules/control-boundary.md`, one `.gitignore` line; 33 standalone probes passed; not yet verified in a live Bob session). No control source, test or journal file was changed, and Bob's concurrence entry is not written. Recorded the Phase 2 design in `tracks/D-control/STATUS.md` and the to-dos in `TODO.md` (Track D).
+
+**Decided by the owner:** Bob builds and extends the control as a continuation of the existing control repository; Codex extends the CKB. Access stays one-way (CKB side reads the control, never the reverse). Questions are formulated on the CKB side during the build and given to the control afterwards; two gates on the CKB side, Q2-draft (initial questions identified) and Q2-final (finalised from what is learned, with the evaluation criteria; "Q2" = Phase 2, matching the control repository). Bob and Codex may both contribute to the next tests.
+
+**Proposed, awaiting the owner:** record the reason for every Q2-draft to Q2-final change; record who proposed each question; define how gold is derived; cold-total and marginal numbers, a capabilities axis, Phase 1 reconciliation after every change, and a change log (the owner's measure: total processing of Phase 1 + Phase 2 together, every Phase 1 change noted; agent time stays out, per `AGENTS.md`); optional post-Q2 cold set for both builders; memory test for Bob and both Codex instances before the swap. Owner decisions (2026-11-13): no separate machine and no fresh clone, because the risk is judged modest; Bob builds on the existing control working copy; the evaluation criteria are part of the Q2 process. Bob's rule for that setup: open the control folder alone, never its parent or a multi-root workspace file (the workspace file in the parent lists the experiment repository as a root).
+
+**Next.** Owner plan (2026-11-13): (1) test Codex's cross-session memory and how it can be controlled; (2) if satisfied, engage Codex in this repository to discuss the next-stage questions (log the exposure); (3) consult Bob again before Q2-draft is finalised. Also: the owner corrected the hardware record (both Phase 1 runs on Intel Macs; the M1 is only Bob's later sessions), fixed in `tracks/D-control/STATUS.md` and `TODO.md`; and the cost of a capability is its incremental cost (passes, input rows and bytes, time, memory, output, storage), not files read. Then fetch the control repo, run the digest, tag the control's Phase 1 end.
+
+
 ## 2026-11-13 (TRACK B2) Handoff: Paper 2 Dedicated Evidence Package Created & Ingested into TDS (Bob, M1 Mac)
 
 **Read first in the next session:** [`STATUS.md`](STATUS.md), then [`tracks/B2-models/STATUS.md`](tracks/B2-models/STATUS.md).

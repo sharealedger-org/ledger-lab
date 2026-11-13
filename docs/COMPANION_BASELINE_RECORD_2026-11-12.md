@@ -83,6 +83,20 @@ Delivery, confirmed reading and incorporation are different events.
 | Not read | `final_validation.json`, `disk_measures.txt`, the plots, and all code |
 | Incorporation | **None.** No companion commit, decision or number changed. |
 
+### Third reading: fetch and digest from 3c50c19 (Bob's own receipt)
+
+| Field | Entry |
+|---|---|
+| When | 2026-11-13, about 03:00 to 03:30 UTC (2026-11-12 evening -0700) |
+| Sender and recipient | Already published on `origin/main`; Codex Origin's digest of the same revision sits in the control handoff (uncommitted). Recipient: Bob, via the owner's prompt in this session. Bob's receipt is independent of Codex Origin's fetch. |
+| Source revision | `git fetch origin` in the owner's `ledger-lab-control` checkout (HEAD stays `7554427`; no merge), reading `origin/main` `3c50c19` with `git show` |
+| Read | `docs/OFFICIAL_MEASUREMENT_20261112/` `README.md`, `final_validation.json`, `disk_measures.txt`, `query_summary.csv`, `status.json`; the control's working-tree handoff entries by Codex Origin (digest and remaining steps) and its isolation package |
+| Not read | Plots, `review.json` (read in the second reading), code |
+| Result | Figures match the Track D page and Codex Origin's digest; no correction. New detail: `status.json` lists `partial_po_years` 2002 (137) and 2009 (3,904). |
+| Incorporation | **None.** No companion commit, decision or number changed. |
+| Written to the control | By the owner's decision, Bob wrote only Bob-side configuration (`.bob/`, one `.gitignore` line, `scripts/run_control.sh`, `tests/test_run_control.py`) and one concurrence entry in the control `SESSION_HANDOFF.md`. All uncommitted; the commit is the owner's step. |
+
+
 ### Informed changes after the baseline
 
 None yet. Any companion change that follows from a control finding must be listed here with its commit, the control entry it came from (author, date, revision), and a statement that the baseline above was left unchanged.
