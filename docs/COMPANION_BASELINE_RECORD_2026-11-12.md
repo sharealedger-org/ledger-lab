@@ -56,7 +56,7 @@ Not on `main`: `docs/EXPERIMENT_STATE_2026-11-11.md` and the cost-graph model ru
 - **Not established by commit times:** that no later measurement happened. A commit time shows when evidence was recorded, not when it was produced. The runs carry their own timestamps in their evidence folders.
 - **Earlier contact, for the reader to weigh:** Bob authored the control's Gates 0 to 2, answered Codex's audits, and audited the Gate 3 Arm B prototype (`c3ec922`) on 2026-11-10 to 11, so the companion's author had seen the control's design before runs 3 and 4. The run-2 orchestration change (`2fac4c1`, chain pool and early `5v`) was committed 2026-11-11 00:57, after that audit. Nothing in the record shows the control influenced it, and nothing shows it did not.
 
-## 2. Exposure log (control material read by the companion)
+## 2. Exposure log (control and companion material)
 
 Delivery, confirmed reading and incorporation are different events.
 
@@ -94,10 +94,40 @@ Delivery, confirmed reading and incorporation are different events.
 | Not read | Plots, `review.json` (read in the second reading), code |
 | Result | Figures match the Track D page and Codex Origin's digest; no correction. New detail: `status.json` lists `partial_po_years` 2002 (137) and 2009 (3,904). |
 | Incorporation | **None.** No companion commit, decision or number changed. |
-| Written to the control | By the owner's decision, Bob wrote only Bob-side configuration (`.bob/`, one `.gitignore` line, `scripts/run_control.sh`, `tests/test_run_control.py`) and one concurrence entry in the control `SESSION_HANDOFF.md`. All uncommitted; the commit is the owner's step. |
+| Written to the control | By the owner's decision, Bob wrote only Bob-side configuration (`.bob/`, one `.gitignore` line, `scripts/run_control.sh`, `tests/test_run_control.py`) and one concurrence entry in the control `SESSION_HANDOFF.md`. All uncommitted at the time. **Update 2026-11-13:** these were committed with Codex Origin's package as `8edf787` on the side branch, and that branch was merged into the control's `main` as `ab0f7f0` (owner instruction, executed by Bob; 54 tests pass; no `src/` change; stray remote branch deleted). |
+
+
+### First CKB access by Codex for Phase 2 collaboration
+
+| Field | Entry |
+|---|---|
+| When | 2026-11-12, approximately 20:18 (-0700) |
+| Sender and recipient | The owner opened this repository to Codex for Phase 2 collaboration. The specific Codex instance was not identified in the prompt. |
+| CKB source revision | `ledger-lab` `main` at `a432acb`; the working tree already had uncommitted edits when inspected. |
+| Control source revisions | Adjacent checkout's `ledger-lab-control` remote-tracking ref `origin/main` at `3c50c19`; separate remote-tracking ref `origin/origin/baseline-knowledge-sharing` at `8edf787`. No fetch was performed in this session. |
+| Read | In the CKB: root `STATUS.md` and `README.md`; `tracks/D-control/STATUS.md`, `tracks/D-control/COMPARISON_PLAN.md`, `TODO.md`, `SESSION_HANDOFF.md`; `docs/README.md`, `docs/CURRENT_RESULTS.md`, `docs/TRACK_D_NOTES.md`, and this baseline record. In the control branch: `docs/Q2_COLLABORATION_AND_CONTROL_ISOLATION.md`, `AGENTS.md`, `scripts/run_control.sh`, and the beginning of `SESSION_HANDOFF.md`; also the branch diff summary and changed-file list. |
+| Branch inspection | The side branch is not empty: its unique commit `8edf787` changes 14 files (1,058 insertions), including Q2 collaboration and isolation documentation, advisory controls, a launcher, and tests. The branch was retained; no control-repository files or refs were changed. **Later (2026-11-13):** the branch was merged into the control's `main` as `ab0f7f0` and deleted; `8edf787` is now an ancestor of `main`. |
+| Not read | The CKB engine implementation or corpus data; the control's `src/ledger_control.py`, official-measurement JSON/CSV evidence, hook implementation, and test files. |
+| Purpose | Begin CKB-side Phase 2 collaboration and determine whether the control branch was empty before considering cleanup. |
+| Incorporation | No Q2 questions or evaluation criteria were finalized. The control did not receive any CKB code or results, and no files in the control repository were changed. |
+
+
+### Codex digest of the control merge to main
+
+| Field | Entry |
+|---|---|
+| When | 2026-11-12, approximately 20:42 (-0700) |
+| Sender and recipient | The owner reported that Bob merged the control branch to `main`; Codex verified the merge in the adjacent checkout. |
+| Source revision | Local `main` and its `origin/main` remote-tracking ref both resolve to `ab0f7f0`; merge parents are `3c50c19` and `8edf787`. No fetch was performed in this session. |
+| Read | Commit history and merge summary for `3c50c19..origin/main`; compared the merged tree with the previously inspected `8edf787` branch. Reviewed `docs/Q2_COLLABORATION_AND_CONTROL_ISOLATION.md`, `AGENTS.md`, `.bob/hooks/control_boundary.mjs`, `.codex/config.toml`, `.bob/settings.json`, `.bob/rules/control-boundary.md`, `scripts/run_control.sh`, both new test files, and the relevant `SESSION_HANDOFF.md` entries. The package is unchanged by the merge. Previously digested official-measurement content from `3c50c19` was not re-read. |
+| Result | `ab0f7f0` merges the 14-file, 1,058-insertion Q2 collaboration/isolation package. No `src/` files changed. The control handoff reports all 54 tests passed; not independently rerun here. The hook/configuration are advisory; live hook loading, memory isolation, and OS-level enforcement remain unverified. The checkout is clean on `main`; no side-branch ref remains. |
+| Not read | `allowed_roots.txt`, control engine source, and official-measurement JSON/CSV evidence. |
+| Incorporation | No control files or refs were changed. The CKB status now records `ab0f7f0` as this session's digest point; no new measurement or Q2 question set was produced. |
 
 
 ### Informed changes after the baseline
+
+**Additional CKB orientation (2026-11-12, Arizona):** at the owner's request, Codex read the root and Track D status, comparison plan, this baseline record, architecture gates, verification protocol, foundation README, the CKB execution-model introduction, recent handoff entries, and the opening of Scala `post.scala`. Source: working tree at `0c05037`, with pre-existing documentation edits. No control checkout or corpus was read; no engine changes, measurements, or Q2 decisions resulted. This records this session's reading without replacing the earlier exposure entries.
 
 None yet. Any companion change that follows from a control finding must be listed here with its commit, the control entry it came from (author, date, revision), and a statement that the baseline above was left unchanged.
 

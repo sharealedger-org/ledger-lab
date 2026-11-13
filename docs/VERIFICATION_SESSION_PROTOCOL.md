@@ -29,37 +29,11 @@ If you are uncertain which category applies, start in **Adversarial Reviewer** m
 
 ---
 
-## What Changed Since the Original Protocol Was Written
+## Current evidence and historical status
 
-The repository has accumulated significant new work since the last Adversarial Review pass. Before starting a new verification session, a session agent should be aware of the following structural changes:
+This document defines the verification method. For current workload priorities and evidence, start with the relevant track status and the [audit register](VERIFICATION_AUDIT_REGISTER.md).
 
-### New steps added (not yet in the audit register)
-
-| Step | File | What it does | Audit state |
-|------|------|-------------|-------------|
-| Step 20 — GLPost | `ledger/GLPost.scala` | Reads `SortedJEFY*.csv`, accumulates account-keyed balances (instrument identity discarded), writes `GL20YY.csv`. Emits `RESULT step=20` and `RESOURCE step=20`. | `not_audited` — functional tests pass; no contract audit, no CKB placement claim, no memory-bound declaration. |
-| Step 21 — PermutationGenerator | `ledger/PermutationGenerator.scala` | Reads same `SortedJEFY*.csv`, accumulates `(account_key, vendor_id)` permutation counts, writes `PERM_TBL20YY.csv`. | `not_audited` — same. |
-| process_metrics RESULT/RESOURCE emission | `standardizeAndSort.scala`, `post.scala` | Steps 2 and 3 now emit `RESULT` and `RESOURCE` structured log lines; `write_canonical_evidence.sh` grep extracts them into `process_metrics.csv`. | `partially_verified` — emission confirmed by fixture test; CPU fields, spill evidence, and manifest identity hashes remain unverified. |
-| `transIPID` fix | `transStandardize.scala` | Legacy `transStandardize` path (not the live Step 2 path): PO path now populates `transIPID = rec.poVendorID`; payment path does VendorMaster name-lookup. | `partially_verified` — 21/21 fixture tests pass; no runtime fixture run with `--with-po-fixture`; `transIPID` non-zero on real data not confirmed. |
-| `POSortedJE.sortspec` | `02-foundation/sort_specs/` | Declares PO SJE sort key `(transIPID, transFiscalPeriod, transTransDate)`. | `design_only` — file exists, not yet wired to any running step. |
-
-### Evidence infrastructure: what `write_canonical_evidence.sh` actually emits
-
-`write_canonical_evidence.sh` is the only script that writes canonical evidence. It emits:
-
-| File | Populated? | What is missing |
-|------|-----------|-----------------|
-| `run_manifest.csv` | Partially | `java_version`, `engine_version`, `configuration_hash`, `rules_hash`, `viewspec_hash`, `input_snapshot_id`, `replicate_number` all written as empty strings. `scala_version` is hardcoded to `2.12.18` (now stale — actual version is `2.12.20`). |
-| `process_metrics.csv` | Partially | `cpu_user_seconds`, `cpu_system_seconds`, `cpu_total_seconds`, `peak_jvm_heap_bytes`, `pageins`, `context_switches`, `spill_bytes` all written as empty. `wall_seconds` is inferred from `elapsed_s` in the log. Process start/end times are both set to the run timestamp, not step-level timestamps. |
-| `partition_catalog.csv` | Partially | `first_key`, `last_key`, `min_period`, `max_period` all empty. `checksum` computed only for files that exist at write time; skips Step 3 input when Step 12 is active. |
-| `reconciliation_results.csv` | Partially | SJE and ledger balance controls present. Missing: per-group balance, ledger reconstruction from supporting SJEs, generated-event lineage coverage, shared-core equality, perspective totals vs. ledger totals, rounding residuals. |
-| `sort_events.csv` | Stub | Sort key written as a literal string (not from the `.sortspec` file). `spill_file_count`, `peak_memory_bytes`, `chunk_size` are empty. `sort_reason` and `input_scope` absent. |
-| `sje_engine_metrics.csv` | Written only when Step 12 active | `source_sje_rows` hardcoded to `0`. `lineage_coverage` hardcoded to `1.0`. |
-| Steps 20, 21 | Not handled | `write_canonical_evidence.sh` has no `append_process` case for steps 20 or 21. Their `RESULT`/`RESOURCE` lines are not extracted. |
-
-These gaps mean **no run currently produces a complete evidence bundle** as defined by `MEASUREMENT_AND_LOGGING.md`. Cost-curve comparisons based on existing evidence are limited to `input_rows`, `output_rows`, `elapsed_s`, and `peak_rss_bytes` for Steps 2, 3, 6, and 12.
-
----
+The older implementation/evidence tables are preserved in the [pre-cleanup snapshot](archive/document_cleanup_2026-11-12/docs/VERIFICATION_SESSION_PROTOCOL.md#what-changed-since-the-original-protocol-was-written). They mix earlier gaps with later fixes and are not a current inventory. Archiving them does not resolve any missing evidence or upgrade implementation maturity.
 
 ## Two User-Facing Modes
 
@@ -236,7 +210,7 @@ Leave the claim, evidence paths, commands, state, limitations, and next falsifie
 
 ## Priority Order for Next Verification Work
 
-The following is the ordered queue based on what blocks the research programme. Work through it top-to-bottom; do not skip ahead to build a higher CCP until the items it depends on are `verified` or explicitly approved `partially_verified`.
+**Historical queue, retained for its unresolved checks and gates.** This section combines early status with later corrections; do not treat its implementation descriptions as current findings. Use the relevant track status and audit register to select today's work. The gates below remain applicable unless later evidence or an explicit owner decision supersedes them; this documentation cleanup closes none of them.
 
 ### Priority 1 — Evidence infrastructure gaps (blocks all CCPs)
 

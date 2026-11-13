@@ -132,7 +132,7 @@ The gap between 1 and 2 shows what posting lost. The gap between 2 and 3 shows w
 | Track | What it is | Status |
 |---|---|---|
 | Track C (Berka bank data) | Tried the same idea on a public Czech bank data set. | Illustrative only, left out of Paper 2 by owner decision. Stalled. |
-| Track D (Control Repository) | Codex unconstrained control implementation (`sharealedger-org/ledger-lab-control`). | Official attempt completed and PASS by Codex report (`3c50c19`). Paused for Paper Revision 2. |
+| Track D (Control Repository) | Codex unconstrained control implementation (`sharealedger-org/ledger-lab-control`). | Official attempt completed and PASS by Codex report (`3c50c19`). Active by owner direction (2026-11-12); Codex has first read access to the CKB for Phase 2 collaboration. Comparison and reconciliation remain open. |
 
 ## 8. Earlier statements that are wrong
 
@@ -163,7 +163,7 @@ In rough order:
 2. **Replicates & Points:** Run three replicates for CCP1 to CCP5 under a chosen reference layout.
 3. **Three-Model Experiment (Track B2):** Resolve decision D9 (Net Income ground truth), implement IL-Native, select Apache 2.0 base model, and execute fine-tuning.
 4. **Revenue TTL:** Process `apa_revenue` through Scala transformation to add `REV*` accounts to Gold.
-5. **Track D Informed Phase:** Resume Track D comparison after Paper Revision 2.
+5. **Track D:** Continue the active comparison and Phase 2 collaboration. The CKB-side questions are not finalized; reconcile the Phase 1 population and timed-scope differences before a whole-run comparison.
 
 ## 11. Reading order
 

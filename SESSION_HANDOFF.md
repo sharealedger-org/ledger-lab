@@ -6,6 +6,39 @@ Updated 2026-11-12. This file is a dated log, newest entry first; use the linked
 - **Older entries** (run 3 preflight and everything before it, back to 2026-09-30) were moved unchanged to [`docs/archive/SESSION_HANDOFF_ARCHIVE_2026-11.md`](docs/archive/SESSION_HANDOFF_ARCHIVE_2026-11.md). Other documents that cite a `SESSION_HANDOFF.md` entry by name (for example "Corpus Work Assignment to Bob", "Plan for the next session", the 2026-11-06 entries) mean the archive.
 - When this file passes about 500 lines, move all but the newest few entries to the archive in the same way.
 
+## 2026-11-12 (TRACK D) Documentation cleanup
+
+Owner requested cleanup/archive of outdated documents. Preserved exact snapshots of the old comparison draft and verification protocol under `docs/archive/document_cleanup_2026-11-12/`; replaced the comparison at its stable path with current navigation and unresolved decisions. Removed historical implementation tables from the active protocol while retaining verification rules and unresolved gates; marked its old priority queue and the foundation README inventory/status as historical. Updated the docs map and corrected Track D's next Codex digest start to the existing `ab0f7f0` receipt. No control checkout read, financial code changed, evidence upgraded, or run artifacts deleted. Next: Q2 design and population/timing reconciliation; owner decisions remain open.
+
+## 2026-11-12 (TRACK D) Codex orientation; incidental review only
+
+Owner asked for familiarity with the experiment repository, primarily Track D, with inexpensive incidental audit. Read root/track status first, Track D comparison and baseline records, architecture gates and verification protocol, foundation README, CKB execution-model introduction, and the opening of Scala `post.scala`. HEAD was `0c05037`; existing documentation edits were preserved. No engine changes, tests, corpus runs, control-repository access, or implementation-status upgrades. The old comparison plan's pre-exposure sequence is already superseded by Track D's current direction; older README/protocol status text is navigation context, not fresh executable evidence. Next work is owner-led Q2 question/evaluation development and the outstanding population/timing reconciliation.
+
+## 2026-11-12 (TRACK D) Handoff: control merge digested at `ab0f7f0`
+
+**Verified in the adjacent checkout:** `main` and its `origin/main` remote-tracking ref point to `ab0f7f0`, a merge of `3c50c19` and `8edf787`. The checkout is clean, and no side-branch ref remains. The Q2 collaboration/isolation package previously inspected on the side branch is now on `main`; the merge adds no `src/` changes. The control handoff reports 54 tests passing; this session did not rerun them. Previously digested Phase 1 evidence was not re-read.
+
+**Record:** the `3c50c19..ab0f7f0` digest is logged in `docs/COMPANION_BASELINE_RECORD_2026-11-12.md`, section 2. The next digest starts at `ab0f7f0`. No files or refs in the control repository were changed by this session.
+
+
+## 2026-11-13 (TRACK D, merge) Handoff: control sharing and isolation package merged to the control's `main` (Bob, M1 Mac)
+
+**Owner found that the agreed package was not on `main`.** It was one commit, `8edf787`, on a remote branch literally named `origin/baseline-knowledge-sharing` (hence `origin/origin/...`), forked from `7554427`. Its files were disjoint from the three Codex commits that moved `main` to `3c50c19`, except `SESSION_HANDOFF.md`, which merged without conflict.
+
+**Done, in `ledger-lab-control`, by owner instruction.** Fetched; local `main` fast-forwarded to `3c50c19`; merged the branch with `--no-ff` as **`ab0f7f0`**; all 54 control tests passed on the merged tree; pushed `main` (`3c50c19..ab0f7f0`); deleted the stray remote branch and the local branch of the same name (`8edf787` is now an ancestor of `main`). The control checkout is on `main`, tracking `origin/main`, clean. The hook, rules, launcher and `AGENTS.md` are now part of `main`. No source, test or journal file was edited by hand; the merge touched no `src/` file.
+
+**Not done.** Bob has not read the merged result beyond the file list and the tests. The live hook check in a fresh control-only Bob task, the memory smoke test and the Q2-draft questions are still open. The digest revision in `tracks/D-control/STATUS.md` stays `3c50c19`; the next digest `3c50c19..origin/main` will show the merge `ab0f7f0` and `8edf787` (content already known to Bob, apart from Codex Origin's later hook edits).
+
+
+## 2026-11-12 (TRACK D) Handoff: Track D active; first Codex CKB access; control branch retained
+
+**Owner clarification:** Track D is active. This session is Codex's first read access to the CKB for Phase 2 collaboration. The CKB documentation and the control branch inspection are recorded in `docs/COMPANION_BASELINE_RECORD_2026-11-12.md`, section 2.
+
+**Control branch:** In the adjacent checkout, the `origin/main` remote-tracking ref remains at `3c50c19`; the separate `origin/origin/baseline-knowledge-sharing` ref is at `8edf787`. It contains a substantive 14-file, 1,058-insertion Q2 collaboration/isolation package, including safeguards, a launcher, and tests. It is not empty and was not deleted or otherwise changed.
+
+**Boundary and next work:** No control files were changed and no Q2 questions or evaluation criteria were finalized. The Phase 1 population/timing comparison remains unreconciled. The earlier Part B plan's blind-before-CKB-exposure order no longer applies unchanged; revisit it with the owner before relying on it. This supersedes the older handoff sequence below that made CKB access conditional on a memory test; this session does not establish whether that test ran. This CKB collaboration session must not become Bob's separate control-implementation session.
+
+
 ## 2026-11-13 (TRACK B2) Handoff: Track B2 resumed for AIM tests; handoff to Intel host (Bob, M1 Mac)
 
 **Read first in the next session:** [`STATUS.md`](STATUS.md), then [`tracks/B2-models/STATUS.md`](tracks/B2-models/STATUS.md).

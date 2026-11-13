@@ -28,6 +28,8 @@ Updated 2026-11-12. Start at [`../STATUS.md`](../STATUS.md). This page sorts eve
 
 ## Track D (control)
 
+Start with the [Track D status](../tracks/D-control/STATUS.md) and [current comparison entry point](../tracks/D-control/COMPARISON_PLAN.md). The original pre-exposure comparison draft is archived; it is not the Phase 2 run plan.
+
 [`TRACK_D_NOTES.md`](TRACK_D_NOTES.md): summary and pre-measurement projections (predictions, not results). The control's own documents are in its repository.
 
 ## Engine, rules and method (stable; read before editing the engine)
@@ -39,6 +41,8 @@ Updated 2026-11-12. Start at [`../STATUS.md`](../STATUS.md). This page sorts eve
 [`CORPUS_ACCESS.md`](CORPUS_ACCESS.md), [`CORPUS_SCHEMAS.md`](CORPUS_SCHEMAS.md), [`CORPUS_RECORD_IDENTITY.md`](CORPUS_RECORD_IDENTITY.md), [`RUNTIME_DATA_LAYOUT.md`](RUNTIME_DATA_LAYOUT.md), [`VA_DATA_MODEL_CONTRACT.md`](VA_DATA_MODEL_CONTRACT.md), [`VA_ACCOUNTING_CLASSIFICATION.md`](VA_ACCOUNTING_CLASSIFICATION.md), [`VA_Data_Layouts_and_Specs.md`](VA_Data_Layouts_and_Specs.md) (a 2017 SAFR-on-Spark functional definition, background), [`DATA_ENHANCEMENT_PLAN.md`](DATA_ENHANCEMENT_PLAN.md) (an early plan under `PROJECT_BRIEF.md`; not checked against current work).
 
 ## Archive
+
+[Documentation cleanup snapshots, 2026-11-12](archive/document_cleanup_2026-11-12/README.md): the superseded Track D comparison draft and the verification protocol before removal of historical status tables. Current verification rules and unresolved gates remain in the active protocol.
 
 [`archive/SESSION_HANDOFF_ARCHIVE_2026-11.md`](archive/SESSION_HANDOFF_ARCHIVE_2026-11.md): handoff entries to 2026-11-10, moved unchanged. Other documents that cite old handoff entries by name now mean this file.
 

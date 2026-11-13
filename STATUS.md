@@ -10,7 +10,7 @@ Updated 2026-11-12. One page. A session starts here, then reads only the `STATUS
 | **B1** | Virginia public data, Paper 1: cost curve (CCP1 to CCP5) | Baseline measured and tagged. CCP4/CCP5 corpus runs and replicates not done. | [`tracks/B1-cost/STATUS.md`](tracks/B1-cost/STATUS.md) |
 | **B2** | Virginia public data, Paper 2: AIM tests and the three-model experiment | Steps 1 to 4 done. **On hold** during the reorganisation; D9 decision open. | [`tracks/B2-models/STATUS.md`](tracks/B2-models/STATUS.md) |
 | **C** | Berka bank data | Stalled. Illustrative only; not Paper 2 evidence. | [`tracks/C-berka/STATUS.md`](tracks/C-berka/STATUS.md) |
-| **D** | Codex unconstrained control, a separate repository (`sharealedger-org/ledger-lab-control`) | Official attempt complete and PASS by Codex's report (`3c50c19`). **Paused 2026-11-12**; resume checklist on its page. | [`tracks/D-control/STATUS.md`](tracks/D-control/STATUS.md) |
+| **D** | Codex unconstrained control, a separate repository (`sharealedger-org/ledger-lab-control`) | Official attempt complete and PASS by Codex's report (`3c50c19`). **Active by owner direction (2026-11-12); Codex has first read access to the CKB for Phase 2 collaboration.** Comparison and reconciliation remain open. | [`tracks/D-control/STATUS.md`](tracks/D-control/STATUS.md) |
 
 ## Where things are
 
@@ -29,12 +29,14 @@ Updated 2026-11-12. One page. A session starts here, then reads only the `STATUS
 ## Waiting on the owner (all tracks)
 
 - ~~Push `main` and the baseline tag~~ Done 2026-11-12 (`main` at `ef78576`; tag pushed; `aim-three-model` deleted, local and remote).
-- Pointer in the control repository's `SESSION_HANDOFF.md`, written when the repository is opened to Codex: repository name, tag, and the SHA of the commit holding the results evaluation of the control's work.
+- Pointer in the control repository's `SESSION_HANDOFF.md`: repository name, baseline tag, and the SHA of the results-evaluation commit once it exists. Codex's first CKB access has occurred; the exposure is logged in the baseline record.
 - ~~`AGENTS.md` line pointing here~~ Done 2026-11-12.
 - Track decisions are listed on each track page.
 
 ## Next session (updated 2026-11-12)
 
-**Paper revision 2 evidence folder complete** for TDS (`docs/tds-evidence/paper-1-rev2-ledger-lab/`: index and naming key, measured results, the Mix curve, spreadsheet with formulas for the CKB Cost Model, one-page explainer, refreshed `CURRENT_RESULTS.md`, limits, Phase 2 list). Revision 2 leaves out the control's results and the Part B questions. Next: owner review and copy to TDS (`01-evidence/practitioner/Sharealedger/`), then Phase 2 replicate runs and revenue TTL.
+**Paper revision 2 evidence folder complete** for TDS (`docs/tds-evidence/paper-1-rev2-ledger-lab/`: index and naming key, measured results, the Mix curve, spreadsheet with formulas for the CKB Cost Model, one-page explainer, refreshed `CURRENT_RESULTS.md`, limits, Phase 2 list). Revision 2 leaves out the control's results and the Part B questions. Owner review and copy to TDS (`01-evidence/practitioner/Sharealedger/`) remain open. **Track D is active by owner direction (2026-11-12):** Codex has first read access to the CKB for Phase 2 collaboration; comparison and population reconciliation remain open.
+
+Phase 2 replicate runs and revenue TTL also remain open.
 
 **Names (owner, 2026-11-12).** Graph points: Events, Annual, Monthly, Cubes, Posted, Permuted. Process points: Posted GL, Ledger, Views, Revaluation, Allocation (CCP tags kept for finding material). The three complete corpus runs are three measurements at the Monthly point; stop numbering runs.

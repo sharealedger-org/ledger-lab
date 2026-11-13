@@ -6,6 +6,8 @@ It is the execution and measurement base on which the transformation and perspec
 
 ## Current Implementation Map
 
+**Historical path inventory; not a current execution trace.** This table includes legacy Python utilities. Their presence does not authorize Python financial processing: the current [agent rules](../AGENTS.md) require Scala on the measured financial path. Verify the selected Bash entry point and its Scala consumers before treating a listed utility as active.
+
 The repository is intentionally retaining its existing paths while the fresh project is being reorganized:
 
 | Foundation responsibility | Current location |
@@ -103,6 +105,8 @@ The target shape is documented now, but the physical relocation should follow th
 - Cost metrics identify their units and weighting assumptions.
 
 ## Status
+
+**Historical setup status, retained for context.** These bullets predate later corpus measurements; they are not a current maturity assessment. Consult [current results](../docs/CURRENT_RESULTS.md) and the [audit register](../docs/VERIFICATION_AUDIT_REGISTER.md) for dated evidence.
 
 - Named architectural boundary: established.
 - Existing implementation mapped: established.
