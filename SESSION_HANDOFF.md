@@ -1,5 +1,9 @@
 # Ledger Lab Handoff
 
+## 2026-11-13 14:54:05 AZT (TRACK D) Reflection before reporting-pass design
+
+Owner requested reflection before design/build/execution. Appended timestamped entry to `tracks/D-control/CODEX_REFLECTIONS.md`: corrects my narrow AIM-test framing and premature Phase 2 freeze. Clarified sequence: three runs through FY2016 comparable to Phase 1 with revenue/fiscal-date changes; then one expanded reporting execution, measured separately. Reporting reads canonical SJEs AND posted balances, vendor/IP and available contract dimensions, and VA reference lookups. Vendor-cut outputs close at vendor boundary; larger cross-vendor cuts require bounded spills and explicit sort/merge/reduction. Exploration and refinement precede Phase 2. This supersedes earlier three-capability-run suggestions and the two-feed-only scope. No new design implementation or execution in this entry. Next: detailed design, build, execute, and a second reflection comparing actual results with this pre-design account.
+
 ## 2026-11-13 14:20:49 AZT (TRACK B1/B2) Intel handoff: AIM3 two-feed clarification; queue rehearsal passed
 
 **Read this first on Intel:** [connected-run handoff](docs/CKB_REVENUE_RERUN_2026-11-13.md), especially its final section. Owner clarified that "movements and balances" means the prior combined AIM3 result. Implement **movement features from the canonical-SJE pass and balance features from the final reporting pass**, then compare movement-only/balance-only/combined on identical rows, periods, labels and splits. Not a new liquidity prediction task. Fiscal-period fix and exact feature definitions are explicit in the handoff. The two new Scala feature feeds are NOT implemented yet; vendor names still need real-master coverage and consumer linkage. Owner will continue on Intel after push and authorizes recovery of space from identified generated control outputs; no deletion here.

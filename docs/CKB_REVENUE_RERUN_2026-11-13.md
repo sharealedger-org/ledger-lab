@@ -1,5 +1,7 @@
 # Connected CKB rerun: revenue and vendor attributes
 
+**Scope clarification, 2026-11-13 14:54:05 AZT:** Later owner discussion supersedes the narrower experimental proposals below. Three runs through FY2016 retain Phase 1 measurement boundaries with revenue/fiscal-date changes; one expanded reporting execution follows separately. Reporting combines canonical SJEs, posted balances, vendor/IP and available contract dimensions, and VA references, producing movement, balance and enriched output families. Larger cross-vendor cuts require bounded spills and explicit post-processing. These are exploratory runs before Phase 2, with refinement expected. See the [pre-design reflection](../tracks/D-control/CODEX_REFLECTIONS.md). Existing implementation/evidence statements below remain unchanged; the expanded reporting pass has not yet been designed or built.
+
 Owner direction, 2026-11-13: proceed with a richer CKB corpus; matching control's scope is not a constraint. Run on the Intel machine. Its generated control outputs may be removed to recover space, after identifying exact paths and retaining code and compact evidence. No deletion has occurred in this session.
 
 ## Workload declaration
