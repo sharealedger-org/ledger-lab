@@ -15,10 +15,10 @@ Updated 2026-11-13 (Intel Mac, Gold final views).
 | Test ID | Task Description | Empirical Result | Locked Threshold | Result Status |
 |---|---|---|---|---|
 | **AIM0** | Purchase Order to Payment Linking | Linkable only at Agency/Fiscal Year grain | N/A (Structural discovery) | `closed` |
-| **AIM1** | Information Loss in General Ledger Posting | Non-zero gap in **all 14 years** (FY2003–FY2016); FY2012: 17,163 IL keys vs. 109,725 GL keys with multiple vendors | Non-injective mapping proof | **`verified`** |
+| **AIM1** | Information Loss in General Ledger Posting | Non-zero gap in **all 14 years** (FY2003–FY2016); FY2012: 17,163 IL keys vs. 109,725 GL keys with multiple vendors | Non-injective mapping (measured) | **`partially_verified`** |
 | **AIM2** | Multi-Horizon Expenditure Forecasting | Subsumed into the Three-Model Task A benchmark | $R^2 > 0.70$ | `subsumed` |
 | **AIM3** | Vendor Churn Prediction (Hold-out Test) | **C-statistic = 0.7527**, Permutation $p = 0.001$ | $C > 0.65$, $p < 0.05$ | **`partially_verified` (PASS)** |
-| **AIM3 balance baseline** | Does the commitment signal exceed posted totals? | Balance C = 0.7783 vs. commitment C = 0.7527 (delta +0.026). Training splits differ (7 vs. 4 years). Time-trend control C = 0.50 (FAIL). | — | **`not_verified` — commitment view does not add above posted totals on this comparison** |
+| **AIM3 balance baseline** | Does the commitment signal exceed posted totals? | Balance C = 0.7783 vs. commitment C = 0.7527 (delta +0.026). Training splits differ (7 vs. 4 years). Time-trend control C = 0.50 (FAIL). | — | **`not_verified` — no measured gain from commitment patterns over posted totals on this unmatched comparison** |
 | **AIM4** | Year-End Budget Spending Spike Detection | Q4-ratio test: 2 of 5 top classes significant (threshold ≥ 3). FAIL. STL method not yet implemented. | ≥ 3 of top 5 with p < 0.05 | `not run` (locked STL pending) |
 | **AIM5** | Agency Name Entity Disambiguation | **Precision = 1.0** on 312 matches; 12 of 13 unmatched flagged ambiguous | Precision > 0.95 | **`verified` (PASS)** |
 
@@ -32,7 +32,7 @@ Updated 2026-11-13 (Intel Mac, Gold final views).
   * Non-zero gap confirmed in every year. Sample: FY2012: 17,163 IL keys with multiple commitment/account patterns vs. 109,725 GL keys with multiple vendors (19.9% of all GL keys). FY2003: gap -55,915; FY2016: gap -65,975.
   * Every IL vendor key (ldgrIPID) maps to multiple distinct (commitmentID, account) pattern tuples (100% collapse ratio in all years).
   * Evidence: `data/test_evidence/AIM1_noninjectivity_all_years.csv` (42 rows, 3 substrates × 14 years).
-* **Significance:** Proves non-injectivity in all 14 years of the Gold corpus. An AI model trained strictly on GL balances cannot distinguish between distinct vendor-commitment histories that map to the same posted key.
+* **Significance:** Non-injectivity is a property of the posting key, so every collapsed key is a case where distinct commitment patterns share one balance key. The counts above measure how often that happens each year. They do not test whether a model trained on GL balances fails to distinguish those histories; that test has not been run.
 
 ---
 
@@ -47,7 +47,7 @@ Updated 2026-11-13 (Intel Mac, Gold final views).
   * **C-Statistic (AUC-ROC):** **`0.7527`** (exceeds locked threshold $C > 0.65$).
   * **Permutation Significance:** **`p = 0.001`** across 1,000 random label permutations (exceeds locked threshold $p < 0.05$).
 * **Significance:** Commitment-pattern model passes the locked threshold (C = 0.7527 > 0.65; p = 0.001 < 0.05). Result confirmed on the Gold final views (2026-11-13 re-run, Intel Mac). Walk-forward mean C = 0.7629 (4 windows, stable).
-* **Balance-derived baseline (2026-11-13, new):** A logistic model on posted LDGR features (debit_amount, credit_amount, row_count, distinct_accts, distinct_periods) achieves C = 0.7783 on the same hold-out (different training split: FY2006–2014 vs. FY2010–2013). Delta commitment vs. balance: -0.0256. Time-trend control (year only): C = 0.50 (FAIL, p = 0.518). **Interpretation: the churn signal is already present in posted LDGR totals. The commitment-pattern view does not add information over posted totals in this comparison.** A matched-split comparison is the open next step. Evidence: `data/test_evidence/AIM3_balance_baseline.csv`.
+* **Balance-derived baseline (2026-11-13, new):** A logistic model on posted LDGR features (debit_amount, credit_amount, row_count, distinct_accts, distinct_periods) achieves C = 0.7783 on the same hold-out (different training split: FY2006–2014 vs. FY2010–2013). Delta commitment vs. balance: -0.0256. Time-trend control (year only): C = 0.50 (FAIL, p = 0.518). **Interpretation: the balance model scores higher on this comparison, and the commitment-pattern view adds no measured gain over posted totals. The splits are not matched, so this is not yet a like-for-like result.** A matched-split comparison is the open next step. Evidence: `data/test_evidence/AIM3_balance_baseline.csv`.
 * **Caveats:** Four training years (commitment model), four features, linear model; churn rate rises from 24% to 33% over FY2012–FY2015 (time trend not yet isolated). The AIM3 claim that "pre-posting patterns contain signal absent from posted balances" is `not_verified` pending a matched-split comparison with balance features as a covariate.
 
 ---
