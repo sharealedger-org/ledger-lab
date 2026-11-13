@@ -8,6 +8,14 @@ evaluation protocol as the commitment-pattern model.  Features are derived
 from the Instrument Ledger (LDGR) per vendor-year rather than from the
 order-pattern view.
 
+Split (matched, 2026-11-13 fix): training years are the years of the longest
+contiguous observable run whose outcome year is before the hold-out; test years
+are those whose outcome year is in the hold-out.  With the default settings
+this is train FY2010-2013, test FY2014-2015, identical to
+fit_vendor_survival_windows.py.  The first version trained on every observable
+year outside {2015, 2016}, which put FY2014 in both train and test; its
+C = 0.7783 is superseded.  The script now stops if train and test overlap.
+
 Purpose: answer whether the AIM3 signal (C = 0.7527) exceeds what is
 visible from posted totals alone.  If the balance-derived C is close to
 0.7527, the commitment-pattern view adds no information beyond posting.
@@ -60,6 +68,7 @@ VIEW_PATH    = os.path.expanduser(
     "~/Library/CloudStorage/OneDrive-Personal/LedgerLabOutputs-Gold/"
     "VIEWS/view_vendor_year_survival.csv")
 EVIDENCE_OUT = "data/test_evidence/AIM3_balance_baseline.csv"
+COMMITMENT_CSV = "data/test_evidence/AIM3_survival_windows.csv"
 ELIGIBLE_FY_SPEC = "2006-2008,2010-2017"
 HOLDOUT_SPEC     = "2015-2016"
 MIN_TRAIN_YEARS  = 2
@@ -80,6 +89,7 @@ while i < len(sys.argv):
     elif a == "--view"        and nxt: VIEW_PATH = nxt;        i += 2
     elif a == "--evidence-out"and nxt: EVIDENCE_OUT = nxt;     i += 2
     elif a == "--eligible-fy" and nxt: ELIGIBLE_FY_SPEC = nxt; i += 2
+    elif a == "--commitment-csv" and nxt: COMMITMENT_CSV = nxt; i += 2
     elif a == "--perm"        and nxt: N_PERM = int(nxt);      i += 2
     else:
         print("Unknown argument: " + a, file=sys.stderr); sys.exit(1)
@@ -125,6 +135,18 @@ def sf(s):
 
 ELIGIBLE = parse_fy_spec(ELIGIBLE_FY_SPEC)
 HOLDOUT  = parse_fy_spec(HOLDOUT_SPEC)
+
+# Commitment-model hold-out row, written by fit_vendor_survival_windows.py
+if not os.path.isfile(COMMITMENT_CSV):
+    print(f"ERROR: commitment evidence not found: {COMMITMENT_CSV}", file=sys.stderr)
+    sys.exit(1)
+with open(COMMITMENT_CSV, newline="", encoding="utf-8") as fh:
+    _ho = [r for r in csv.DictReader(fh) if r.get("kind") == "holdout_verdict"]
+if len(_ho) != 1:
+    print("ERROR: expected one holdout_verdict row in " + COMMITMENT_CSV, file=sys.stderr)
+    sys.exit(1)
+COMMIT = _ho[0]
+COMMIT_C = float(COMMIT["c_statistic"])
 
 # ---------------------------------------------------------------------------
 # 1. Load churn labels from the survival view
@@ -310,8 +332,14 @@ if wf_rows:
 
 # -- Hold-out (primary verdict) --
 print("\nHold-out (balance features):")
-holdout_train_fys = set(obs_years) - HOLDOUT
-holdout_test_fys  = set(obs_years) & {fy for fy in obs_years if fy + 1 in HOLDOUT}
+# Same rule as fit_vendor_survival_windows.py: inside the contiguous run,
+# train on years whose outcome year precedes the hold-out, test on the rest.
+holdout_train_fys = {t for t in run if t + 1 < min(HOLDOUT)}
+holdout_test_fys  = {t for t in run if t + 1 in HOLDOUT}
+if holdout_train_fys & holdout_test_fys:
+    print("  ERROR: train and test years overlap: "
+          f"{sorted(holdout_train_fys & holdout_test_fys)}", file=sys.stderr)
+    sys.exit(1)
 tr_mask = np.isin(fys_arr, list(holdout_train_fys))
 te_mask = np.isin(fys_arr, list(holdout_test_fys))
 print(f"  train FYs: {sorted(holdout_train_fys)}  n={int(tr_mask.sum())}")
@@ -323,11 +351,11 @@ if tr_mask.sum() < 2 or te_mask.sum() < 2:
 
 ho_scores = fit_predict(X_arr, y_arr, tr_mask, te_mask)
 ho_c, ho_p = auc_perm(y_arr[te_mask], ho_scores, N_PERM)
-print(f"  C-statistic (balance): {ho_c:.4f}  (commitment model: 0.7527)")
+print(f"  C-statistic (balance): {ho_c:.4f}  (commitment model: {COMMIT_C:.4f})")
 print(f"  Permutation p          : {ho_p:.4f}  ({N_PERM} permutations)")
 verdict_bal = "PASS" if (ho_c is not None and ho_c > 0.65) else "FAIL"
 print(f"  Verdict                : {verdict_bal}")
-delta = ho_c - 0.7527 if ho_c is not None else None
+delta = ho_c - COMMIT_C if ho_c is not None else None
 print(f"  Delta vs commitment    : {delta:+.4f}" if delta is not None else "")
 if delta is not None:
     if delta >= 0.01:
@@ -387,23 +415,24 @@ rows = [
         "c_statistic": round(tr_c, 4) if tr_c is not None else "",
         "perm_p": round(tr_p, 4) if tr_p is not None else "",
         "n_perm": N_PERM,
-        "delta_vs_commitment": round(tr_c - 0.7527, 4) if tr_c is not None else "",
+        "delta_vs_commitment": round(tr_c - COMMIT_C, 4) if tr_c is not None else "",
         "verdict": verdict_trend,
         "note": "time-trend control: fiscal_year as sole feature"
     },
     {
         "run_timestamp": ts,
         "model": "commitment_model_reference",
-        "train_fy_range": "2010-2013",
-        "test_fy_range": "2014-2015",
-        "n_train": 71220,
-        "n_test": 52448,
-        "c_statistic": 0.7527,
-        "perm_p": 0.001,
-        "n_perm": 999,
+        "train_fy_range": COMMIT["train_fys"],
+        "test_fy_range": COMMIT["test_fys"],
+        "n_train": COMMIT["n_train"],
+        "n_test": COMMIT["n_test"],
+        "c_statistic": COMMIT_C,
+        "perm_p": COMMIT["permutation_p"],
+        "n_perm": COMMIT["n_permutations"],
         "delta_vs_commitment": 0.0,
-        "verdict": "PASS",
-        "note": "reference: fit_vendor_survival_windows.py on Gold views (2026-11-13)"
+        "verdict": COMMIT["verdict"],
+        "note": "read from " + COMMITMENT_CSV + " (commitment run_timestamp "
+                + COMMIT["run_timestamp"] + ")"
     },
 ]
 

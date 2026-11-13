@@ -1,0 +1,61 @@
+======================================================================
+AIM3 balance-derived baseline
+======================================================================
+
+View (labels): /Users/kiptwitchell/Library/CloudStorage/OneDrive-Personal/LedgerLabOutputs-Gold/VIEWS/view_vendor_year_survival.csv
+  View rows: 773380  vendor-year pairs: 199727
+  Last complete FY from view: 2016
+
+LDGR root: /Users/kiptwitchell/Library/CloudStorage/OneDrive-Personal/LedgerLabOutputs-Gold
+  FY2003: 396858 rows loaded
+  FY2004: 370529 rows loaded
+  FY2005: 364142 rows loaded
+  FY2006: 821693 rows loaded
+  FY2007: 842912 rows loaded
+  FY2008: 873396 rows loaded
+  FY2009: 345609 rows loaded
+  FY2010: 881752 rows loaded
+  FY2011: 934350 rows loaded
+  FY2012: 943768 rows loaded
+  FY2013: 967070 rows loaded
+  FY2014: 979181 rows loaded
+  FY2015: 963063 rows loaded
+  FY2016: 967585 rows loaded
+
+  LDGR years loaded: [2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016]
+  Vendor-year records from LDGR: 210245
+
+Panel size: 151872 observable vendor-years (skipped 0 with no LDGR match)
+  Present next year: 109694  churn: 27.8%
+    FY2006: n= 13729  churn  24.7%
+    FY2007: n= 14475  churn  23.7%
+    FY2010: n= 15812  churn  23.7%
+    FY2011: n= 16193  churn  23.7%
+    FY2012: n= 16555  churn  24.1%
+    FY2013: n= 22660  churn  28.9%
+    FY2014: n= 25553  churn  32.8%
+    FY2015: n= 26895  churn  32.8%
+
+Walk-forward (balance features):
+  train FY2010-2011  test FY2012  n_train=32005  n_test=16555  C=0.7987
+  train FY2010-2012  test FY2013  n_train=48560  n_test=22660  C=0.7755
+  train FY2010-2013  test FY2014  n_train=71220  n_test=25553  C=0.7740
+  train FY2010-2014  test FY2015  n_train=96773  n_test=26895  C=0.7638
+  mean window C = 0.7780
+
+Hold-out (balance features):
+  train FYs: [2010, 2011, 2012, 2013]  n=71220
+  test FYs:  [2014, 2015]   n=52448
+  C-statistic (balance): 0.7683  (commitment model: 0.7527)
+  Permutation p          : 0.0010  (999 permutations)
+  Verdict                : PASS
+  Delta vs commitment    : +0.0156
+  Interpretation: balance features match or exceed commitment model
+
+Time-trend control (year as sole feature):
+  C-statistic (year only): 0.4999
+  Permutation p           : 0.5300
+  Verdict                 : FAIL
+
+Evidence written -> data/test_evidence/aim_run_arm64_20261113/AIM3_balance_baseline.csv
+AIM3 balance-derived baseline complete.

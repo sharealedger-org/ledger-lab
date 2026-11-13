@@ -1,0 +1,10 @@
+start_local: 2026-11-12 21:32:50
+start_utc: 20261113T043250Z
+host_arch: arm64
+os: Darwin 25.6.0
+python: Python 3.13.0
+packages: numpy 2.5.4 scikit-learn 1.9.1 scipy 1.18.1 statsmodels 0.15.0
+git_head: 24b712ec325efc1231c706b0b9fadc4f4cd65a03
+git_dirty: 2 changed file(s) under scripts/
+gold_root: /Users/kiptwitchell/Library/CloudStorage/OneDrive-Personal/LedgerLabOutputs-Gold
+end_local: 2026-11-12 21:35:21

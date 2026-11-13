@@ -1243,7 +1243,10 @@ Net income (D9, **proposed, not decided**): because the Gold set has no revenue 
 
 Not done: IL-Native, the model choice, any model run, and the net income task itself.
 
-## 2026-11-13 AIM1, AIM3, AIM4 re-run on Gold final views; AIM3 balance-derived baseline (Bob, Intel Mac)
+## 2026-11-13 AIM1, AIM3, AIM4 re-run on Gold final views; AIM3 balance-derived baseline (Bob, Intel Mac; run 2026-11-12 20:37 to 20:43)
+
+**Superseded in part by the ARM entry at the end of this file.** The balance baseline in this entry (C = 0.7783) trained on FY2006-2014 and tested on FY2014-2015, so FY2014 was in both sets. As a comparison with the commitment model it is `contradicted`; the matched-split figure is C = 0.7683. The AIM1, AIM3 and AIM4 results in this entry were reproduced unchanged on ARM.
+
 
 Track B2 — post-engine Python analysis (owner-approved). All scripts read only Gold CSV files; no engine file was changed. Python packages installed: numpy 2.5.4, scikit-learn 1.9.1, scipy 1.18.1, statsmodels 0.15.0.
 
@@ -1292,3 +1295,22 @@ Script: `scripts/fit_vendor_survival_balance.py` (new, 2026-11-13). Input: Gold 
 | The AIM3 churn signal is invisible in posted LDGR totals (the view adds information) | **`not_verified`** | The posted LDGR (debit_amount, credit_amount, row_count, distinct_accts, distinct_periods) matches or exceeds the commitment-pattern C. The view features do not add information over posted totals in this comparison. A model trained only on `year` achieves C = 0.4999 (FAIL, p = 0.518), ruling out a pure time-trend explanation. | A matched-split comparison with balance features as a covariate would be needed to isolate any additional information in the view. The result does not negate AIM3; it shows the churn signal is already present in what posting records. |
 | Time-trend alone explains the churn signal | **`contradicted`** | Time-trend control (year as sole feature): C = 0.4999, permutation p = 0.518. | None. |
 
+
+## 2026-11-13 ARM rerun of AIM1, AIM3, AIM4; AIM3 balance baseline corrected to a matched split (Bob, M1 Mac, TRACK B2)
+
+Owner approved (this session) fixing the split in `scripts/fit_vendor_survival_balance.py` and rerunning all four tests on the ARM Mac, with input hashes and timestamps recorded. Post-engine Python on bounded vendor-year and key-count tables; the only new orchestration is `scripts/run_aim_tests.sh` (Bash: hashing, ordering, environment record; no analysis logic). Scala could replace only the LDGR aggregation feeding the balance model, which is small.
+
+**Run.** Host `arm64`, Darwin 25.6.0, Python 3.13.0 in a venv outside the repo (`~/.venvs/ledger-lab-arm`), numpy 2.5.4, scikit-learn 1.9.1, scipy 1.18.1, statsmodels 0.15.0 (the same versions as the Intel run). Start 2026-11-12 21:32:50 local (2026-11-13 04:32:50 UTC), end 21:35:21. Git HEAD `24b712e` with uncommitted edits to `scripts/fit_vendor_survival_balance.py` and the new wrapper. Evidence directory: `data/test_evidence/aim_run_arm64_20261113/` (`RUN_ENV.txt`, `RUN_INPUTS.csv`, logs, all CSVs). The Intel CSVs at the top of `data/test_evidence/` were left in place except `AIM3_balance_baseline.csv`, which now holds the corrected run (the old figures are in git history).
+
+**Inputs.** 44 Gold files hashed (SHA-256) against the OneDrive `MANIFEST.csv`: `LDGR`, `GL` and `PERM_TBL` for FY03 to FY16, `view_vendor_year_survival.csv` (`174ef5c6…`) and `view_monthly_order_volume.csv` (`28674864…`). All 44 match (`RUN_INPUTS.csv`, `manifest_match` = yes). Closes handoff step 1.
+
+| Claim | Status | Evidence | Gap |
+|---|---|---|---|
+| AIM1, AIM3, AIM4 give the same results on ARM as on Intel | `verified` | AIM1 consolidated file: all 42 data rows identical except the run timestamp and paths. AIM3: all columns identical except the run timestamp (C = 0.7527, p = 0.001, n_train 71,220, n_test 52,448; walk-forward mean 0.7629). AIM4: summary and the five class rows identical (2 of 5 significant, FAIL). | Same code and same package versions on both machines. The ARM files have CRLF line terminators (Python `csv` default) and the Intel copies have LF; compared with the CR removed. Only result columns were compared; timestamps and paths differ by design. |
+| The first balance baseline (C = 0.7783) trained on years that were also test years | `verified` | Reproduced on ARM from the committed script: `train FYs: [2006, 2007, 2010, 2011, 2012, 2013, 2014]`, `test FYs: [2014, 2015]`, n_train 124,977, C = 0.7783, matching the Intel CSV (`train_fy_range` 2006-2014). FY2014 (n = 25,553) is in both. Evidence: `AIM3_balance_baseline_LEGACY_split_reproduction.txt` and `.csv` in the ARM evidence directory (the committed script run unchanged). | The reproduction shows the overlap. The effect of the overlap is read only from the difference between the two runs (0.7783 against 0.7683, 0.0100), which also changed the training size (124,977 against 71,220). |
+| With a matched split (train FY2010-2013, test FY2014-2015, as the commitment model), balance features score at or above the commitment features | `verified` for this split | Balance C = 0.7683, permutation p = 0.001 (999), n_train 71,220, n_test 52,448; commitment C = 0.7527; delta +0.0156. Walk-forward (no overlap in the first version either): balance mean C = 0.7780 vs commitment 0.7629 over the same four windows. Time-trend control (year only): C = 0.4999, p = 0.530 (FAIL). | One split and one linear model per feature set. The comparison is of two separate models, not of the view added to the balance features. |
+| The commitment-pattern view adds information beyond posted totals | `not_verified` | The matched-split result does not show it (delta +0.0156 in favour of the balance model). | Needs the combined model (balance plus view features) against balance alone on the same split. Not run. |
+
+Changes to the balance script: the hold-out now takes the train and test years from the longest contiguous observable run, with the same rule as `fit_vendor_survival_windows.py`, and stops if they overlap; the commitment reference row is read from the commitment script's CSV (`--commitment-csv`) instead of being typed in.
+
+Not done: STL for AIM4, AIM2, a combined-feature AIM3 model, SHA-256 and `run_timestamp` columns inside each script's own CSV (the hashes are in `RUN_INPUTS.csv` beside them).

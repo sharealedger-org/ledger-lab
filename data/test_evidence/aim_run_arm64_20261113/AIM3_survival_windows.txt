@@ -1,0 +1,42 @@
+======================================================================
+AIM3 -- Vendor survival: walk-forward windows + hold-out
+======================================================================
+
+Input: /Users/kiptwitchell/Library/CloudStorage/OneDrive-Personal/LedgerLabOutputs-Gold/VIEWS/view_vendor_year_survival.csv
+  Loaded 773380 rows -> 199727 vendor-fiscal-year records
+  Eligible fiscal years : 2006-2008,2010-2017
+  Last complete FY      : 2016  (outcome observable up to this year)
+
+Observable vendor-years : 151872  present next year 109694  churn 27.8%
+    FY2006: n= 13729  churn  24.7%
+    FY2007: n= 14475  churn  23.7%
+    FY2010: n= 15812  churn  23.7%
+    FY2011: n= 16193  churn  23.7%
+    FY2012: n= 16555  churn  24.1%
+    FY2013: n= 22660  churn  28.9%
+    FY2014: n= 25553  churn  32.8%
+    FY2015: n= 26895  churn  32.8%
+
+Contiguous observable runs : [[2006, 2007], [2010, 2011, 2012, 2013, 2014, 2015]]
+Run used                   : FY2010-FY2015 (6 years)
+Locked protocol needs 8 contiguous years for 7 windows; available run gives 4 walk-forward windows (min train 2).
+
+In-sample reference (all observable vendor-years, not a verdict): C = 0.7699
+
+Walk-forward windows (stability check; do not change the verdict):
+  train FYs      test FY   n_train   n_test       C   perm p
+  2010-2011      2012        32005    16555  0.7589   0.0010
+  2010-2012      2013        48560    22660  0.7713   0.0010
+  2010-2013      2014        71220    25553  0.7546   0.0010
+  2010-2014      2015        96773    26895  0.7669   0.0010
+  mean window C = 0.7629  (min 0.7546, max 0.7713, 4 windows)
+
+Hold-out (outcome years FY2015-FY2016):
+  train vendor-years FY2010-FY2013  n=71220
+  test  vendor-years FY2014-FY2015  n=52448  present 35226
+  C-statistic : 0.7527  (PASS -- threshold > 0.65)
+  Permutation p : 0.0010  (PASS -- threshold < 0.05, 999 permutations)
+  Verdict (hold-out): PASS
+
+Evidence written -> data/test_evidence/aim_run_arm64_20261113/AIM3_survival_windows.csv
+AIM3 (windows) complete.

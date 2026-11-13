@@ -6,6 +6,32 @@ Updated 2026-11-13. This file is a dated log, newest entry first; use the linked
 - **Older entries** (run 3 preflight and everything before it, back to 2026-09-30) were moved unchanged to [`docs/archive/SESSION_HANDOFF_ARCHIVE_2026-11.md`](docs/archive/SESSION_HANDOFF_ARCHIVE_2026-11.md). Other documents that cite a `SESSION_HANDOFF.md` entry by name (for example "Corpus Work Assignment to Bob", "Plan for the next session", the 2026-11-06 entries) mean the archive.
 - When this file passes about 500 lines, move all but the newest few entries to the archive in the same way.
 
+## 2026-11-13 (TRACK B2) ARM rerun done; balance baseline corrected to a matched split (Bob, M1 Mac)
+
+**Read first next time:** [`tracks/B2-models/STATUS.md`](tracks/B2-models/STATUS.md); audit register entry "2026-11-13 ARM rerun of AIM1, AIM3, AIM4".
+
+**Done.**
+- Gold inputs: 44 files used by the tests (LDGR, GL, PERM_TBL FY03-FY16, two views) match the Gold `MANIFEST.csv` by SHA-256. Survival view `174ef5c6…`.
+- Ran AIM1, AIM3, AIM4 and the balance baseline on this ARM Mac (venv at `~/.venvs/ledger-lab-arm`, outside Dropbox; same package versions as Intel) with the new `scripts/run_aim_tests.sh`. Evidence: `data/test_evidence/aim_run_arm64_20261113/`. AIM1, AIM3 and AIM4 results are identical to the Intel CSVs (timestamps and paths aside).
+- **Found and fixed a leak in the balance baseline** (owner approved the fix). The Intel run trained on FY2006-2014 and tested on FY2014-2015; FY2014 was in both. The script now uses the commitment model's split (train FY2010-2013, test FY2014-2015), reads the commitment reference from its CSV, and stops on overlap. **Matched result: balance C = 0.7683, commitment 0.7527, delta +0.0156** (was 0.7783 and +0.0256). The reading is unchanged in direction: no measured gain from the commitment view over posted totals.
+- Updated: audit register, `TODO.md`, B2 `STATUS.md`, and `docs/tds-evidence/paper-2-rev1-ledger-lab/02-aim-test-suite-results.md`.
+
+**Labels.** The handoff listed `docs/COMPANION_BASELINE_RECORD_2026-11-12.md` and `tracks/D-control/STATUS.md` as carrying the stale "2026-11-13 run" label for AIM; they do not (their 2026-11-13 dates are Track D events). Fixed in the register, `TODO.md` and the balance script.
+
+**Open.**
+1. **TDS Paper 2 text** still carries the unmatched wording (C = 0.7783, "splits not matched", local commit `5914ded`). It needs the matched figure 0.7683 (delta +0.016) and the withdrawal of 0.7783. TDS evidence copies are refreshed after owner review.
+2. The old `AIM3_balance_baseline.csv` figures are in git history only; the file now holds the corrected run.
+3. Combined balance-plus-view model against balance alone on the matched split (owner approval needed before the Python).
+4. AIM4 locked STL, AIM2, D9, and the earlier deferred items (move the working copy out of Dropbox; hashes inside each script's own CSV).
+5. All of this is uncommitted in the working tree.
+
+
+## 2026-11-12 (TRACK D) Codex reflection journal and Phase 2 working list
+
+**21:43:40 AZT update:** owner supplied monograph papers locally and prioritized reclass/rule changes. Selected Paper 5/6 reading informed candidate challenges P2-09–P2-14 and a timestamped reflection. Source exposure and hashes are logged; papers remain Git-ignored. No implementation or control-side disclosure. Next: narrow reclass contract trace, then a small scenario with temporal semantics and independent expected answers.
+
+Owner directed Codex to formulate useful Phase 2 tests of adaptability, AI signal, and total maintenance/use cost, with incidental audit supporting that objective. Created `tracks/D-control/CODEX_REFLECTIONS.md` and `CODEX_PHASE2_WORKING_LIST.md`, maintained only by CKB-side Codex and not for transfer to the control. Targeted reading of the control journal at `ab0f7f0` is logged in the exposure record. Proposals are not finalized questions or verified findings. Concurrent Track B scripts/evidence were left untouched; no tests or engine runs were performed. Next work is recorded in the provisional list and linked from `TODO.md`.
+
 ## 2026-11-13 (TRACK B2, TDS session 87) Handoff: repo of record; ARM rerun first; labels and Paper 2 wording
 
 **Decisions (owner, 2026-11-13).** This repo is the repo of record for all AIM results; TDS takes evidence from here. Next work is a Bob session in this repo on the ARM (M1) machine that reruns AIM1, AIM3 and AIM4 and the AIM3 balance baseline against the OneDrive Gold views. TDS evidence copies are refreshed only after that rerun. Deferred, not dropped: moving this working copy out of Dropbox, and recording SHA-256 hashes of the Gold inputs in each AIM output.

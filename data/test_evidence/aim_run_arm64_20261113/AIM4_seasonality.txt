@@ -1,0 +1,33 @@
+======================================================================
+AIM4 — Ordering seasonality (Q4 budget-rush)
+======================================================================
+
+Input: /Users/kiptwitchell/Library/CloudStorage/OneDrive-Personal/LedgerLabOutputs-Gold/VIEWS/view_monthly_order_volume.csv
+  Loaded 1052244 rows
+  Eligible fiscal years   : 2006-2008,2010-2017
+
+  Distinct fiscal periods : 121
+  Distinct fiscal years   : 10  (FY2006, FY2007, FY2008, FY2010, FY2011...)
+  Distinct NIGP classes   : 275
+
+  Top 5 NIGP classes by order volume:
+    615: 1346833 orders
+    175: 1192408 orders
+    495: 737662 orders
+    393: 616973 orders
+    000: 452146 orders
+
+  Q4 seasonality results (top 5 NIGP classes):
+    615         q4_ratio=1.00  p=0.7859  spike=no  significant=no
+    175         q4_ratio=1.04  p=0.1978  spike=no  significant=no
+    495         q4_ratio=1.12  p=0.0371  spike=no  significant=yes
+    393         q4_ratio=1.03  p=0.0535  spike=no  significant=no
+    000         q4_ratio=1.16  p=0.0  spike=no  significant=yes
+
+  Verdict: FAIL
+  Note: 2 of top 5 classes show Q4 spike (threshold: >= 3)
+
+Budget execution risk flags written -> data/test_evidence/aim_run_arm64_20261113/AIM4_risk_table.csv
+
+Evidence written -> data/test_evidence/aim_run_arm64_20261113/AIM4_seasonality_results.csv
+AIM4 complete.

@@ -1,0 +1,40 @@
+======================================================================
+AIM1 — Non-injectivity count
+======================================================================
+
+[1] CCP2 Instrument Ledger: /Users/kiptwitchell/Library/CloudStorage/OneDrive-Personal/LedgerLabOutputs-Gold/FY14/LDGR2014.csv
+  label: CCP2_LDGR
+  key_count: 26269
+  total_distinct_patterns: 510158
+  mean_patterns_per_key: 19.4205
+  max_patterns_per_key: 22088
+  keys_with_multiple_patterns: 26269
+  collapse_ratio: 1.0
+
+[2] CCP1 GL output (vendors per GL balance row, via PERM): /Users/kiptwitchell/Library/CloudStorage/OneDrive-Personal/LedgerLabOutputs-Gold/FY14/GL2014.csv
+  GL rows with no PERM vendor: 0
+  label: CCP1_GL
+  key_count: 564242
+  total_distinct_patterns: 979181
+  mean_patterns_per_key: 1.7354
+  max_patterns_per_key: 1506
+  keys_with_multiple_patterns: 106545
+  collapse_ratio: 0.1888
+
+[3] CCP1 Permutation table: /Users/kiptwitchell/Library/CloudStorage/OneDrive-Personal/LedgerLabOutputs-Gold/FY14/PERM_TBL2014.csv
+  label: CCP1_PERM
+  key_count: 564242
+  total_distinct_patterns: 979181
+  mean_patterns_per_key: 1.7354
+  max_patterns_per_key: 1506
+  keys_with_multiple_patterns: 106545
+  collapse_ratio: 0.1888
+
+--- Gap summary ---
+  IL keys with >1 distinct pattern  : 26269
+  PERM keys with >1 vendor per key  : 106545
+  Gap (IL - PERM)                   : -80276
+  Evidence: non-zero gap confirms non-injectivity
+
+Evidence written -> data/test_evidence/aim_run_arm64_20261113/AIM1_all_years/AIM1_noninjectivity_FY2014.csv
+AIM1 complete.

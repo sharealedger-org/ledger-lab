@@ -16,7 +16,7 @@ Posted-FineTune (on GL), IL-FineTune (on the ledger `LDGR`), IL-Native (structur
 
 ## AIM tests
 
-Updated 2026-11-13 (Intel Mac run on Gold final views).
+Updated 2026-11-13. Intel run (CSV timestamps 2026-11-12 20:37 to 20:43) reproduced on the ARM Mac (2026-11-12 21:32 to 21:35 local); AIM1, AIM3 and AIM4 results are identical. 44 Gold input files verified against the Gold `MANIFEST.csv`. ARM evidence: `data/test_evidence/aim_run_arm64_20261113/` (`RUN_ENV.txt`, `RUN_INPUTS.csv`); command: `bash scripts/run_aim_tests.sh`.
 
 | Test | Result | Note |
 |---|---|---|
@@ -24,14 +24,14 @@ Updated 2026-11-13 (Intel Mac run on Gold final views).
 | AIM1 | **`partially_verified`** — non-zero gap in all 14 years | Intel run (CSV 2026-11-12): all 14 years, IL keys with multiple patterns vs. PERM keys with multiple vendors: gap -55,915 (FY2003) to -92,562 (FY2012). Evidence: `data/test_evidence/AIM1_noninjectivity_all_years.csv`. |
 | AIM2 | not run | needs AIM5 reconciliation table first |
 | AIM3 | **PASS** C = 0.7527, p = 0.001 | Intel run (CSV 2026-11-12): re-run on Gold final views, identical to the 2026-11-10 result. Walk-forward mean C = 0.7629. Evidence: `data/test_evidence/AIM3_survival_windows.csv`. |
-| AIM3 balance baseline | **`not_verified`** — balance matches or exceeds commitment C | Intel run (CSV 2026-11-12): balance model C = 0.7783 (commitment 0.7527, delta +0.0256), p = 0.001. Time-trend control C = 0.4999 (FAIL). On this unmatched comparison the balance model scores higher; no measured gain from the commitment view over posted totals. Training splits differ (7 vs. 4 years). Evidence: `data/test_evidence/AIM3_balance_baseline.csv`. |
+| AIM3 balance baseline | **`not_verified`** — balance matches or exceeds commitment C on a matched split | ARM run, train FY2010-2013 and test FY2014-2015 as the commitment model: balance C = 0.7683 (commitment 0.7527, delta +0.0156), p = 0.001. Time-trend control C = 0.4999 (FAIL). The Intel figure 0.7783 is superseded: its training set included FY2014, which was also a test year. No measured gain from the commitment view over posted totals. Not tested: balance plus view features together. Evidence: `data/test_evidence/AIM3_balance_baseline.csv`. |
 | AIM4 | **FAIL** (Q4-ratio, not locked STL) | Intel run (CSV 2026-11-12): 2 of 5 top classes significant (threshold ≥ 3). Uses Q4-ratio test, not the locked STL method. Evidence: `data/test_evidence/AIM4_seasonality_results.csv`. |
 | AIM5 | verified for its stated test | `scripts/fit_agency_name_classifier.py`, Precision 1.0 |
 
 ## Next actions (when D9 decided)
 
 1. **Owner decisions:** D9, verbalizer visibility of account text, period text normalisation, first anchor figure for the tie-out, where the raw `VARawFiles` and budget files are.
-2. **Finish AIM3 balance baseline:** add result to the audit register and update this page when `scripts/fit_vendor_survival_balance.py` completes.
+2. ~~Finish AIM3 balance baseline~~ Done on ARM with a matched split (audit register, last entry). Open: combined balance plus view model against balance alone (owner approval needed before writing the Python). TDS evidence copies and the Paper 2 text are refreshed after owner review.
 3. **AIM4 locked STL:** implement using `statsmodels` STL (now installed), majority-of-agencies rule, locked thresholds; owner approval required before writing (`AGENTS.md`).
 4. Steps 5 to 7.
 5. Revenue through the Scala TTL for one year needs the architecture-gate declaration first (`docs/AGENTIC_ARCHITECTURE_GATES.md`).

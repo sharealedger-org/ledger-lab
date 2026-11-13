@@ -1,0 +1,4 @@
+run_timestamp,model,train_fy_range,test_fy_range,n_train,n_test,c_statistic,perm_p,n_perm,delta_vs_commitment,verdict,note
+2026-11-12 21:33:57,balance_holdout,2010-2013,2014-2015,71220,52448,0.7683,0.001,999,0.0156,PASS,"balance-derived features: debit_amount, credit_amount, row_count, distinct_accts, distinct_periods from LDGR"
+2026-11-12 21:33:57,time_trend_control,2010-2013,2014-2015,71220,52448,0.4999,0.53,999,-0.2528,FAIL,time-trend control: fiscal_year as sole feature
+2026-11-12 21:33:57,commitment_model_reference,2010-2013,2014-2015,71220,52448,0.7527,0.001,999,0.0,PASS,read from data/test_evidence/aim_run_arm64_20261113/AIM3_survival_windows.csv (commitment run_timestamp 2026-11-12 21:33:08)
