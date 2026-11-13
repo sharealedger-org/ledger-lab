@@ -1,5 +1,11 @@
 # Verification Audit Register
 
+## 2026-11-13 14:20:49 AZT — Revenue adapter and unattended queue fixtures
+
+Cheapest falsifier found a real adapter mismatch: normalized APA `[agency,fund,source,amount,date]` was passed to RC `[agency,amount,fund,source,date]`. Corrected only that mapping; explicit source amount/fund/account checks now survive posting. Existing TTL tests passed 9/9 before the change; combined TTL/posting plus one-read suites pass 13/13 afterward. Full Bash/Scala synthetic run covers TTL, empty PO input, merge, ledger, GL, permutation, cross-year 5v. Receipt 240.00 and expenditure 45.32 reach GL with balanced offsets. Metadata row/byte accounting now includes revenue.
+
+Evidence: `data/test_evidence/corpus_runs/run_20261113_141215/`; injected FAIL rejected by `validate_corpus_run.sh`. Two-run queue rehearsal completed and compared identical compact final products: `data/test_evidence/corpus_queue_20261113/` and its referenced run archives. Scope `partially_verified`: fixtures only, no large-corpus execution, no real master-name coverage, no new AIM3 feeds or reporting-only SJE reuse. Queue validates existing engine verdicts/artifact presence, not independent financial truth. Next falsifier: Intel source/master checks and matched movement/balance feature contracts. No control output deleted.
+
 ## 2026-11-13 13:36:01 AZT — Field-label pilot preparation (B2)
 
 Claim: paired encodings preserve financial values and targets while changing field-label meaning. Producer: Scala CKBViews step 5v -> Gold survival view; consumer: `scripts/training_language_pilot.py prepare`. Gold SHA `174ef5c6ad64cc5550311a06c0d5185aaafec1cfb104d6453c437e825d7e4ebd` verified; 773,380 rows, 199,727 vendor-year pairs, complete outcome horizon FY2016. Selected latest monthly rows, not annual sums. 43 core/verbalizer/pilot tests pass. Preparation evidence: `data/test_evidence/language_pilot_20261113/`. Original AIM3 rerun separately reproduces C=0.7527; does not validate the new training implementation. State: preparation `partially_verified`; training `not_audited` and not run because execution permission was declined. Cheapest next falsifier: model/tokenizer load, answer-token and no-truncation checks, first forward/backward batch. No CKB engine changes or cost claims; payment-year discrepancy remains open.

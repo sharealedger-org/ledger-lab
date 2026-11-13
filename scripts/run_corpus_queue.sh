@@ -37,7 +37,8 @@ awk -F '\t' 'NF!=3 || $1!~/^[A-Za-z0-9_-]+$/ || ($2!="monthly" && $2!="annual") 
 }
 git -C "$repo" diff --quiet -- scripts 02-foundation/va_pipeline || { echo "Commit engine/orchestration changes first" >&2; exit 1; }
 git -C "$repo" diff --cached --quiet -- scripts 02-foundation/va_pipeline || exit 1
-mkdir -p "$queue"
+mkdir -p "$(dirname "$queue")"
+mkdir "$queue"  # Atomic claim: a second launcher must not share this queue.
 cp "$plan" "$queue/plan.tsv"
 revision="$(git -C "$repo" rev-parse HEAD)"
 printf 'revision=%s\nroot=%s\nyears=%s\nminimum_free_GiB=%s\n' "$revision" "$root" "$years" "$minimum" > "$queue/config.txt"

@@ -1,0 +1,3 @@
+PASS FY03: required outputs and engine controls
+PASS corpus: required cross-year views and process evidence
+Scope: engine verdicts/artifact presence; not independent source reconciliation or vendor-name coverage.

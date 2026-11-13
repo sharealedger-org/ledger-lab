@@ -1,0 +1,15 @@
+event,epoch_s,local_time
+corpus_start,1794604707,2026-11-13 14:18:27
+# years=03 lanes=4 periodGranularity=monthly
+# ttl_type=B vendor_master=/private/tmp/ckb-queue-rehearsal-20261113/vendor_master.csv
+# chain_width=2 views_early=Y caffeinate=on
+# git=bdeaad4 dirty_files=1
+# host=MacBookAir cpus=8
+prep_all_done,1794604793,2026-11-13 14:19:53
+views_start,1794604798,2026-11-13 14:19:58
+chain_start_fy03,1794604798,2026-11-13 14:19:58
+views_end,1794604806,2026-11-13 14:20:06
+chain_end_fy03,1794604848,2026-11-13 14:20:48
+chain_all_done,1794604848,2026-11-13 14:20:48
+views_all_done,1794604848,2026-11-13 14:20:48
+corpus_end,1794604848,2026-11-13 14:20:48

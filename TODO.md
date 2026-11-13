@@ -13,6 +13,8 @@ Seeded 2026-11-11 from the handoff entries. On the same day the handoff was trim
 
 ## Cost graphs (Track B1)
 
+- [ ] **Owner clarification, 2026-11-13:** Produce matched AIM3 movement and balance feature inputs in Scala at the SJE and final-reporting boundaries respectively; fix fiscal periods, expose unmatched vendors, and compare three models on identical rows. This is the selected next AI use, not the assistant's financial-pressure suggestion. Add immutable-input reuse for reporting-only queue stages.
+
 - [ ] **Expanded Intel run:** verify source/master coverage, identify generated control outputs for authorized cleanup, deliver linked vendor names to consumers, and select the unattended plan. Revenue adapter and connected synthetic smoke are fixed/verified; see [handoff](docs/CKB_REVENUE_RERUN_2026-11-13.md).
 - [ ] **New cost-profile design:** define genuinely different retained outputs and expanded `5v` financial/AIM views over the same canonical SJEs. Measure incremental work/output, not an assumed zero cost. Freeze the resulting foundation before Phase 2 questions.
 

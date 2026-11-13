@@ -1,0 +1,4 @@
+revision=bdeaad4ee6651078c148f258e0c20805359fd3da
+root=/private/tmp/ckb-connected-smoke
+years=03
+minimum_free_GiB=1
