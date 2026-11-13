@@ -34,6 +34,7 @@
 #                                    [--chainWidth N] [--periodGranularity monthly|annual]
 #                                    [--ttlType E|R|B] [--vendorMaster FILE]
 #                                    [--outRoot DIR] (default: ROOT/output_full)
+#                                    [--noDashboard] (macOS opens a dashboard by default)
 #    Defaults: root=$HOME/workspace/va_fresh_root  logs=$HOME/workspace/va_fresh_logs
 #              years=03..16  lanes=4  chainWidth=2  periodGranularity=monthly
 #    The output root ($ROOT/output_full) must hold no FY* entries; move or delete the old output first.
@@ -102,6 +103,7 @@ GRANULARITY="monthly"
 TTL_TYPE="E"
 VENDOR_MASTER=""
 OUT_ROOT=""
+OPEN_DASHBOARD=1
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --root)  ROOT="$2";  shift 2 ;;
@@ -113,6 +115,7 @@ while [[ $# -gt 0 ]]; do
     --ttlType) TTL_TYPE="$2"; shift 2 ;;
     --vendorMaster) VENDOR_MASTER="$2"; shift 2 ;;
     --outRoot) OUT_ROOT="$2"; shift 2 ;;
+    --noDashboard) OPEN_DASHBOARD=0; shift ;;
     -h|--help) grep '^#' "$0" | sed 's/^# \{0,2\}//'; exit 0 ;;
     *) echo "Unknown option: $1" >&2; exit 1 ;;
   esac
@@ -194,6 +197,14 @@ views_pass() {
 }
 
 say "corpus start: years=$YEARS lanes=$LANES chainWidth=$CHAIN_WIDTH  wall-clock record: $WALL"
+# UI startup is asynchronous and cannot fail or block a financial run. macOS may
+# request Terminal automation permission; headless users can pass --noDashboard.
+if [[ "$OPEN_DASHBOARD" == 1 && "$(uname -s)" == Darwin ]] && command -v osascript >/dev/null 2>&1; then
+  (
+    VA_LOGS="$LOGS" VA_OUT="$OUT_ROOT" bash "$SCRIPT_DIR/open_run_windows.sh" 30 --dashboard-only \
+      > "$LOGS/dashboard_startup.log" 2>&1 || say "Dashboard unavailable; see $LOGS/dashboard_startup.log"
+  ) &
+fi
 chain_pool &
 CHAIN_PID=$!
 views_pass &

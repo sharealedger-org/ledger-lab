@@ -173,7 +173,13 @@ bash scripts/run_full_corpus.sh > ~/workspace/va_fresh_logs/run2_corpus.log 2>&1
 2026-11-10. After launching, wait past the first 60 seconds and confirm the lanes are alive
 (`pgrep -fl run_pipeline`) before reporting it as running.
 
-**Dashboard (recommended).** One row per fiscal year; columns are the six steps, grouped as JE
+**Dashboard (automatic on macOS).** The full-corpus launcher opens a Terminal dashboard
+using the selected log/output directories, including custom queue directories. Each queued
+run opens its own dashboard. Pass `--noDashboard` to `run_full_corpus.sh` for headless
+execution. Terminal automation permission may be requested on first use; a failed or
+unavailable dashboard is logged in `dashboard_startup.log` and does not stop processing.
+
+One row per fiscal year; columns are the six steps, grouped as JE
 generation (`ttl` = Pay JEs, `2p` = PO JEs, `2m` = Merge) and Posting (`3` = Post, `20` = GL Bal,
 `21` = Permute). It is read-only, parses only the START and RESULT lines in the run logs, and costs
 well under one CPU-second per refresh.
@@ -181,6 +187,10 @@ well under one CPU-second per refresh.
 ```bash
 bash scripts/dashboard_full_corpus.sh         # refreshes every 30 s by default; pass a number of seconds to change it
 ```
+
+For custom directories, set `VA_LOGS` and `VA_OUT` when reopening a dashboard or
+running `scripts/open_run_windows.sh`. The latter opens both dashboard and event
+windows by default; `30 --dashboard-only` opens only the dashboard.
 
 Cell values: `-` not started, `RUN m:ss` running, `NNs ok` finished with its elapsed seconds,
 `FAIL rc=N` failed. The `Total` column is the sum of the year's finished step times plus the
