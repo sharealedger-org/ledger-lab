@@ -1242,3 +1242,53 @@ Code change (`scripts/three_model_core.py`, `scripts/test_three_model_core.py`):
 Net income (D9, **proposed, not decided**): because the Gold set has no revenue accounts, revenue minus expense cannot be derived from it. Proposal: net expenditure per agency and fiscal year = sum of `D` lines on `EXP*` accounts, excluding `COMMIT` (encumbrance) and the `0000` offset; ground truth by the posting rule, already shown equal to both substrates. Limit stated in the plan: a posted GL row carries `nominal_account_id`, so the fine-tuned models can see the `EXP`/`COMMIT` label unless the verbalizer hides it. Owner decision needed on D9 and on whether the label stays in the verbalized text. Status: `unknown` until decided and run.
 
 Not done: IL-Native, the model choice, any model run, and the net income task itself.
+
+## 2026-11-13 AIM1, AIM3, AIM4 re-run on Gold final views; AIM3 balance-derived baseline (Bob, Intel Mac)
+
+Track B2 — post-engine Python analysis (owner-approved). All scripts read only Gold CSV files; no engine file was changed. Python packages installed: numpy 2.5.4, scikit-learn 1.9.1, scipy 1.18.1, statsmodels 0.15.0.
+
+### AIM3 — vendor survival (re-run on Gold views)
+
+Script: `scripts/fit_vendor_survival_windows.py`. Input: `LedgerLabOutputs-Gold/VIEWS/view_vendor_year_survival.csv`. Evidence: `data/test_evidence/AIM3_survival_windows.csv`.
+
+| Claim | Status | Evidence | Gap |
+|---|---|---|---|
+| Commitment-pattern model (po_count, agency_count, distinct_nigp_classes, total_amount) predicts vendor churn from FY2010–2013 train on FY2014–2015 hold-out, C > 0.65 | **`verified` — PASS** | C = 0.7527, permutation p = 0.001 (999 permutations), hold-out n = 52,448 vendor-years (n_train = 71,220). Walk-forward 4-window mean C = 0.7629 (range 0.7546–0.7713). Identical to the 2026-11-10 M1 Mac result, confirming reproducibility on the Gold final views. | Churn rate rises 24% → 33% over FY2012–2015; a time trend may contribute. The script uses only four features and logistic regression. Balance-derived baseline result below. |
+
+### AIM4 — ordering seasonality (re-run on Gold views)
+
+Script: `scripts/fit_ordering_seasonality.py`. Input: `LedgerLabOutputs-Gold/VIEWS/view_monthly_order_volume.csv`. Evidence: `data/test_evidence/AIM4_seasonality_results.csv`.
+
+| Claim | Status | Evidence | Gap |
+|---|---|---|---|
+| ≥ 3 of top 5 NIGP goods classes show Q4 seasonality (p < 0.05) in majority of full-panel agencies | **`not_verified` — FAIL (Q4-ratio test)** | Top 5 classes 615, 175, 495, 393, 000 (by order volume). Q4 ratios: 1.00 (p=0.79), 1.04 (p=0.20), 1.12 (p=0.037), 1.03 (p=0.054), 1.16 (p=0.0). 2 of 5 significant at p < 0.05 (threshold ≥ 3). Verdict: FAIL. | This uses the Q4-ratio test, not the locked STL decomposition method with the majority-of-agencies rule. The STL method requires `statsmodels` (now available) and has not yet been implemented. The Q4-ratio FAIL does not close AIM4. |
+
+### AIM1 — non-injectivity (all 14 years on Gold)
+
+Script: `scripts/fit_noninjectivity.py`. Per-year evidence: `data/test_evidence/AIM1_all_years/AIM1_noninjectivity_FY20{03-16}.csv`. Consolidated: `data/test_evidence/AIM1_noninjectivity_all_years.csv`.
+
+| Claim | Status | Evidence | Gap |
+|---|---|---|---|
+| Non-zero gap between IL keys with multiple commitment/account patterns and PERM keys with multiple vendors, in all 14 years | **`verified`** | All 14 years show a large non-zero gap (IL - PERM keys with multiple patterns): FY2003 -55,915; FY2006 -90,275; FY2009 -42,042; FY2012 -92,562; FY2016 -65,975. Every IL vendor key (ldgrIPID) maps to multiple (commitmentID, account) patterns (100% collapse ratio), while 15–20% of GL keys have more than one vendor under them. | AIM1 has no pass/fail threshold. The gap is non-zero in all years; this is the stated condition for evidence. FY2003–FY2005 and FY2009 have fewer LDGR vendor keys (893–2,210) than PO-bearing years (14,485–30,743), consistent with limited PO source data for those years. |
+
+Key AIM1 figures by year (PERM keys with >1 vendor / total PERM keys):
+
+| Year | IL keys (>1 pattern) | GL keys (>1 vendor) | GL total keys |
+|---|---|---|---|
+| FY2003 | 2,210 | 58,125 | 292,669 |
+| FY2006 | 14,485 | 104,760 | 489,394 |
+| FY2009 | 674 | 42,716 | 280,064 |
+| FY2012 | 17,163 | 109,725 | 551,061 |
+| FY2016 | 30,743 | 96,718 | 551,733 |
+
+### AIM3 balance-derived baseline
+
+Script: `scripts/fit_vendor_survival_balance.py` (new, 2026-11-13). Input: Gold LDGR files (FY03–FY16) plus `view_vendor_year_survival.csv` for churn labels. Evidence: `data/test_evidence/AIM3_balance_baseline.csv`. Features: debit_amount, credit_amount, row_count, distinct_accts, distinct_periods from LDGR per vendor-year. All 14 LDGR files loaded (10,651,908 total rows); 0 vendor-years in the observable panel had no LDGR match.
+
+| Claim | Status | Evidence | Gap |
+|---|---|---|---|
+| Balance-derived features (posted LDGR totals) predict vendor churn on the Gold hold-out | **`verified` — PASS** | Balance model C = 0.7783, permutation p = 0.001 (999 permutations). Hold-out train FY2006–2014 (n=124,977), test FY2014–2015 (n=52,448). Walk-forward mean C = 0.7780 (range 0.7638–0.7987). | Hold-out training set differs from the commitment model (FY2006–2014 vs FY2010–2013 only), so the two C values are not directly comparable. |
+| Balance model C exceeds the commitment model (delta ≥ 0) | **`verified`** | Delta = +0.0256 (balance 0.7783 vs. commitment 0.7527). Balance features slightly outperform the commitment-pattern view features on this hold-out. | The 7-year vs. 4-year training split likely contributes. A fair comparison requires the same split. |
+| The AIM3 churn signal is invisible in posted LDGR totals (the view adds information) | **`not_verified`** | The posted LDGR (debit_amount, credit_amount, row_count, distinct_accts, distinct_periods) matches or exceeds the commitment-pattern C. The view features do not add information over posted totals in this comparison. A model trained only on `year` achieves C = 0.4999 (FAIL, p = 0.518), ruling out a pure time-trend explanation. | A matched-split comparison with balance features as a covariate would be needed to isolate any additional information in the view. The result does not negate AIM3; it shows the churn signal is already present in what posting records. |
+| Time-trend alone explains the churn signal | **`contradicted`** | Time-trend control (year as sole feature): C = 0.4999, permutation p = 0.518. | None. |
+
