@@ -6,6 +6,19 @@ Updated 2026-11-12. This file is a dated log, newest entry first; use the linked
 - **Older entries** (run 3 preflight and everything before it, back to 2026-09-30) were moved unchanged to [`docs/archive/SESSION_HANDOFF_ARCHIVE_2026-11.md`](docs/archive/SESSION_HANDOFF_ARCHIVE_2026-11.md). Other documents that cite a `SESSION_HANDOFF.md` entry by name (for example "Corpus Work Assignment to Bob", "Plan for the next session", the 2026-11-06 entries) mean the archive.
 - When this file passes about 500 lines, move all but the newest few entries to the archive in the same way.
 
+## 2026-11-13 (TRACK B2) Handoff: Paper 2 Dedicated Evidence Package Created & Ingested into TDS (Bob, M1 Mac)
+
+**Read first in the next session:** [`STATUS.md`](STATUS.md), then [`tracks/B2-models/STATUS.md`](tracks/B2-models/STATUS.md).
+
+**Delivered this session:**
+- **Created TDS Paper 2 Evidence Folder (`docs/tds-evidence/paper-2-rev1-ledger-lab/`):**
+  1. [`README.md`](docs/tds-evidence/paper-2-rev1-ledger-lab/README.md): Document inventory, status taxonomy (`verified`, `partially_verified`, `not run`), and model naming key (Model 1: Posted-FineTune, Model 2: IL-FineTune, Model 3: IL-Native).
+  2. [`01-three-model-experiment-design.md`](docs/tds-evidence/paper-2-rev1-ledger-lab/01-three-model-experiment-design.md): Three-Model comparison setup, "See Spot Run" language prior trap, deterministic entity sampling (D8), longitudinal splits (D4), evaluation scoring framework, and decisions D1–D8.
+  3. [`02-aim-test-suite-results.md`](docs/tds-evidence/paper-2-rev1-ledger-lab/02-aim-test-suite-results.md): Empirical test evidence: AIM1 non-injectivity proof (17,163 GL keys with multiple order patterns in FY2012), AIM3 vendor churn prediction ($C = 0.7527$, $p = 0.001$ on hold-out FY14–FY15), AIM5 agency disambiguation (Precision 1.0).
+  4. [`03-gold-data-ground-truth-validation.md`](docs/tds-evidence/paper-2-rev1-ledger-lab/03-gold-data-ground-truth-validation.md): 14-year Gold reference dataset verification (104/104 files SHA-256 match, GL vs. LDGR exact-cent $0.00 debit tie-out).
+  5. [`04-limits-and-phase2-roadmap.md`](docs/tds-evidence/paper-2-rev1-ledger-lab/04-limits-and-phase2-roadmap.md): Boundaries (audited expenditure basis, D9 open) and Phase 2 roadmap (Steps 5–7 model training).
+- **Ingested into TDS Repository:** Copied to `/Users/kiptwitchell/Workspace/GHEGenevaERS/TDS-AI-Models/01-evidence/practitioner/Sharealedger/paper-2-rev1-ledger-lab/` and updated `sharealedger-evidence-summary.md` and `project/session-log.md` (Session 84).
+
 ## 2026-11-12 (TRACK B1, LATER) Handoff: Evidence folder corrected; four open model items (Bob, M1 Mac)
 
 **Read first in the next session:** [`TODO.md`](TODO.md) (Cost graphs section), then [`docs/tds-evidence/paper-1-rev2-ledger-lab/RATE_SOURCES.md`](docs/tds-evidence/paper-1-rev2-ledger-lab/RATE_SOURCES.md).
