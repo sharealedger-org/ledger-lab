@@ -6,6 +6,26 @@ Updated 2026-11-12. This file is a dated log, newest entry first; use the linked
 - **Older entries** (run 3 preflight and everything before it, back to 2026-09-30) were moved unchanged to [`docs/archive/SESSION_HANDOFF_ARCHIVE_2026-11.md`](docs/archive/SESSION_HANDOFF_ARCHIVE_2026-11.md). Other documents that cite a `SESSION_HANDOFF.md` entry by name (for example "Corpus Work Assignment to Bob", "Plan for the next session", the 2026-11-06 entries) mean the archive.
 - When this file passes about 500 lines, move all but the newest few entries to the archive in the same way.
 
+## 2026-11-12 (TRACK B1, LATER) Handoff: Evidence folder corrected; four open model items (Bob, M1 Mac)
+
+**Read first in the next session:** [`TODO.md`](TODO.md) (Cost graphs section), then [`docs/tds-evidence/paper-1-rev2-ledger-lab/RATE_SOURCES.md`](docs/tds-evidence/paper-1-rev2-ledger-lab/RATE_SOURCES.md).
+
+**Delivered this session:**
+- Renamed the workbook `03-charlie-anderson-model.xlsx` to `03-ckb-cost-model.xlsx` (`git mv`, staged). Every "Charlie Anderson" reference in the repo now reads "CKB Cost Model". The Charlie acknowledgement stays in the TDS paper.
+- Fixed P5 in `02-mix-cost-curve-model.md` and `04-one-page-explainer.html`: the workbook gives $9,130.84 (not $9,018), about 560 times P3 (not 553). The sub-annual sentence was corrected: with zero sub-annual queries, the annual point (P2) costs $15.92; the monthly minimum holds only when sub-annual questions are asked.
+- Determinism wording corrected in `01-measured-results-summary.md`, `CURRENT_RESULTS.md` and this file. The byte-identity result covers the two Monthly executions (`20261111_014229`, `20261111_064052`), checked by `gold/MANIFEST.csv` and `MANIFEST_SJE.csv`. It is **not** a named test. Named tests that cover determinism on fixtures: `CorpusProfileSpec`, `GLPostSpec`, `CKBViewsSpec`, and `scripts/test_three_model_verbalize.py` (`Determinism.test_same_input_same_output`).
+- Unit rates: the repo had no source for them. Created [`RATE_SOURCES.md`](docs/tds-evidence/paper-1-rev2-ledger-lab/RATE_SOURCES.md), which lists each rate as `not retrieved`, with candidate AWS pricing pages and a recording format. No prices were retrieved (no web access this session). Until they are, the rates are assumptions, not published prices.
+- VA data source confirmed from `scripts/download_corpus_zenodo.sh`: Zenodo parent `10.5281/zenodo.23846362` (eVA purchase orders FY2001–FY2018, budget files, metadata) and four APA records (`24015791`, `24021539`, `24022681`, `24022832`). Publishers: Virginia Department of General Services (eVA) and the Virginia Auditor of Public Accounts. The TDS paper's "Department of Accounts open data portal" wording is wrong and is being corrected there.
+
+**Open model items found this session (do not treat as settled):**
+1. **P6 needs a look.** The docs say $22.4M. The workbook's `Cost_Bowl_Data` computes $22,107,000.27 from a hardcoded 80,000,000 GB stored, and its own note (G7) still says $22.4M. The basis for 80,000,000 GB is not written down. The explainer label ("$22 million") was left as is until this is decided.
+2. **Raw storage is charged in P2–P5.** Each of these points includes the full 56.69 GB raw SJE store in storage cost. Of P3's $16.29, $16.12 is that raw store; the Instrument Ledger itself costs about $0.47/year. P1 also stores raw. Whether raw storage belongs in the bowl is a modelling decision and must be made and documented.
+3. **Full-corpus determinism has no named test.** The byte-identity check is a manifest comparison run by hand, not a test in the suite.
+4. **Unit rates have no dated source.** The scan rate ($0.005/GB) and storage rate are assumptions. The conservative case (scan $0.005/GB, reconciliation $0) gives P1 $469, P2 $158, P3 $16.29, P4 $16.78, P5 $46; P3 stays the minimum and P4 is about 3% above P3. Pin the rates to dated list prices before the paper calls them published.
+
+**Not changed:** workbook base rates, P6, and the explainer's P6 label. These wait for the owner.
+
+
 ## 2026-11-12 (TRACK B1) Handoff: Paper Revision 2 Evidence Folder Completed (Bob, M1 Mac)
 
 **Read first in the next session:** [`STATUS.md`](STATUS.md), then [`tracks/B1-cost/STATUS.md`](tracks/B1-cost/STATUS.md).
@@ -14,9 +34,9 @@ Updated 2026-11-12. This file is a dated log, newest entry first; use the linked
 - **Refreshed [`docs/CURRENT_RESULTS.md`](docs/CURRENT_RESULTS.md):** Updated baseline tag (`companion-measured-baseline-20261111` on `c3667e4`), incorporated Run 4 completed evidence, added full "Measured, Shows, Does Not Show" table per cost point (P1–P6, CCP1–CCP5), updated timing & contention diagnostics, and documented experiment limits.
 - **Created TDS Paper Revision 2 Evidence Folder (`docs/tds-evidence/paper-1-rev2-ledger-lab/`):**
   1. [`README.md`](docs/tds-evidence/paper-1-rev2-ledger-lab/README.md): Document inventory, status taxonomy (`verified`, `partially_verified`, etc.), and 2026-11-12 naming key.
-  2. [`01-measured-results-summary.md`](docs/tds-evidence/paper-1-rev2-ledger-lab/01-measured-results-summary.md): 14-year corpus metrics (224.07M SJE rows, 10.65M LDGR rows, 6.43M GL keys, 1.715 GB ledger store, 503.1T capacity bound, 3 Monthly runs, byte-identical deterministic outputs).
+  2. [`01-measured-results-summary.md`](docs/tds-evidence/paper-1-rev2-ledger-lab/01-measured-results-summary.md): 14-year corpus metrics (224.07M SJE rows, 10.65M LDGR rows, 6.43M GL keys, 1.715 GB ledger store, 503.1T capacity bound, 3 Monthly runs, byte-identical deterministic outputs between the two Monthly corpus executions, checked by manifest, with named tests for fixtures).
   3. [`02-mix-cost-curve-model.md`](docs/tds-evidence/paper-1-rev2-ledger-lab/02-mix-cost-curve-model.md): Mathematical formulations, measured constants vs. assumed rates, cost coordinates across dial $X \in [0, 100]$.
-  4. [`03-charlie-anderson-model.xlsx`](docs/tds-evidence/paper-1-rev2-ledger-lab/03-charlie-anderson-model.xlsx): 4-sheet interactive Excel workbook (`Model_Parameters`, `Cost_Equations`, `Cost_Bowl_Data`, `Multi_Substrate_Comparison`) built and validated with Office tools, 0 formula errors.
+  4. [`03-ckb-cost-model.xlsx`](docs/tds-evidence/paper-1-rev2-ledger-lab/03-ckb-cost-model.xlsx): 4-sheet interactive Excel workbook (`Model_Parameters`, `Cost_Equations`, `Cost_Bowl_Data`, `Multi_Substrate_Comparison`) built and validated with Office tools, 0 formula errors.
   5. [`04-one-page-explainer.html`](docs/tds-evidence/paper-1-rev2-ledger-lab/04-one-page-explainer.html): Browser-ready one-page visual explainer updated with standard naming conventions.
   6. [`05-limits-and-phase2-roadmap.md`](docs/tds-evidence/paper-1-rev2-ledger-lab/05-limits-and-phase2-roadmap.md): Scope limits (no revenue in gold, unmeasured annual/cubes runs, 54% Bash tail) and Phase 2 milestone plan.
 - Updated [`tracks/B1-cost/STATUS.md`](tracks/B1-cost/STATUS.md) and [`TODO.md`](TODO.md).
@@ -47,7 +67,7 @@ Updated 2026-11-12. This file is a dated log, newest entry first; use the linked
 1. `README` index: what each document is, status words (`verified`, `partially_verified`, `owner-reported`, `inferred`, `not run`), the naming key (graph name, CCP name, CCP tag, run tags).
 2. Measured results summary: Monthly point (three runs, CPU seconds and wall, 10,651,908 ledger rows, 224,072,410 SJE rows, identical outputs), Posted GL (6,433,714 keys), Views, permutation capacity as an upper bound (503,118,463,033,110). Revaluation and Allocation marked "fixture only, not run at corpus scale".
 3. The **Mix curve**, labelled a model with assumed rates and measured constants (`docs/COST_GRAPH_DESIGN.md`, "Mix graph: model run").
-4. A **spreadsheet with formulas** for Charlie Anderson (four sheets specified in `COST_GRAPH_DESIGN.md`: `Model_Parameters`, `Cost_Equations`, `Cost_Bowl_Data`, `Multi_Substrate_Comparison`). Build with the Office tools (the `office-insights` skill), no Python. The multi-substrate sheet holds only the measured CKB curve until the control is added in a later revision.
+4. A **spreadsheet with formulas** for the CKB Cost Model (four sheets specified in `COST_GRAPH_DESIGN.md`: `Model_Parameters`, `Cost_Equations`, `Cost_Bowl_Data`, `Multi_Substrate_Comparison`). Build with the Office tools (the `office-insights` skill), no Python. The multi-substrate sheet holds only the measured CKB curve until the control is added in a later revision.
 5. The **one-pager** for human readers: `docs/LEDGER_LAB_ONE_PAGE_EXPLAINER.html`. Its open items are in `TODO.md` (one outside-reader name for the payments subledger, footer addresses, browser check of the graph, review of the assumed rates).
 6. A refreshed `CURRENT_RESULTS.md` (still says "as of `9d54cd8`, a final run in progress") and a limits section: no revenue, no replicates per point beyond the three Monthly measurements, Bash control passes outside the step metrics (about 54% of chain wall time), Annual and Cubes not measured, hardware recorded only as "4-CPU, 16 GB".
 7. **Phase 2** list: the future points (Annual, Cubes, Revaluation and Allocation at corpus scale, revenue, replicates, then Track D and Part B).

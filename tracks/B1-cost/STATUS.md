@@ -18,7 +18,7 @@ Read the numbers by CPU seconds and total wall time, not per-step times; content
 
 ## Next actions
 
-0. ~~**Build the paper revision 2 evidence folder** for TDS~~ Done 2026-11-12 (`docs/tds-evidence/paper-1-rev2-ledger-lab/`: README index, `01-measured-results-summary.md`, `02-mix-cost-curve-model.md`, `03-charlie-anderson-model.xlsx`, `04-one-page-explainer.html`, `05-limits-and-phase2-roadmap.md`).
+0. ~~**Build the paper revision 2 evidence folder** for TDS~~ Done 2026-11-12 (`docs/tds-evidence/paper-1-rev2-ledger-lab/`: README index, `01-measured-results-summary.md`, `02-mix-cost-curve-model.md`, `03-ckb-cost-model.xlsx`, `04-one-page-explainer.html`, `05-limits-and-phase2-roadmap.md`).
 1. ~~**Refresh `CURRENT_RESULTS.md`**~~ Done 2026-11-12 with completed Run 4 evidence, standardized naming, and "measured, shows, does not show" summary.
 2. Owner review and transfer of the evidence folder into TDS (`01-evidence/practitioner/Sharealedger/`).
 3. Phase 2 execution: 3-replicate isolated cost runs and revenue transformation TTL.

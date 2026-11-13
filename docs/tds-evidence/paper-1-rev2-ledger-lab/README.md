@@ -22,7 +22,7 @@ This package contains the empirical evidence, mathematical cost models, and refe
 | [`README.md`](README.md) | Package index, evidence taxonomy, and standardized naming key. | Orientation & alignment. |
 | [`01-measured-results-summary.md`](01-measured-results-summary.md) | Measured corpus statistics across 14 years (Monthly point runs, GL keys, views, capacity bound, deterministic output verifications). | Empirical measurements. |
 | [`02-mix-cost-curve-model.md`](02-mix-cost-curve-model.md) | Mathematical formulation of the Mix Cost Curve (Events ↔ Balances), measured constants, assumed unit rates, and coordinates. | Analytical model. |
-| [`03-charlie-anderson-model.xlsx`](03-charlie-anderson-model.xlsx) | Four-sheet interactive Excel workbook (`Model_Parameters`, `Cost_Equations`, `Cost_Bowl_Data`, `Multi_Substrate_Comparison`). | Formula verification. |
+| [`03-ckb-cost-model.xlsx`](03-ckb-cost-model.xlsx) | Four-sheet interactive Excel workbook (`Model_Parameters`, `Cost_Equations`, `Cost_Bowl_Data`, `Multi_Substrate_Comparison`). | Formula verification. |
 | [`04-one-page-explainer.html`](04-one-page-explainer.html) | Self-contained, browser-viewable visual summary of the cost bowl, architectural layers, and findings. | Executive summary. |
 | [`05-limits-and-phase2-roadmap.md`](05-limits-and-phase2-roadmap.md) | Known experimental limits, unmetered orchestration overheads, and the Phase 2 execution roadmap. | Scope bounds & roadmap. |
 

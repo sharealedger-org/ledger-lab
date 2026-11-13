@@ -62,7 +62,7 @@ What the three runs establish:
 |---|---|---|
 | The pipeline runs the whole corpus on one 4-CPU, 16 GB host with a 1 GB JVM heap | `verified` | Three runs. Highest process memory was ~1.36 GB. |
 | Every year's SJE and ledger balance to zero | `verified` | 42 of 42 balance controls pass in all three runs. |
-| Runs 3 and 4 give identical outputs | `verified` | All 74 output data files in `MANIFEST.csv` and 14/14 merged SJE SHA-256 hashes are byte-identical. |
+| Byte-identical outputs across the two Monthly corpus executions | `verified` | The 74 output data files in `MANIFEST.csv` and the 14 merged SJE SHA-256 hashes match between `20261111_014229` and `20261111_064052`. The fixture-level determinism is enforced by named tests (`CorpusProfileSpec`, `GLPostSpec`, `CKBViewsSpec`); the full-corpus comparison is not a named test yet (TODO). |
 | Volumes | `verified` | 385 raw files, 27.8 GB. 224,072,410 SJE rows. 10,651,908 ledger rows. 6,433,714 GL keys. Output on disk 110–116 GB ([`corpus_totals.csv`](../data/test_evidence/corpus_runs/run_20261111_014229/corpus_totals.csv)). |
 | Permutation capacity summed over 14 years is 503,118,463,033,110 | `verified` | Measured upper bound across 14 years. |
 | Malformed purchase order rows quarantined (~32k) | `verified` | 14 files, rejected for malformed fields with exact counts in the register. |
@@ -159,7 +159,7 @@ You may meet these in older documents or in the handoff log.
 
 In rough order:
 
-1. **Paper Revision 2 Evidence Package:** Deliver TDS evidence folder with Mix curve model, Charlie Anderson spreadsheet, one-page explainer, and Phase 2 roadmap.
+1. **Paper Revision 2 Evidence Package:** Deliver TDS evidence folder with Mix curve model, CKB Cost Model spreadsheet, one-page explainer, and Phase 2 roadmap.
 2. **Replicates & Points:** Run three replicates for CCP1 to CCP5 under a chosen reference layout.
 3. **Three-Model Experiment (Track B2):** Resolve decision D9 (Net Income ground truth), implement IL-Native, select Apache 2.0 base model, and execute fine-tuning.
 4. **Revenue TTL:** Process `apa_revenue` through Scala transformation to add `REV*` accounts to Gold.

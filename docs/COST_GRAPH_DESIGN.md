@@ -1,7 +1,7 @@
 # Cost Graph Design — Working Notes
 
 **Status:** Updated design conversation, 2026-11-11. Corpus constants and the Mix-graph points were updated the same day to the measured values from the three full 14-year runs (see "Mix graph: model run with measured corpus constants" below). The bowl curves are model output, not measurements.
-**Purpose:** Capture the agreed graph designs, mathematical formulas, and spreadsheet model specifications so Charlie Anderson and other researchers have the exact calculated values and equations.
+**Purpose:** Capture the agreed graph designs, mathematical formulas, and spreadsheet model specifications so reviewers and other researchers have the exact calculated values and equations.
 **Companion:** [`docs/TEST_DESIGN.md`](TEST_DESIGN.md) — CCP/AIM measurement specs that sit underneath these graphs.
 
 ---
@@ -53,7 +53,7 @@ combinatorial cost for pre-computed answers to questions defined at design time.
 paying combinatorial cost for pre-computed answers to questions that could have been answered
 at query time from a narrower, cheaper store.
 
-### Mathematical Formulation of the Cost Bowl (For Charlie Anderson's Model)
+### Mathematical Formulation of the Cost Bowl (CKB Cost Model)
 
 Total lifecycle cost for any architectural point $P$ across the mix dial is decomposed into four explicit terms:
 
@@ -244,9 +244,9 @@ cost up the right wall.
 
 ---
 
-## Spreadsheet Model Specification for Charlie Anderson
+## Spreadsheet Model Specification: CKB Cost Model
 
-To allow Charlie Anderson to execute and manipulate the underlying mathematical model in Excel, the workbook is organized into four interconnected sheets:
+To allow a reader to execute and manipulate the underlying mathematical model in Excel, the workbook is organized into four interconnected sheets:
 
 ### Sheet 1: `Model_Parameters` (Corpus Constants & Unit Rates)
 Measured values from the full runs (run 4, `20261111_064052`), 2026-11-11:

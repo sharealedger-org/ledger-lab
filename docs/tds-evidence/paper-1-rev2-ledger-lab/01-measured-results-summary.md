@@ -3,6 +3,7 @@
 **Status:** `verified` / `partially_verified` (as indicated per metric)  
 **Corpus Scope:** State of Virginia Public Data, Fiscal Years 2003 through 2016 (14 years)  
 **Measured Infrastructure:** Single 4-CPU, 16 GB RAM Host; 1 GB JVM Max Heap  
+**Source Records:** Zenodo parent `10.5281/zenodo.23846362` (eVA purchase orders FY2001–FY2018, APA budget files, metadata) and APA expenditure and revenue records `24015791`, `24021539`, `24022681`, `24022832`; restored and SHA-256 verified by `scripts/download_corpus_zenodo.sh` against `data/corpus_profile/source_catalog.csv`.  
 
 ---
 

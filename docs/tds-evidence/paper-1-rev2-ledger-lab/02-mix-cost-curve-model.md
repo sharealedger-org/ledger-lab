@@ -2,7 +2,7 @@
 
 **Status:** Model Output (Measured Corpus Constants + Explicit Unit Rate Assumptions)  
 **Reference Design:** [`docs/COST_GRAPH_DESIGN.md`](../../COST_GRAPH_DESIGN.md)  
-**Companion Spreadsheet:** [`03-charlie-anderson-model.xlsx`](03-charlie-anderson-model.xlsx)  
+**Companion Spreadsheet:** [`03-ckb-cost-model.xlsx`](03-ckb-cost-model.xlsx)  
 
 ---
 
@@ -29,7 +29,7 @@ $$\text{Total Cost}(P) = \text{Cost}_{\text{batch}}(P) + \text{Cost}_{\text{stor
 * **Annual Engine CPU:** 11,207 seconds over 14 years (~800.5 CPU seconds/year).
 
 ### B. Unit Rate Assumptions (Configurable in Sheet 1 of Companion Workbook)
-* **Scan Rate ($\text{Cost}_{\text{scan}}$):** $\$0.02$ per GB scanned.
+* **Scan Rate ($\text{Cost}_{\text{scan}}$):** $\$0.02$ per GB scanned (assumed; sources pending, see [`RATE_SOURCES.md`](RATE_SOURCES.md)).
 * **Seek Rate ($\text{Cost}_{\text{seek}}$):** $\$0.0001$ per query lookup in narrow indexed ledger.
 * **Storage Rate ($\text{Cost}_{\text{store}}$):** $\$0.023$ per GB-month ($\$0.276$/GB-year).
 * **Reconciliation Rate ($\text{Cost}_{\text{reconcile}}$):** $\$50.00$ per master pair-month ($\$600.00$/pair-year).
@@ -48,13 +48,13 @@ Annual operating costs calculated by the model for a single operational year:
 | **15** | **P2: Annual** | Annual Movements (`T-annual`) + Sub-annual Event Scans | 1 | **$583.00** | 2.77 |
 | **30** | **P3: Monthly** | **Instrument Ledger (`LDGR` + CAR) — Bowl Minimum** | 1 | **$16.29** | **1.21** |
 | **60** | **P4: Cubes** | Movement Ledger + 2 Pre-computed Rollup Cubes | 2 | **$617.00** | 2.79 |
-| **90** | **P5: Posted** | Status-Quo GL + 5 Specialized Sub-ledgers | 6 | **$9,018.00** | 3.96 |
+| **90** | **P5: Posted** | Status-Quo GL + 5 Specialized Sub-ledgers | 6 | **$9,130.84** | 3.96 |
 | **100** | **P6: Permuted** | Combinatorial Pre-computed Balances (Capacity Bound) | - | **$22,400,000.00** | 7.35 |
 
 ---
 
 ## 4. Analytical Insights & Sensitivity
 
-1. **Depth of the Interior Minimum:** At $X=30$ (Monthly Instrument Ledger), annual cost is **$16.29**, representing a **$112\times$ reduction** relative to pure event replay ($1,830) and a **$553\times$ reduction** relative to the multi-master status quo ($9,018).
-2. **The Sub-Annual Query Driver:** The left wall steepness is governed entirely by sub-annual query frequency. If sub-annual queries are 0, Annual ($X=15$) costs $15.92. When even moderate sub-annual reporting is required (500 queries/year), Annual cost jumps to $583 because sub-annual boundaries were destroyed by annual aggregation.
+1. **Depth of the Interior Minimum:** At $X=30$ (Monthly Instrument Ledger), annual cost is **$16.29**, representing a **$112\times$ reduction** relative to pure event replay ($1,830) and a **$560\times$ reduction** relative to the multi-master status quo ($9,131).
+2. **The Sub-Annual Query Driver:** The left wall steepness is governed entirely by sub-annual query frequency. If sub-annual queries are 0, Annual ($X=15$) costs $15.92, slightly below the Monthly point ($16.29), so the Monthly minimum holds only if sub-annual questions are asked. When even moderate sub-annual reporting is required (500 queries/year), Annual cost jumps to $583 because sub-annual boundaries were destroyed by annual aggregation.
 3. **The Reconciliation Driver:** The right wall steepness is governed by multi-master synchronization $\frac{M(M-1)}{2} \times \text{Cost}_{\text{reconcile}}$. For $M=6$ stores, reconciliation alone is $9,000/year (15 pairs $\times$ $600/year).

@@ -14,12 +14,18 @@ Seeded 2026-11-11 from the handoff entries. On the same day the handoff was trim
 ## Cost graphs (Track B1)
 
 - [x] 2026-11-12: **Refresh `docs/CURRENT_RESULTS.md`** with completed Run 4 evidence, baseline tag, standardized naming, and "measured, shows, does not show" table per cost point.
-- [x] 2026-11-12: **TDS Paper Revision 2 Evidence Folder** created at `docs/tds-evidence/paper-1-rev2-ledger-lab/` (README index, `01-measured-results-summary.md`, `02-mix-cost-curve-model.md`, `03-charlie-anderson-model.xlsx` 4-sheet model workbook, `04-one-page-explainer.html`, `05-limits-and-phase2-roadmap.md`).
+- [x] 2026-11-12: **TDS Paper Revision 2 Evidence Folder** created at `docs/tds-evidence/paper-1-rev2-ledger-lab/` (README index, `01-measured-results-summary.md`, `02-mix-cost-curve-model.md`, `03-ckb-cost-model.xlsx` 4-sheet model workbook, `04-one-page-explainer.html`, `05-limits-and-phase2-roadmap.md`).
 - [ ] **Draw the Process, Mix and Engine one-page sheets** from the archived CSVs. No script without owner approval (`AGENTS.md`); `awk` numbers plus static pages first.
 
 - [ ] Engine and Process graphs have no model run. Engine needs the Track D corpus run; Process needs CCP4 and CCP5 on the corpus (`docs/EXPERIMENT_STATE_2026-11-11.md`, section 2).
 - [ ] Replicate each cost point three times before any cost is quoted. **Owner:** which layout is the reference.
 - [ ] Measure an annual-granularity (Run A) corpus run, or keep it labelled as an assumption.
+- [ ] **Owner:** P6 basis. The docs say $22.4M; `03-ckb-cost-model.xlsx` computes $22,107,000 from a hardcoded 80,000,000 GB, and its note G7 still says $22.4M. Decide the GB figure and its source, then correct the workbook, `02-mix-cost-curve-model.md` and the explainer label (2026-11-12 handoff, item 1).
+- [ ] **Owner:** raw storage in the bowl. P2–P5 charge the full 56.69 GB raw SJE store (P3: $16.12 of $16.29). Decide whether raw storage stays in the cost points, and document the choice in `02-mix-cost-curve-model.md` (2026-11-12 handoff, item 2).
+- [ ] Pull each unit rate into `docs/tds-evidence/paper-1-rev2-ledger-lab/RATE_SOURCES.md` from a dated source (price page, date retrieved, unit). Until then the rates are assumptions. Needs web access.
+- [ ] Add a conservative-case column to `Model_Parameters` in `03-ckb-cost-model.xlsx` (scan $0.005/GB, reconciliation $0) so both cases are in the workbook, not only the text.
+- [ ] Create a named test for full-corpus determinism (byte-identity of the two Monthly executions, per `gold/MANIFEST.csv`). Today only fixture-level determinism tests are named (2026-11-12 handoff, item 3).
+
 
 ## Three-model experiment (Track B2, on hold 2026-11-12)
 

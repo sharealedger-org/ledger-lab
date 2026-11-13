@@ -24,7 +24,7 @@
 
 ---
 
-## 2. Projected Architectural Assessment (For Charlie Anderson's Cost Surface)
+## 2. Projected Architectural Assessment (CKB Cost Model cost surface)
 
 Codex's design represents the **Relational / Database Substrate Baseline** (Curve 3 on the cost graphs):
 
