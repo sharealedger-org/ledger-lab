@@ -1,0 +1,40 @@
+[info] welcome to sbt 1.10.11 (Homebrew Java 21.0.11)
+[info] loading settings for project va_pipeline-build from assembly.sbt, plugins.sbt...
+[info] loading project definition from /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/02-foundation/va_pipeline/project
+[info] loading settings for project root from build.sbt...
+[info] set current project to va_pipeline (in build file:/Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip%20Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/02-foundation/va_pipeline/)
+[info] running org.universalledger.foundation.va.ledger.LedgerApp --step 5v --reportProfile expanded --inPaths /private/tmp/ckb-reporting-fixture-20261113/committed --outPath "/private/tmp/ckb reporting final 20261113.attempt" --vendorMaster /private/tmp/ckb-reporting-fixture-20261113/vendors.csv --contractDimensions /private/tmp/ckb-reporting-fixture-20261113/contracts.csv --refPath /private/tmp/ckb-reporting-fixture-20261113/references --spillRows 1 --packetVendors 0000000001
+****************************************************************************************************
+                                    Ledger Lab
+                                    VA Corpus
+                  Using State of Virginia Public Financial Data
+                  step=5v - Views (CKB)  all years (1 input directories)  quarter=01
+                  started 2026-11-13T15:29:28
+****************************************************************************************************
+[CLI] step=5v  inPath=/VAdata/data/  outPath=/private/tmp/ckb reporting final 20261113.attempt  year=03  quarter=01
+-----------------------------------
+RESULT step=5v profile=expanded rc=0 records_read=34 vendors=3 spills=20
+****************************************************************************************************
+                                  End of Ledger Lab step
+                  step=5v - Views (CKB)  all years (1 input directories)  quarter=01
+                  status=ok  elapsed=0:00:00
+****************************************************************************************************
+[success] Total time: 0 s, completed Nov 13, 2026, 3:29:28 PM
+        8.07 real         6.79 user         0.50 sys
+           529448960  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+               37061  page reclaims
+                 124  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   7  messages sent
+                   7  messages received
+                   5  signals received
+                2431  voluntary context switches
+               28394  involuntary context switches
+         43395885947  instructions retired
+         20450474123  cycles elapsed
+           505761344  peak memory footprint

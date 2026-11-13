@@ -1,0 +1,19 @@
+vendor_id,dimension,attribute,value,source,record
+0000000001,contract,vendor_id,0000000001,/private/tmp/ckb-reporting-fixture-20261113/contracts.csv,1
+0000000001,contract,contract_id,C1,/private/tmp/ckb-reporting-fixture-20261113/contracts.csv,1
+0000000001,contract,effective_from,2000-01-01,/private/tmp/ckb-reporting-fixture-20261113/contracts.csv,1
+0000000001,contract,effective_to,2014-06-30,/private/tmp/ckb-reporting-fixture-20261113/contracts.csv,1
+0000000001,contract,description,Original,/private/tmp/ckb-reporting-fixture-20261113/contracts.csv,1
+0000000001,contract,vendor_id,0000000001,/private/tmp/ckb-reporting-fixture-20261113/contracts.csv,2
+0000000001,contract,contract_id,C1,/private/tmp/ckb-reporting-fixture-20261113/contracts.csv,2
+0000000001,contract,effective_from,2014-07-01,/private/tmp/ckb-reporting-fixture-20261113/contracts.csv,2
+0000000001,contract,effective_to,9999-12-31,/private/tmp/ckb-reporting-fixture-20261113/contracts.csv,2
+0000000001,contract,description,Renewed,/private/tmp/ckb-reporting-fixture-20261113/contracts.csv,2
+0000000001,vendor,instID,0000000001,/private/tmp/ckb-reporting-fixture-20261113/vendors.csv,1
+0000000001,vendor,instHolderName,"Acme, Old",/private/tmp/ckb-reporting-fixture-20261113/vendors.csv,1
+0000000001,vendor,instEffectDate,2000-01-01,/private/tmp/ckb-reporting-fixture-20261113/vendors.csv,1
+0000000001,vendor,instEffectEndDate,2014-06-30,/private/tmp/ckb-reporting-fixture-20261113/vendors.csv,1
+0000000001,vendor,instID,0000000001,/private/tmp/ckb-reporting-fixture-20261113/vendors.csv,2
+0000000001,vendor,instHolderName,Acme New,/private/tmp/ckb-reporting-fixture-20261113/vendors.csv,2
+0000000001,vendor,instEffectDate,2014-07-01,/private/tmp/ckb-reporting-fixture-20261113/vendors.csv,2
+0000000001,vendor,instEffectEndDate,9999-99-99,/private/tmp/ckb-reporting-fixture-20261113/vendors.csv,2

@@ -1,0 +1,7 @@
+vendor_id,fiscal_year,event,currency,agency,fund,commodity,contract_id,amount,rows,absolute_amount,absolute_share_within_event_currency,contract_status,agency_description,fund_description
+0000000000,2014,REVENUE_RECEIPT,TXN,A1,F1,060,0,300,1,300,1,unattributed,Agency One,General Fund
+0000000001,2014,COMMITMENT,TXN,A1,F1,060,C1,100,2,140,1,matched_asof,Agency One,General Fund
+0000000001,2014,PAYMENT,TXN,A1,F1,060,0,90,2,110,1,unattributed,Agency One,General Fund
+0000000001,2015,COMMITMENT,TXN,A1,F1,060,C1,90,1,90,1,matched_asof,Agency One,General Fund
+0000000001,2015,PAYMENT,TXN,A1,F1,060,0,80,1,80,1,unattributed,Agency One,General Fund
+0000000002,2014,PAYMENT,TXN,A1,F1,060,0,50,1,50,1,unattributed,Agency One,General Fund

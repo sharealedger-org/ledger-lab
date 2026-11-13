@@ -1,0 +1,853 @@
+[info] welcome to sbt 1.10.11 (Homebrew Java 21.0.11)
+[info] loading settings for project va_pipeline-build from assembly.sbt, plugins.sbt...
+[info] loading project definition from /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/02-foundation/va_pipeline/project
+[info] loading settings for project root from build.sbt...
+[info] set current project to va_pipeline (in build file:/Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip%20Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/02-foundation/va_pipeline/)
+[info] compiling 1 Scala source to /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/02-foundation/va_pipeline/target/scala-2.12/test-classes ...
+[info] done compiling
+****************************************************************************************************
+                     Step 5v — CKB View Extraction (CKBViews)
+Start Time: Fri Nov 13 15:25:41 MST 2026
+****************************************************************************************************
+****************************************************************************************************
+                                Post Module
+Start Time: Fri Nov 13 15:25:41 MST 2026
+****************************************************************************************************
+  Input directory : /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ckbv-viewA-46654346509004797
+  Output directory: /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ckbv-viewA-46654346509004797
+  Year filter     : 2003
+  SortedJE files  : 1
+    /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ckbv-viewA-46654346509004797/SortedJEFY03q1exp.csv
+processing file: ../../session-run.tmp/reporting-5744741446554117584/inputs/SortedJEFY14merged.csv
+No existing ledger file.  File will be created: LDGR2014.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          12
+Ledger Records Read:           0
+Ledger Records Written:        10
+Process End Time:      Fri Nov 13 15:25:41 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2014 rc=0 records_read=12 records_written=10 elapsed_s=1 input_bytes=0 output_bytes=1715
+RESOURCE step=3 year=2014 jvm_heap_bytes=1073741824
+****************************************************************************************************
+                                Post Module
+Start Time: Fri Nov 13 15:25:41 MST 2026
+****************************************************************************************************
+processing file: ../../session-run.tmp/reporting-5744741446554117584/inputs/SortedJEFY15merged.csv
+No existing ledger file.  File will be created: LDGR2015.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          4
+Ledger Records Read:           0
+Ledger Records Written:        4
+Process End Time:      Fri Nov 13 15:25:41 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2015 rc=0 records_read=4 records_written=4 elapsed_s=1 input_bytes=0 output_bytes=1016
+RESOURCE step=3 year=2015 jvm_heap_bytes=1073741824
+****************************************************************************************************
+                   Step ttl — APA Technical Transform Layer (standardizeAndSort.applyAPA)
+Start Time: Fri Nov 13 15:25:41 MST 2026
+****************************************************************************************************
+WARNING: VendorMaster not found at data/VendorMaster_full.csv — instIDs will be 0000000000
+  inPath      : /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ttl-cols-14421648560017743197/VARawFiles
+  refPath     : /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ttl-cols-14421648560017743197/data
+  outPath     : /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ttl-cols-14421648560017743197/out
+  year        : 2003  types: E
+  SortSpec    : ../sort_specs/SortedJE.sortspec  (15 fields)
+  VendorMaster: data/VendorMaster_full.csv  (0 entries)
+  ChunkSize   : 200000
+  Reference   : agency=2 fund=2 object=2 program=2 source=2
+  Source folder (Expenditure FY2003): /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ttl-cols-14421648560017743197/VARawFiles/FY 2003 Expenditure
+  Discovered 1 E files for FY2003
+
+  Processing E Q1 → /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ttl-cols-14421648560017743197/out/SortedJEFY03q1exp.csv  (1 file(s))
+****************************************************************************************************
+Files processed     : 1
+Records read        : 3
+Rows skipped (short): 0
+View A rows (monthly order volume)      : 2
+View B rows (vendor-year survival)      : 1
+View C rows (agency-year commodity mix) : 1
+View D rows (agency-year payments)      : 0
+RESULT step=5v year=2003 rc=0 records_read=3 rows_skipped_short=0 files_read=1 view_monthly=2 view_vendor=1 view_agency_commodity=1 view_agency_payment=0 elapsed_s=1 aggregation_buffer_peak_keys=0 buffer_overflow=false partial_aggregate_rows=0 final_reduce_rows=0 final_reduce_seconds=0 reduction_ratio=0.0000
+RESOURCE step=5v year=2003 jvm_heap_bytes=1073741824
+Process End Time: Fri Nov 13 15:25:41 MST 2026
+****************************************************************************************************
+
+  File Expenditures Jul 2002 2003.csv: data_lines=1 source=1 unresolved_ref=0 blank=0
+  Spilled chunk 1  (2 SJE rows so far)
+  Q1: source=1 sje=2 unresolved_ref=0 spills=1
+  Merging 1 spill(s) → /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ttl-cols-14421648560017743197/out/SortedJEFY03q1exp.csv ...
+  Written: /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ttl-cols-14421648560017743197/out/SortedJEFY03q1exp.csv (2 rows)
+
+Control totals:
+  Source rows processed : 1
+  SJE rows produced     : 2  (= ~2 × source rows)
+  Unresolved ref lookups: 0
+
+RESULT step=ttl year=2003 rc=0 records_read=1 records_written=2 elapsed_s=1 input_bytes=294 output_bytes=479
+RESOURCE step=ttl year=2003 jvm_heap_bytes=1073741824
+STATUS: COMPLETE
+****************************************************************************************************
+Process End Time: Fri Nov 13 15:25:41 MST 2026
+****************************************************************************************************
+****************************************************************************************************
+                     Step 5v — CKB View Extraction (CKBViews)
+Start Time: Fri Nov 13 15:25:41 MST 2026
+****************************************************************************************************
+  Input directory : /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ckbv-viewA-rev-8722926067958053995
+  Output directory: /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ckbv-viewA-rev-8722926067958053995
+  Year filter     : 2003
+  SortedJE files  : 1
+    /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ckbv-viewA-rev-8722926067958053995/SortedJEFY03q1exp.csv
+****************************************************************************************************
+                   Step ttl — APA Technical Transform Layer (standardizeAndSort.applyAPA)
+Start Time: Fri Nov 13 15:25:41 MST 2026
+****************************************************************************************************
+WARNING: VendorMaster not found at data/VendorMaster_full.csv — instIDs will be 0000000000
+  inPath      : /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ttl-balance-15006624678923855923/VARawFiles
+  refPath     : /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ttl-balance-15006624678923855923/data
+  outPath     : /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ttl-balance-15006624678923855923/out
+  year        : 2003  types: E
+  SortSpec    : ../sort_specs/SortedJE.sortspec  (15 fields)
+  VendorMaster: data/VendorMaster_full.csv  (0 entries)
+  ChunkSize   : 200000
+****************************************************************************************************
+Files processed     : 1
+Records read        : 3
+Rows skipped (short): 0
+View A rows (monthly order volume)      : 1
+View B rows (vendor-year survival)      : 1
+View C rows (agency-year commodity mix) : 1
+View D rows (agency-year payments)      : 0
+RESULT step=5v year=2003 rc=0 records_read=3 rows_skipped_short=0 files_read=1 view_monthly=1 view_vendor=1 view_agency_commodity=1 view_agency_payment=0 elapsed_s=1 aggregation_buffer_peak_keys=0 buffer_overflow=false partial_aggregate_rows=0 final_reduce_rows=0 final_reduce_seconds=0 reduction_ratio=0.0000
+RESOURCE step=5v year=2003 jvm_heap_bytes=1073741824
+Process End Time: Fri Nov 13 15:25:41 MST 2026
+****************************************************************************************************
+  Reference   : agency=2 fund=2 object=2 program=2 source=2
+  Source folder (Expenditure FY2003): /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ttl-balance-15006624678923855923/VARawFiles/FY 2003 Expenditure
+  Discovered 1 E files for FY2003
+
+  Processing E Q1 → /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ttl-balance-15006624678923855923/out/SortedJEFY03q1exp.csv  (1 file(s))
+
+  File Expenditures Jul 2002 2003.csv: data_lines=1 source=1 unresolved_ref=0 blank=0
+  Spilled chunk 1  (2 SJE rows so far)
+  Q1: source=1 sje=2 unresolved_ref=0 spills=1
+  Merging 1 spill(s) → /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ttl-balance-15006624678923855923/out/SortedJEFY03q1exp.csv ...
+  Written: /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ttl-balance-15006624678923855923/out/SortedJEFY03q1exp.csv (2 rows)
+
+Control totals:
+  Source rows processed : 1
+  SJE rows produced     : 2  (= ~2 × source rows)
+  Unresolved ref lookups: 0
+
+RESULT step=ttl year=2003 rc=0 records_read=1 records_written=2 elapsed_s=1 input_bytes=294 output_bytes=479
+RESOURCE step=ttl year=2003 jvm_heap_bytes=1073741824
+STATUS: COMPLETE
+****************************************************************************************************
+Process End Time: Fri Nov 13 15:25:41 MST 2026
+****************************************************************************************************
+****************************************************************************************************
+                     Step 5v — CKB View Extraction (CKBViews)
+Start Time: Fri Nov 13 15:25:41 MST 2026
+****************************************************************************************************
+  Input directory : /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ckbv-viewB-4878676546197803184
+  Output directory: /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ckbv-viewB-4878676546197803184
+  Year filter     : (all)
+  SortedJE files  : 1
+    /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ckbv-viewB-4878676546197803184/SortedJEFY03q1exp.csv
+****************************************************************************************************
+Files processed     : 1
+Records read        : 3
+Rows skipped (short): 0
+View A rows (monthly order volume)      : 2
+View B rows (vendor-year survival)      : 3
+View C rows (agency-year commodity mix) : 2
+View D rows (agency-year payments)      : 0
+RESULT step=5v year= rc=0 records_read=3 rows_skipped_short=0 files_read=1 view_monthly=2 view_vendor=3 view_agency_commodity=2 view_agency_payment=0 elapsed_s=1 aggregation_buffer_peak_keys=0 buffer_overflow=false partial_aggregate_rows=0 final_reduce_rows=0 final_reduce_seconds=0 reduction_ratio=0.0000
+RESOURCE step=5v year= jvm_heap_bytes=1073741824
+Process End Time: Fri Nov 13 15:25:41 MST 2026
+****************************************************************************************************
+****************************************************************************************************
+                     Step 5v — CKB View Extraction (CKBViews)
+Start Time: Fri Nov 13 15:25:41 MST 2026
+****************************************************************************************************
+  Input directory : /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ckbv-surrogatekey-15080889664163118041
+  Output directory: /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ckbv-surrogatekey-15080889664163118041
+  Year filter     : (all)
+  SortedJE files  : 1
+    /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ckbv-surrogatekey-15080889664163118041/SortedJEFY03q1exp.csv
+****************************************************************************************************
+                   Step ttl — APA Technical Transform Layer (standardizeAndSort.applyAPA)
+Start Time: Fri Nov 13 15:25:41 MST 2026
+****************************************************************************************************
+WARNING: VendorMaster not found at data/VendorMaster_full.csv — instIDs will be 0000000000
+  inPath      : /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ttl-agencykey-3554238591787004641/VARawFiles
+  refPath     : /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ttl-agencykey-3554238591787004641/data
+  outPath     : /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ttl-agencykey-3554238591787004641/out
+  year        : 2003  types: E
+  SortSpec    : ../sort_specs/SortedJE.sortspec  (15 fields)
+  VendorMaster: data/VendorMaster_full.csv  (0 entries)
+  ChunkSize   : 200000
+  Reference   : agency=2 fund=2 object=2 program=2 source=2
+****************************************************************************************************
+Files processed     : 1
+Records read        : 2
+Rows skipped (short): 0
+View A rows (monthly order volume)      : 1
+View B rows (vendor-year survival)      : 2
+View C rows (agency-year commodity mix) : 1
+View D rows (agency-year payments)      : 0
+  Source folder (Expenditure FY2003): /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ttl-agencykey-3554238591787004641/VARawFiles/FY 2003 Expenditure
+RESULT step=5v year= rc=0 records_read=2 rows_skipped_short=0 files_read=1 view_monthly=1 view_vendor=2 view_agency_commodity=1 view_agency_payment=0 elapsed_s=1 aggregation_buffer_peak_keys=0 buffer_overflow=false partial_aggregate_rows=0 final_reduce_rows=0 final_reduce_seconds=0 reduction_ratio=0.0000
+RESOURCE step=5v year= jvm_heap_bytes=1073741824
+Process End Time: Fri Nov 13 15:25:41 MST 2026
+****************************************************************************************************
+  Discovered 1 E files for FY2003
+
+  Processing E Q1 → /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ttl-agencykey-3554238591787004641/out/SortedJEFY03q1exp.csv  (1 file(s))
+
+  File Expenditures Jul 2002 2003.csv: data_lines=1 source=1 unresolved_ref=0 blank=0
+  Spilled chunk 1  (2 SJE rows so far)
+  Q1: source=1 sje=2 unresolved_ref=0 spills=1
+  Merging 1 spill(s) → /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ttl-agencykey-3554238591787004641/out/SortedJEFY03q1exp.csv ...
+  Written: /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ttl-agencykey-3554238591787004641/out/SortedJEFY03q1exp.csv (2 rows)
+
+Control totals:
+  Source rows processed : 1
+  SJE rows produced     : 2  (= ~2 × source rows)
+  Unresolved ref lookups: 0
+
+RESULT step=ttl year=2003 rc=0 records_read=1 records_written=2 elapsed_s=1 input_bytes=294 output_bytes=479
+RESOURCE step=ttl year=2003 jvm_heap_bytes=1073741824
+STATUS: COMPLETE
+****************************************************************************************************
+Process End Time: Fri Nov 13 15:25:41 MST 2026
+****************************************************************************************************
+****************************************************************************************************
+                   Step ttl — APA Technical Transform Layer (standardizeAndSort.applyAPA)
+Start Time: Fri Nov 13 15:25:41 MST 2026
+****************************************************************************************************
+****************************************************************************************************
+                     Step 5v — CKB View Extraction (CKBViews)
+Start Time: Fri Nov 13 15:25:41 MST 2026
+****************************************************************************************************
+  Input directory : /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ckbv-viewB-enriched-15925263765255843749
+WARNING: VendorMaster not found at data/VendorMaster_full.csv — instIDs will be 0000000000
+  Output directory: /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ckbv-viewB-enriched-15925263765255843749
+  Year filter     : (all)
+  SortedJE files  : 1
+    /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ckbv-viewB-enriched-15925263765255843749/SortedJEFY03q1exp.csv
+  inPath      : /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ttl-quarters-5122032556276907613/VARawFiles
+  refPath     : /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ttl-quarters-5122032556276907613/data
+  outPath     : /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ttl-quarters-5122032556276907613/out
+  year        : 2003  types: E
+  SortSpec    : ../sort_specs/SortedJE.sortspec  (15 fields)
+  VendorMaster: data/VendorMaster_full.csv  (0 entries)
+  ChunkSize   : 200000
+****************************************************************************************************
+Files processed     : 1
+Records read        : 3
+Rows skipped (short): 0
+View A rows (monthly order volume)      : 3
+View B rows (vendor-year survival)      : 1
+View C rows (agency-year commodity mix) : 2
+View D rows (agency-year payments)      : 0
+RESULT step=5v year= rc=0 records_read=3 rows_skipped_short=0 files_read=1 view_monthly=3 view_vendor=1 view_agency_commodity=2 view_agency_payment=0 elapsed_s=1 aggregation_buffer_peak_keys=0 buffer_overflow=false partial_aggregate_rows=0 final_reduce_rows=0 final_reduce_seconds=0 reduction_ratio=0.0000
+RESOURCE step=5v year= jvm_heap_bytes=1073741824
+Process End Time: Fri Nov 13 15:25:41 MST 2026
+****************************************************************************************************
+  Reference   : agency=2 fund=2 object=2 program=2 source=2
+  Source folder (Expenditure FY2003): /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ttl-quarters-5122032556276907613/VARawFiles/FY 2003 Expenditure
+  Discovered 2 E files for FY2003
+
+  Processing E Q1 → /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ttl-quarters-5122032556276907613/out/SortedJEFY03q1exp.csv  (1 file(s))
+
+  File Expenditures Jul 2002 2003.csv: data_lines=1 source=1 unresolved_ref=0 blank=0
+  Spilled chunk 1  (2 SJE rows so far)
+  Q1: source=1 sje=2 unresolved_ref=0 spills=1
+  Merging 1 spill(s) → /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ttl-quarters-5122032556276907613/out/SortedJEFY03q1exp.csv ...
+  Written: /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ttl-quarters-5122032556276907613/out/SortedJEFY03q1exp.csv (2 rows)
+****************************************************************************************************
+                     Step 5v — CKB View Extraction (CKBViews)
+Start Time: Fri Nov 13 15:25:41 MST 2026
+****************************************************************************************************
+  Input directory : /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ckbv-viewC-11176181256527082587
+  Output directory: /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ckbv-viewC-11176181256527082587
+  Year filter     : 2003
+  SortedJE files  : 1
+    /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ckbv-viewC-11176181256527082587/SortedJEFY03q1exp.csv
+
+  Processing E Q4 → /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ttl-quarters-5122032556276907613/out/SortedJEFY03q4exp.csv  (1 file(s))
+
+  File Expenditures Apr 2003 2003.csv: data_lines=1 source=1 unresolved_ref=0 blank=0
+  Spilled chunk 1  (2 SJE rows so far)
+  Q4: source=1 sje=2 unresolved_ref=0 spills=1
+  Merging 1 spill(s) → /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ttl-quarters-5122032556276907613/out/SortedJEFY03q4exp.csv ...
+  Written: /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ttl-quarters-5122032556276907613/out/SortedJEFY03q4exp.csv (2 rows)
+****************************************************************************************************
+Files processed     : 1
+Records read        : 2
+Rows skipped (short): 0
+View A rows (monthly order volume)      : 1
+View B rows (vendor-year survival)      : 1
+View C rows (agency-year commodity mix) : 1
+View D rows (agency-year payments)      : 0
+RESULT step=5v year=2003 rc=0 records_read=2 rows_skipped_short=0 files_read=1 view_monthly=1 view_vendor=1 view_agency_commodity=1 view_agency_payment=0 elapsed_s=1 aggregation_buffer_peak_keys=0 buffer_overflow=false partial_aggregate_rows=0 final_reduce_rows=0 final_reduce_seconds=0 reduction_ratio=0.0000
+RESOURCE step=5v year=2003 jvm_heap_bytes=1073741824
+Process End Time: Fri Nov 13 15:25:41 MST 2026
+****************************************************************************************************
+****************************************************************************************************
+                     Step 5v — CKB View Extraction (CKBViews)
+
+Control totals:
+  Source rows processed : 2
+  SJE rows produced     : 4  (= ~2 × source rows)
+  Unresolved ref lookups: 0
+
+RESULT step=ttl year=2003 rc=0 records_read=2 records_written=4 elapsed_s=1 input_bytes=582 output_bytes=479
+RESOURCE step=ttl year=2003 jvm_heap_bytes=1073741824
+STATUS: COMPLETE
+****************************************************************************************************
+Process End Time: Fri Nov 13 15:25:41 MST 2026
+****************************************************************************************************
+Start Time: Fri Nov 13 15:25:41 MST 2026
+****************************************************************************************************
+  Input directory : /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ckbv-viewC-enriched-15332974191830697319
+  Output directory: /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ckbv-viewC-enriched-15332974191830697319
+  Year filter     : 2003
+  SortedJE files  : 1
+    /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ckbv-viewC-enriched-15332974191830697319/SortedJEFY03q1exp.csv
+****************************************************************************************************
+Files processed     : 1
+Records read        : 3
+Rows skipped (short): 0
+View A rows (monthly order volume)      : 3
+View B rows (vendor-year survival)      : 2
+View C rows (agency-year commodity mix) : 1
+View D rows (agency-year payments)      : 0
+RESULT step=5v year=2003 rc=0 records_read=3 rows_skipped_short=0 files_read=1 view_monthly=3 view_vendor=2 view_agency_commodity=1 view_agency_payment=0 elapsed_s=1 aggregation_buffer_peak_keys=0 buffer_overflow=false partial_aggregate_rows=0 final_reduce_rows=0 final_reduce_seconds=0 reduction_ratio=0.0000
+RESOURCE step=5v year=2003 jvm_heap_bytes=1073741824
+Process End Time: Fri Nov 13 15:25:41 MST 2026
+****************************************************************************************************
+****************************************************************************************************
+                     Step 5v — CKB View Extraction (CKBViews)
+Start Time: Fri Nov 13 15:25:41 MST 2026
+****************************************************************************************************
+  Input directory : /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ckbv-viewD-7632968749818158973
+  Output directory: /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ckbv-viewD-7632968749818158973
+  Year filter     : 2003
+  SortedJE files  : 1
+    /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ckbv-viewD-7632968749818158973/SortedJEFY03q1exp.csv
+****************************************************************************************************
+                   Step ttl — APA Technical Transform Layer (standardizeAndSort.applyAPA)
+Start Time: Fri Nov 13 15:25:41 MST 2026
+****************************************************************************************************
+WARNING: VendorMaster not found at data/VendorMaster_full.csv — instIDs will be 0000000000
+  inPath      : /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ttl-revenue-9594358542113033452/VARawFiles
+  refPath     : /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ttl-revenue-9594358542113033452/data
+  outPath     : /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ttl-revenue-9594358542113033452/out
+  year        : 2003  types: R
+  SortSpec    : ../sort_specs/SortedJE.sortspec  (15 fields)
+  VendorMaster: data/VendorMaster_full.csv  (0 entries)
+  ChunkSize   : 200000
+  Reference   : agency=2 fund=2 object=2 program=2 source=2
+  Source folder (Revenue FY2003): /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ttl-revenue-9594358542113033452/VARawFiles/FY 2003 Revenue
+  Discovered 1 R files for FY2003
+
+  Processing R rev → /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ttl-revenue-9594358542113033452/out/SortedJEFY03rev.csv  (1 file(s))
+
+  File Revenues Jul 2002.csv: data_lines=1 source=1 unresolved_ref=0 blank=0
+  Spilled chunk 1  (2 SJE rows so far)
+  rev: source=1 sje=2 unresolved_ref=0 spills=1
+  Merging 1 spill(s) → /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ttl-revenue-9594358542113033452/out/SortedJEFY03rev.csv ...
+  Written: /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ttl-revenue-9594358542113033452/out/SortedJEFY03rev.csv (2 rows)
+
+RESULT step=ttl year=2003 rc=0 records_read=1 records_written=2 elapsed_s=1 input_bytes=222 output_bytes=490
+RESOURCE step=ttl year=2003 jvm_heap_bytes=1073741824
+****************************************************************************************************
+Process End Time: Fri Nov 13 15:25:41 MST 2026
+****************************************************************************************************
+****************************************************************************************************
+Files processed     : 1
+Records read        : 3
+Rows skipped (short): 0
+View A rows (monthly order volume)      : 1
+View B rows (vendor-year survival)      : 1
+View C rows (agency-year commodity mix) : 1
+View D rows (agency-year payments)      : 1
+RESULT step=5v year=2003 rc=0 records_read=3 rows_skipped_short=0 files_read=1 view_monthly=1 view_vendor=1 view_agency_commodity=1 view_agency_payment=1 elapsed_s=1 aggregation_buffer_peak_keys=1 buffer_overflow=false partial_aggregate_rows=0 final_reduce_rows=0 final_reduce_seconds=0 reduction_ratio=0.0000
+RESOURCE step=5v year=2003 jvm_heap_bytes=1073741824
+Process End Time: Fri Nov 13 15:25:41 MST 2026
+****************************************************************************************************
+****************************************************************************************************
+                     Step 5v — CKB View Extraction (CKBViews)
+Start Time: Fri Nov 13 15:25:41 MST 2026
+****************************************************************************************************
+  Input directory : /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ckbv-viewD-multikey-5325029495796999688
+  Output directory: /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ckbv-viewD-multikey-5325029495796999688
+  Year filter     : 2003
+  SortedJE files  : 1
+    /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ckbv-viewD-multikey-5325029495796999688/SortedJEFY03q1exp.csv
+****************************************************************************************************
+Files processed     : 1
+Records read        : 3
+Rows skipped (short): 0
+View A rows (monthly order volume)      : 0
+View B rows (vendor-year survival)      : 0
+View C rows (agency-year commodity mix) : 0
+View D rows (agency-year payments)      : 3
+RESULT step=5v year=2003 rc=0 records_read=3 rows_skipped_short=0 files_read=1 view_monthly=0 view_vendor=0 view_agency_commodity=0 view_agency_payment=3 elapsed_s=1 aggregation_buffer_peak_keys=3 buffer_overflow=false partial_aggregate_rows=0 final_reduce_rows=0 final_reduce_seconds=0 reduction_ratio=0.0000
+RESOURCE step=5v year=2003 jvm_heap_bytes=1073741824
+Process End Time: Fri Nov 13 15:25:41 MST 2026
+****************************************************************************************************
+****************************************************************************************************
+                   Step ttl — APA Technical Transform Layer (standardizeAndSort.applyAPA)
+Start Time: Fri Nov 13 15:25:41 MST 2026
+****************************************************************************************************
+WARNING: VendorMaster not found at data/VendorMaster_full.csv — instIDs will be 0000000000
+  inPath      : /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ttl-both-post-17113924274128336084/VARawFiles
+  refPath     : /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ttl-both-post-17113924274128336084/refs
+  outPath     : /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ttl-both-post-17113924274128336084/out
+  year        : 03  types: E,R
+  SortSpec    : ../sort_specs/SortedJE.sortspec  (15 fields)
+  VendorMaster: data/VendorMaster_full.csv  (0 entries)
+  ChunkSize   : 200000
+  Reference   : agency=2 fund=2 object=2 program=2 source=2
+  Source folder (Expenditure FY2003): /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ttl-both-post-17113924274128336084/VARawFiles/FY 2003 Expenditure
+  Discovered 1 E files for FY3
+****************************************************************************************************
+                     Step 5v — CKB View Extraction (CKBViews)
+Start Time: Fri Nov 13 15:25:41 MST 2026
+****************************************************************************************************
+  Input directory : /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ckbv-allfiles-15781054552194409432
+  Output directory: /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ckbv-allfiles-15781054552194409432
+  Year filter     : 2003
+  SortedJE files  : 1
+    /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ckbv-allfiles-15781054552194409432/SortedJEFY03q1exp.csv
+
+  Processing E 0003/07 → /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ttl-both-post-17113924274128336084/out/SortedJEFY03_0003_07_exp.csv  (1 file(s))
+
+  File Expenditures Jul 2003.csv: data_lines=1 source=1 unresolved_ref=0 blank=0
+  Spilled chunk 1  (2 SJE rows so far)
+  0003/07: source=1 sje=2 unresolved_ref=0 spills=1
+  Merging 1 spill(s) → /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ttl-both-post-17113924274128336084/out/SortedJEFY03_0003_07_exp.csv ...
+  Written: /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ttl-both-post-17113924274128336084/out/SortedJEFY03_0003_07_exp.csv (2 rows)
+
+Control totals:
+  Source rows processed : 1
+  SJE rows produced     : 2  (= ~2 × source rows)
+  Unresolved ref lookups: 0
+
+RESULT step=ttl year=03 rc=0 records_read=1 records_written=2 elapsed_s=1 input_bytes=294 output_bytes=0
+RESOURCE step=ttl year=03 jvm_heap_bytes=1073741824
+STATUS: COMPLETE
+****************************************************************************************************
+Files processed     : 1
+Records read        : 2
+Rows skipped (short): 0
+View A rows (monthly order volume)      : 1
+View B rows (vendor-year survival)      : 1
+View C rows (agency-year commodity mix) : 1
+View D rows (agency-year payments)      : 1
+RESULT step=5v year=2003 rc=0 records_read=2 rows_skipped_short=0 files_read=1 view_monthly=1 view_vendor=1 view_agency_commodity=1 view_agency_payment=1 elapsed_s=1 aggregation_buffer_peak_keys=1 buffer_overflow=false partial_aggregate_rows=0 final_reduce_rows=0 final_reduce_seconds=0 reduction_ratio=0.0000
+RESOURCE step=5v year=2003 jvm_heap_bytes=1073741824
+Process End Time: Fri Nov 13 15:25:41 MST 2026
+****************************************************************************************************
+  Source folder (Revenue FY2003): /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ttl-both-post-17113924274128336084/VARawFiles/FY 2003 Revenue
+  Discovered 1 R files for FY3
+
+  Processing R rev → /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ttl-both-post-17113924274128336084/out/SortedJEFY03rev.csv  (1 file(s))
+
+  File Revenues Jul 2002.csv: data_lines=1 source=1 unresolved_ref=0 blank=0
+  Spilled chunk 1  (2 SJE rows so far)
+  rev: source=1 sje=2 unresolved_ref=0 spills=1
+  Merging 1 spill(s) → /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ttl-both-post-17113924274128336084/out/SortedJEFY03rev.csv ...
+  Written: /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ttl-both-post-17113924274128336084/out/SortedJEFY03rev.csv (2 rows)
+
+RESULT step=ttl year=03 rc=0 records_read=2 records_written=4 elapsed_s=1 input_bytes=207 output_bytes=491
+RESOURCE step=ttl year=03 jvm_heap_bytes=1073741824
+****************************************************************************************************
+Process End Time: Fri Nov 13 15:25:41 MST 2026
+****************************************************************************************************
+****************************************************************************************************
+                                Post Module
+Start Time: Fri Nov 13 15:25:41 MST 2026
+****************************************************************************************************
+processing file: /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ttl-both-post-17113924274128336084/out/SortedJEFY03_0003_07_exp.csv
+No existing ledger file.  File will be created: LDGR2003.csv
+----------------------------------
+processing file: /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ttl-both-post-17113924274128336084/out/SortedJEFY03rev.csv
+****************************************************************************************************
+Files Processed:               2
+Journal Records Read:          4
+Ledger Records Read:           2
+Ledger Records Written:        4
+Process End Time:      Fri Nov 13 15:25:41 MST 2026
+****************************************************************************************************
+****************************************************************************************************
+                     Step 5v — CKB View Extraction (CKBViews)
+RESULT step=3 year=2003 rc=0 records_read=4 records_written=4 elapsed_s=1 input_bytes=0 output_bytes=1095
+RESOURCE step=3 year=2003 jvm_heap_bytes=1073741824
+Start Time: Fri Nov 13 15:25:41 MST 2026
+****************************************************************************************************
+  Input directory : /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ckbv-yearfilter-2195727852096473660
+  Output directory: /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ckbv-yearfilter-2195727852096473660
+  Year filter     : 2003
+  SortedJE files  : 1
+    /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ckbv-yearfilter-2195727852096473660/SortedJEFY03q1exp.csv
+****************************************************************************************************
+Files processed     : 1
+Records read        : 1
+Rows skipped (short): 0
+View A rows (monthly order volume)      : 1
+View B rows (vendor-year survival)      : 1
+View C rows (agency-year commodity mix) : 1
+View D rows (agency-year payments)      : 0
+RESULT step=5v profile=expanded rc=0 records_read=34 vendors=3 spills=10
+RESULT step=5v year=2003 rc=0 records_read=1 rows_skipped_short=0 files_read=1 view_monthly=1 view_vendor=1 view_agency_commodity=1 view_agency_payment=0 elapsed_s=1 aggregation_buffer_peak_keys=0 buffer_overflow=false partial_aggregate_rows=0 final_reduce_rows=0 final_reduce_seconds=0 reduction_ratio=0.0000
+RESOURCE step=5v year=2003 jvm_heap_bytes=1073741824
+Process End Time: Fri Nov 13 15:25:41 MST 2026
+****************************************************************************************************
+****************************************************************************************************
+                     Step 5v — CKB View Extraction (CKBViews)
+Start Time: Fri Nov 13 15:25:41 MST 2026
+****************************************************************************************************
+  Input directory : /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ckbv-vafy-16783433212939171168
+  Output directory: /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ckbv-vafy-16783433212939171168
+  Year filter     : (all)
+  SortedJE files  : 1
+    /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ckbv-vafy-16783433212939171168/SortedJEFY03q1exp.csv
+****************************************************************************************************
+Files processed     : 1
+Records read        : 3
+Rows skipped (short): 0
+View A rows (monthly order volume)      : 3
+View B rows (vendor-year survival)      : 3
+View C rows (agency-year commodity mix) : 3
+View D rows (agency-year payments)      : 0
+RESULT step=5v year= rc=0 records_read=3 rows_skipped_short=0 files_read=1 view_monthly=3 view_vendor=3 view_agency_commodity=3 view_agency_payment=0 elapsed_s=1 aggregation_buffer_peak_keys=0 buffer_overflow=false partial_aggregate_rows=0 final_reduce_rows=0 final_reduce_seconds=0 reduction_ratio=0.0000
+RESOURCE step=5v year= jvm_heap_bytes=1073741824
+Process End Time: Fri Nov 13 15:25:41 MST 2026
+****************************************************************************************************
+RESULT step=5r rc=0 records_written=14 merge_passes=4
+WARNING: VendorMaster not found at data/VendorMaster_full.csv — instIDs will be 0000000000
+****************************************************************************************************
+                     Step 5v — CKB View Extraction (CKBViews)
+Start Time: Fri Nov 13 15:25:41 MST 2026
+****************************************************************************************************
+  Input directories: /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ckbv-vendorcount-13408982316162258520/FY03, /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ckbv-vendorcount-13408982316162258520/FY04
+  Output directory: /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ckbv-vendorcount-13408982316162258520/views
+  Year filter     : (all)
+  SortedJE files  : 2
+    /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ckbv-vendorcount-13408982316162258520/FY03/SortedJEFY03merged.csv
+    /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ckbv-vendorcount-13408982316162258520/FY04/SortedJEFY04merged.csv
+****************************************************************************************************
+Files processed     : 2
+Records read        : 3
+Rows skipped (short): 0
+View A rows (monthly order volume)      : 2
+View B rows (vendor-year survival)      : 2
+View C rows (agency-year commodity mix) : 1
+View D rows (agency-year payments)      : 0
+RESULT step=5v year= rc=0 records_read=3 rows_skipped_short=0 files_read=2 view_monthly=2 view_vendor=2 view_agency_commodity=1 view_agency_payment=0 elapsed_s=1 aggregation_buffer_peak_keys=0 buffer_overflow=false partial_aggregate_rows=0 final_reduce_rows=0 final_reduce_seconds=0 reduction_ratio=0.0000
+RESOURCE step=5v year= jvm_heap_bytes=1073741824
+Process End Time: Fri Nov 13 15:25:41 MST 2026
+****************************************************************************************************
+****************************************************************************************************
+                   Step ttl — APA Technical Transform Layer (standardizeAndSort.applyAPA)
+Start Time: Fri Nov 13 15:25:41 MST 2026
+****************************************************************************************************
+WARNING: VendorMaster not found at data/VendorMaster_full.csv — instIDs will be 0000000000
+  inPath      : /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ttl-unresolved-16551034379223739788/VARawFiles
+  refPath     : /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ttl-unresolved-16551034379223739788/data
+  outPath     : /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ttl-unresolved-16551034379223739788/out
+  year        : 2003  types: E
+  SortSpec    : ../sort_specs/SortedJE.sortspec  (15 fields)
+  VendorMaster: data/VendorMaster_full.csv  (0 entries)
+  ChunkSize   : 200000
+  Reference   : agency=2 fund=2 object=2 program=2 source=2
+  Source folder (Expenditure FY2003): /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ttl-unresolved-16551034379223739788/VARawFiles/FY 2003 Expenditure
+  Discovered 1 E files for FY2003
+
+  Processing E Q1 → /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ttl-unresolved-16551034379223739788/out/SortedJEFY03q1exp.csv  (1 file(s))
+
+  File Expenditures Jul 2002 2003.csv: data_lines=1 source=1 unresolved_ref=0 blank=0
+  Spilled chunk 1  (2 SJE rows so far)
+  Q1: source=1 sje=2 unresolved_ref=0 spills=1
+  Merging 1 spill(s) → /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ttl-unresolved-16551034379223739788/out/SortedJEFY03q1exp.csv ...
+  Written: /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ttl-unresolved-16551034379223739788/out/SortedJEFY03q1exp.csv (2 rows)
+
+Control totals:
+  Source rows processed : 1
+  SJE rows produced     : 2  (= ~2 × source rows)
+  Unresolved ref lookups: 0
+
+RESULT step=ttl year=2003 rc=0 records_read=1 records_written=2 elapsed_s=1 input_bytes=268 output_bytes=476
+RESOURCE step=ttl year=2003 jvm_heap_bytes=1073741824
+STATUS: COMPLETE
+****************************************************************************************************
+Process End Time: Fri Nov 13 15:25:41 MST 2026
+****************************************************************************************************
+****************************************************************************************************
+                     Step 5v — CKB View Extraction (CKBViews)
+Start Time: Fri Nov 13 15:25:41 MST 2026
+****************************************************************************************************
+  Input directory : /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ckbv-orderguard-14564236621255761097
+  Output directory: /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ckbv-orderguard-14564236621255761097
+  Year filter     : 2003
+  SortedJE files  : 1
+    /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ckbv-orderguard-14564236621255761097/SortedJEFY03merged.csv
+****************************************************************************************************
+                                Post Module
+Start Time: Fri Nov 13 15:25:41 MST 2026
+****************************************************************************************************
+processing file: ../../session-run.tmp/reporting-5091162504048768342/inputs/SortedJEFY14merged.csv
+No existing ledger file.  File will be created: LDGR2014.csv
+----------------------------------
+****************************************************************************************************
+                     Step 5v — CKB View Extraction (CKBViews)
+Start Time: Fri Nov 13 15:25:41 MST 2026
+****************************************************************************************************
+  Input directory : /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ckbv-splitgroup-4935973053563162463
+  Output directory: /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ckbv-splitgroup-4935973053563162463
+  Year filter     : 2003
+  SortedJE files  : 1
+    /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ckbv-splitgroup-4935973053563162463/SortedJEFY03merged.csv
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          12
+Ledger Records Read:           0
+Ledger Records Written:        10
+Process End Time:      Fri Nov 13 15:25:41 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2014 rc=0 records_read=12 records_written=10 elapsed_s=1 input_bytes=0 output_bytes=1715
+RESOURCE step=3 year=2014 jvm_heap_bytes=1073741824
+****************************************************************************************************
+                                Post Module
+Start Time: Fri Nov 13 15:25:41 MST 2026
+****************************************************************************************************
+processing file: ../../session-run.tmp/reporting-5091162504048768342/inputs/SortedJEFY15merged.csv
+No existing ledger file.  File will be created: LDGR2015.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          4
+Ledger Records Read:           0
+Ledger Records Written:        4
+Process End Time:      Fri Nov 13 15:25:41 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2015 rc=0 records_read=4 records_written=4 elapsed_s=1 input_bytes=0 output_bytes=1016
+RESOURCE step=3 year=2015 jvm_heap_bytes=1073741824
+WARNING: VendorMaster not found at data/VendorMaster_full.csv — instIDs will be 0000000000
+****************************************************************************************************
+                     Step 5v — CKB View Extraction (CKBViews)
+Start Time: Fri Nov 13 15:25:41 MST 2026
+****************************************************************************************************
+  Input directory : /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ckbv-gers003-15394786128916390640/in
+  Output directory: /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ckbv-gers003-15394786128916390640/outMem
+  Year filter     : 2003
+  SortedJE files  : 1
+    /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/session-run.tmp/ckbv-gers003-15394786128916390640/in/SortedJEFY03merged.csv
+[info] SortedJEInputsSpec:
+****************************************************************************************************
+Files processed     : 1
+Records read        : 6
+Rows skipped (short): 0
+View A rows (monthly order volume)      : 0
+View B rows (vendor-year survival)      : 0
+View C rows (agency-year commodity mix) : 0
+View D rows (agency-year payments)      : 4
+[info] - year with a merged file: 2m inputs (monthly, quarterly, PO) are skipped; merged and derived files are kept
+RESULT step=5v year=2003 rc=0 records_read=6 rows_skipped_short=0 files_read=1 view_monthly=0 view_vendor=0 view_agency_commodity=0 view_agency_payment=4 elapsed_s=1 aggregation_buffer_peak_keys=4 buffer_overflow=false partial_aggregate_rows=0 final_reduce_rows=0 final_reduce_seconds=0 reduction_ratio=0.0000
+RESOURCE step=5v year=2003 jvm_heap_bytes=1073741824
+Process End Time: Fri Nov 13 15:25:41 MST 2026
+****************************************************************************************************
+[info] - year without a merged file is unchanged (source files are read as before)
+[info] - merged file of one year does not hide another year's source files
+[info] ApaTtlSpec:
+[info] - loadApaReferenceData loads four reference tables with correct entry counts
+[info] - Step ttl: applyAPA produces 2 SJE rows per source row with 39 columns
+[info] - Step ttl: debit and credit amounts cancel within each journal group
+[info] - Step ttl: AGENCY_NAME is resolved to AGY_AGENCY_KEY in transLegalEntityID (col 12)
+[info] - Step ttl: monthly files are routed to correct fiscal quarters
+[info] - Step ttl: revenue files produce SortedJEFY03rev.csv with correct schema
+[info] - combined monthly TTL preserves revenue and expenditure through posting
+[info] - Step ttl: RESULT step=ttl and RESOURCE step=ttl are emitted to stdout
+[info] - Step ttl: source rows with unknown agency name still produce SJE rows with key '0'
+[info] - Step ttl: year '03' reads FY 2003 and not FY 2013 (folders share the digit 3)
+RESULT step=5v profile=expanded rc=0 records_read=34 vendors=3 spills=20
+RESULT step=5r rc=0 records_written=14 merge_passes=5
+RESULT step=5v profile=expanded rc=0 records_read=34 vendors=3 spills=1
+RESULT step=5r rc=0 records_written=14 merge_passes=0
+****************************************************************************************************
+                                Post Module
+Start Time: Fri Nov 13 15:25:41 MST 2026
+****************************************************************************************************
+processing file: ../../session-run.tmp/reporting-16224636173931263796/inputs/SortedJEFY14merged.csv
+No existing ledger file.  File will be created: LDGR2014.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          12
+Ledger Records Read:           0
+Ledger Records Written:        10
+Process End Time:      Fri Nov 13 15:25:41 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2014 rc=0 records_read=12 records_written=10 elapsed_s=1 input_bytes=0 output_bytes=1715
+RESOURCE step=3 year=2014 jvm_heap_bytes=1073741824
+****************************************************************************************************
+                                Post Module
+Start Time: Fri Nov 13 15:25:41 MST 2026
+****************************************************************************************************
+processing file: ../../session-run.tmp/reporting-16224636173931263796/inputs/SortedJEFY15merged.csv
+No existing ledger file.  File will be created: LDGR2015.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          4
+Ledger Records Read:           0
+Ledger Records Written:        4
+Process End Time:      Fri Nov 13 15:25:41 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2015 rc=0 records_read=4 records_written=4 elapsed_s=1 input_bytes=0 output_bytes=1016
+RESOURCE step=3 year=2015 jvm_heap_bytes=1073741824
+****************************************************************************************************
+                                Post Module
+Start Time: Fri Nov 13 15:25:41 MST 2026
+****************************************************************************************************
+processing file: ../../session-run.tmp/reporting-13519778573261791648/inputs/SortedJEFY14merged.csv
+No existing ledger file.  File will be created: LDGR2014.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          12
+Ledger Records Read:           0
+Ledger Records Written:        10
+Process End Time:      Fri Nov 13 15:25:41 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2014 rc=0 records_read=12 records_written=10 elapsed_s=1 input_bytes=0 output_bytes=1715
+RESOURCE step=3 year=2014 jvm_heap_bytes=1073741824
+****************************************************************************************************
+                                Post Module
+Start Time: Fri Nov 13 15:25:41 MST 2026
+****************************************************************************************************
+processing file: ../../session-run.tmp/reporting-13519778573261791648/inputs/SortedJEFY15merged.csv
+No existing ledger file.  File will be created: LDGR2015.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          4
+Ledger Records Read:           0
+Ledger Records Written:        4
+Process End Time:      Fri Nov 13 15:25:41 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2015 rc=0 records_read=4 records_written=4 elapsed_s=1 input_bytes=0 output_bytes=1016
+RESOURCE step=3 year=2015 jvm_heap_bytes=1073741824
+****************************************************************************************************
+                                Post Module
+Start Time: Fri Nov 13 15:25:41 MST 2026
+****************************************************************************************************
+processing file: ../../session-run.tmp/reporting-11728753004566950286/inputs/SortedJEFY14merged.csv
+No existing ledger file.  File will be created: LDGR2014.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          12
+Ledger Records Read:           0
+Ledger Records Written:        10
+Process End Time:      Fri Nov 13 15:25:41 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2014 rc=0 records_read=12 records_written=10 elapsed_s=1 input_bytes=0 output_bytes=1715
+RESOURCE step=3 year=2014 jvm_heap_bytes=1073741824
+****************************************************************************************************
+                                Post Module
+Start Time: Fri Nov 13 15:25:41 MST 2026
+****************************************************************************************************
+processing file: ../../session-run.tmp/reporting-11728753004566950286/inputs/SortedJEFY15merged.csv
+No existing ledger file.  File will be created: LDGR2015.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          4
+Ledger Records Read:           0
+Ledger Records Written:        4
+Process End Time:      Fri Nov 13 15:25:41 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2015 rc=0 records_read=4 records_written=4 elapsed_s=1 input_bytes=0 output_bytes=1016
+RESOURCE step=3 year=2015 jvm_heap_bytes=1073741824
+RESULT step=5v profile=expanded rc=0 records_read=34 vendors=3 spills=10
+RESULT step=5r rc=0 records_written=14 merge_passes=4
+****************************************************************************************************
+                                Post Module
+Start Time: Fri Nov 13 15:25:42 MST 2026
+****************************************************************************************************
+processing file: ../../session-run.tmp/reporting-6932620298087771850/inputs/SortedJEFY14merged.csv
+No existing ledger file.  File will be created: LDGR2014.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          12
+Ledger Records Read:           0
+Ledger Records Written:        10
+Process End Time:      Fri Nov 13 15:25:42 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2014 rc=0 records_read=12 records_written=10 elapsed_s=1 input_bytes=0 output_bytes=1715
+RESOURCE step=3 year=2014 jvm_heap_bytes=1073741824
+****************************************************************************************************
+                                Post Module
+Start Time: Fri Nov 13 15:25:42 MST 2026
+****************************************************************************************************
+processing file: ../../session-run.tmp/reporting-6932620298087771850/inputs/SortedJEFY15merged.csv
+No existing ledger file.  File will be created: LDGR2015.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          4
+Ledger Records Read:           0
+Ledger Records Written:        4
+Process End Time:      Fri Nov 13 15:25:42 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2015 rc=0 records_read=4 records_written=4 elapsed_s=1 input_bytes=0 output_bytes=1016
+RESOURCE step=3 year=2015 jvm_heap_bytes=1073741824
+RESULT step=5v profile=expanded rc=0 records_read=35 vendors=3 spills=10
+RESULT step=5r rc=0 records_written=14 merge_passes=4
+[info] CKBViewsSpec:
+[info] - CKBViews: View A accumulates COMMITMENT debit rows by fiscal_period × nigp_class_3digit × agency
+[info] - CKBViews: View A counts revision POs (commitmentID contains -V)
+[info] - CKBViews: View B sets present_next_year=1 when vendor appears in a later year
+[info] - CKBViews: View B vendor_surrogate_key is 8-char hex, deterministic, distinct for different vendors
+[info] - CKBViews: View B emits nigp_class_modal, agency_count, and distinct_nigp_classes
+[info] - CKBViews: View C counts POs and detects -V revision suffix in commitmentID
+[info] - CKBViews: View C emits vendor_count, min_order_amount, max_order_amount
+[info] - CKBViews: View D accumulates non-COMMITMENT debit rows only, keyed by fund_id and object_code
+[info] - CKBViews: View D produces separate rows for different fund_id or object_code combinations
+[info] - CKBViews: all four view output files are created
+[info] - CKBViews: RESULT and RESOURCE metric log lines are emitted
+[info] - CKBViews.deriveFiscalMonth handles YYYY/MM/DD and MM/DD/YYYY formats
+[info] - CKBViews: year parameter filters to matching SortedJE files only
+[info] - CKBViews.virginiaFiscalYear: YYYY is a fiscal year; YYYY/MM maps July-June; other shapes never count as later
+[info] - CKBViews: present_next_year compares Virginia fiscal years when column 22 is YYYY/MM
+[info] - CKBViews: inPaths merges every year's merged file in one pass; a vendor is one key group across years
+[info] - CKBViews: View C vendor_count counts a vendor once across files
+[info] - CKBViews: a year's merged file is read instead of (not in addition to) its 2m inputs
+[info] - CKBViews: an input out of engine-key order stops the step
+[info] - CKBViews: a vendor whose key group is split by another vendor stops the step
+[info] - CKBViews: GERS-003 bounded View D buffer spills and reduces to exact in-memory result
+[info] ReportingPassSpec:
+[info] - real posting output reconciles; features and effective dimensions remain aligned
+[info] - tiny spills and bounded multi-level merge equal a large-buffer execution
+[info] - a corrupted actual posted balance blocks publication and downstream reduction
+[info] - disorder, vendor bounds, reference bounds and duplicate inputs fail closed
+[info] - fiscal-year contract distinguishes payment fiscal labels from calendar PO dates
+[info] - missing balance side, invalid amount and overlapping dimensions remain explicit
+[info] - opening plus movements is a distinct explicit reconciliation basis
+[info] - export connected fixture for separate-process orchestration when requested
+[info] Run completed in 477 milliseconds.
+[info] Total number of tests run: 42
+[info] Suites: completed 4, aborted 0
+[info] Tests: succeeded 42, failed 0, canceled 0, ignored 0, pending 0
+[info] All tests passed.
+[success] Total time: 3 s, completed Nov 13, 2026, 3:25:42 PM

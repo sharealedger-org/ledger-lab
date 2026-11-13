@@ -1,0 +1,7 @@
+table,key,attribute,value,source,record
+aRefAgencyCSV.txt,A1,AGY_AGENCY_CODE,001,/private/tmp/ckb-reporting-fixture-20261113/references/aRefAgencyCSV.txt,1
+aRefAgencyCSV.txt,A1,AGY_AGENCY_KEY,A1,/private/tmp/ckb-reporting-fixture-20261113/references/aRefAgencyCSV.txt,1
+aRefAgencyCSV.txt,A1,AGY_AGENCY_NAME,Agency One,/private/tmp/ckb-reporting-fixture-20261113/references/aRefAgencyCSV.txt,1
+aRefFundCSV.txt,F1,KEY,F1,/private/tmp/ckb-reporting-fixture-20261113/references/aRefFundCSV.txt,1
+aRefFundCSV.txt,F1,CODE,001,/private/tmp/ckb-reporting-fixture-20261113/references/aRefFundCSV.txt,1
+aRefFundCSV.txt,F1,NAME,General Fund,/private/tmp/ckb-reporting-fixture-20261113/references/aRefFundCSV.txt,1

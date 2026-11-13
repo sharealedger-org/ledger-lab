@@ -182,6 +182,10 @@ object CKBViews {
 
   // ── Entry point called by LedgerApp dispatcher ─────────────────────────────
   def apply(params: Map[String, String]): Unit = {
+    if (params.getOrElse("reportProfile", "legacy") == "expanded") {
+      ReportingPass(params)
+      return
+    }
     val t0 = System.currentTimeMillis()
 
     println("*" * 100)

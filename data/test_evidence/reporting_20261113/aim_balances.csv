@@ -1,0 +1,5 @@
+vendor_id,fiscal_year,cutoff,feature_version,attributed,currency,debit_amount,offset_amount,ledger_rows,distinct_accounts,distinct_periods
+0000000000,2014,2014-06-30,legacy_sign_v1_plus_annual_distinct,false,TXN,300,-300,2,2,1
+0000000001,2014,2014-06-30,legacy_sign_v1_plus_annual_distinct,true,TXN,190,-190,6,3,3
+0000000001,2015,2015-06-30,legacy_sign_v1_plus_annual_distinct,true,TXN,170,-170,4,3,2
+0000000002,2014,2014-06-30,legacy_sign_v1_plus_annual_distinct,true,TXN,50,-50,2,2,1

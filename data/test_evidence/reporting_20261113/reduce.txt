@@ -1,0 +1,40 @@
+[info] welcome to sbt 1.10.11 (Homebrew Java 21.0.11)
+[info] loading settings for project va_pipeline-build from assembly.sbt, plugins.sbt...
+[info] loading project definition from /Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/02-foundation/va_pipeline/project
+[info] loading settings for project root from build.sbt...
+[info] set current project to va_pipeline (in build file:/Users/kiptwitchell/Library/CloudStorage/Dropbox-TwitchellFamily/Kip%20Twitchell/WorkspacePrivate/Sharealedger/ledger-lab/02-foundation/va_pipeline/)
+[info] running org.universalledger.foundation.va.ledger.LedgerApp --step 5r --outPath "/private/tmp/ckb reporting final 20261113.attempt" --mergeFanIn 2
+****************************************************************************************************
+                                    Ledger Lab
+                                    VA Corpus
+                  Using State of Virginia Public Financial Data
+                  step=5r  FY2003  quarter=01
+                  started 2026-11-13T15:29:36
+****************************************************************************************************
+[CLI] step=5r  inPath=/VAdata/data/  outPath=/private/tmp/ckb reporting final 20261113.attempt  year=03  quarter=01
+-----------------------------------
+RESULT step=5r rc=0 records_written=14 merge_passes=5
+****************************************************************************************************
+                                  End of Ledger Lab step
+                  step=5r  FY2003  quarter=01
+                  status=ok  elapsed=0:00:00
+****************************************************************************************************
+[success] Total time: 0 s, completed Nov 13, 2026, 3:29:36 PM
+        7.59 real         6.99 user         0.52 sys
+           535183360  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+               51959  page reclaims
+                  15  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   7  messages sent
+                   7  messages received
+                  10  signals received
+                 309  voluntary context switches
+               25888  involuntary context switches
+         46283241022  instructions retired
+         21458035635  cycles elapsed
+           545246976  peak memory footprint

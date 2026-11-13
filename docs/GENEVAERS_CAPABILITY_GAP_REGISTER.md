@@ -156,6 +156,8 @@ execution costs. The hash-map implementation must be replaced or the workload ma
 
 ## Boundary Rule
 
+**2026-11-13 expanded reporting application (design/construction):** `ReportingPass`/`ReportingReduce` apply GERS-003 to all cross-vendor reporting cuts with a bounded extract buffer and separate bounded-fan-in Scala merge/reduction processes. Input streams (SJEs, actual posted balances, sorted IP/contract dimensions) meet at the vendor boundary. These are explicitly exploratory prototype measurements, not proof of a GenevaERS MR88 sort-exit implementation or a new cost-curve point. The generic ordered entity join in GERS-002 remains a target capability limitation: no whole-population dimension map is used here, and required dimension sorting is an explicit input preparation boundary. Tests must force multiple spills and merge levels and check equivalent final output before promoting fixture status. No target-runtime gap is closed by this implementation.
+
 When a required capability is absent:
 
 - Ledger Lab records the workload requirement and a falsifying acceptance test.

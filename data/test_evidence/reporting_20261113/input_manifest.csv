@@ -1,0 +1,9 @@
+kind,path,rows,bytes,sha256
+reference,/private/tmp/ckb-reporting-fixture-20261113/references/aRefAgencyCSV.txt,1,65,fced577e0addfd1dc6b079d848d24803c86a9354a95375326b1f63448ed7ad7e
+reference,/private/tmp/ckb-reporting-fixture-20261113/references/aRefFundCSV.txt,1,34,0f48988cf51ff9bbe562c881477efcdc2f6793c614ffa8344acd63489bfbc27c
+balance,/private/tmp/ckb-reporting-fixture-20261113/committed.generations/run_20261113_152030_9319/LDGR2014.csv,10,1715,a708b099b5428dc01363d6cb4b381646770f4486444dbed90f13440d2f768199
+balance,/private/tmp/ckb-reporting-fixture-20261113/committed.generations/run_20261113_152030_9319/LDGR2015.csv,4,1016,d963102581b15499ee4fbe2951bdaf778e409b5530b1635011b39925ecd246f1
+contract,/private/tmp/ckb-reporting-fixture-20261113/contracts.csv,2,151,b87153c1f3c4d5ec4b7433a811940ae9efacaf49abb4db6b6c21a5d77ae03d08
+movement,/private/tmp/ckb-reporting-fixture-20261113/committed.generations/run_20261113_152030_9319/SortedJEFY14merged.csv,12,2436,a1291095b2d444f02d75d76541584bb6afa33c36cd05478d27cd3f4deca62bc0
+movement,/private/tmp/ckb-reporting-fixture-20261113/committed.generations/run_20261113_152030_9319/SortedJEFY15merged.csv,4,806,121aa249473a6c7f0a3d5a3112cbe9f4342c0d000ee98b26d9ecc2985b60c714
+vendor,/private/tmp/ckb-reporting-fixture-20261113/vendors.csv,2,142,88fd0682d6f61f1e6522612acf080a91b247ba0cf647a1d64ad71c6aeb96b6db

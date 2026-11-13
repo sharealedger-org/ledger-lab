@@ -1,0 +1,5 @@
+vendor_id,fiscal_year,cutoff,feature_version,attributed,currency,po_count,max_monthly_agencies,max_monthly_classes,committed_amount,annual_distinct_agencies,annual_distinct_classes,signed_direct_po_count,signed_direct_po_amount,debit_amount,offset_amount,ledger_rows,distinct_accounts,distinct_periods,has_movements,has_balances,eligible_matched_vendor,vendor_name,name_status
+0000000000,2014,2014-06-30,legacy_sign_v1_plus_annual_distinct,false,TXN,0,0,0,0,0,0,0,0,300,-300,2,2,1,true,true,false,,missing
+0000000001,2014,2014-06-30,legacy_sign_v1_plus_annual_distinct,true,TXN,2,1,1,140,1,2,2,100,190,-190,6,3,3,true,true,true,"Acme, Old",matched_asof
+0000000001,2015,2015-06-30,legacy_sign_v1_plus_annual_distinct,true,TXN,1,1,1,90,1,1,1,90,170,-170,4,3,2,true,true,true,Acme New,matched_asof
+0000000002,2014,2014-06-30,legacy_sign_v1_plus_annual_distinct,true,TXN,0,0,0,0,0,0,0,0,50,-50,2,2,1,true,true,false,,missing

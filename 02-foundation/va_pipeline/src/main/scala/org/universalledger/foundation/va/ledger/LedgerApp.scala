@@ -237,6 +237,7 @@ object LedgerApp {
         )
       // CCP3 step — read SortedJE output, produce four bounded aggregation view tables
       case "5v" => CKBViews(params + ("inPath" -> outPath, "outPath" -> outPath, "year" -> year))
+      case "5r" => ReportingReduce(params + ("outPath" -> outPath))
 
       // CCP1 baseline steps — read SortedJE output, produce GL balances and permutation table
       case "20" => GLPost(params + ("inPath" -> inPath, "outPath" -> outPath, "year" -> year))

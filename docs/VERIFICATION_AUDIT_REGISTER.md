@@ -1,5 +1,9 @@
 # Verification Audit Register
 
+## 2026-11-13 15:28 AZT — Expanded reporting (B1/B2/D)
+
+Status: `partially_verified` overall; fixture behavior verified. Claim: one canonical-input traversal at vendor boundaries can reconcile actual posted state and supply broad analytical outputs with bounded cross-vendor spills. Producers: actual `post.scala` fixture ledgers plus canonical SJEs and sorted dimensions. Consumers: expanded `5v`, then separate `5r` consuming only spill partitions; final CSVs are exploratory analytical products, not yet consumed by a model fit. Cheapest falsifier (alter posted amount) blocks completion; missing balance side also blocks. Tests exercise bounds, disorder, duplicate inputs, ambiguous dimensions, fiscal periods, explicit openings and deterministic spill reduction. All 42 focused tests pass, including 34 legacy tests. Bash launcher completed two process stages with spaces in its output path, 20 chunks/five merge levels, zero reconciliation failures. [Evidence](../data/test_evidence/reporting_20261113/README.md). GERS-002/003 target capability gaps remain open. No corpus scale, actual vendor bridge coverage or AI-score evidence.
+
 ## 2026-11-13 14:20:49 AZT — Revenue adapter and unattended queue fixtures
 
 Cheapest falsifier found a real adapter mismatch: normalized APA `[agency,fund,source,amount,date]` was passed to RC `[agency,amount,fund,source,date]`. Corrected only that mapping; explicit source amount/fund/account checks now survive posting. Existing TTL tests passed 9/9 before the change; combined TTL/posting plus one-read suites pass 13/13 afterward. Full Bash/Scala synthetic run covers TTL, empty PO input, merge, ledger, GL, permutation, cross-year 5v. Receipt 240.00 and expenditure 45.32 reach GL with balanced offsets. Metadata row/byte accounting now includes revenue.

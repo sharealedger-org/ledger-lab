@@ -72,3 +72,41 @@ Prior provisional evidence: balance C=0.7683, combined C=0.7761; commitment-only
 This two-feed feature production is **not yet implemented** by the queue/TTL changes in this handoff. Complete its architecture declaration, producers/consumers, fiscal and reconciliation tests, then freeze code/configuration before unattended runs. The queue already supports E/B source selections; another B plan row currently repeats the same complete topology, not new AIM feature output. Measure each feed's marginal pass, buffering/sort, computation and output costs. Freeze the resulting foundation before later Phase 2 questions.
 
 Storage follow-up: the current queue retains independent full outputs/SJEs for every run. For a reporting-only final stage, reuse explicitly named immutable SJE/ledger inputs rather than copying them, with shared preparation cost reported separately. That reporting-only profile and its queue selection are still to implement; do not assume the present full-run queue has SJE reuse or space reclamation.
+
+## Implemented reporting handoff — 2026-11-13 15:28 AZT (supersedes pending statements above)
+
+Expanded Scala reporting and its standalone Bash launcher are now fixture-tested;
+see [design](REPORTING_PASS_DESIGN.md) and
+[evidence](../data/test_evidence/reporting_20261113/README.md).
+The three full runs through 2016 remain comparable measurements with revenue and
+fiscal corrections. Run expanded reporting **once afterward**, separately measured,
+against one successful run's fiscal-year directories. Do not combine three replicated
+populations into its inputs. The existing queue does not automatically append this stage.
+
+Example after the queue exits successfully (substitute actual absolute paths):
+
+```bash
+report_inputs=""
+for fy in 03 04 05 06 07 08 09 10 11 12 13 14 15 16; do
+  report_inputs="${report_inputs:+$report_inputs,}/absolute/completed/run/output/FY$fy"
+done
+bash scripts/run_reporting.sh \
+  --inPaths "$report_inputs" \
+  --outPath /absolute/new/reporting-output \
+  --vendorMaster /absolute/sorted/vendor-dimensions.csv \
+  --contractDimensions /absolute/sorted/contract-dimensions.csv \
+  --refPath /absolute/VAReferenceData \
+  --spillRows 100000 --mergeFanIn 16
+```
+
+Confirm the actual queue output layout before substituting paths. Vendor/contract
+arguments are optional: omit absent tables and retain missing-coverage evidence.
+They must be ordered by the literal canonical vendor key; contract linkage must
+already be explicit. Do not pass an unsorted raw master or manufacture a bridge.
+Default bounds are 250,000 rows per vendor, 128 input streams, and 16 MiB of reference
+files; inspect real sizes before launch. Output and `.attempt` paths must be new.
+A failure retains diagnostics without publishing completion. This launcher reads
+committed inputs without copying or posting them; report storage includes spill and
+merge intermediates. Its resource logs are separate from the original cost curves.
+The produced AIM tables have not been fitted or scored, and no training-language
+benefit is claimed. These outputs are for inspection and refinement before Phase 2.

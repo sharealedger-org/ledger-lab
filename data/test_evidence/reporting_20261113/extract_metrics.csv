@@ -1,0 +1,12 @@
+metric,value
+records_read,34
+vendors,3
+peak_vendor_rows,26
+peak_vendor_state_keys,22
+peak_buffer_keys,1
+spill_chunks,20
+partial_rows,20
+spill_bytes,960
+reference_bytes,99
+reconciliation_failures,0
+elapsed_seconds,0.052943167
