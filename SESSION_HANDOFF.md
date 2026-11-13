@@ -6,6 +6,29 @@ Updated 2026-11-13. This file is a dated log, newest entry first; use the linked
 - **Older entries** (run 3 preflight and everything before it, back to 2026-09-30) were moved unchanged to [`docs/archive/SESSION_HANDOFF_ARCHIVE_2026-11.md`](docs/archive/SESSION_HANDOFF_ARCHIVE_2026-11.md). Other documents that cite a `SESSION_HANDOFF.md` entry by name (for example "Corpus Work Assignment to Bob", "Plan for the next session", the 2026-11-06 entries) mean the archive.
 - When this file passes about 500 lines, move all but the newest few entries to the archive in the same way.
 
+## 2026-11-13 (TRACK B2, combined model) Commitment features add a small measured gain on the matched split
+
+**Run.** `scripts/fit_vendor_survival_combined.py` (ARM venv, OneDrive Gold views). Same panel and split as the balance baseline; balance-only replicates 0.7683 with n_train 71,220 and n_test 52,448. Evidence: `data/test_evidence/AIM3_combined_model.csv`.
+
+**Results (matched split, train FY2010–FY2013, test FY2014–FY2015).**
+- Balance only: C = 0.7683.
+- Combined (balance plus four view features: po_count, agency_count, distinct_nigp_classes, total_amount): **C = 0.7761**, permutation p = 0.001.
+- Delta combined minus balance: **+0.0078**, bootstrap 95% interval [+0.0066, +0.0091] (resampling hold-out rows).
+- Time-trend control: C = 0.4999 (FAIL).
+
+**Reading.** The decision rule was declared in the script header before the run: sign positive and interval above zero. Both hold, so the script reports COMMITMENT_ADDS_SIGNAL. The effect is small (under one point of C), and it is the first result in this track that supports the Paper 2 hypothesis at all. It replaces the "no measured gain" reading in the balance-only entries.
+
+**Caveats before anyone cites it.**
+1. One split. The bootstrap resamples rows and does not vary training years or the fit itself, so the interval is narrower than the true uncertainty.
+2. No multiple-comparison correction across the models run.
+3. Linear model with four added features; no tuning was done, but the result has not been tested for stability across training windows.
+4. Practical size is not established. A gain of 0.008 in C may not matter for the claim in Paper 2.
+
+**Open (owner decisions).**
+1. Whether Paper 2's AIM3 wording moves from "no measured gain" to "small measured gain, provisional".
+2. Whether to run a stability check (leave-one-year-out or training-window bootstrap) before citing the number.
+3. TDS evidence copies are not refreshed for this result yet.
+
 ## 2026-11-13 (TRACK B2) ARM rerun done; balance baseline corrected to a matched split (Bob, M1 Mac)
 
 **Read first next time:** [`tracks/B2-models/STATUS.md`](tracks/B2-models/STATUS.md); audit register entry "2026-11-13 ARM rerun of AIM1, AIM3, AIM4".

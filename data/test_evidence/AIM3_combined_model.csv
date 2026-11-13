@@ -1,0 +1,4 @@
+run_timestamp,model,train_fy_range,test_fy_range,n_train,n_test,c_statistic,delta_vs_balance,ci95_low,ci95_high,perm_p,verdict,note
+2026-11-12 22:10:47,balance_only,2010-2013,2014-2015,71220,52448,0.7683,0.0,,,,reference,5 LDGR features; should replicate AIM3_balance_baseline.csv (0.7683)
+2026-11-12 22:10:47,combined,2010-2013,2014-2015,71220,52448,0.7761,0.0078,0.0066,0.0091,0.001,COMMITMENT_ADDS_SIGNAL,"5 LDGR + 4 view features (po_count, agency_count, distinct_nigp_classes, total_amount)"
+2026-11-12 22:10:47,time_trend_control,2010-2013,2014-2015,71220,52448,0.4999,-0.2684,,,,FAIL,fiscal_year as sole feature
