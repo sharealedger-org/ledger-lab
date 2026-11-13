@@ -6,6 +6,26 @@ Updated 2026-11-13. This file is a dated log, newest entry first; use the linked
 - **Older entries** (run 3 preflight and everything before it, back to 2026-09-30) were moved unchanged to [`docs/archive/SESSION_HANDOFF_ARCHIVE_2026-11.md`](docs/archive/SESSION_HANDOFF_ARCHIVE_2026-11.md). Other documents that cite a `SESSION_HANDOFF.md` entry by name (for example "Corpus Work Assignment to Bob", "Plan for the next session", the 2026-11-06 entries) mean the archive.
 - When this file passes about 500 lines, move all but the newest few entries to the archive in the same way.
 
+## 2026-11-13 (TRACK B2, TDS session 87) Handoff: repo of record; ARM rerun first; labels and Paper 2 wording
+
+**Decisions (owner, 2026-11-13).** This repo is the repo of record for all AIM results; TDS takes evidence from here. Next work is a Bob session in this repo on the ARM (M1) machine that reruns AIM1, AIM3 and AIM4 and the AIM3 balance baseline against the OneDrive Gold views. TDS evidence copies are refreshed only after that rerun. Deferred, not dropped: moving this working copy out of Dropbox, and recording SHA-256 hashes of the Gold inputs in each AIM output.
+
+**Done this session.**
+- AIM result labels now cite the CSV `run_timestamp` values (2026-11-12 20:37 and 20:43, Intel Mac), not "2026-11-13 re-run". Fixed in `docs/tds-evidence/paper-2-rev1-ledger-lab/02-aim-test-suite-results.md` and `tracks/B2-models/STATUS.md`.
+- The AIM1 row in `tracks/B2-models/STATUS.md` is `partially_verified`, not `verified`.
+- The AIM3 balance-baseline wording is calibrated: "no measured gain from the commitment view over posted totals on this unmatched comparison". The splits are not matched.
+- Paper 2 (TDS) was updated to match; committed locally in TDS as `5914ded`, push pending.
+
+**Still open (labels not yet fixed).** `docs/VERIFICATION_AUDIT_REGISTER.md`, `docs/COMPANION_BASELINE_RECORD_2026-11-12.md`, `tracks/D-control/STATUS.md`, `TODO.md`, and `scripts/fit_vendor_survival_balance.py` still use "2026-11-13" for the run. Fix them in the ARM session, after the rerun, so the new run's timestamps are the ones recorded.
+
+**Next session, in order.**
+1. Confirm the OneDrive Gold files are fully synced here (not placeholders); check `VIEWS/view_vendor_year_survival.csv` against `data/test_evidence/corpus_runs/run_20261111_014229/gold/MANIFEST.csv` (SHA-256 `174ef5c6…`, matched on this Mac at session end).
+2. Run AIM1, AIM3, AIM4 and the balance baseline on this machine. Record run timestamps and input SHA-256 in the outputs.
+3. Compare with the Intel CSVs. Record any differences in the audit register.
+4. Refresh TDS evidence copies only after step 3.
+
+**Ownership of the ARM rerun.** Bob session in this repo, not TDS.
+
 ## 2026-11-13 (TRACK B2) AIM tests run on Intel host; AIM3 balance baseline new result (Bob, Intel Mac)
 
 **Read first in the next session:** [`STATUS.md`](STATUS.md), then [`tracks/B2-models/STATUS.md`](tracks/B2-models/STATUS.md).

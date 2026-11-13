@@ -21,11 +21,11 @@ Updated 2026-11-13 (Intel Mac run on Gold final views).
 | Test | Result | Note |
 |---|---|---|
 | AIM0 | closed | — |
-| AIM1 | **verified** — non-zero gap in all 14 years | 2026-11-13: all 14 years, IL keys with multiple patterns vs. PERM keys with multiple vendors: gap -55,915 (FY2003) to -92,562 (FY2012). Evidence: `data/test_evidence/AIM1_noninjectivity_all_years.csv`. |
+| AIM1 | **`partially_verified`** — non-zero gap in all 14 years | Intel run (CSV 2026-11-12): all 14 years, IL keys with multiple patterns vs. PERM keys with multiple vendors: gap -55,915 (FY2003) to -92,562 (FY2012). Evidence: `data/test_evidence/AIM1_noninjectivity_all_years.csv`. |
 | AIM2 | not run | needs AIM5 reconciliation table first |
-| AIM3 | **PASS** C = 0.7527, p = 0.001 | 2026-11-13: re-run on Gold final views, identical to 2026-11-10 result. Walk-forward mean C = 0.7629. Evidence: `data/test_evidence/AIM3_survival_windows.csv`. |
-| AIM3 balance baseline | **`not_verified`** — balance matches or exceeds commitment C | 2026-11-13: balance model C = 0.7783 (commitment 0.7527, delta +0.0256), p = 0.001. Time-trend control C = 0.4999 (FAIL). The view signal is present in posted LDGR totals; the view does not add information over posted totals on this comparison. Training splits differ (7 vs. 4 years). Evidence: `data/test_evidence/AIM3_balance_baseline.csv`. |
-| AIM4 | **FAIL** (Q4-ratio, not locked STL) | 2026-11-13: 2 of 5 top classes significant (threshold ≥ 3). Uses Q4-ratio test, not the locked STL method. Evidence: `data/test_evidence/AIM4_seasonality_results.csv`. |
+| AIM3 | **PASS** C = 0.7527, p = 0.001 | Intel run (CSV 2026-11-12): re-run on Gold final views, identical to the 2026-11-10 result. Walk-forward mean C = 0.7629. Evidence: `data/test_evidence/AIM3_survival_windows.csv`. |
+| AIM3 balance baseline | **`not_verified`** — balance matches or exceeds commitment C | Intel run (CSV 2026-11-12): balance model C = 0.7783 (commitment 0.7527, delta +0.0256), p = 0.001. Time-trend control C = 0.4999 (FAIL). On this unmatched comparison the balance model scores higher; no measured gain from the commitment view over posted totals. Training splits differ (7 vs. 4 years). Evidence: `data/test_evidence/AIM3_balance_baseline.csv`. |
+| AIM4 | **FAIL** (Q4-ratio, not locked STL) | Intel run (CSV 2026-11-12): 2 of 5 top classes significant (threshold ≥ 3). Uses Q4-ratio test, not the locked STL method. Evidence: `data/test_evidence/AIM4_seasonality_results.csv`. |
 | AIM5 | verified for its stated test | `scripts/fit_agency_name_classifier.py`, Precision 1.0 |
 
 ## Next actions (when D9 decided)

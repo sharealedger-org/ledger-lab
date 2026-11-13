@@ -10,7 +10,7 @@
 
 The **AIM (Accounting Information Loss in Machine Learning)** test suite provides concrete, falsifiable empirical tests evaluating what information traditional posting discards and what machine learning models gain from pre-posting event structures:
 
-Updated 2026-11-13 (Intel Mac, Gold final views).
+Results from the Intel Mac run on Gold final views (CSV run timestamps 2026-11-12 20:37 and 20:43).
 
 | Test ID | Task Description | Empirical Result | Locked Threshold | Result Status |
 |---|---|---|---|---|
@@ -28,7 +28,7 @@ Updated 2026-11-13 (Intel Mac, Gold final views).
 
 ### AIM1: Information Loss in Posting (Non-Injectivity Proof)
 * **Hypothesis:** General Ledger posting is a non-injective mapping ($f: \text{Events} \to \text{Balances}$) that permanently collapses distinct event sequences into identical balance keys.
-* **Measured Result (All 14 years, FY2003–FY2016, 2026-11-13 re-run on Gold final data):**
+* **Measured Result (All 14 years, FY2003–FY2016, Intel Mac run on Gold final data, CSV timestamps 2026-11-12):**
   * Non-zero gap confirmed in every year. Sample: FY2012: 17,163 IL keys with multiple commitment/account patterns vs. 109,725 GL keys with multiple vendors (19.9% of all GL keys). FY2003: gap -55,915; FY2016: gap -65,975.
   * Every IL vendor key (ldgrIPID) maps to multiple distinct (commitmentID, account) pattern tuples (100% collapse ratio in all years).
   * Evidence: `data/test_evidence/AIM1_noninjectivity_all_years.csv` (42 rows, 3 substrates × 14 years).
@@ -46,8 +46,8 @@ Updated 2026-11-13 (Intel Mac, Gold final views).
 * **Measured Result:**
   * **C-Statistic (AUC-ROC):** **`0.7527`** (exceeds locked threshold $C > 0.65$).
   * **Permutation Significance:** **`p = 0.001`** across 1,000 random label permutations (exceeds locked threshold $p < 0.05$).
-* **Significance:** Commitment-pattern model passes the locked threshold (C = 0.7527 > 0.65; p = 0.001 < 0.05). Result confirmed on the Gold final views (2026-11-13 re-run, Intel Mac). Walk-forward mean C = 0.7629 (4 windows, stable).
-* **Balance-derived baseline (2026-11-13, new):** A logistic model on posted LDGR features (debit_amount, credit_amount, row_count, distinct_accts, distinct_periods) achieves C = 0.7783 on the same hold-out (different training split: FY2006–2014 vs. FY2010–2013). Delta commitment vs. balance: -0.0256. Time-trend control (year only): C = 0.50 (FAIL, p = 0.518). **Interpretation: the balance model scores higher on this comparison, and the commitment-pattern view adds no measured gain over posted totals. The splits are not matched, so this is not yet a like-for-like result.** A matched-split comparison is the open next step. Evidence: `data/test_evidence/AIM3_balance_baseline.csv`.
+* **Significance:** Commitment-pattern model passes the locked threshold (C = 0.7527 > 0.65; p = 0.001 < 0.05). Result confirmed on the Gold final views (Intel Mac run, CSV timestamps 2026-11-12). Walk-forward mean C = 0.7629 (4 windows, stable).
+* **Balance-derived baseline (Intel Mac run, CSV timestamps 2026-11-12):** A logistic model on posted LDGR features (debit_amount, credit_amount, row_count, distinct_accts, distinct_periods) achieves C = 0.7783 on the same hold-out (different training split: FY2006–2014 vs. FY2010–2013). Delta commitment vs. balance: -0.0256. Time-trend control (year only): C = 0.50 (FAIL, p = 0.518). **Interpretation: the balance model scores higher on this comparison, and the commitment-pattern view adds no measured gain over posted totals. The splits are not matched, so this is not yet a like-for-like result.** A matched-split comparison is the open next step. Evidence: `data/test_evidence/AIM3_balance_baseline.csv`.
 * **Caveats:** Four training years (commitment model), four features, linear model; churn rate rises from 24% to 33% over FY2012–FY2015 (time trend not yet isolated). The AIM3 claim that "pre-posting patterns contain signal absent from posted balances" is `not_verified` pending a matched-split comparison with balance features as a covariate.
 
 ---
