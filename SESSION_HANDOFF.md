@@ -1,10 +1,29 @@
 # Ledger Lab Handoff
 
-Updated 2026-11-12. This file is a dated log, newest entry first; use the linked design contracts for details.
+Updated 2026-11-13. This file is a dated log, newest entry first; use the linked design contracts for details.
 
 - **Open work is in [`TODO.md`](TODO.md).** Add new to-dos there, not here.
 - **Older entries** (run 3 preflight and everything before it, back to 2026-09-30) were moved unchanged to [`docs/archive/SESSION_HANDOFF_ARCHIVE_2026-11.md`](docs/archive/SESSION_HANDOFF_ARCHIVE_2026-11.md). Other documents that cite a `SESSION_HANDOFF.md` entry by name (for example "Corpus Work Assignment to Bob", "Plan for the next session", the 2026-11-06 entries) mean the archive.
 - When this file passes about 500 lines, move all but the newest few entries to the archive in the same way.
+
+## 2026-11-13 (TRACK B2) AIM tests run on Intel host; AIM3 balance baseline new result (Bob, Intel Mac)
+
+**Read first in the next session:** [`STATUS.md`](STATUS.md), then [`tracks/B2-models/STATUS.md`](tracks/B2-models/STATUS.md).
+
+**What was done this session (Intel Mac).**
+- Installed Python ML packages: numpy 2.5.4, scikit-learn 1.9.1, scipy 1.18.1, statsmodels 0.15.0.
+- **AIM3 re-run** (`scripts/fit_vendor_survival_windows.py`) on Gold final views: **PASS, C = 0.7527, p = 0.001**. Identical to the 2026-11-10 M1 result. Walk-forward 4-window mean C = 0.7629. Confirms reproducibility. Evidence: `data/test_evidence/AIM3_survival_windows.csv`.
+- **AIM4 re-run** (`scripts/fit_ordering_seasonality.py`) on Gold monthly order volume: **FAIL, 2 of 5 top classes** significant at p < 0.05 (threshold ≥ 3). Q4-ratio test, not the locked STL. Same as the earlier result.  Evidence: `data/test_evidence/AIM4_seasonality_results.csv`.
+- **AIM1 re-run** (`scripts/fit_noninjectivity.py`) across **all 14 years** on Gold: non-zero gap confirmed in every year. Sample: FY2012 gap -92,562; FY2016 gap -65,975. All 14 per-year files in `data/test_evidence/AIM1_all_years/`; consolidated: `data/test_evidence/AIM1_noninjectivity_all_years.csv`.
+- **AIM3 balance-derived baseline** (new script `scripts/fit_vendor_survival_balance.py`): loaded all 14 LDGR files (10.65M rows). Balance model C = **0.7783** vs. commitment model 0.7527 (delta +0.026). Time-trend control C = 0.50 (FAIL, p = 0.518). **Key finding: the churn signal is already present in posted LDGR totals.** The commitment-pattern view does not add information above posted totals on this comparison. Training split differs (7 years for balance vs. 4 for commitment); a matched-split comparison is the open next step. Evidence: `data/test_evidence/AIM3_balance_baseline.csv`.
+
+**Updated:** `tracks/B2-models/STATUS.md` (AIM table updated), `docs/VERIFICATION_AUDIT_REGISTER.md` (new 2026-11-13 entry), `docs/tds-evidence/paper-2-rev1-ledger-lab/02-aim-test-suite-results.md` (AIM1 all-years, balance baseline), `TODO.md`.
+
+**Next steps:**
+1. **Owner:** note the AIM3 balance-derived finding (the AIM3 hypothesis is `not_verified` pending a matched-split comparison). The Paper 2 AIM3 paragraph should be updated to cite the balance baseline result.
+2. **AIM3 matched-split comparison:** re-run the balance baseline with the same FY2010–2013 training set as the commitment model, then compare C values on a level footing.
+3. **AIM4 STL:** implement the locked STL + majority-of-agencies protocol (requires owner approval before writing per AGENTS.md, `statsmodels` is now installed).
+4. Three-model experiment steps 5–7 remain blocked on D9 (owner decision on net income definition).
 
 ## 2026-11-12 (TRACK D) Documentation cleanup
 
