@@ -1432,3 +1432,33 @@ Additional source-derived risk, not reproduced: Step 9 rewrites old/new balances
 Claim checked: balance/combined model fiscal-year normalization agrees with the corrected Gold period contract. **Contradicted by source inspection:** both local `fiscal_year_of` helpers add a July shift after normalizing a short numeric year; `three_model_core.py` explicitly returns `2000+YY` for `00YY/MM` without that shift. The existing core tests include `0003/07 → 2003`; `python3 -m unittest scripts/test_three_model_core.py` passed 28 tests. The affected helper branches imply 2004 for that input. No analysis rerun or new Python was written; score impact remains `unknown`. Next: use the agreed period contract and reproduce affected balance/combined comparisons, preserving prior evidence. No prior numeric result was overwritten.
 
 The combined CSV reports +0.0078 C on one split. Its permutation p tests the combined score against relabeling, not the incremental gain; the latter uses paired row resampling, not vendor-cluster resampling. Planned IL-Native inputs include views absent from IL-FineTune; the proposed gap cannot isolate language prior with different inputs/model families. Full scope and sources: [`Paper 2 assessment`](../tracks/D-control/PAPER2_ASSESSMENT_2026-11-12.md).
+
+## 2026-11-14 — Control PO ingestion comparison: quote-aware boundary detection (Bob)
+
+Scope: static code and handoff comparison between [`PORecordReader.scala`](../02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/ledger/PORecordReader.scala) (CKB step 2p) and [`ledger_control.py`](../../ledger-lab-control/src/ledger_control.py) (`quote_aware_po_records` / `parse_po_candidate`, control). Prompted by the owner's observation that the control's ingestion scheme was designed post hoc on CKB experience and may have cleared exceptions the CKB did not. Owner authorized full Python use for this strand (non-measured path).
+
+**Corpus discrepancy (from baseline record section 3):**
+- CKB: ~32,278 PO records quarantined across 13 files (FY2003–FY2016); arithmetic established in the control handoff (see `ledger-lab-control/SESSION_HANDOFF.md`, "2026-11-11 Bob Response to Codex Corpus Reconciliation").
+- Control final preflight: 7,551 PO candidates quarantined; 15,595,489 accepted. FY2012 comparison alone recovered 5,368 additional candidates over the baseline (control handoff, "2026-11-12 Codex Refined Engine" entry).
+- Net gap: approximately **24,700 PO records** that the CKB quarantines and the control accepts.
+
+**Root cause identified by source inspection:**
+
+The CKB's [`PORecordReader`](../02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/ledger/PORecordReader.scala:19) detects record boundaries by checking whether the third tab-field (position 2, `ORDEREDDATE`) matches a date pattern `\d{1,2}/\d{1,2}/\d{4}`. Continuation lines that do not match are appended to the current record. All continuation lines are joined with a space and then split on TAB. **Quotes are intentionally not interpreted** (line 27: "measured on FY2003, a quote-aware split rejects ~880 well-formed records"). A record is accepted only if the joined split yields exactly the header field count; otherwise it is quarantined as `FIELD_COUNT`.
+
+The control's `quote_aware_po_records` / `parse_po_candidate` does something the CKB does not:
+1. **Boundary detection** uses `PO_START = re.compile(r'^"(?:[^"\t\r\n]|"")*"\t"(?:[^"\t\r\n]|"")*"\t')` — it identifies record starts by matching a strict quoted-field RFC-4180 prefix (PONUMBER field quoted, then AGENCY field quoted, then tab, then ORDEREDDATE date). This correctly identifies multi-line records that begin with a quoted PONUMBER or AGENCY, which the CKB's date-only check misses.
+2. **Two-pass parsing**: tries `csv.reader(strict=True)` first (correctly handles embedded tabs inside RFC-4180 quoted fields); falls back to `po_cells` (literal tab + strip outer-quote pair) if strict parsing fails. This combination recovers records that the CKB's plain-join-then-tab-split fails on when a free-text field contains embedded tabs but is properly RFC-4180 quoted.
+
+**Why the CKB comment at line 27 no longer applies:** The earlier measurement found that a *pure quote-aware split* rejected ~880 records because inch-mark quotes (`"Tape 2""`) caused field count mismatches. The control's approach is strictly better: it never rejects a record that the plain tab-split would accept, because the fallback `po_cells` is literally `c[1:-1] if starts and ends with quote else c` — equivalent to CKB's `unq`. The strict-CSV-first path only *adds* recoveries it would not otherwise get.
+
+**Classification:**
+
+| Claim | State | Evidence | Remaining gap |
+|---|---|---|---|
+| CKB quarantines ~24,700 PO records that the control recovers via quote-aware boundary detection + two-pass parsing | `partially_verified` | Source inspection of `PORecordReader.scala` (boundary logic) and `ledger_control.py` (lines 144–228); arithmetic from control handoff; FY2012 comparison confirmed 5,368 additional accepted rows. Root cause identified by code reading, not by running the comparison tool. | Exact per-year breakdown requires running `compare_po_recovery.py` on each CKB PO file (tool is in `ledger-lab-control/scripts/`). Score impact on CKB views (vendor survival, commodity mix) from the recovered rows is unknown. |
+| CKB's reason for not using quote-aware parsing (line 27 comment) is superseded by the control's two-pass design | `design_accepted` | The control never rejects a record the CKB plain-split would accept (fallback is identical strip logic); it only *adds* recoveries. The CKB concern (quote-aware rejects inch-mark records) does not apply to the two-pass design. | CKB Scala implementation required to verify at fixture scale. |
+
+**Proposed fix for the CKB:** Add a quote-aware boundary detection pass to `PORecordReader` mirroring the control's `PO_START` pattern: before falling back to date-in-position-2 detection, attempt to match a leading `"[^"]*"\t"[^"]*"\t` prefix. For the parse step, attempt `scala.io.Source`-based CSV parsing (or a minimal RFC-4180 column splitter) before the plain tab-join fallback. This requires a new `PORecordReader` test and a re-run on FY2012 to confirm recovery count.
+
+**Decision required:** Whether to implement the fix before or after the Phase 2 synthetic data work. The fix recovers ~24,700 commitment records; whether this materially changes any cost point or AI feature depends on the year distribution. If most recovered rows are FY2006–FY2012 (the control handoff's highest quarantine-count years), it could affect vendor survival labels. Owner decision.
