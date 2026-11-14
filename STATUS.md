@@ -4,6 +4,10 @@ Updated 2026-11-12. One page. A session starts here, then reads only the `STATUS
 
 ## Tracks
 
+**Current handoffs, 2026-11-14:** Owner requested two independent plans: [Bob's Intel synthetic generation](docs/PHASE_1B_SYNTHETIC_DATA_INTEL_PLAN.md) and [member-repository editing of 00 and Papers 1/2](tracks/D-control/MEMBER_REPO_EDITING_PLAN_2026-11-14.md). Generation may proceed separately; it does not block the Denna review package. These plans supersede earlier wording requiring all Phase 1b engineering before revision. Plans written only; no generation, member-repository edit or disclosure performed.
+
+**Owner direction, 2026-11-14:** Complete Phase 1b before paper revision and formal Phase 2. Separate generated-data enhancement from companion reporting/view work; broaden native AI to reusable corpus exploration with associated measures and learned concepts. See [B2 status](tracks/B2-models/STATUS.md) and [the attributed reflection](tracks/D-control/CODEX_REFLECTIONS.md#2026-11-14--native-ai-for-financial-exploration-owners-correction-and-codex-reflection). No new execution result or Control disclosure.
+
 **Paper revision planning, 2026-11-13:** Prepare new Papers 1 and 2 reflecting Phase 1 for interim circulation. See the [revision plan](tracks/D-control/PAPER_VERSION_2_RESEARCH_PLAN.md). The earlier statement declaring Track B closed and the track reorganization approved was an assistant misinterpretation of a suggestion, corrected at the owner’s request. It does not change evidence or authorize stopping ongoing work.
 
 | Track | What | State | Page |

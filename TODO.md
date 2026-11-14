@@ -40,6 +40,8 @@ Seeded 2026-11-11 from the handoff entries. On the same day the handoff was trim
 
 ## Three-model experiment (Track B2, on hold 2026-11-12)
 
+- **Phase 1b native-AI redesign (owner, 2026-11-14):** Design reusable conditional exploration of corpus dimensions, measures and learned concepts; define exact versus estimated answers, held-out question combinations and a bounded Intel pilot. Keep prior task-specific tests as limited evidence. See `tracks/D-control/CODEX_REFLECTIONS.md`, 2026-11-14 entry. Do not select a runtime/model or claim capacity without investigation.
+
 - [ ] **Track B review prerequisite:** resolve `00YY/MM` payment-period handling in `fit_vendor_survival_balance.py` and `fit_vendor_survival_combined.py` against `three_model_core.py`, then rerun affected comparisons with old evidence preserved. Codex source finding, 2026-11-12 22:37 AZT; score impact unknown. Before LLM training, distinguish a practical model comparison from a language-prior ablation and fix input/inference contracts ([assessment](tracks/D-control/PAPER2_ASSESSMENT_2026-11-12.md)). No new Python authorized by this note.
 
 - [ ] **Owner:** decide D9, net income (proposed: net expenditure per agency and fiscal year, `EXP*` debits only; `docs/THREE_MODEL_EXPERIMENT_PLAN.md`). Reopened 2026-11-12: raw `apa_revenue` exists (17.75M rows) and the TTL has a revenue path with no real-corpus run, so "no revenue" is a Gold limit, not a corpus limit. Candidates: reserves per fund (cash or encumbrance basis) or the statement tie-out (plan section 8).
@@ -61,6 +63,11 @@ Seeded 2026-11-11 from the handoff entries. On the same day the handoff was trim
 - [x] 2026-11-13: Reconcile the eVA PO counts. `TEST_DESIGN.md` §8 corrected: "133.46M" was the all-family total, not PO alone. PO: 18,407,581 parsed / 18,081,738 accepted (all 17 files, `CORPUS_FINDINGS.md`); pipeline FY2003–FY2016: 15,603,041 PO source rows (audit register). eVA PO file range corrected to FY2001–FY2018 (17 files, no FY2009; FY2001/2003/2004/2005 stubs or partial). FY2002 is not usable (64,743 rows, majority outside FY); the pipeline eligible-year rule (FY2006–2008 + FY2010–2016) applies regardless.
 
 ## Track D: control comparison (Track D)
+
+- [ ] **Current editing handoff (2026-11-14):** Execute `tracks/D-control/MEMBER_REPO_EDITING_PLAN_2026-11-14.md` in the authoritative member repository: revise monograph 00 plus Papers 1/2 for Denna review. Generation and expanded-view repair do not block this package.
+- [ ] **Independent Bob handoff (2026-11-14):** Execute `docs/PHASE_1B_SYNTHETIC_DATA_INTEL_PLAN.md` in a dedicated Intel generation role; preserve original data, measure enhancement costs separately, and maintain the Control disclosure boundary. No run launched by this planning session.
+
+- **Phase 1b sequencing and separation (owner, 2026-11-14):** Complete Phase 1b before paper revision. Prepare a separate generated-data design and reusable generation materials for Intel; log provenance and enhancement costs for documentation only. Keep companion views/native-AI design separate from any later Control requirements package. Control may use supplied generated data without rerunning generation.
 
 - [ ] **Interim Papers 1 and 2 (2026-11-13):** follow `tracks/D-control/PAPER_VERSION_2_RESEARCH_PLAN.md`: evidence table, coherent revised papers, cross-paper claim review, and owner handoff. No formal Track B closure is implied; Phase 2 foundation work and Q2 remain distinct from this writing task.
 

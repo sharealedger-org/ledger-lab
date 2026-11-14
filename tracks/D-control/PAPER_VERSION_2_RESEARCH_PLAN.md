@@ -1,8 +1,12 @@
 # Papers 1 and 2: Phase 1 interim revision plan
 
+**Superseded editing handoff, 2026-11-14:** Use [Member repository editing plan for the introduction and Papers 1 and 2](MEMBER_REPO_EDITING_PLAN_2026-11-14.md). It includes monograph 00 and the Denna review purpose. Synthetic generation proceeds independently under its own plan; completion of all Phase 1b engineering is not a prerequisite to revision. The material below preserves earlier planning context.
+
 Updated by Codex, 2026-11-13 12:49:02 AZT (UTC−07:00).
 
 ## Deliverable and scope
+
+**Owner sequencing correction, 2026-11-14:** Complete Phase 1b before revising Papers 1 and 2; formal Phase 2 follows. Phase 1b separates generated-data enhancement, bounded companion reporting, and the broadened native-AI exploration objective. See the [owner statement and reflection](CODEX_REFLECTIONS.md#2026-11-14--native-ai-for-financial-exploration-owners-correction-and-codex-reflection). This supersedes the earlier immediate-revision sequence below; it does not upgrade any evidence.
 
 Produce two coherent, circulation-ready revised papers reflecting Phase 1, for the owner to share with interested parties. The earlier versions remain preserved in the control repository. Paper source editing remains in TDS; this repository holds the evidence and revision plan. Do not copy private monograph sources into public tracked files or alter the control's copies.
 
@@ -59,7 +63,7 @@ Describe the sequence the owner developed, without prematurely selecting Q2 ques
 4. Freeze foundation and engine before developing and fixing Q2. Specify the boundary between permitted query/view configuration and enhancement before answering; that boundary is not yet finalized.
 5. Let CKB answer, retaining unsupported questions and failures. Supply the control with the agreed questions/data/results package for its development, then measure. Record disclosure and asymmetry explicitly; CKB answers are not automatically independent gold.
 
-The proposed Phase 1b checks belong within Phase 2, rather than forming a separate phase. A one-day bounded execution is an aspiration, not a promised duration. Track A remains an invitation to extend evidence using richer production histories. Later monograph papers can contain the detailed Phase 2 results and explicit implications for Papers 1 and 2; the interim papers do not depend on those future results.
+Phase 1b is now a separate prerequisite to paper revision, by owner direction on 2026-11-14. Formal Phase 2 remains later. A bounded execution envelope is an aspiration pending measurement, not a promised duration. Track A remains an invitation to extend evidence using richer production histories. Later monograph papers can contain the detailed Phase 2 results and explicit implications for Papers 1 and 2; the interim papers do not depend on formal Phase 2 results.
 
 ## 5. Keep the papers readable
 

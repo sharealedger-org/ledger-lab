@@ -1,5 +1,33 @@
 # Ledger Lab Handoff
 
+## 2026-11-14 (TRACK D) Editing plan copied to members for the new session
+
+Copied `tracks/D-control/MEMBER_REPO_EDITING_PLAN_2026-11-14.md` to sibling `members/research/` under the same filename; retained the experiment copy for provenance. Read the members editing protocol and added its confirmed workflow to both copies: edit only 00–02, preserve staged baseline synchronization, Bob reviews against TDS, owner approves propagation. Existing staged papers and untracked protocol left untouched; members repository not committed by this handoff. Intel generation session starts from `docs/PHASE_1B_SYNTHETIC_DATA_INTEL_PLAN.md`. No data execution or paper-source edits.
+
+## 2026-11-14 (TRACK B1/D) Separate Intel generation and member editing plans written
+
+Owner requested two plans and broadened the editing plan to monograph 00. Created `docs/PHASE_1B_SYNTHETIC_DATA_INTEL_PLAN.md` for Bob's dedicated generation role: immutable inputs, deterministic synthetic enrichment, Scala/Bash boundaries, journal/date controls, measured costs, standalone export and Control exposure rules. Created `tracks/D-control/MEMBER_REPO_EDITING_PLAN_2026-11-14.md`: authoritative member-root discovery, 00 history/framing, Paper 1 framework utility, Paper 2 limits/inquiry agenda, evidence review, rendering and Denna cover note. Generation is independent of paper revision. Old revision plan marked superseded; statuses/TODO point to current handoffs. Only plans and pointers changed; no member repository edited, generation executed, message sent or Control disclosure made.
+
+## 2026-11-14 06:24 AZT (TRACK D) Balancing Act scan and review-purpose clarification
+
+Selective textbook reading recorded in Codex reflections with exact coverage and unavailable pages. Chapter 3 establishes the quantitative-search ambition; chapters 6/8 establish Denna/McCarthy/REAL lineage; 52/58/62 connect execution, detailed balances and reporting. Initial audience for Papers 1/2 is Denna, potentially McCarthy through owner. Original cost paper is 2018. Synthetic generation is no longer a present prerequisite; Paper 1 measurement-framework stopping point remains under discussion, expanded view costs potentially deferred to Paper 5. No code/run or Control exposure.
+
+## 2026-11-14 06:05 AZT (TRACK D) Collaborative framing, trustworthy inquiry and REA
+
+Appended timestamped reflection recording owner's “our work” correction, proposed inquiry-level native-AI scope, measured limits on unsupported assertions, and initial REA literature connection. Checked AAA publisher description of the 2022 McCarthy/Geerts/Gal monograph; no full-text reading claimed. Next: REA conceptual mapping and evidence/abstention contract. No implementation, training, Control exposure or evidence upgrade.
+
+## 2026-11-14 (TRACK B2/D) Native-AI scope corrected by owner; Phase 1b sequence recorded
+
+Preserved Kip's full statement verbatim with attribution in `tracks/D-control/CODEX_REFLECTIONS.md` and added a separate Codex reflection. Working title proposed: Native AI for Financial Exploration. Target is broad conditional field/value exploration with associated exact measures and visibly distinct learned concepts/estimates, not only dedicated churn/seasonality tests. Candidate shared training objectives and evaluation need design and capacity testing; no architecture selected or code/training executed. Recorded preceding owner directions: Phase 1b before paper revision/formal Phase 2; generation separate from companion views, reusable/logged/separate data, ARM design and Intel execution, enhancement costs documentation-only, Control receives generation materials/data but not companion implementation/reflections. Updated entry statuses, revision sequencing and TODO. No Control access/disclosure or evidence upgrade. Next: discuss/design the broad native-AI contract before choosing a bounded pilot.
+
+## 2026-11-14 (TRACK B1) Reporting memory diagnosis; no repair applied
+
+Traced `run_reporting.sh` -> expanded `ReportingPass` -> `ReportingReduce`. Only current-vendor aggregation is retained, but the unattributed sentinel forms a large group. Existing guard counts processed rows; cross-vendor spills occur at vendor closure and do not spill current-vendor buckets/relationships/feature sets. Owner asked whether all vendors were being retained; clarified that they are not. A proposed state-count guard addresses the row-count mismatch only, not high-cardinality aggregate state. No code changes or retry. Baseline command `sbt -batch 'testOnly *ReportingPassSpec *CKBViewsSpec *TTL* *SortedJEInputsSpec'` passed 32 tests in three suites; TTL wildcard did not match a suite. Next: agree the bounded within-group reporting contract before implementing; retain existing failure and successful corpus outputs.
+
+## 2026-11-14 (TRACK B1) Completion evidence reviewed after pull
+
+Reviewed archived queue status, final corpus RUN_SUMMARY and expanded-reporting failure README at `f5a9985`. All three queue executions are recorded VALIDATED; separate reporting failed the 250,000-row bound for `0000000000`, with no published reporting output. No live Intel inspection, fresh output validation, engine change or new measurement. Next remains bounded reporting against the successful immutable corpus outputs; evidence maturity unchanged.
+
 ## 2026-11-14 (TRACK B1) Expanded run outputs and raw logs copied under OneDrive Gold
 
 At owner request, created `~/Library/CloudStorage/OneDrive-Personal/LedgerLabOutputs-Gold/expanded-20261113/` without replacing original Gold files. Copied one prior-layout 104-file final-output snapshot from monthly_c, all three raw run log sets/markers/consoles/validation/hash lists, queue and supervisor records, compact evidence, and the failed reporting attempt. 332 copied files, about 2.7 GiB; each destination SHA-256 equals its source. `MANIFEST.csv` excludes itself and has SHA-256 `b3751b23b161838550b5b31d41bd833ca2e18f644e0b4e22965475f2fc6ba0ab`. Repository receipt: `data/test_evidence/gold_copy_20261114/` (manifest, README, copy script and receipt). OneDrive started in background; local integrity verified, cloud upload not confirmed. Raw sources, all successful corpus trees, failed attempt and original Gold snapshot retained. Sorted/merged SJE files are not part of this compact Gold copy. No engine changes or new measurements.
