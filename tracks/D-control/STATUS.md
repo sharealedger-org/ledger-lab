@@ -1,5 +1,7 @@
 # Track D: Overall paper experiment design and control comparison
 
+Latest execution evidence: `17bd5e7`; comparison limits and failed expanded-reporting attempt preserved. No new control-repository exposure.
+
 **2026-11-14 00:30 AZT — unattended execution outcome:** Three expanded-source monthly corpus executions validated and matched 46 compared final products. Separate expanded reporting failed its vendor-row guard for unattributed `0000000000`; no corpus reporting/AI result. Evidence and limits are in B1 status and `data/test_evidence/reporting_corpus_20261114/`. Existing guards preserved; no further financial retry and no new control reading. Dashboard/post-queue dependency integration is now on main after measurement completion. Next: bounded reporting for large groups and source/identity qualifications before paper claims; do not treat replicated output identity as a complete architecture or accounting audit.
 
 **2026-11-13 15:51 AZT — Intel execution:** Preflight passed and three identical expanded-source monthly runs launched in the background; see B1 status and `data/test_evidence/intel_preflight_20261113/`. A PATH-only startup failure was recovered with a fresh queue root and explicit Java/sbt environment. Caffeinate and a local 600-second monitor are attached. No full-corpus result or new control reading; separate expanded reporting still needs a corpus vendor-bound/dimension check. Next: observe completion/validation, then reporting; do not change processing code while the queue runs.

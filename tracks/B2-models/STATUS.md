@@ -1,5 +1,7 @@
 # Track B2: Paper 2 models (AIM tests and the three-model experiment)
 
+Latest related execution evidence: `17bd5e7`; no new model result. New corpus runs validated, but expanded reporting failed before producing complete feature feeds.
+
 **2026-11-14 00:30 AZT — new inputs not yet available:** Three expanded-source corpus runs validated, but separate expanded 5v failed the existing per-vendor input-row guard for unattributed `0000000000`. No complete new movement/balance/AIM feeds or model fit were produced. Failure evidence: `data/test_evidence/reporting_corpus_20261114/`; queue receipts: `data/test_evidence/intel_preflight_20261113/`. Next: bounded large-group reporting and verified dimension linkage, then matched feature/model evaluation. Prior provisional scores and Python fiscal-period concerns remain unchanged.
 
 **Next Intel work, 2026-11-13:** Owner explicitly selected the combined AIM3 finding as the basis for new inputs: movement features produced in the canonical-SJE pass, balance features in the final reporting pass; test each alone and combined on one matched panel. [Exact handoff](../../docs/CKB_REVENUE_RERUN_2026-11-13.md). This replaces the assistant's proposed financial-pressure task, which was not selected. Correct fiscal-period alignment first. New Scala feature feeds are pending; field-label training remains unrun.
