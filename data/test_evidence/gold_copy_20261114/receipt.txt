@@ -1,0 +1,5 @@
+destination=/Users/ktwitchell001/Library/CloudStorage/OneDrive-Personal/LedgerLabOutputs-Gold/expanded-20261113
+verified_copied_files=332
+manifest_sha256=b3751b23b161838550b5b31d41bd833ca2e18f644e0b4e22965475f2fc6ba0ab
+verification=source_and_destination_SHA256_equal_for_every_copied_file
+cloud_upload=not_confirmed

@@ -1,5 +1,9 @@
 # Ledger Lab Handoff
 
+## 2026-11-14 (TRACK B1) Expanded run outputs and raw logs copied under OneDrive Gold
+
+At owner request, created `~/Library/CloudStorage/OneDrive-Personal/LedgerLabOutputs-Gold/expanded-20261113/` without replacing original Gold files. Copied one prior-layout 104-file final-output snapshot from monthly_c, all three raw run log sets/markers/consoles/validation/hash lists, queue and supervisor records, compact evidence, and the failed reporting attempt. 332 copied files, about 2.7 GiB; each destination SHA-256 equals its source. `MANIFEST.csv` excludes itself and has SHA-256 `b3751b23b161838550b5b31d41bd833ca2e18f644e0b4e22965475f2fc6ba0ab`. Repository receipt: `data/test_evidence/gold_copy_20261114/` (manifest, README, copy script and receipt). OneDrive started in background; local integrity verified, cloud upload not confirmed. Raw sources, all successful corpus trees, failed attempt and original Gold snapshot retained. Sorted/merged SJE files are not part of this compact Gold copy. No engine changes or new measurements.
+
 ## 2026-11-14 00:30 AZT (TRACK B1/B2/D) Three corpus runs PASS; expanded reporting stopped at vendor bound
 
 All three monthly B runs FY2003–FY2016 validated. Final states (AZT): monthly_a 18:28:56, monthly_b 21:05:44, monthly_c 23:52:52 on November 13. Each later run matched the first run's 46 SHA-256 entries: 14 LDGR, 14 GL, 14 PERM_TBL, four legacy views. Receipts: `data/test_evidence/intel_preflight_20261113/`; full compact archives: `run_20261113_155156`, `run_20261113_182856`, `run_20261113_210544`. This is the expanded-source workload, not a replicate of the old expense-only population. No all-file/SJE identity or independent source-family audit is asserted; legacy aggregate-TTL labels in corpus totals remain qualified.
