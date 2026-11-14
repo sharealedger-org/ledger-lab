@@ -1,0 +1,15 @@
+event,epoch_s,local_time
+corpus_start,1794610038,2026-11-13 15:47:18
+# years=03 lanes=1 periodGranularity=monthly
+# ttl_type=B vendor_master=/private/tmp/ckb-intel-preflight-20261113/VendorMaster.csv
+# chain_width=1 views_early=Y caffeinate=on
+# git=b10b480 dirty_files=4
+# host=Kips-MBP cpus=4
+prep_all_done,1794610076,2026-11-13 15:47:56
+chain_start_fy03,1794610078,2026-11-13 15:47:58
+views_start,1794610078,2026-11-13 15:47:58
+views_end,1794610096,2026-11-13 15:48:16
+chain_end_fy03,1794610143,2026-11-13 15:49:03
+chain_all_done,1794610143,2026-11-13 15:49:03
+views_all_done,1794610143,2026-11-13 15:49:03
+corpus_end,1794610143,2026-11-13 15:49:03

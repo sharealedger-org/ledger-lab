@@ -1,0 +1,3 @@
+39e4637f9d88e249a1d5d9089766661a3a77bb336ac619d69d7851047292f88c  /private/tmp/ledger-lab-auto-dashboard-20261113/scripts/run_reporting.sh
+8c318e2d369958c731f0aff394828b687ee31621e3b33800a0cd5a17d23870dd  /private/tmp/ledger-lab-auto-dashboard-20261113/02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/ledger/ReportingPass.scala
+b941c18820e080291fc03c0c31f4e539fafbd367ec878170295f4c96b136fee5  /private/tmp/ledger-lab-auto-dashboard-20261113/02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/ledger/ReportingSupport.scala

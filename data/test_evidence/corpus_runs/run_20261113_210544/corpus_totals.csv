@@ -1,0 +1,37 @@
+metric,value,unit,source,note
+raw_input_files,385,files,source_catalog.csv,"whole published corpus (350 VARawFiles + 35 VAPOData), not only the files a run read"
+raw_input_bytes,27843834731,bytes,source_catalog.csv,same scope; SHA-256 of every file is verified against the catalog by the download script
+source_rows_expenditure,114164816,rows,process_metrics step-ttl input_rows,records read from the expenditure files
+source_bytes_expenditure_reported,21817760174,bytes,process_metrics step-ttl input_bytes,UNRELIABLE: step-ttl reports 0 input bytes in 0 of 14 years; do not quote as the input size
+source_rows_po,15603041,rows,process_metrics po-standardize input_rows,records read from the purchase-order files
+source_bytes_po,5069647706,bytes,process_metrics po-standardize input_bytes,
+journal_lines_from_ttl,228329632,rows,process_metrics step-ttl output_rows,balanced journal lines from the expenditure side
+merged_sje_rows,259471158,rows,process_metrics merge-payment-po output_rows,"the merged SJE the posting steps and 5v read, all years"
+merged_sje_bytes,65724322449,bytes,process_metrics merge-payment-po output_bytes,
+ledger_rows_step3,11140226,rows,process_metrics step-3 output_rows,
+gl_keys_step20,6892619,rows,process_metrics gl-post output_rows,
+permutation_gl_keys_step21,6892619,rows,process_metrics permutation-generator output_rows,
+step_cpu_seconds_all,13563.76,cpu_s,"process_metrics cpu_total_seconds, all steps",excludes the 5v pass (its metrics are not in this table)
+max_step_peak_rss_bytes,1357139968,bytes,process_metrics peak_rss_bytes,highest of any step in the table
+ledger_rows,11140226,rows,cost_surface CCP1 ledger_row_count,
+ledger_file_bytes,1786167750,bytes,cost_surface CCP1 ldgr_file_bytes,
+permutation_rows,11140226,rows,cost_surface CCP1 permutation_rows,
+permutation_capacity_sum_cost_surface,503120388982823,count,cost_surface CCP1 permutation_capacity,can be short: the step 21s summary call can fail silently (FY03 in the 2026-11-10 baseline); prefer permutation_capacity_sum from PERM_SUMMARY files when --root is given
+cost_surface_total_storage_bytes_NOT_ADDITIVE,265494164608,bytes,"cost_surface total_storage_bytes, all rows","DO NOT QUOTE: each row is a whole generation directory, so prep files that posting hard-links are counted again"
+view_file_bytes,294392620,bytes,VIEWS cost_surface view_file_bytes,the four view files
+views_pass_compute_s,2095,s,VIEWS cost_surface total_compute_s,wall seconds of 5v
+catalogued_partitions,238,partitions,partition_catalog,
+catalogued_partition_rows_all,508468864,rows,partition_catalog row_count,"a row appears once per partition it is written to, so this is volume written, not distinct records"
+catalogued_partition_bytes_all,124972948040,bytes,partition_catalog byte_count,logical sum over catalogued partitions; can differ from bytes on disk
+catalogued_bytes_01-transformation,48222434891,bytes,partition_catalog byte_count,168 partitions
+catalogued_bytes_02-foundation,74964345399,bytes,partition_catalog byte_count,56 partitions
+catalogued_bytes_03-instrument-ledger,1786167750,bytes,partition_catalog byte_count,14 partitions
+permutation_years_summarised,14,years,PERM_SUMMARY<yyyy>.csv in the committed FY trees,
+permutation_gl_keys,6892619,rows,PERM_SUMMARY files,authoritative step 21 output
+permutation_vendor_rows,11140226,rows,PERM_SUMMARY files,
+permutation_capacity_sum,503120388982823,count,PERM_SUMMARY files,"upper bound, per-year values summed (exact integers); see fd_untracked_dims in the step 21 RESULT lines"
+output_committed_files,419,files,walk of FY<yy> and VIEWS symlink targets,each inode once
+output_committed_apparent_bytes,134322610330,bytes,walk of FY<yy> and VIEWS symlink targets,final state of the run: what a comparison with another engine's output should use
+output_committed_allocated_bytes,136162693120,bytes,walk of FY<yy> and VIEWS symlink targets,blocks allocated on disk
+output_retained_apparent_bytes,134322829064,bytes,walk of all *.generations,includes superseded generations kept by the prune rule (last two); hard links counted once
+output_retained_allocated_bytes,136163266560,bytes,walk of all *.generations,blocks allocated on disk

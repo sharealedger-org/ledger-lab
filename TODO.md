@@ -13,6 +13,12 @@ Seeded 2026-11-11 from the handoff entries. On the same day the handoff was trim
 
 ## Cost graphs (Track B1)
 
+- [ ] **Combined-source archive labels:** `corpus_totals.csv` calls all step-ttl rows/bytes expenditure, even for `ttlType B` (first new archive `run_20261113_155156`). Correct the post-engine summary labels after the frozen queue ends; distinguish combined TTL totals from independently reconciled source-family counts. Do not quote the legacy label as expenditure-only evidence.
+
+- [x] **Automatic dashboard startup:** integrated 2026-11-14 as `fe591a9`, after all frozen runs ended. Opens the actual run's macOS dashboard, with `--noDashboard` for headless launches. Bash syntax/diff checks and actual external-window execution passed.
+- [x] **Automatic post-gated expanded reporting:** integrated 2026-11-14 as `386e933`; queue option `--reportAfterQueue`, or attach `run_reporting_after_queue.sh --wait` to an existing queue. Incomplete/failed/completed gate checks passed; actual attempt waited for all three validations and used pinned posting generations. No new overlap enabled.
+- [ ] **Expanded reporting corpus bound:** actual 2026-11-14 attempt failed at the 250,000-row vendor guard for unattributed `0000000000`; no 5r or complete output. Evidence `data/test_evidence/reporting_corpus_20261114/`. Design/test bounded large-group handling before retry; do not just raise the guard. Preserve immutable successful corpus outputs and failed-attempt diagnostics.
+
 - [ ] **Owner clarification, 2026-11-13:** Produce matched AIM3 movement and balance feature inputs in Scala at the SJE and final-reporting boundaries respectively; fix fiscal periods, expose unmatched vendors, and compare three models on identical rows. This is the selected next AI use, not the assistant's financial-pressure suggestion. Add immutable-input reuse for reporting-only queue stages.
 
 - [ ] **Expanded Intel run:** verify source/master coverage, identify generated control outputs for authorized cleanup, deliver linked vendor names to consumers, and select the unattended plan. Revenue adapter and connected synthetic smoke are fixed/verified; see [handoff](docs/CKB_REVENUE_RERUN_2026-11-13.md).

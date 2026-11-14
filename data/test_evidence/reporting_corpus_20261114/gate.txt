@@ -1,0 +1,17 @@
+PASS FY03: required outputs and engine controls
+PASS FY04: required outputs and engine controls
+PASS FY05: required outputs and engine controls
+PASS FY06: required outputs and engine controls
+PASS FY07: required outputs and engine controls
+PASS FY08: required outputs and engine controls
+PASS FY09: required outputs and engine controls
+PASS FY10: required outputs and engine controls
+PASS FY11: required outputs and engine controls
+PASS FY12: required outputs and engine controls
+PASS FY13: required outputs and engine controls
+PASS FY14: required outputs and engine controls
+PASS FY15: required outputs and engine controls
+PASS FY16: required outputs and engine controls
+PASS corpus: required cross-year views and process evidence
+Scope: engine verdicts/artifact presence; not independent source reconciliation or vendor-name coverage.
+2026-11-14T07:28:46Z Starting separately measured expanded reporting from monthly_c

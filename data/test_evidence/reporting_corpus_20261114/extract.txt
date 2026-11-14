@@ -1,0 +1,59 @@
+[info] welcome to sbt 1.10.11 (Eclipse Adoptium Java 21.0.8)
+[info] loading settings for project global-plugins from idea.sbt...
+[info] loading global plugins from /Users/ktwitchell001/.sbt/1.0/plugins
+[info] loading settings for project va_pipeline-build from assembly.sbt, plugins.sbt...
+[info] loading project definition from /private/tmp/ledger-lab-auto-dashboard-20261113/02-foundation/va_pipeline/project
+[info] loading settings for project root from build.sbt...
+[info] set current project to va_pipeline (in build file:/private/tmp/ledger-lab-auto-dashboard-20261113/02-foundation/va_pipeline/)
+[info] compiling 27 Scala sources to /private/tmp/ledger-lab-auto-dashboard-20261113/02-foundation/va_pipeline/target/scala-2.12/classes ...
+[warn] one deprecation
+[warn] two deprecations (since 2.12.16)
+[warn] three deprecations in total; re-run with -deprecation for details
+[warn] three warnings found
+[info] done compiling
+[info] running org.universalledger.foundation.va.ledger.LedgerApp --step 5v --reportProfile expanded --inPaths /Users/ktwitchell001/workspace/ckb_expanded_queue_20261113_ready/monthly_c/output/FY03.generations/run_20261113_212316_50048,/Users/ktwitchell001/workspace/ckb_expanded_queue_20261113_ready/monthly_c/output/FY04.generations/run_20261113_212135_43484,/Users/ktwitchell001/workspace/ckb_expanded_queue_20261113_ready/monthly_c/output/FY05.generations/run_20261113_214212_36420,/Users/ktwitchell001/workspace/ckb_expanded_queue_20261113_ready/monthly_c/output/FY06.generations/run_20261113_214455_47655,/Users/ktwitchell001/workspace/ckb_expanded_queue_20261113_ready/monthly_c/output/FY07.generations/run_20261113_215854_15587,/Users/ktwitchell001/workspace/ckb_expanded_queue_20261113_ready/monthly_c/output/FY08.generations/run_20261113_220832_61407,/Users/ktwitchell001/workspace/ckb_expanded_queue_20261113_ready/monthly_c/output/FY09.generations/run_20261113_222758_63355,/Users/ktwitchell001/workspace/ckb_expanded_queue_20261113_ready/monthly_c/output/FY10.generations/run_20261113_224303_44229,/Users/ktwitchell001/workspace/ckb_expanded_queue_20261113_ready/monthly_c/output/FY11.generations/run_20261113_224947_79373,/Users/ktwitchell001/workspace/ckb_expanded_queue_20261113_ready/monthly_c/output/FY12.generations/run_20261113_230501_65229,/Users/ktwitchell001/workspace/ckb_expanded_queue_20261113_ready/monthly_c/output/FY13.generations/run_20261113_231125_99163,/Users/ktwitchell001/workspace/ckb_expanded_queue_20261113_ready/monthly_c/output/FY14.generations/run_20261113_232229_64454,/Users/ktwitchell001/workspace/ckb_expanded_queue_20261113_ready/monthly_c/output/FY15.generations/run_20261113_232755_96107,/Users/ktwitchell001/workspace/ckb_expanded_queue_20261113_ready/monthly_c/output/FY16.generations/run_20261113_233957_67420 --outPath /Users/ktwitchell001/workspace/ckb_expanded_queue_20261113_ready/expanded_reporting.attempt --refPath /Users/ktwitchell001/workspace/va_fresh_root
+****************************************************************************************************
+                                    Ledger Lab
+                                    VA Corpus
+                  Using State of Virginia Public Financial Data
+                  step=5v - Views (CKB)  all years (14 input directories)  quarter=01
+                  started 2026-11-14T00:29:31
+****************************************************************************************************
+[CLI] step=5v  inPath=/VAdata/data/  outPath=/Users/ktwitchell001/workspace/ckb_expanded_queue_20261113_ready/expanded_reporting.attempt  year=03  quarter=01
+-----------------------------------
+****************************************************************************************************
+                                  End of Ledger Lab step
+                  step=5v - Views (CKB)  all years (14 input directories)  quarter=01
+                  status=FAILED  elapsed=0:00:08
+****************************************************************************************************
+[error] java.lang.IllegalArgumentException: requirement failed: Vendor working-state bound exceeded: 0000000000
+[error] 	at scala.Predef$.require(Predef.scala:281)
+[error] 	at org.universalledger.foundation.va.ledger.ReportingPass$.apply(ReportingPass.scala:228)
+[error] 	at org.universalledger.foundation.va.ledger.CKBViews$.apply(CKBViews.scala:186)
+[error] 	at org.universalledger.foundation.va.ledger.LedgerApp$.dispatch(LedgerApp.scala:239)
+[error] 	at org.universalledger.foundation.va.ledger.LedgerApp$.runCLI(LedgerApp.scala:135)
+[error] 	at org.universalledger.foundation.va.ledger.LedgerApp$.main(LedgerApp.scala:110)
+[error] 	at org.universalledger.foundation.va.ledger.LedgerApp.main(LedgerApp.scala)
+[error] 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+[error] 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+[error] stack trace is suppressed; run 'last Compile / run' for the full output
+[error] (Compile / run) java.lang.IllegalArgumentException: requirement failed: Vendor working-state bound exceeded: 0000000000
+[error] Total time: 36 s, completed Nov 14, 2026, 12:29:39 AM
+       54.82 real       111.68 user         6.21 sys
+          1470820352  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              718007  page reclaims
+                3476  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   8  messages sent
+                   8  messages received
+                  36  signals received
+                7021  voluntary context switches
+              101654  involuntary context switches
+        271227598341  instructions retired
+        341008554944  cycles elapsed
+          1429553152  peak memory footprint

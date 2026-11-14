@@ -1,5 +1,91 @@
 # Verification Audit Register
 
+## 2026-11-14 00:30 AZT — expanded corpus reporting falsified its configured row bound
+
+The automatic gate waited for all three validated corpus runs, revalidated the
+last population and pinned physical FY03–FY16 posted generations. Actual Scala
+expanded 5v failed at `ReportingPass.scala:228`: `Vendor working-state bound
+exceeded: 0000000000`, with the unchanged default 250,000 input rows per vendor.
+No 5r or REPORT_COMPLETE/publication; partial CSVs are not usable completed
+evidence. Guard preserved and no financial retry. Corpus reporting remains
+unverified despite successful fixture behavior. Evidence:
+`data/test_evidence/reporting_corpus_20261114/`; extract process failed at 00:29
+AZT with source revision `052c087` (same financial source as b10b480).
+
+Operational correction: launchctl submit restarted exited wrappers; existing
+queue/output-path guards prevented financial replay. Submit jobs were unloaded;
+the actual reporting attempt used an explicit run-once plist, now also unloaded.
+All three corpus validation/hash outcomes remain intact. Startup-only commits
+were applied to main afterward (`fe591a9`, `386e933`), with no measured Scala
+changes. This does not close target-runtime capability gaps or prove large-group
+boundedness. Next falsifier must exercise large unattributed groups under a
+declared memory/materialization contract, not simply raise the row guard.
+
+## 2026-11-13 23:53 AZT — three expanded-source corpus runs complete
+
+All planned monthly B executions FY2003–FY2016 passed the queue validator and
+46-entry final-product hash comparisons. Completed queue states: monthly_a at
+18:28:56, monthly_b at 21:05:44, monthly_c at 23:52:52 AZT. Third actual full
+launcher completed 23:52:30. Read-only `cmp` of a/c receipts at 23:53 exited 0;
+a/b was checked earlier. Evidence archives: `run_20261113_155156`,
+`run_20261113_182856`, `run_20261113_210544` under `data/test_evidence/corpus_runs/`.
+Queue status and hash receipts are in `data/test_evidence/intel_preflight_20261113/`.
+Verified repeat scope remains LDGR/GL/PERM_TBL for 14 years plus four legacy views,
+not every retained file or SJE. Per-run archives contain 42 reconciliation rows
+and 84 process rows; controls/artifact validation is not an independent accounting
+audit. Expanded reporting is still separately pending at this check; no AI-score,
+minimum-cost, or runtime-stability conclusion follows from output repeatability.
+
+## 2026-11-13 21:13 AZT — expanded-source output repeat
+
+`monthly_b` completed 21:05:22 AZT and passed the queue validator. At 21:05:44,
+the queue's exact comparison of 46 SHA-256 lines against monthly_a succeeded and
+monthly_c started automatically. A read-only `cmp` at 21:13 also exited 0.
+Scope verified: LDGR, GL and PERM_TBL for all 14 years, and four legacy views.
+This does not verify every retained file or merged SJE, independent source-family
+reconciliation, expanded-reporting behavior, or runtime stability. Receipts:
+`data/test_evidence/intel_preflight_20261113/monthly_{a,b}_final_sha256.txt`.
+Second execution archive: `data/test_evidence/corpus_runs/run_20261113_182856/`.
+
+## 2026-11-13 18:33 AZT — first Intel expanded-source corpus execution
+
+Status: `partially_verified`; the run completed and emitted controls pass, not an
+independent source-family/accounting audit or repeatability result. Queue
+`ckb_expanded_queue_20261113_ready/monthly_a`, revision `b10b480`, completed
+18:28:35 AZT; validator and final hash capture finished 18:28:56, automatically
+starting monthly_b. Fourteen year checks and corpus cross-year process/artifact
+checks PASS. Archive: `data/test_evidence/corpus_runs/run_20261113_155156/`;
+includes 42 combined reconciliation rows and 84 process rows. Expanded reporting
+has not run and is gated on completion of all three runs.
+
+Metadata limitation found by reading the archive: legacy `corpus_totals.csv`
+names aggregate step-ttl input/output counts as expenditure, but `ttlType B`
+includes revenue. These are combined TTL counts, not expenditure-only counts or
+source-family reconciliation. No processing code was changed during the queue;
+summary-label correction is deferred and recorded in TODO.
+
+## 2026-11-13 — Intel expanded-corpus preflight (B1/B2)
+
+Status: `partially_verified`; no corpus result yet. Falsifiable preflight claim:
+the existing combined-family producers and downstream consumers accept the Intel
+source contract before the three full monthly runs. Cheapest runtime falsifier:
+three expenditure rows, three revenue rows and one raw PO row sampled into an
+isolated temporary root, using the same 1,248-entry master as the prior measured
+runs, through `run_full_corpus.sh` (`ttl,2p,2m,3,20,21,5v`). Exit 0; corpus validator
+PASS; revenue 240 plus 50 plus 50 appears as REV1781=240 and REV1788=100 with
+offset -340 in actual GL. Expenditure GL=57.76, offset=-57.76. No new financial
+code or Python was introduced. Focused TTL/one-read/reporting suite: 21/21 PASS.
+Evidence: `data/test_evidence/intel_preflight_20261113/` and
+`data/test_evidence/corpus_runs/run_20261113_154718/`.
+
+Source SHA-256 verification is recorded separately in the preflight receipt;
+do not infer complete verification from a partial receipt. The master is the
+prior-run mapping, not a full corpus identity bridge. Legacy 5v remains the
+measured queue view. Expanded reporting is separate and its per-vendor row bound
+requires a corpus check, particularly for unknown/unattributed records; fixture
+success does not establish that bound at scale. Existing Python fiscal helpers
+were not changed or used for new scores.
+
 ## 2026-11-13 15:28 AZT — Expanded reporting (B1/B2/D)
 
 Status: `partially_verified` overall; fixture behavior verified. Claim: one canonical-input traversal at vendor boundaries can reconcile actual posted state and supply broad analytical outputs with bounded cross-vendor spills. Producers: actual `post.scala` fixture ledgers plus canonical SJEs and sorted dimensions. Consumers: expanded `5v`, then separate `5r` consuming only spill partitions; final CSVs are exploratory analytical products, not yet consumed by a model fit. Cheapest falsifier (alter posted amount) blocks completion; missing balance side also blocks. Tests exercise bounds, disorder, duplicate inputs, ambiguous dimensions, fiscal periods, explicit openings and deterministic spill reduction. All 42 focused tests pass, including 34 legacy tests. Bash launcher completed two process stages with spaces in its output path, 20 chunks/five merge levels, zero reconciliation failures. [Evidence](../data/test_evidence/reporting_20261113/README.md). GERS-002/003 target capability gaps remain open. No corpus scale, actual vendor bridge coverage or AI-score evidence.

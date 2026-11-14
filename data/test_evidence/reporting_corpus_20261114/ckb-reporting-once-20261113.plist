@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0"><dict>
+<key>Label</key><string>org.sharealedger.ckb-reporting-once-20261113</string>
+<key>RunAtLoad</key><true/>
+<key>KeepAlive</key><false/>
+<key>ProgramArguments</key><array>
+<string>/usr/bin/env</string><string>LC_ALL=C</string>
+<string>JAVA_HOME=/Users/ktwitchell001/.local/jdk-21</string>
+<string>PATH=/Users/ktwitchell001/.local/jdk-21/bin:/Users/ktwitchell001/.local/sbt/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+<string>/bin/bash</string>
+<string>/private/tmp/ledger-lab-auto-dashboard-20261113/scripts/run_reporting_after_queue.sh</string>
+<string>--queueRoot</string><string>/Users/ktwitchell001/workspace/ckb_expanded_queue_20261113_ready</string>
+<string>--outPath</string><string>/Users/ktwitchell001/workspace/ckb_expanded_queue_20261113_ready/expanded_reporting</string>
+<string>--refPath</string><string>/Users/ktwitchell001/workspace/va_fresh_root</string>
+</array>
+<key>StandardOutPath</key><string>/Users/ktwitchell001/workspace/ckb_expanded_queue_20261113_ready.reporting-once.log</string>
+<key>StandardErrorPath</key><string>/Users/ktwitchell001/workspace/ckb_expanded_queue_20261113_ready.reporting-once.err</string>
+</dict></plist>

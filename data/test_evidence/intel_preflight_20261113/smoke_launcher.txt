@@ -1,0 +1,24 @@
+[2026-11-13 15:47:18] corpus start: years=03 lanes=1 chainWidth=1  wall-clock record: /private/tmp/ckb-intel-preflight-20261113/logs/corpus_wallclock_20261113_154718.csv
+[2026-11-13 15:47:18] === FY2003 prep start (ttl,2p,2m) ===
+[2026-11-13 15:47:56] === FY2003 prep exit 0 ===
+[2026-11-13 15:47:56] prep lanes finished rc=0
+[2026-11-13 15:47:58] === FY2003 chain start (3,20,21) ===
+[2026-11-13 15:47:58] === VIEWS (5v) over 1 years (all prep committed; posting may still be running) ===
+[2026-11-13 15:48:16] === VIEWS (5v) exit 0 ===
+[2026-11-13 15:49:03] === FY2003 chain exit 0 ===
+[2026-11-13 15:49:03] chain finished rc=0
+[2026-11-13 15:49:03] views finished rc=0
+[2026-11-13 15:49:03] Archiving run evidence into repository...
+Archiving corpus run evidence to /Users/ktwitchell001/workspace/sharealedger/ledger-lab/data/test_evidence/corpus_runs/run_20261113_154718 ...
+  Copied wallclock record: /private/tmp/ckb-intel-preflight-20261113/logs/corpus_wallclock_20261113_154718.csv
+  Combined cost_surface_all_years.csv (2 rows)
+  Combined reconciliation_results_all_years.csv (3 rows)
+  Combined process_metrics_all_years.csv (6 rows)
+  Combined run_manifest_all_years.csv (2 rows)
+  Combined partition_catalog_all_years.csv (6 rows)
+  Combined sort_events_all_years.csv (2 rows)
+  Copied 5v cost surface
+  Written quarantine summary (/Users/ktwitchell001/workspace/sharealedger/ledger-lab/data/test_evidence/corpus_runs/run_20261113_154718/quarantine_summary.csv)
+  Written corpus totals (/Users/ktwitchell001/workspace/sharealedger/ledger-lab/data/test_evidence/corpus_runs/run_20261113_154718/corpus_totals.csv)
+Archive complete: /Users/ktwitchell001/workspace/sharealedger/ledger-lab/data/test_evidence/corpus_runs/run_20261113_154718/RUN_SUMMARY.md
+[2026-11-13 15:49:03] ALL YEARS COMPLETE; wall-clock record: /private/tmp/ckb-intel-preflight-20261113/logs/corpus_wallclock_20261113_154718.csv
