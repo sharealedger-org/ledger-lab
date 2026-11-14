@@ -1,0 +1,8 @@
+item,basis,amount_thousands,source_section,description
+total_revenues,GAAP_MODIFIED_ACCRUAL,17342130,G,General Fund total revenues FY2012 (GAAP modified accrual)
+total_revenues,BUDGET_CASH,17101959,L,General Fund total revenues FY2012 (budget/cash basis actual)
+total_expenditures,GAAP_MODIFIED_ACCRUAL,16972740,G,General Fund total expenditures FY2012 (GAAP modified accrual)
+total_expenditures,BUDGET_CASH,16894014,L,General Fund total expenditures FY2012 (budget/cash basis actual)
+net_change_fund_balance,GAAP_MODIFIED_ACCRUAL,571136,G,General Fund net change in fund balance FY2012 (revenue 17342130 - expenditure 16972740 + other)
+fund_balance_june30,GAAP_MODIFIED_ACCRUAL,512359,G,General Fund ending fund balance June 30 2012 (GAAP)
+fund_balance_june30,BUDGET_CASH,1683412,L,"General Fund ending fund balance June 30 2012 (budget basis, from Note 1 reconciliation)"

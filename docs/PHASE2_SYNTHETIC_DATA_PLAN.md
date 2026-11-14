@@ -1,6 +1,17 @@
 # Phase 2: Synthetic Data Generation and Engine Demonstration Plan
 
-Drafted 2026-11-14. Status: **proposed — awaits owner review before any implementation begins.**
+Drafted 2026-11-14. **Implementation started 2026-11-14 by owner direction.**
+
+| Strand | Status | Evidence |
+|---|---|---|
+| A Round 1 | **Complete** | `data/VendorMaster.csv` updated: 232 REV→GOV-RECEIPT/GOV, 183 EXP geo filled from state |
+| A Round 2 | **Complete** | `instSizeTier` added: MICRO 211, SMALL 594, LARGE 211, GOVT-AGENCY 232 |
+| A Round 3+4 | **Complete** | `instContractType`, `instPaymentChannel`, `instCounterpartySector`, `instExposureType`, `instMaturityProxy`, `instRiskWeightProxy` added |
+| A Round A5a | **Complete** | `instFXCurrency`=AUD for HALLPRINT PTY LTD (only INT vendor); `data/FX_RATES.csv` written (180 monthly AUD/USD rows FY2003–FY2016, synthetic from RBA approx.) |
+| B Strand | **In progress** | ACFR FY2012 K+O downloaded; anchor fixture written (`data/acfr_anchors/`); fund filter and vendor-sum check pending |
+| C–F | Not started | Awaiting Phase 1 quality finding decision (see below) |
+
+**New finding logged 2026-11-14:** CKB PO ingestion quarantines ~24,700 records that the control recovers via RFC-4180 quote-aware boundary detection. See [`VERIFICATION_AUDIT_REGISTER.md`](VERIFICATION_AUDIT_REGISTER.md) (bottom entry) and [`TODO.md`](../TODO.md) Track D section. Owner decision required: fix before or after Strand C–F work.
 
 This plan covers three interlinked strands of Phase 2 work: (1) completing and extending the
 Instrument Master (SAL) with rule-derived synthetic attributes; (2) downloading publicly available

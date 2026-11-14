@@ -1,0 +1,2 @@
+fund,fiscal_year,acfr_section,expenditure_gaap,revenue_gaap,net_change,note
+General Fund (Fund code 01),FY2012,G,16972740,17342130,571136,Tie-out: vendor_totals + named_adjustments = ACFR_published_total. Named adjustments have declared provenance (not plugs). See docs/PHASE2_SYNTHETIC_DATA_PLAN.md §3.2.
