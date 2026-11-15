@@ -1,0 +1,34 @@
+[info] welcome to sbt 1.10.11 (Eclipse Adoptium Java 21.0.8)
+[info] loading settings for project global-plugins from idea.sbt...
+[info] loading global plugins from /Users/ktwitchell001/.sbt/1.0/plugins
+[info] loading settings for project va_pipeline-build from assembly.sbt, plugins.sbt...
+[info] loading project definition from /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/project
+[info] loading settings for project root from build.sbt...
+[info] set current project to va_pipeline (in build file:/Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/)
+[info] compiling 2 Scala sources to /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/target/scala-2.12/classes ...
+[warn] one deprecation (since 2.12.16); re-run with -deprecation for details
+[warn] one warning found
+[info] done compiling
+[info] running org.universalledger.foundation.va.corpus.IdentityAudit --mode canonical --out /Users/ktwitchell001/workspace/identity_audit_20261114/canonical_probe --master /Users/ktwitchell001/workspace/identity_audit_20261114/inputs/measured_master.csv --currentMaster /Users/ktwitchell001/workspace/identity_audit_20261114/inputs/enriched_master.csv --runRoot /Users/ktwitchell001/workspace/identity_audit_20261114/inputs/posted --years 03
+[error] java.lang.IllegalArgumentException: requirement failed: Instrument disorder: c1246 after c12464
+[error] 	at scala.Predef$.require(Predef.scala:281)
+[error] 	at org.universalledger.foundation.va.corpus.IdentityAudit$VendorFold.add(IdentityAudit.scala:158)
+[error] 	at org.universalledger.foundation.va.corpus.IdentityAudit$.$anonfun$canonical$2(IdentityAudit.scala:324)
+[error] 	at org.universalledger.foundation.va.corpus.IdentityAudit$.$anonfun$canonical$2$adapted(IdentityAudit.scala:309)
+[error] 	at scala.collection.immutable.List.foreach(List.scala:431)
+[error] 	at org.universalledger.foundation.va.corpus.IdentityAudit$.$anonfun$canonical$1(IdentityAudit.scala:309)
+[error] 	at org.universalledger.foundation.va.corpus.IdentityAudit$.$anonfun$canonical$1$adapted(IdentityAudit.scala:309)
+[error] 	at scala.collection.Iterator.foreach(Iterator.scala:943)
+[error] 	at scala.collection.Iterator.foreach$(Iterator.scala:943)
+[error] 	at scala.collection.AbstractIterator.foreach(Iterator.scala:1431)
+[error] 	at scala.collection.IterableLike.foreach(IterableLike.scala:74)
+[error] 	at scala.collection.IterableLike.foreach$(IterableLike.scala:73)
+[error] 	at scala.collection.AbstractIterable.foreach(Iterable.scala:56)
+[error] 	at org.universalledger.foundation.va.corpus.IdentityAudit$.canonical(IdentityAudit.scala:309)
+[error] 	at org.universalledger.foundation.va.corpus.IdentityAudit$.main(IdentityAudit.scala:190)
+[error] 	at org.universalledger.foundation.va.corpus.IdentityAudit.main(IdentityAudit.scala)
+[error] 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+[error] 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+[error] stack trace is suppressed; run 'last Compile / runMain' for the full output
+[error] (Compile / runMain) java.lang.IllegalArgumentException: requirement failed: Instrument disorder: c1246 after c12464
+[error] Total time: 33 s, completed Nov 14, 2026, 6:50:53 PM

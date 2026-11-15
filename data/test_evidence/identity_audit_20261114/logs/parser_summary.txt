@@ -1,0 +1,44 @@
+[info] welcome to sbt 1.10.11 (Eclipse Adoptium Java 21.0.8)
+[info] loading settings for project global-plugins from idea.sbt...
+[info] loading global plugins from /Users/ktwitchell001/.sbt/1.0/plugins
+[info] loading settings for project va_pipeline-build from assembly.sbt, plugins.sbt...
+[info] loading project definition from /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/project
+[info] loading settings for project root from build.sbt...
+[info] set current project to va_pipeline (in build file:/Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/)
+[info] compiling 1 Scala source to /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/target/scala-2.12/classes ...
+[info] done compiling
+[info] compiling 1 Scala source to /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/target/scala-2.12/test-classes ...
+[info] done compiling
+Summary complete; source mismatches=0; identity/canonical mismatches=0
+Summary complete; source mismatches=0; identity/canonical mismatches=1
+[info] IdentityAuditSummarySpec:
+[info] - independent count checks distinguish successful counts from an identity mismatch
+[info] - candidate sizing excludes numeric labels and preserves named entities containing digits
+[info] - lookup counterfactual distinguishes missed matches, conflicting identities and invalid names
+[info] Run completed in 425 milliseconds.
+[info] Total number of tests run: 3
+[info] Suites: completed 1, aborted 0
+[info] Tests: succeeded 3, failed 0, canceled 0, ignored 0, pending 0
+[info] All tests passed.
+[success] Total time: 9 s, completed Nov 14, 2026, 7:08:56 PM
+[info] running org.universalledger.foundation.va.corpus.IdentityAuditParserSummary --auditRoot /Users/ktwitchell001/workspace/identity_audit_20261114 --out /Users/ktwitchell001/workspace/identity_audit_20261114/parser_summary
+Parser/lookup summary reconciled 114164816 accepted source rows; no financial corrections applied
+[success] Total time: 23 s, completed Nov 14, 2026, 7:09:19 PM
+       41.04 real        70.88 user         3.89 sys
+          1149390848  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              529803  page reclaims
+                   2  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   8  messages sent
+                   8  messages received
+                  50  signals received
+                 590  voluntary context switches
+              125984  involuntary context switches
+        304419697514  instructions retired
+        249757902011  cycles elapsed
+          1115811840  peak memory footprint

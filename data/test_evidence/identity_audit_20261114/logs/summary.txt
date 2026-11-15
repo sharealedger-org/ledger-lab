@@ -1,0 +1,43 @@
+[info] welcome to sbt 1.10.11 (Eclipse Adoptium Java 21.0.8)
+[info] loading settings for project global-plugins from idea.sbt...
+[info] loading global plugins from /Users/ktwitchell001/.sbt/1.0/plugins
+[info] loading settings for project va_pipeline-build from assembly.sbt, plugins.sbt...
+[info] loading project definition from /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/project
+[info] loading settings for project root from build.sbt...
+[info] set current project to va_pipeline (in build file:/Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/)
+[info] compiling 1 Scala source to /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/target/scala-2.12/classes ...
+[info] done compiling
+[info] compiling 1 Scala source to /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/target/scala-2.12/test-classes ...
+[info] done compiling
+Summary complete; source mismatches=0; identity/canonical mismatches=0
+Summary complete; source mismatches=0; identity/canonical mismatches=1
+[info] IdentityAuditSummarySpec:
+[info] - independent count checks distinguish successful counts from an identity mismatch
+[info] - candidate sizing excludes numeric labels and preserves named entities containing digits
+[info] Run completed in 462 milliseconds.
+[info] Total number of tests run: 2
+[info] Suites: completed 1, aborted 0
+[info] Tests: succeeded 2, failed 0, canceled 0, ignored 0, pending 0
+[info] All tests passed.
+[success] Total time: 11 s, completed Nov 14, 2026, 7:05:00 PM
+[info] running org.universalledger.foundation.va.corpus.IdentityAuditSummary --auditRoot /Users/ktwitchell001/workspace/identity_audit_20261114 --runRoot /Users/ktwitchell001/workspace/identity_audit_20261114/inputs/posted --out /Users/ktwitchell001/workspace/identity_audit_20261114/summary
+Summary complete; source mismatches=0; identity/canonical mismatches=0
+[success] Total time: 24 s, completed Nov 14, 2026, 7:05:24 PM
+       43.50 real        76.83 user         3.87 sys
+          1145987072  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              541897  page reclaims
+                 166  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   8  messages sent
+                   8  messages received
+                  35  signals received
+                1168  voluntary context switches
+              124938  involuntary context switches
+        296098009663  instructions retired
+        265805532610  cycles elapsed
+          1095249920  peak memory footprint
