@@ -8,6 +8,7 @@ cmp "$reference/products.sha256" "$target/products.sha256" || exit 2
 for path in "$reference" "$target"; do [[ "$path" = /* && "$path" != *[[:space:]]* ]] || exit 2; done
 index="$target/storage_reference_index.tsv"
 du -sk "$target" > "$target/storage_before_kib.txt"
+df -Pk "$target" > "$target/volume_before_storage_links.txt"
 : > "$index"
 while IFS= read -r -d '' file; do
   digest="$(LC_ALL=C shasum -a 256 "$file")"; digest="${digest%% *}"
@@ -26,4 +27,7 @@ while IFS= read -r -d '' file; do
   printf '%s,%s,%s\n' "$file" "$match" "$digest" >> "$target/storage_links.csv"
 done < <(find "$target/output" "$target/report" -type f -name '*.csv' -size +1024k -print0)
 du -sk "$target" > "$target/storage_after_kib.txt"
+df -Pk "$target" > "$target/volume_after_storage_links.txt"
+# Per-run du includes blocks shared outside its root; df and the combined queue
+# monitor identify actual volume space recovered by these hard links.
 date -u +%FT%TZ > "$target/DEDUPLICATED"
