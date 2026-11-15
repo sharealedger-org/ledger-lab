@@ -7,6 +7,15 @@ The [unchanged previous handoff](docs/archive/collaborator_review_2026-11-15/SES
 preserves the detailed chronology through the initial consolidation at `ddde891`.
 Earlier archives remain linked there; no session reasoning or evidence was discarded.
 
+## 2026-11-15 09:21:57 AZT (UTC-0700) (TRACK D) - Unused assignment drafts removed
+
+Owner authorized deletion if no active dependencies. Search found only the draft
+Scala source, its uncommitted launcher invocation and historical records. Deleted
+`SyntheticVendorAssignments.scala` and restored `prepare_synthetic_corpus_inputs.sh`
+to HEAD, removing only the uncommitted invocation/hash additions. No active source
+or script references remain; historical records are retained. Earlier instructions
+to preserve these drafts are superseded. Accepted generator/report code unchanged.
+
 ## 2026-11-15 09:20:25 AZT (UTC-0700) (TRACK D) - Corpus-run session boundary
 
 Owner will start a fresh session to complete the corpus-run checklist and, if

@@ -112,6 +112,12 @@ remain CKB-side qualitative context, outside the Control package; no evidence up
 
 ## Next actions and decisions waiting
 
+**Draft cleanup, 2026-11-15:** Owner authorized deleting the unused assignment
+draft. Only its own uncommitted launcher and historical records referenced it.
+Removed the untracked Scala source and restored the launcher to its committed
+version; no active dependencies remain. This supersedes earlier preserve-draft
+instructions. Accepted component generation/reporting code is unchanged.
+
 **Session boundary, 2026-11-15:** Owner plans a fresh corpus-run session. Start
 with current status/reflection and checklist; validate representative current-year
 zero counts/key diversity, source policies and live time/scratch before launch.
