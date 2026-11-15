@@ -1,0 +1,2 @@
+bfdb84dde1350dabf47d866096187d9d5d6ac2d308af7a280aa0431dec1ee6af  src/main/scala/org/universalledger/foundation/va/corpus/IdentityAudit.scala
+f3899d372c8853214f676d7a503bb8e0cd577f40ae223648c2393d69b238a078  src/main/scala/org/universalledger/foundation/va/corpus/IdentityAuditSummary.scala

@@ -1354,3 +1354,181 @@ that is impossible in a GL.
 | F3-3 | Confirm ETH inclusion (FY2016+ only) | Level 3 ETH instruments |
 | F4-1 | Approve FRED H.10 API access | FX rate table |
 | F4-2 | Approve CoinGecko/Coinbase historical data download | Level 3 rate table |
+
+## 14. Identity expansion and large-group reporting recovery
+
+Added 2026-11-14 at the owner's request for a plan. The owner subsequently
+authorized the read-only Scala identity/concentration audit; see
+`IDENTITY_AUDIT_CONTRACT.md`. Registry generation, synthetic events and reporting
+changes remain **design_only**. This supplements the completed attribute
+enrichment of the existing 1,248 instruments.
+
+**Audit outcome:** execution completed; [findings](IDENTITY_AUDIT_FINDINGS_2026-11-14.md)
+and `data/test_evidence/identity_audit_20261114/`. Counts reconcile, but source
+CSV semantics, literal key order and large-group reporting must be addressed
+before selecting a full generated population. The 3,794,594 refined unmapped
+source-name candidates are not verified legal vendors. No generator or financial
+correction was executed. Registry/simulation/reporting implementation remains a
+separate next slice.
+
+### 14.1 Objective and observed failure
+
+Build an explicitly synthetic, reproducible counterparty population suitable for
+Phase 2, while recovering meaningful source-party distinctions where source data
+actually supplies names. Preserve the three measured runs and Gold snapshots.
+New identities require new transformed/posted outputs; editing VendorMaster alone
+does not change `0000000000` already written into immutable SJEs and ledgers.
+
+Expanded 5v stopped at its default 250,000 input-row limit for `0000000000`.
+That is a row-count guard, not a measured memory high-water limit. The actual
+working state includes balance-key buckets, relationships, distinct sets and
+dimensions. More vendors can reduce concentration, but must not be a device for
+hiding an implementation bound: one legitimate large vendor or unattributed
+population must still have an explicit bounded processing contract.
+
+Static producer/consumer trace:
+
+- APA expense TTL resolves `VENDOR_NAME` through `loadVendorMaster`; misses share
+  the zero sentinel. The loader currently uses a plain comma split and silently
+  overwrites duplicate name keys. Quoted-name parsing and ambiguity are therefore
+  prerequisites to estimating the actual identity deficit.
+- Revenue TTL resolves the source agency name to a reference agency code, then
+  looks up that normalized code in the same master and falls back to zero.
+  An agency is not evidence of the taxpayer or other receipt counterparty.
+- PO transformation takes the source VENDORID directly. Expense lookup pads
+  numeric master IDs to ten digits. Canonical formatting and cross-source bridges
+  must be checked before asserting payment/PO identity equivalence.
+- Expanded reporting merges SJEs, posted balances and dimensions by literal
+  instrument key. Generated dimensions must use exactly those canonical keys and
+  order; changing only a report label cannot repair upstream identity.
+
+### 14.2 Distinguish the populations before generating IDs
+
+| Population | Proposed treatment | Permitted interpretation |
+|---|---|---|
+| Existing 1,248 master instruments | Preserve keys and Bob's new attributes; validate aliases and formatting | Existing mapping, subject to its recorded provenance |
+| Unmatched, meaningful APA vendor names | Stable generated source-party surrogate; retain raw name and source namespace | Source-name distinction, not verified legal identity or an eVA bridge |
+| Generic names such as Journal Entry, blanks, payroll/control labels | Keep unresolved in the observed-data profile; explicitly model counterparties in a separate synthetic-event profile | A declared simulation, not recovered supplier identities |
+| Revenue without a named counterparty | Keep original agency/fund/source-grain accounting and explicit unattributed status | No invented Instrument ID on the observed GL-grain source |
+| Synthetic receipt/payroll/supplier detail | Generate separate raw events with declared synthetic counterparties and parent lineage | Synthetic subledger scenario only |
+| Genuine high-volume vendors and residual unattributed groups | Retain their identities and test bounded reporting | Scale evidence cannot depend on arbitrary party splitting |
+
+Do not create one vendor per transaction, fiscal year or fixed-size row bucket.
+Those choices fabricate fragmentation/churn and would contaminate AIM3 labels.
+Do not infer payment-to-PO identity from name equality alone, or silently collapse
+ambiguous aliases. A source-name surrogate is not automatically a legal entity or
+the canonical Instrument ID; its adapter and identity class must be explicit.
+
+### 14.3 Implementation sequence and deliverables
+
+1. **Freeze and profile.** Record the exact source/master/parser versions. Use a
+   compiled Scala diagnostic to count matched/unmatched expense names, generic
+   labels, revenue groups, ambiguous master keys and key concentration, both by
+   year and across the complete reporting population. Include movement, balance
+   and dimension input rows in concentration estimates. Produce bounded summary
+   tables and a reason-coded coverage report. No accounting or posting in Python.
+   Keep the PO quote-recovery change in a separately versioned comparison so a
+   parser change is not mistaken for an identity improvement.
+2. **Verify the adapters first.** Cheapest falsifiers: a quoted vendor name
+   containing a comma; two master rows sharing a normalized name with different
+   IDs; numeric IDs with/without leading zeros; whitespace/case/BOM variants;
+   empty/generic names; and receipt records whose agency is not a counterparty.
+   Require explicit ambiguity/missing coverage rather than last-row-wins mapping.
+3. **Create the identity registry.** External-sort normalized source-party keys;
+   assign deterministic, persisted IDs from a namespace checked against all
+   existing master and PO keys. Specify the canonical encoding and adapter before
+   choosing numeric ranges. Keep identity stable across years, file order and
+   incremental additions; a sorted enumeration that renumbers existing parties
+   is insufficient. Retain raw keys, normalized aliases, mapping version,
+   provenance class, effective dates and any explicitly supported bridge evidence.
+   Publish `identity_registry.csv`, `identity_aliases.csv`,
+   `identity_coverage.csv` and a manifest, not a replacement for the old Gold master.
+4. **Generate a separate synthetic scenario.** Extend Bob's attributes onto the
+   new synthetic parties with documented rules, a fixed seed and plausible
+   distributions. Produce raw synthetic subledger events with party IDs and
+   lineage to their parent scenario/source aggregates; process them through TTL
+   and ARE. Any decomposition preserves the named parent amount exactly and
+   labels all allocation assumptions. Keep observed totals/source semantics
+   separate from simulated counterparty detail. Do not relabel original posted
+   receipt or Journal Entry rows as proven vendor activity.
+5. **Choose population size from evidence.** First count meaningful unmatched
+   source-name keys; that determines source-surrogate coverage. Separately specify
+   the synthetic population, transactions per party, repeat activity and skew
+   from the intended scenario. Profile a small population, a representative
+   population and a deliberately skewed population. Do not select an arbitrary
+   number of vendors merely to make every group fall below 250,000 rows. Keep
+   at least one deliberately oversized vendor and one oversized unresolved group.
+6. **Make reporting robust independently.** Declare bounds on live buckets,
+   relationship keys, distinct sets and dimension versions. Test streaming
+   aggregation where the existing order permits it; use declared spill partitions
+   and sort/merge reduction for state that exceeds the memory budget. Preserve
+   exact movement-to-posted-balance reconciliation and final vendor/year outputs.
+   Spill partials are analytical intermediates, not new financial instruments.
+   Keep the existing guard until its replacement has measured bounded-state
+   evidence; do not simply raise it or remove difficult records.
+7. **Run progressively.** Unchanged baseline fixtures first; named identity
+   fixtures next; then one representative real year and the synthetic stress
+   populations through the actual Bash/Scala orchestrator. Only after controls
+   pass, create a new full identity/scenario workload in separate output roots.
+   Re-transform, re-sort and re-post changed identities; reusing old posted
+   balances with newly keyed journals is invalid. Run expanded reporting after
+   all selected years' posting commits, with immutable physical input paths.
+
+### 14.4 Architecture declaration for implementation
+
+- **Owners:** identity/schema preparation and synthetic source generation belong
+  to 01; sort/registry joins, controls and spill contracts to 02; canonical state
+  to 03; expanded aggregation to 05. A report never assigns accounting identities
+  retroactively. Existing engines continue to consume/emit their SJE contracts.
+- **Runtime:** use Scala for profiling/identity resolution that feeds the
+  measured path, synthetic event generation, transformation, posting and views;
+  Bash for sequencing and file movement. No new Python is proposed. Expanded
+  reference lookup must have an explicit byte/key limit; if the registry exceeds
+  it, use a declared sorted join rather than an unbounded master map in each JVM.
+- **Records:** preserve the 39-column SJE and existing ledger consumer schema;
+  retain rule/source identity, journal balancing, effective dates and parent
+  lineage. Registry/alias metadata is a versioned side contract. Freeze identity
+  rules before applying them to source events.
+- **CKB/order:** maintain the established SJE key and vendor-break aggregation.
+  Canonicalize dimension keys before sorting. A registry sort/join, identity
+  change requiring SJE re-sort, or spill reduction is a declared physical pass,
+  not an assumed free extension of a logical layer.
+- **Materialization/metrics:** separate source preparation, registry generation,
+  external sorts, canonical SJE/ledger writes, reporting and spill reduction.
+  Record process/partition lineage, CPU/wall time, per-process RSS, live-state
+  peaks, spill bytes, retained bytes and reconciliation time. Record any missing
+  GenevaERS runtime contract in the capability-gap register before claiming a
+  helper represents a measured target-engine capability.
+- **Downstream:** the new master/aliases must be demonstrably consumed by TTL;
+  generated SJEs must reach posting; sorted dimensions must join to actual
+  report keys; final features must reach a named evaluator before any AI claim.
+
+### 14.5 Acceptance gates and decision points
+
+Required gates: reproducible registry with no ID collisions or renumbering;
+explicit ambiguous/unmatched coverage; unchanged journal-group balancing and
+source lineage; conservation of amounts by family/agency/fund/account/period
+where identity alone changes; movement/posted-state reconciliation; and failure
+isolation with no partial output publication. If a synthetic event is split,
+test child sums against its parent rather than requiring unchanged event counts.
+
+Use an unchanged baseline fixture plus a named `identity-expansion-v1` workload.
+Stress tests must pass for both a single party over 250,000 input rows and an
+oversized unattributed group under the declared memory/spill bound. Measure the
+largest key after generation; do not infer success from a larger master alone.
+Counterfactual reporting on unresolved observed data remains a distinct test.
+
+Before AI evaluation, distinguish observed source-name keys, supported identity
+bridges and synthetic parties. No label-dependent generation; freeze rules before
+holdout evaluation. Attributes derived from later spend need an observation
+cutoff, and payment/PO survival labels require an explicit validated bridge or a
+fully labeled synthetic panel. Report synthetic results as synthetic results.
+
+Recommended first implementation slice: profiling plus the adapter falsifiers,
+then a small deterministic registry and skewed synthetic fixture. Review measured
+coverage and concentration before selecting full population size or scheduling
+another corpus run. Payroll/generic-label decomposition assumptions and the
+synthetic population specification are the material owner decisions; retain
+unresolved groups until those assumptions are chosen. Only the diagnostic audit
+was authorized and completed; no generator, identity remap, financial parser change
+or new financial corpus run follows from this audit request.

@@ -1,0 +1,101 @@
+interpretation,family,normalized_name,classification,status,id,source_rows
+legacy,expense,OTHER ENTERPRISE FUNCTIONS,meaningful_name_candidate,unmatched_zero,0000000000,140155
+legacy,expense,ADJUSTMENT,meaningful_name_candidate,unmatched_zero,0000000000,145662
+legacy,expense,PAYROLL INTERFACE,meaningful_name_candidate,unmatched_zero,0000000000,146567
+quote_aware,expense,ADJUSTMENT,meaningful_name_candidate,missing,0000000000,152590
+legacy,expense,LOGISTICAL SERVICES,meaningful_name_candidate,unmatched_zero,0000000000,154942
+quote_aware,expense,PAYROLL INTERFACE,meaningful_name_candidate,missing,0000000000,155872
+legacy,expense,PAYMENTS TO COLLEGES,meaningful_name_candidate,unmatched_zero,0000000000,156177
+quote_aware,expense,PAYMENTS TO COLLEGES,meaningful_name_candidate,missing,0000000000,156177
+legacy,expense,UNITED PARCEL SERVICE,meaningful_name_candidate,unmatched_zero,0000000000,156860
+legacy,expense,HIGHER EDUCATION INSTITUTIONAL SUPPORT,meaningful_name_candidate,unmatched_zero,0000000000,157693
+legacy,expense,GENERAL ADMINISTRATIVE SERVICES,meaningful_name_candidate,unmatched_zero,0000000000,158158
+legacy,expense,AMERICAN EXPRESS,meaningful_name_candidate,unmatched_zero,0000000000,159414
+quote_aware,expense,UNITED PARCEL SERVICE,meaningful_name_candidate,missing,0000000000,159675
+legacy,expense,EXECUTIVE MANAGEMENT,meaningful_name_candidate,unmatched_zero,0000000000,164638
+legacy,expense,HIGHER EDUCATION RESEARCH,meaningful_name_candidate,unmatched_zero,0000000000,164864
+legacy,expense,RESIDENTIAL SERVICES,meaningful_name_candidate,unmatched_zero,0000000000,168291
+quote_aware,expense,AMERICAN EXPRESS,meaningful_name_candidate,missing,0000000000,168952
+legacy,expense,GROUNDS AND UTILITY LINES,meaningful_name_candidate,unmatched_zero,0000000000,178205
+legacy,expense,BUSINESS SERVICE,meaningful_name_candidate,unmatched_zero,0000000000,183085
+legacy,expense,SMART DOCUMENT SOLUTIONS  LLC,meaningful_name_candidate,unmatched_zero,0000000000,195763
+quote_aware,expense,SMART DOCUMENT SOLUTIONS  LLC,meaningful_name_candidate,missing,0000000000,195772
+quote_aware,expense,BUSINESS SERVICE,meaningful_name_candidate,missing,0000000000,196117
+legacy,expense,TRIAL PROCESSES,meaningful_name_candidate,unmatched_zero,0000000000,208959
+legacy,expense,GE CAPITAL FINANCIAL,meaningful_name_candidate,unmatched_zero,0000000000,212428
+legacy,expense,ABACUS CORPORATION,meaningful_name_candidate,unmatched_zero,0000000000,223723
+quote_aware,expense,GE CAPITAL FINANCIAL,meaningful_name_candidate,missing,0000000000,223995
+quote_aware,expense,ABACUS CORPORATION,meaningful_name_candidate,missing,0000000000,224759
+legacy,expense,JOURNAL VUCHER,meaningful_name_candidate,unmatched_zero,0000000000,226960
+legacy,expense,STATE HEALTH SERVICES,meaningful_name_candidate,unmatched_zero,0000000000,229899
+legacy,expense,MANAGEMENT CONSULTING INC,meaningful_name_candidate,unmatched_zero,0000000000,229952
+quote_aware,expense,MANAGEMENT CONSULTING INC,meaningful_name_candidate,missing,0000000000,230263
+legacy,expense,VIRGINIA STATE UNIVERSITY,meaningful_name_candidate,unmatched_zero,0000000000,248983
+legacy,expense,RESOURCES & ENVIRONMENTAL RESEARCH,meaningful_name_candidate,unmatched_zero,0000000000,251169
+legacy,expense,VCU NET,meaningful_name_candidate,unmatched_zero,0000000000,256542
+legacy,expense,LIBRARIES,meaningful_name_candidate,unmatched_zero,0000000000,262315
+legacy,expense,DEFERED GRANT,meaningful_name_candidate,unmatched_zero,0000000000,265121
+quote_aware,expense,DEFERED GRANT,meaningful_name_candidate,missing,0000000000,265123
+legacy,expense,INTERCOLLEGIATE ATHLETICS,meaningful_name_candidate,unmatched_zero,0000000000,265810
+quote_aware,expense,VCU NET,meaningful_name_candidate,missing,0000000000,274244
+legacy,expense,OWENS & MINOR INC,meaningful_name_candidate,unmatched_zero,0000000000,275204
+quote_aware,expense,OWENS & MINOR INC,meaningful_name_candidate,missing,0000000000,275212
+legacy,expense,CONTACT UNIVERSITY OF VIRGINIA TO DETERMINE PAYEE,meaningful_name_candidate,unmatched_zero,0000000000,282020
+quote_aware,expense,CONTACT UNIVERSITY OF VIRGINIA TO DETERMINE PAYEE,meaningful_name_candidate,missing,0000000000,282204
+legacy,expense,VERIZON,meaningful_name_candidate,unmatched_zero,0000000000,296608
+quote_aware,expense,VERIZON,meaningful_name_candidate,missing,0000000000,298341
+quote_aware,expense,HEALTHPORT TECHNOLOGIES LLC,meaningful_name_candidate,missing,0000000000,307891
+legacy,expense,HEALTHPORT TECHNOLOGIES LLC,meaningful_name_candidate,unmatched_zero,0000000000,307891
+quote_aware,expense,VIRGINIA STATE UNIVERSITY,meaningful_name_candidate,missing,0000000000,312147
+legacy,expense,HEALTHPORT,meaningful_name_candidate,unmatched_zero,0000000000,312668
+quote_aware,expense,HEALTHPORT,meaningful_name_candidate,missing,0000000000,312669
+legacy,expense,GENERAL MANAGEMENT AND DIRECTION,meaningful_name_candidate,unmatched_zero,0000000000,314814
+legacy,expense,JAMES MADISON UNIVERSITY,meaningful_name_candidate,unmatched_zero,0000000000,355029
+legacy,expense,HIGHER EDUCATION INSTRUCTION,meaningful_name_candidate,unmatched_zero,0000000000,370910
+legacy,expense,MEDICINE INSTRUCTION,meaningful_name_candidate,unmatched_zero,0000000000,371349
+legacy,expense,DEPOSIT CERTIFICATE,meaningful_name_candidate,unmatched_zero,0000000000,373148
+legacy,expense,FIN ASSISTANCE FOR EDUCATIONAL AND GENERAL SVCS,meaningful_name_candidate,unmatched_zero,0000000000,384081
+quote_aware,expense,JOURNAL VUCHER,meaningful_name_candidate,missing,0000000000,406274
+legacy,expense,OTHER COURT COSTS AND ALLOWANCES (CRIMINAL FUND),meaningful_name_candidate,unmatched_zero,0000000000,412051
+quote_aware,expense,DEPOSIT CERTIFICATE,meaningful_name_candidate,missing,0000000000,436032
+legacy,expense,ACAD ADMIN,meaningful_name_candidate,unmatched_zero,0000000000,445922
+legacy,expense,LABOR COST,meaningful_name_candidate,unmatched_zero,0000000000,475802
+legacy,expense,FACILITIES MANAGEMENT,meaningful_name_candidate,unmatched_zero,0000000000,480728
+quote_aware,expense,FACILITIES MANAGEMENT,meaningful_name_candidate,missing,0000000000,485667
+legacy,expense,BANK OF AMERICA,meaningful_name_candidate,unmatched_zero,0000000000,579425
+quote_aware,expense,JAMES MADISON UNIVERSITY,meaningful_name_candidate,missing,0000000000,585635
+legacy,expense,STRAIGHT TIME,meaningful_name_candidate,unmatched_zero,0000000000,598047
+quote_aware,expense,BANK OF AMERICA,meaningful_name_candidate,missing,0000000000,610578
+legacy,expense,PROCUREMENT CARD,meaningful_name_candidate,unmatched_zero,0000000000,644038
+legacy,expense,CONTACT APPLICABLE COMMUNITY COLLEGE FOR PAYEE DATA,meaningful_name_candidate,unmatched_zero,0000000000,674068
+quote_aware,expense,CONTACT APPLICABLE COMMUNITY COLLEGE FOR PAYEE DATA,meaningful_name_candidate,missing,0000000000,674356
+quote_aware,expense,PROCUREMENT CARD,meaningful_name_candidate,missing,0000000000,693443
+legacy,expense,INTERAGENCY TRANSACTIONS,meaningful_name_candidate,unmatched_zero,0000000000,720595
+legacy,expense,DOMINION VIRGINIA POWER,meaningful_name_candidate,unmatched_zero,0000000000,750783
+quote_aware,expense,DOMINION VIRGINIA POWER,meaningful_name_candidate,missing,0000000000,757255
+quote_aware,expense,INTERAGENCY TRANSACTIONS,meaningful_name_candidate,missing,0000000000,800273
+legacy,expense,ADJUSTING JOURNAL,meaningful_name_candidate,unmatched_zero,0000000000,858274
+legacy,expense,BURDEN COST,meaningful_name_candidate,unmatched_zero,0000000000,866147
+quote_aware,expense,BURDEN COST,meaningful_name_candidate,missing,0000000000,900146
+legacy,expense,ADMINISTRATION AND SUPERVISION,meaningful_name_candidate,unmatched_zero,0000000000,939931
+legacy,expense,PERSONNEL DEV AND COURSE AND CURR DEV,meaningful_name_candidate,unmatched_zero,0000000000,1000593
+legacy,expense,BURDEN TRANSACTION,meaningful_name_candidate,unmatched_zero,0000000000,1059308
+quote_aware,expense,BURDEN TRANSACTION,meaningful_name_candidate,missing,0000000000,1099975
+legacy,expense,AND LODGING,meaningful_name_candidate,unmatched_zero,0000000000,1161304
+legacy,expense,CIPPS,meaningful_name_candidate,unmatched_zero,0000000000,1195535
+quote_aware,expense,ADJUSTING JOURNAL,meaningful_name_candidate,missing,0000000000,1306227
+quote_aware,expense,CIPPS,meaningful_name_candidate,missing,0000000000,1728742
+legacy,expense,GENERAL ACADEMIC INSTRUCTION,meaningful_name_candidate,unmatched_zero,0000000000,1837996
+legacy,expense,UVA MEDICAL CENTER INTERNAL,meaningful_name_candidate,unmatched_zero,0000000000,1887176
+quote_aware,expense,UVA MEDICAL CENTER INTERNAL,meaningful_name_candidate,missing,0000000000,2184874
+quote_aware,expense,LABOR COST,meaningful_name_candidate,missing,0000000000,2510228
+legacy,expense,USAGE COST,meaningful_name_candidate,unmatched_zero,0000000000,2601992
+quote_aware,expense,USAGE COST,meaningful_name_candidate,missing,0000000000,2695265
+legacy,expense,JOURNAL VOUCHER,meaningful_name_candidate,unmatched_zero,0000000000,3157880
+legacy,expense,USAGES,meaningful_name_candidate,unmatched_zero,0000000000,3379552
+quote_aware,expense,USAGES,meaningful_name_candidate,missing,0000000000,3534100
+legacy,expense,SPONSORED PROGRAMS,meaningful_name_candidate,unmatched_zero,0000000000,3783489
+quote_aware,expense,STRAIGHT TIME,meaningful_name_candidate,missing,0000000000,4034780
+quote_aware,expense,JOURNAL VOUCHER,meaningful_name_candidate,missing,0000000000,5085736
+legacy,expense,PAYROLL,generic_label_heuristic,unmatched_zero,0000000000,5761148
+quote_aware,expense,PAYROLL,generic_label_heuristic,missing,0000000000,8128937

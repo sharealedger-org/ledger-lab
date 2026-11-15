@@ -1,0 +1,19 @@
+metric,value
+version,identity-audit-2
+measured_master_legacy_keys,1248
+measured_master_strict_names,1248
+enriched_master_strict_names,1248
+master_names_with_changed_legacy_lookup,0
+generic_exact_labels,;JOURNAL ENTRIES;JOURNAL ENTRY;MULTIPLE VENDORS;N/A;NONE;PAYROLL;UNKNOWN;VARIOUS
+canonical_movement_rows,259471158
+canonical_posted_rows,11140226
+vendor_keys,65940
+groups_exceeding_250000,41
+largest_financial_input_group,185296098
+peak_sources_in_one_vendor,2
+peak_combiner_keys,50000
+group_spills,6
+literal_vendor_order_violations,214
+vendor_year_side_groups_with_reentry,0
+report_dimension_rows,0
+scope,one_run_all_years_financial_inputs;failed_report_had_no_dimensions

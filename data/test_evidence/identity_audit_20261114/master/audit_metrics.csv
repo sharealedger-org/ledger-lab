@@ -1,0 +1,7 @@
+metric,value
+version,identity-audit-1
+measured_master_legacy_keys,1248
+measured_master_strict_names,1248
+enriched_master_strict_names,1248
+master_names_with_changed_legacy_lookup,0
+generic_exact_labels,;JOURNAL ENTRIES;JOURNAL ENTRY;MULTIPLE VENDORS;N/A;NONE;PAYROLL;UNKNOWN;VARIOUS

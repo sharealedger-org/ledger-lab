@@ -1,0 +1,13 @@
+classification,master_status,distinct_normalized_names,source_rows
+bookkeeping_label_heuristic,missing,3,6544553
+exact_generic_label,missing,4,8129119
+exact_generic_label,unique,1,1111051
+explicit_missing_detail_label,missing,1,674356
+internal_or_interagency_label_heuristic,missing,2,2985147
+invalid_csv,missing,1,51
+numeric_or_punctuation_label,missing,18885,330599
+numeric_or_punctuation_label,unique,115,203
+pooled_payment_label_heuristic,missing,1,693443
+source_name_candidate_not_legal_identity,missing,3794594,51805339
+source_name_candidate_not_legal_identity,unique,1014,7532473
+system_or_cost_label_heuristic,missing,8,16659108

@@ -1,0 +1,14 @@
+interpretation,family,classification,status,distinct_normalized_names,source_rows
+legacy,expense,generic_label_heuristic,mapped,1,971301
+legacy,expense,generic_label_heuristic,unmatched_zero,5,5761307
+legacy,expense,meaningful_name_candidate,mapped,1129,6638353
+legacy,expense,meaningful_name_candidate,unmatched_zero,3087090,83094481
+legacy,revenue,agency_not_counterparty,mapped,224,15686949
+legacy,revenue,agency_not_counterparty,unmatched_zero,52,2012425
+quote_aware,expense,generic_label_heuristic,missing,4,8129119
+quote_aware,expense,generic_label_heuristic,unique,1,1111051
+quote_aware,expense,invalid_csv,missing,1,51
+quote_aware,expense,meaningful_name_candidate,missing,3813494,79692545
+quote_aware,expense,meaningful_name_candidate,unique,1129,7532676
+quote_aware,revenue,agency_not_counterparty,missing,52,2012425
+quote_aware,revenue,agency_not_counterparty,unique,224,15686949

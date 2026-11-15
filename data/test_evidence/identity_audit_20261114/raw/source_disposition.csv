@@ -1,0 +1,337 @@
+path,family,year,data_lines,blank,legacy_accepted,legacy_rejected,csv_valid,csv_invalid,lookup_name_difference
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/All Expenditures for Fiscal Year 2014/Expenditures Apr 2014.csv,expense,2014,689043,0,680442,8601,686999,2044,165716
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/All Expenditures for Fiscal Year 2014/Expenditures Aug 2013.csv,expense,2014,664526,0,662976,1550,664526,0,154404
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/All Expenditures for Fiscal Year 2014/Expenditures Dec 2013.csv,expense,2014,585966,0,584291,1675,585684,282,144556
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/All Expenditures for Fiscal Year 2014/Expenditures Feb 2014.csv,expense,2014,697429,0,694961,2468,696337,1092,155000
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/All Expenditures for Fiscal Year 2014/Expenditures Jan 2014.csv,expense,2014,656295,0,654631,1664,656021,274,149008
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/All Expenditures for Fiscal Year 2014/Expenditures Jul 2013.csv,expense,2014,650500,0,649422,1078,650500,0,160455
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/All Expenditures for Fiscal Year 2014/Expenditures Jun 2014.csv,expense,2014,714595,0,705192,9403,712175,2420,165004
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/All Expenditures for Fiscal Year 2014/Expenditures Mar 2014.csv,expense,2014,684023,0,681004,3019,682347,1676,165784
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/All Expenditures for Fiscal Year 2014/Expenditures May 2014.csv,expense,2014,732532,0,722480,10052,729768,2764,189132
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/All Expenditures for Fiscal Year 2014/Expenditures Nov 2013.csv,expense,2014,652786,0,651579,1207,652698,88,175223
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/All Expenditures for Fiscal Year 2014/Expenditures Oct 2013.csv,expense,2014,729932,0,728034,1898,729932,0,171840
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/All Expenditures for Fiscal Year 2014/Expenditures Sept 2013.csv,expense,2014,684885,0,683562,1323,684885,0,152902
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/All Expenditures for Fiscal Year 2015/Expenditures Apr 2015.csv,expense,2015,652500,0,643300,9200,647288,5212,149300
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/All Expenditures for Fiscal Year 2015/Expenditures Aug 2014.csv,expense,2015,644173,0,637640,6533,641099,3074,143677
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/All Expenditures for Fiscal Year 2015/Expenditures Dec 2014.csv,expense,2015,597626,0,589665,7961,592962,4664,141979
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/All Expenditures for Fiscal Year 2015/Expenditures Feb 2015.csv,expense,2015,595021,0,586630,8391,590123,4898,134642
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/All Expenditures for Fiscal Year 2015/Expenditures Jan 2015.csv,expense,2015,624726,0,616378,8348,619960,4766,134767
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/All Expenditures for Fiscal Year 2015/Expenditures Jul 2014.csv,expense,2015,617739,0,611235,6504,614775,2964,143643
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/All Expenditures for Fiscal Year 2015/Expenditures Jun 2015.csv,expense,2015,721354,0,712379,8975,716628,4726,163024
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/All Expenditures for Fiscal Year 2015/Expenditures Mar 2015.csv,expense,2015,662784,0,653432,9352,657374,5410,147730
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/All Expenditures for Fiscal Year 2015/Expenditures May 2015.csv,expense,2015,664197,0,654707,9490,658523,5674,161909
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/All Expenditures for Fiscal Year 2015/Expenditures Nov 2014.csv,expense,2015,577953,0,570210,7743,573857,4096,133288
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/All Expenditures for Fiscal Year 2015/Expenditures Oct 2014.csv,expense,2015,714079,0,706141,7938,709951,4128,168945
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/All Expenditures for Fiscal Year 2015/Expenditures Sept 2014.csv,expense,2015,650453,0,642696,7757,646717,3736,139095
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/All Expenditures for Fiscal Year 2016/Expenditures Apr 2016.csv,expense,2016,661629,0,649917,11712,653723,7906,169275
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/All Expenditures for Fiscal Year 2016/Expenditures Aug 2015.csv,expense,2016,585362,0,575569,9793,579432,5930,131343
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/All Expenditures for Fiscal Year 2016/Expenditures Dec 2015.csv,expense,2016,570107,0,560286,9821,563237,6870,146016
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/All Expenditures for Fiscal Year 2016/Expenditures Feb 2016.csv,expense,2016,574607,0,564930,9677,568511,6096,140828
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/All Expenditures for Fiscal Year 2016/Expenditures Jan 2016.csv,expense,2016,549966,0,539865,10101,543090,6876,126758
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/All Expenditures for Fiscal Year 2016/Expenditures Jul 2015.csv,expense,2016,594239,0,584175,10064,587497,6742,147439
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/All Expenditures for Fiscal Year 2016/Expenditures Jun 2016.csv,expense,2016,581680,0,572644,9036,576590,5090,140299
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/All Expenditures for Fiscal Year 2016/Expenditures Mar 2016.csv,expense,2016,658136,0,647131,11005,651092,7044,165290
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/All Expenditures for Fiscal Year 2016/Expenditures May 2016.csv,expense,2016,619878,0,608106,11772,612424,7454,151910
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/All Expenditures for Fiscal Year 2016/Expenditures Nov 2015.csv,expense,2016,562746,0,552612,10134,556066,6680,143068
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/All Expenditures for Fiscal Year 2016/Expenditures Oct 2015.csv,expense,2016,669548,0,658987,10561,662386,7162,175089
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/All Expenditures for Fiscal Year 2016/Expenditures Sept 2015.csv,expense,2016,615058,0,605175,9883,608596,6462,149957
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/All Revenues for Fiscal Year 2014/Revenues Apr 2014.csv,revenue,2014,139382,0,139141,241,139372,10,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/All Revenues for Fiscal Year 2014/Revenues Aug 2013.csv,revenue,2014,174094,0,173900,194,174094,0,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/All Revenues for Fiscal Year 2014/Revenues Dec 2013.csv,revenue,2014,124004,0,123804,200,123998,6,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/All Revenues for Fiscal Year 2014/Revenues Feb 2014.csv,revenue,2014,126201,0,125976,225,126201,0,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/All Revenues for Fiscal Year 2014/Revenues Jan 2014.csv,revenue,2014,161132,0,160884,248,161114,18,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/All Revenues for Fiscal Year 2014/Revenues Jul 2013.csv,revenue,2014,149541,0,149305,236,149541,0,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/All Revenues for Fiscal Year 2014/Revenues Jun 2014.csv,revenue,2014,143054,0,142845,209,143050,4,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/All Revenues for Fiscal Year 2014/Revenues Mar 2014.csv,revenue,2014,131575,0,131368,207,131575,0,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/All Revenues for Fiscal Year 2014/Revenues May 2014.csv,revenue,2014,143519,0,143309,210,143517,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/All Revenues for Fiscal Year 2014/Revenues Nov 2013.csv,revenue,2014,122004,0,121830,174,122004,0,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/All Revenues for Fiscal Year 2014/Revenues Oct 2013.csv,revenue,2014,142422,0,142192,230,142416,6,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/All Revenues for Fiscal Year 2014/Revenues Sept 2013.csv,revenue,2014,136287,0,136093,194,136287,0,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/All Revenues for Fiscal Year 2015/Revenues Apr 2015.csv,revenue,2015,118360,0,118120,240,118354,6,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/All Revenues for Fiscal Year 2015/Revenues Aug 2014.csv,revenue,2015,126951,0,126709,242,126951,0,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/All Revenues for Fiscal Year 2015/Revenues Dec 2014.csv,revenue,2015,107969,0,107744,225,107969,0,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/All Revenues for Fiscal Year 2015/Revenues Feb 2015.csv,revenue,2015,99498,0,99293,205,99498,0,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/All Revenues for Fiscal Year 2015/Revenues Jan 2015.csv,revenue,2015,114050,0,113809,241,114042,8,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/All Revenues for Fiscal Year 2015/Revenues Jul 2014.csv,revenue,2015,128236,0,127991,245,128228,8,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/All Revenues for Fiscal Year 2015/Revenues Jun 2015.csv,revenue,2015,125757,0,125526,231,125757,0,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/All Revenues for Fiscal Year 2015/Revenues Mar 2015.csv,revenue,2015,111990,0,111742,248,111990,0,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/All Revenues for Fiscal Year 2015/Revenues May 2015.csv,revenue,2015,113676,0,113460,216,113676,0,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/All Revenues for Fiscal Year 2015/Revenues Nov 2014.csv,revenue,2015,94023,0,93819,204,94019,4,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/All Revenues for Fiscal Year 2015/Revenues Oct 2014.csv,revenue,2015,117839,0,117575,264,117831,8,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/All Revenues for Fiscal Year 2015/Revenues Sept 2014.csv,revenue,2015,115916,0,115687,229,115916,0,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/All Revenues for Fiscal Year 2016/Revenues Apr 2016.csv,revenue,2016,115855,0,115610,245,115849,6,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/All Revenues for Fiscal Year 2016/Revenues Aug 2015.csv,revenue,2016,126446,0,126232,214,126446,0,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/All Revenues for Fiscal Year 2016/Revenues Dec 2015.csv,revenue,2016,113973,0,113777,196,113973,0,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/All Revenues for Fiscal Year 2016/Revenues Feb 2016.csv,revenue,2016,114453,0,114236,217,114453,0,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/All Revenues for Fiscal Year 2016/Revenues Jan 2016.csv,revenue,2016,105193,0,104995,198,105187,6,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/All Revenues for Fiscal Year 2016/Revenues Jul 2015.csv,revenue,2016,125805,0,125544,261,125799,6,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/All Revenues for Fiscal Year 2016/Revenues Jun 2016.csv,revenue,2016,124081,0,123829,252,124075,6,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/All Revenues for Fiscal Year 2016/Revenues Mar 2016.csv,revenue,2016,120672,0,120396,276,120672,0,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/All Revenues for Fiscal Year 2016/Revenues May 2016.csv,revenue,2016,119183,0,118963,220,119183,0,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/All Revenues for Fiscal Year 2016/Revenues Nov 2015.csv,revenue,2016,99369,0,99141,228,99363,6,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/All Revenues for Fiscal Year 2016/Revenues Oct 2015.csv,revenue,2016,115202,0,114964,238,115202,0,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/All Revenues for Fiscal Year 2016/Revenues Sept 2015.csv,revenue,2016,118042,0,117805,237,118042,0,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2003 Expenditure/Expenditures Apr 2003.csv,expense,2003,503606,2,497784,5820,503602,2,134788
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2003 Expenditure/Expenditures Aug 2002.csv,expense,2003,569812,2,564868,4942,569808,2,203479
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2003 Expenditure/Expenditures Dec 2002.csv,expense,2003,418297,2,414115,4180,418293,2,115034
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2003 Expenditure/Expenditures Feb 2003.csv,expense,2003,451797,2,446917,4878,451793,2,117220
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2003 Expenditure/Expenditures Jan 2003.csv,expense,2003,449813,0,445512,4301,449813,0,115286
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2003 Expenditure/Expenditures Jul 2002.csv,expense,2003,450025,2,445686,4337,450021,2,133608
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2003 Expenditure/Expenditures Jun 2003.csv,expense,2003,522828,2,516476,6350,522824,2,133900
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2003 Expenditure/Expenditures Mar 2003.csv,expense,2003,492145,2,487197,4946,492141,2,128087
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2003 Expenditure/Expenditures May 2003.csv,expense,2003,553354,2,548402,4950,553350,2,135665
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2003 Expenditure/Expenditures Nov 2002.csv,expense,2003,428862,2,424376,4484,428858,2,119036
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2003 Expenditure/Expenditures Oct 2002.csv,expense,2003,515043,2,510051,4990,515039,2,141135
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2003 Expenditure/Expenditures Sep 2002.csv,expense,2003,461499,2,457096,4401,461495,2,131603
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2003 Revenue/Revenues Apr 2003.csv,revenue,2003,76263,2,75879,382,76259,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2003 Revenue/Revenues Aug 2002.csv,revenue,2003,82178,2,81813,363,82174,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2003 Revenue/Revenues Dec 2002.csv,revenue,2003,64677,2,64370,305,64674,1,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2003 Revenue/Revenues Feb 2003.csv,revenue,2003,70289,2,69974,313,70286,1,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2003 Revenue/Revenues Jan 2003.csv,revenue,2003,78749,2,78436,311,78745,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2003 Revenue/Revenues Jul 2002.csv,revenue,2003,72430,2,72079,349,72426,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2003 Revenue/Revenues Jun 2003.csv,revenue,2003,76263,2,75910,351,76259,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2003 Revenue/Revenues Mar 2003.csv,revenue,2003,72957,2,72602,353,72953,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2003 Revenue/Revenues May 2003.csv,revenue,2003,75062,2,74709,351,75058,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2003 Revenue/Revenues Nov 2002.csv,revenue,2003,64678,2,64370,306,64674,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2003 Revenue/Revenues Oct 2002.csv,revenue,2003,76868,2,76474,392,76864,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2003 Revenue/Revenues Sep 2002.csv,revenue,2003,74455,2,74104,349,74451,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2004 Expenditure/Expenditures Apr 2004.csv,expense,2004,486218,2,480712,5504,486214,2,124213
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2004 Expenditure/Expenditures Aug 2003.csv,expense,2004,436807,2,432203,4602,436803,2,113669
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2004 Expenditure/Expenditures Dec 2003.csv,expense,2004,442459,2,437713,4744,442455,2,123024
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2004 Expenditure/Expenditures Feb 2004.csv,expense,2004,481392,2,476179,5211,481388,2,120329
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2004 Expenditure/Expenditures Jan 2004.csv,expense,2004,440350,2,436429,3919,440346,2,111429
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2004 Expenditure/Expenditures Jul 2003.csv,expense,2004,447907,2,443644,4261,447903,2,117264
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2004 Expenditure/Expenditures Jun 2004.csv,expense,2004,467406,2,460636,6768,467402,2,91118
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2004 Expenditure/Expenditures Mar 2004.csv,expense,2004,531189,2,526115,5072,531185,2,140883
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2004 Expenditure/Expenditures May 2004.csv,expense,2004,468180,2,463012,5166,468176,2,102177
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2004 Expenditure/Expenditures Nov 2003.csv,expense,2004,425790,2,421272,4516,425786,2,119526
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2004 Expenditure/Expenditures Oct 2003.csv,expense,2004,512213,2,507138,5073,512209,2,133841
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2004 Expenditure/Expenditures Sep 2003.csv,expense,2004,462299,2,457854,4443,462295,2,127788
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2004 Revenue/Revenues Apr 2004.csv,revenue,2004,77682,2,77322,358,77678,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2004 Revenue/Revenues Aug 2003.csv,revenue,2004,74097,2,73769,326,74093,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2004 Revenue/Revenues Dec 2003.csv,revenue,2004,61694,2,61419,273,61691,1,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2004 Revenue/Revenues Feb 2004.csv,revenue,2004,68895,2,68573,320,68891,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2004 Revenue/Revenues Jan 2004.csv,revenue,2004,65926,2,65633,291,65922,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2004 Revenue/Revenues Jul 2003.csv,revenue,2004,76009,2,75652,355,76005,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2004 Revenue/Revenues Jun 2004.csv,revenue,2004,80764,2,80374,388,80760,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2004 Revenue/Revenues Mar 2004.csv,revenue,2004,79034,2,78641,391,79030,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2004 Revenue/Revenues May 2004.csv,revenue,2004,72056,2,71729,325,72052,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2004 Revenue/Revenues Nov 2003.csv,revenue,2004,61695,2,61419,274,61691,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2004 Revenue/Revenues Oct 2003.csv,revenue,2004,78716,2,78354,360,78712,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2004 Revenue/Revenues Sep 2003.csv,revenue,2004,70041,2,69705,334,70037,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2005 Expenditure/Expenditures Apr 2005.csv,expense,2005,391908,2,387228,4678,391904,2,81481
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2005 Expenditure/Expenditures Aug 2004.csv,expense,2005,353754,2,349378,4374,353750,2,69148
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2005 Expenditure/Expenditures Dec 2004.csv,expense,2005,348827,2,344241,4584,348823,2,72436
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2005 Expenditure/Expenditures Feb 2005.csv,expense,2005,399049,2,394776,4271,399045,2,71258
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2005 Expenditure/Expenditures Jan 2005.csv,expense,2005,346632,2,342334,4296,346628,2,63915
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2005 Expenditure/Expenditures Jul 2004.csv,expense,2005,338844,2,334850,3992,338840,2,65103
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2005 Expenditure/Expenditures Jun 2005.csv,expense,2005,541916,2,535122,6792,541912,2,108068
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2005 Expenditure/Expenditures Mar 2005.csv,expense,2005,424105,2,418666,5437,424101,2,86195
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2005 Expenditure/Expenditures May 2005.csv,expense,2005,407546,2,402025,5519,407542,2,83416
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2005 Expenditure/Expenditures Nov 2004.csv,expense,2005,380065,2,375349,4714,380061,2,80053
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2005 Expenditure/Expenditures Oct 2004.csv,expense,2005,389434,2,385053,4379,389430,2,73827
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2005 Expenditure/Expenditures Sep 2004.csv,expense,2005,389493,2,384725,4766,389489,2,71423
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2005 Revenue/Revenues Apr 2005.csv,revenue,2005,79202,2,78849,351,79198,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2005 Revenue/Revenues Aug 2004.csv,revenue,2005,80051,2,79680,369,80047,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2005 Revenue/Revenues Dec 2004.csv,revenue,2005,71373,2,71057,314,71370,1,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2005 Revenue/Revenues Feb 2005.csv,revenue,2005,71287,2,70955,330,71283,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2005 Revenue/Revenues Jan 2005.csv,revenue,2005,73587,2,73278,307,73583,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2005 Revenue/Revenues Jul 2004.csv,revenue,2005,77217,2,76855,360,77213,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2005 Revenue/Revenues Jun 2005.csv,revenue,2005,85340,2,84953,385,85336,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2005 Revenue/Revenues Mar 2005.csv,revenue,2005,82810,2,82401,407,82806,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2005 Revenue/Revenues May 2005.csv,revenue,2005,80875,2,80535,338,80871,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2005 Revenue/Revenues Nov 2004.csv,revenue,2005,71374,2,71057,315,71370,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2005 Revenue/Revenues Oct 2004.csv,revenue,2005,74043,2,73697,344,74039,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2005 Revenue/Revenues Sep 2004.csv,revenue,2005,79104,2,78764,338,79100,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2006 Expenditure/Expenditures Apr 2006.csv,expense,2006,440818,2,435990,4826,440814,2,111906
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2006 Expenditure/Expenditures Aug 2005.csv,expense,2006,468637,2,464081,4554,468633,2,108899
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2006 Expenditure/Expenditures Dec 2005.csv,expense,2006,422363,2,417736,4625,422359,2,106848
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2006 Expenditure/Expenditures Feb 2006.csv,expense,2006,474132,2,469573,4557,474128,2,109449
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2006 Expenditure/Expenditures Jan 2006.csv,expense,2006,476011,2,471548,4461,476007,2,109642
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2006 Expenditure/Expenditures Jul 2005.csv,expense,2006,422925,2,419324,3599,422921,2,99158
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2006 Expenditure/Expenditures Jun 2006.csv,expense,2006,598181,2,591321,6858,598177,2,126444
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2006 Expenditure/Expenditures Mar 2006.csv,expense,2006,524774,2,518983,5789,524770,2,124253
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2006 Expenditure/Expenditures May 2006.csv,expense,2006,513955,2,509083,4870,513951,2,125673
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2006 Expenditure/Expenditures Nov 2005.csv,expense,2006,474382,2,469574,4806,474378,2,117979
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2006 Expenditure/Expenditures Oct 2005.csv,expense,2006,483306,2,478893,4411,483302,2,112753
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2006 Expenditure/Expenditures Sep 2005.csv,expense,2006,507086,2,502449,4635,507082,2,113977
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2006 Revenue/Revenues Apr 2006.csv,revenue,2006,74907,2,74545,360,74903,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2006 Revenue/Revenues Aug 2005.csv,revenue,2006,85666,2,85290,374,85662,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2006 Revenue/Revenues Dec 2005.csv,revenue,2006,71765,2,71422,341,71762,1,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2006 Revenue/Revenues Feb 2006.csv,revenue,2006,72821,2,72454,365,72817,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2006 Revenue/Revenues Jan 2006.csv,revenue,2006,76500,2,76157,341,76496,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2006 Revenue/Revenues Jul 2005.csv,revenue,2006,76108,2,75776,330,76104,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2006 Revenue/Revenues Jun 2006.csv,revenue,2006,85501,2,85089,410,85497,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2006 Revenue/Revenues Mar 2006.csv,revenue,2006,84209,2,83804,403,84205,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2006 Revenue/Revenues May 2006.csv,revenue,2006,82925,2,82532,391,82921,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2006 Revenue/Revenues Nov 2005.csv,revenue,2006,71766,2,71422,342,71762,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2006 Revenue/Revenues Oct 2005.csv,revenue,2006,75305,2,74978,325,75301,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2006 Revenue/Revenues Sep 2005.csv,revenue,2006,80897,2,80551,344,80893,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2007 Expenditure/Expenditures Apr 2007.csv,expense,2007,575591,2,570904,4685,575587,2,136225
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2007 Expenditure/Expenditures Aug 2006.csv,expense,2007,504928,2,500211,4715,504924,2,117009
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2007 Expenditure/Expenditures Dec 2006.csv,expense,2007,473486,2,468896,4588,473482,2,119587
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2007 Expenditure/Expenditures Feb 2007.csv,expense,2007,578742,2,574111,4629,578738,2,126648
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2007 Expenditure/Expenditures Jan 2007.csv,expense,2007,553089,2,548068,5019,553085,2,120239
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2007 Expenditure/Expenditures Jul 2006.csv,expense,2007,410841,2,407614,3225,410837,2,98485
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2007 Expenditure/Expenditures Jun 2007.csv,expense,2007,686164,2,678920,7242,686160,2,148021
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2007 Expenditure/Expenditures Mar 2007.csv,expense,2007,638653,2,633119,5532,638649,2,145046
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2007 Expenditure/Expenditures May 2007.csv,expense,2007,595106,2,589270,5834,595102,2,136771
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2007 Expenditure/Expenditures Nov 2006.csv,expense,2007,507360,2,502676,4682,507356,2,128097
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2007 Expenditure/Expenditures Oct 2006.csv,expense,2007,523097,2,518350,4745,523093,2,126385
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2007 Expenditure/Expenditures Sep 2006.csv,expense,2007,554205,2,549271,4932,554201,2,127043
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2007 Revenue/Revenues Apr 2007.csv,revenue,2007,94542,2,94201,339,94538,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2007 Revenue/Revenues Aug 2006.csv,revenue,2007,133793,2,133420,371,133789,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2007 Revenue/Revenues Dec 2006.csv,revenue,2007,91431,2,91130,299,91428,1,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2007 Revenue/Revenues Feb 2007.csv,revenue,2007,98134,2,97807,325,98130,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2007 Revenue/Revenues Jan 2007.csv,revenue,2007,124183,2,123847,334,124179,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2007 Revenue/Revenues Jul 2006.csv,revenue,2007,122995,2,122677,316,122991,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2007 Revenue/Revenues Jun 2007.csv,revenue,2007,102362,2,101999,361,102358,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2007 Revenue/Revenues Mar 2007.csv,revenue,2007,101748,2,101355,391,101744,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2007 Revenue/Revenues May 2007.csv,revenue,2007,98525,2,98164,359,98521,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2007 Revenue/Revenues Nov 2006.csv,revenue,2007,91432,2,91130,300,91428,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2007 Revenue/Revenues Oct 2006.csv,revenue,2007,99638,2,99289,347,99634,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2007 Revenue/Revenues Sep 2006.csv,revenue,2007,106961,2,106612,347,106957,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2008 Expenditure/Expenditures Apr 2008.csv,expense,2008,687311,2,663374,23935,687307,2,180824
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2008 Expenditure/Expenditures Aug 2007.csv,expense,2008,623244,2,601460,21782,623240,2,151885
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2008 Expenditure/Expenditures Dec 2007.csv,expense,2008,571232,2,549368,21862,571228,2,160994
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2008 Expenditure/Expenditures Feb 2008.csv,expense,2008,711383,2,686191,25190,711379,2,174709
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2008 Expenditure/Expenditures Jan 2008.csv,expense,2008,655489,2,631401,24086,655485,2,163323
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2008 Expenditure/Expenditures Jul 2007.csv,expense,2008,618857,2,587736,31119,618853,2,158103
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2008 Expenditure/Expenditures Jun 2008.csv,expense,2008,798527,2,780637,17888,798523,2,173880
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2008 Expenditure/Expenditures Mar 2008.csv,expense,2008,668981,2,644658,24321,668977,2,176844
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2008 Expenditure/Expenditures May 2008.csv,expense,2008,679099,2,655274,23823,679095,2,179859
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2008 Expenditure/Expenditures Nov 2007.csv,expense,2008,635710,2,613244,22464,635706,2,174309
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2008 Expenditure/Expenditures Oct 2007.csv,expense,2008,692879,2,669671,23206,692875,2,178304
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2008 Expenditure/Expenditures Sep 2007.csv,expense,2008,652912,2,629002,23908,652908,2,163217
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2008 Revenue/Revenues Apr 2008.csv,revenue,2008,108608,2,108246,360,108604,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2008 Revenue/Revenues Aug 2007.csv,revenue,2008,155061,2,154694,365,155057,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2008 Revenue/Revenues Dec 2007.csv,revenue,2008,96420,2,96127,291,96417,1,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2008 Revenue/Revenues Feb 2008.csv,revenue,2008,112874,2,112557,315,112870,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2008 Revenue/Revenues Jan 2008.csv,revenue,2008,151577,2,151235,340,151573,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2008 Revenue/Revenues Jul 2007.csv,revenue,2008,147261,2,146924,335,147257,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2008 Revenue/Revenues Jun 2008.csv,revenue,2008,110215,2,109843,370,110211,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2008 Revenue/Revenues Mar 2008.csv,revenue,2008,104654,2,104306,346,104650,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2008 Revenue/Revenues May 2008.csv,revenue,2008,109594,2,109260,332,109590,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2008 Revenue/Revenues Nov 2007.csv,revenue,2008,96421,2,96127,292,96417,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2008 Revenue/Revenues Oct 2007.csv,revenue,2008,116167,2,115822,343,116163,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2008 Revenue/Revenues Sep 2007.csv,revenue,2008,112546,2,112235,309,112542,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2009 Expenditure/Expenditures Apr 2009.csv,expense,2009,576145,2,572519,3624,576141,2,138398
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2009 Expenditure/Expenditures Aug 2008.csv,expense,2009,532108,2,528131,3975,532104,2,125943
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2009 Expenditure/Expenditures Dec 2008.csv,expense,2009,541836,2,537990,3844,541832,2,135081
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2009 Expenditure/Expenditures Feb 2009.csv,expense,2009,583135,2,578942,4191,583131,2,134437
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2009 Expenditure/Expenditures Jan 2009.csv,expense,2009,538138,2,534258,3878,538134,2,125134
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2009 Expenditure/Expenditures Jul 2008.csv,expense,2009,540781,2,536828,3951,540777,2,132341
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2009 Expenditure/Expenditures Jun 2009.csv,expense,2009,745277,2,740384,4891,745273,2,153852
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2009 Expenditure/Expenditures Mar 2009.csv,expense,2009,586287,2,581545,4740,586283,2,138103
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2009 Expenditure/Expenditures May 2009.csv,expense,2009,560110,2,555612,4496,560106,2,135533
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2009 Expenditure/Expenditures Nov 2008.csv,expense,2009,507241,2,503578,3661,507237,2,133309
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2009 Expenditure/Expenditures Oct 2008.csv,expense,2009,615510,2,610804,4704,615506,2,142333
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2009 Expenditure/Expenditures Sep 2008.csv,expense,2009,583753,2,579139,4612,583749,2,131891
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2009 Revenue/Revenues Apr 2009.csv,revenue,2009,111532,2,111222,308,111528,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2009 Revenue/Revenues Aug 2008.csv,revenue,2009,144501,2,144191,308,144497,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2009 Revenue/Revenues Dec 2008.csv,revenue,2009,92124,2,91847,275,92121,1,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2009 Revenue/Revenues Feb 2009.csv,revenue,2009,113459,2,113160,297,113455,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2009 Revenue/Revenues Jan 2009.csv,revenue,2009,141255,2,140962,291,141251,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2009 Revenue/Revenues Jul 2008.csv,revenue,2009,161478,2,161133,343,161474,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2009 Revenue/Revenues Jun 2009.csv,revenue,2009,110697,2,110394,301,110693,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2009 Revenue/Revenues Mar 2009.csv,revenue,2009,109049,2,108651,396,109045,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2009 Revenue/Revenues May 2009.csv,revenue,2009,104725,2,104436,287,104721,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2009 Revenue/Revenues Nov 2008.csv,revenue,2009,92125,2,91847,276,92121,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2009 Revenue/Revenues Oct 2008.csv,revenue,2009,117545,2,117176,367,117541,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2009 Revenue/Revenues Sep 2008.csv,revenue,2009,126121,2,125807,312,126117,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2010 Expenditure/Expenditures Apr 2010.csv,expense,2010,588492,2,584018,4472,588488,2,136269
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2010 Expenditure/Expenditures Aug 2009.csv,expense,2010,601053,2,598162,2889,601049,2,108993
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2010 Expenditure/Expenditures Dec 2009.csv,expense,2010,547994,2,544882,3110,547990,2,127718
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2010 Expenditure/Expenditures Feb 2010.csv,expense,2010,603182,2,599737,3443,603178,2,124032
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2010 Expenditure/Expenditures Jan 2010.csv,expense,2010,591285,2,588416,2867,591281,2,130637
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2010 Expenditure/Expenditures Jul 2009.csv,expense,2010,543132,2,539709,3421,543128,2,112619
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2010 Expenditure/Expenditures Jun 2010.csv,expense,2010,729488,2,723446,6040,729484,2,144141
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2010 Expenditure/Expenditures Mar 2010.csv,expense,2010,671066,2,665375,5689,671062,2,146836
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2010 Expenditure/Expenditures May 2010.csv,expense,2010,585399,2,580785,4612,585395,2,137250
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2010 Expenditure/Expenditures Nov 2009.csv,expense,2010,531131,2,528297,2832,531127,2,120702
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2010 Expenditure/Expenditures Oct 2009.csv,expense,2010,601053,2,597635,3416,601049,2,130026
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2010 Expenditure/Expenditures Sep 2009.csv,expense,2010,616843,2,613748,3093,616839,2,129104
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2010 Revenue/Revenues Apr 2010.csv,revenue,2010,109521,2,109166,353,109517,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2010 Revenue/Revenues Aug 2009.csv,revenue,2010,158344,2,158060,282,158340,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2010 Revenue/Revenues Dec 2009.csv,revenue,2010,95638,2,95379,257,95635,1,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2010 Revenue/Revenues Feb 2010.csv,revenue,2010,108820,2,108534,284,108816,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2010 Revenue/Revenues Jan 2010.csv,revenue,2010,146516,2,146230,284,146512,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2010 Revenue/Revenues Jul 2009.csv,revenue,2010,168714,2,168390,322,168710,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2010 Revenue/Revenues Jun 2010.csv,revenue,2010,124857,2,124515,340,124853,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2010 Revenue/Revenues Mar 2010.csv,revenue,2010,115488,2,115170,316,115484,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2010 Revenue/Revenues May 2010.csv,revenue,2010,108831,2,108532,297,108827,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2010 Revenue/Revenues Nov 2009.csv,revenue,2010,95639,2,95379,258,95635,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2010 Revenue/Revenues Oct 2009.csv,revenue,2010,114636,2,114312,322,114632,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2010 Revenue/Revenues Sep 2009.csv,revenue,2010,126036,2,125704,330,126032,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2011 Expenditure/Expenditures Apr 2011.csv,expense,2011,628573,2,623536,5035,628569,2,140991
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2011 Expenditure/Expenditures Aug 2010.csv,expense,2011,611451,2,602429,9020,611447,2,121810
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2011 Expenditure/Expenditures Dec 2010.csv,expense,2011,589285,2,583790,5493,589281,2,143322
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2011 Expenditure/Expenditures Feb 2011.csv,expense,2011,673308,2,668540,4766,673304,2,135349
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2011 Expenditure/Expenditures Jan 2011.csv,expense,2011,617543,2,612187,5354,617539,2,126147
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2011 Expenditure/Expenditures Jul 2010.csv,expense,2011,573048,2,567685,5361,573044,2,135746
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2011 Expenditure/Expenditures Jun 2011.csv,expense,2011,785219,2,777128,8089,785215,2,150953
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2011 Expenditure/Expenditures Mar 2011.csv,expense,2011,700974,2,695557,5415,700970,2,150198
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2011 Expenditure/Expenditures May 2011.csv,expense,2011,641666,2,635067,6597,641662,2,139723
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2011 Expenditure/Expenditures Nov 2010.csv,expense,2011,603232,2,596416,6814,603228,2,149649
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2011 Expenditure/Expenditures Oct 2010.csv,expense,2011,615489,2,609216,6271,615485,2,133630
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2011 Expenditure/Expenditures Sep 2010.csv,expense,2011,647946,2,640448,7496,647942,2,131577
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2011 Revenue/Revenues Apr 2011.csv,revenue,2011,115741,2,115412,327,115737,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2011 Revenue/Revenues Aug 2010.csv,revenue,2011,128883,2,128560,321,128879,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2011 Revenue/Revenues Dec 2010.csv,revenue,2011,108223,2,107923,298,108220,1,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2011 Revenue/Revenues Feb 2011.csv,revenue,2011,110863,2,110543,318,110859,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2011 Revenue/Revenues Jan 2011.csv,revenue,2011,116063,2,115767,294,116059,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2011 Revenue/Revenues Jul 2010.csv,revenue,2011,124661,2,124334,325,124657,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2011 Revenue/Revenues Jun 2011.csv,revenue,2011,125332,2,125006,324,125328,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2011 Revenue/Revenues Mar 2011.csv,revenue,2011,122074,2,121724,348,122070,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2011 Revenue/Revenues May 2011.csv,revenue,2011,120496,2,120177,317,120492,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2011 Revenue/Revenues Nov 2010.csv,revenue,2011,108224,2,107923,299,108220,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2011 Revenue/Revenues Oct 2010.csv,revenue,2011,113412,2,113102,308,113408,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2011 Revenue/Revenues Sep 2010.csv,revenue,2011,120304,2,119980,322,120300,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2012 Expenditure/Expenditures Apr 2012.csv,expense,2012,676072,2,672364,3706,676068,2,167420
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2012 Expenditure/Expenditures Aug 2011.csv,expense,2012,637891,2,631375,6514,637887,2,135154
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2012 Expenditure/Expenditures Dec 2011.csv,expense,2012,628962,2,624005,4955,628958,2,161871
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2012 Expenditure/Expenditures Feb 2012.csv,expense,2012,752119,2,745021,7096,752115,2,163996
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2012 Expenditure/Expenditures Jan 2012.csv,expense,2012,648583,2,642232,6349,648579,2,146627
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2012 Expenditure/Expenditures Jul 2011.csv,expense,2012,589705,2,585499,4204,589701,2,139166
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2012 Expenditure/Expenditures Jun 2012.csv,expense,2012,826348,2,821942,4404,826344,2,185813
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2012 Expenditure/Expenditures Mar 2012.csv,expense,2012,698173,2,693344,4827,698169,2,163472
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2012 Expenditure/Expenditures May 2012.csv,expense,2012,704876,2,699528,5346,704872,2,174892
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2012 Expenditure/Expenditures Nov 2011.csv,expense,2012,620808,2,614953,5853,620804,2,148145
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2012 Expenditure/Expenditures Oct 2011.csv,expense,2012,654429,2,648074,6353,654425,2,148795
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2012 Expenditure/Expenditures Sep 2011.csv,expense,2012,650803,2,645049,5752,650799,2,141618
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2012 Revenue/Revenues Apr 2012.csv,revenue,2012,115791,2,115465,324,115787,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2012 Revenue/Revenues Aug 2011.csv,revenue,2012,128026,2,127690,334,128022,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2012 Revenue/Revenues Dec 2011.csv,revenue,2012,103343,2,103048,293,103340,1,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2012 Revenue/Revenues Feb 2012.csv,revenue,2012,118998,2,118723,273,118994,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2012 Revenue/Revenues Jan 2012.csv,revenue,2012,114630,2,114300,328,114626,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2012 Revenue/Revenues Jul 2011.csv,revenue,2012,114734,2,114447,285,114730,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2012 Revenue/Revenues Jun 2012.csv,revenue,2012,117383,2,117090,291,117379,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2012 Revenue/Revenues Mar 2012.csv,revenue,2012,114806,2,114501,303,114802,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2012 Revenue/Revenues May 2012.csv,revenue,2012,115822,2,115500,320,115818,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2012 Revenue/Revenues Nov 2011.csv,revenue,2012,103344,2,103048,294,103340,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2012 Revenue/Revenues Oct 2011.csv,revenue,2012,109311,2,108996,313,109307,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2012 Revenue/Revenues Sep 2011.csv,revenue,2012,116687,2,116383,302,116683,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2013 Expenditure/Expenditures Apr 2013.csv,expense,2013,691388,2,687631,3755,691384,2,167891
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2013 Expenditure/Expenditures Aug 2012.csv,expense,2013,683756,2,680354,3400,683752,2,149664
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2013 Expenditure/Expenditures Dec 2012.csv,expense,2013,579880,2,576507,3371,579877,1,146567
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2013 Expenditure/Expenditures Feb 2013.csv,expense,2013,698200,2,694549,3649,698196,2,150969
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2013 Expenditure/Expenditures Jan 2013.csv,expense,2013,663535,2,659945,3588,663531,2,150983
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2013 Expenditure/Expenditures Jul 2012.csv,expense,2013,613576,2,610620,2954,613572,2,147640
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2013 Expenditure/Expenditures Jun 2013.csv,expense,2013,685549,2,681367,4180,685545,2,156372
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2013 Expenditure/Expenditures Mar 2013.csv,expense,2013,693497,2,689525,3970,693493,2,165066
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2013 Expenditure/Expenditures May 2013.csv,expense,2013,725423,2,721604,3817,725419,2,187614
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2013 Expenditure/Expenditures Nov 2012.csv,expense,2013,679500,2,675972,3526,679496,2,186767
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2013 Expenditure/Expenditures Oct 2012.csv,expense,2013,665106,2,661552,3552,665102,2,161782
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2013 Expenditure/Expenditures Sep 2012.csv,expense,2013,670234,2,666992,3240,670230,2,147534
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2013 Revenue/Revenues Apr 2013.csv,revenue,2013,104480,2,104231,247,104476,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2013 Revenue/Revenues Aug 2012.csv,revenue,2013,127766,2,127458,306,127762,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2013 Revenue/Revenues Dec 2012.csv,revenue,2013,102166,2,101909,255,102163,1,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2013 Revenue/Revenues Feb 2013.csv,revenue,2013,102997,2,102713,282,102993,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2013 Revenue/Revenues Jan 2013.csv,revenue,2013,114680,2,114372,306,114676,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2013 Revenue/Revenues Jul 2012.csv,revenue,2013,118588,2,118281,305,118584,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2013 Revenue/Revenues Jun 2013.csv,revenue,2013,96063,2,95808,253,96059,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2013 Revenue/Revenues Mar 2013.csv,revenue,2013,107851,2,107554,295,107847,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2013 Revenue/Revenues May 2013.csv,revenue,2013,103628,2,103369,257,103624,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2013 Revenue/Revenues Nov 2012.csv,revenue,2013,102167,2,101909,256,102163,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2013 Revenue/Revenues Oct 2012.csv,revenue,2013,112620,2,112306,312,112616,2,0
+/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles/FY 2013 Revenue/Revenues Sep 2012.csv,revenue,2013,103865,2,103593,270,103861,2,0

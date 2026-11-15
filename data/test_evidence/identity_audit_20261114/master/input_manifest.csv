@@ -1,0 +1,3 @@
+path,bytes,physical_lines,sha256
+/Users/ktwitchell001/workspace/identity_audit_20261114/inputs/measured_master.csv,167292,1249,4006b003d0b3ff04a9d89b94032f8e51ee33331d40698e1e0e99a19b5ed32a3c
+/Users/ktwitchell001/workspace/identity_audit_20261114/inputs/enriched_master.csv,276691,1249,f88ef689261394ea11b730e40e32b4862ea138541268cbda9f860c44d5b66025

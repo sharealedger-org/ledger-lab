@@ -1,0 +1,437 @@
+[info] welcome to sbt 1.10.11 (Eclipse Adoptium Java 21.0.8)
+[info] loading settings for project global-plugins from idea.sbt...
+[info] loading global plugins from /Users/ktwitchell001/.sbt/1.0/plugins
+[info] loading settings for project va_pipeline-build from assembly.sbt, plugins.sbt...
+[info] loading project definition from /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/project
+[info] loading settings for project root from build.sbt...
+[info] set current project to va_pipeline (in build file:/Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/)
+[info] compiling 1 Scala source to /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/target/scala-2.12/test-classes ...
+[info] done compiling
+****************************************************************************************************
+                   Step ttl — APA Technical Transform Layer (standardizeAndSort.applyAPA)
+Start Time: Sat Nov 14 19:11:48 MST 2026
+****************************************************************************************************
+WARNING: VendorMaster not found at data/VendorMaster_full.csv — instIDs will be 0000000000
+  inPath      : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-cols-10496722841120225028/VARawFiles
+  refPath     : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-cols-10496722841120225028/data
+  outPath     : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-cols-10496722841120225028/out
+  year        : 2003  types: E
+  SortSpec    : ../sort_specs/SortedJE.sortspec  (15 fields)
+  VendorMaster: data/VendorMaster_full.csv  (0 entries)
+  ChunkSize   : 200000
+  Reference   : agency=2 fund=2 object=2 program=2 source=2
+[info] SortedJEInputsSpec:
+[info] - year with a merged file: 2m inputs (monthly, quarterly, PO) are skipped; merged and derived files are kept
+[info] - year without a merged file is unchanged (source files are read as before)
+[info] - merged file of one year does not hide another year's source files
+  Source folder (Expenditure FY2003): /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-cols-10496722841120225028/VARawFiles/FY 2003 Expenditure
+  Discovered 1 E files for FY2003
+
+  Processing E Q1 → /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-cols-10496722841120225028/out/SortedJEFY03q1exp.csv  (1 file(s))
+Summary complete; source mismatches=0; identity/canonical mismatches=0
+Summary complete; source mismatches=0; identity/canonical mismatches=1
+
+  File Expenditures Jul 2002 2003.csv: data_lines=1 source=1 unresolved_ref=0 blank=0
+[info] IdentityAuditSummarySpec:
+[info] - independent count checks distinguish successful counts from an identity mismatch
+[info] - candidate sizing excludes numeric labels and preserves named entities containing digits
+[info] - lookup counterfactual distinguishes missed matches, conflicting identities and invalid names
+  Spilled chunk 1  (2 SJE rows so far)
+  Q1: source=1 sje=2 unresolved_ref=0 spills=1
+  Merging 1 spill(s) → /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-cols-10496722841120225028/out/SortedJEFY03q1exp.csv ...
+  Written: /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-cols-10496722841120225028/out/SortedJEFY03q1exp.csv (2 rows)
+
+Control totals:
+  Source rows processed : 1
+  SJE rows produced     : 2  (= ~2 × source rows)
+  Unresolved ref lookups: 0
+
+RESULT step=ttl year=2003 rc=0 records_read=1 records_written=2 elapsed_s=1 input_bytes=294 output_bytes=479
+RESOURCE step=ttl year=2003 jvm_heap_bytes=1073741824
+STATUS: COMPLETE
+****************************************************************************************************
+Process End Time: Sat Nov 14 19:11:48 MST 2026
+****************************************************************************************************
+****************************************************************************************************
+                   Step ttl — APA Technical Transform Layer (standardizeAndSort.applyAPA)
+Start Time: Sat Nov 14 19:11:49 MST 2026
+****************************************************************************************************
+WARNING: VendorMaster not found at data/VendorMaster_full.csv — instIDs will be 0000000000
+  inPath      : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-balance-3199517735874388387/VARawFiles
+  refPath     : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-balance-3199517735874388387/data
+  outPath     : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-balance-3199517735874388387/out
+  year        : 2003  types: E
+  SortSpec    : ../sort_specs/SortedJE.sortspec  (15 fields)
+  VendorMaster: data/VendorMaster_full.csv  (0 entries)
+  ChunkSize   : 200000
+  Reference   : agency=2 fund=2 object=2 program=2 source=2
+  Source folder (Expenditure FY2003): /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-balance-3199517735874388387/VARawFiles/FY 2003 Expenditure
+  Discovered 1 E files for FY2003
+
+  Processing E Q1 → /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-balance-3199517735874388387/out/SortedJEFY03q1exp.csv  (1 file(s))
+
+  File Expenditures Jul 2002 2003.csv: data_lines=1 source=1 unresolved_ref=0 blank=0
+  Spilled chunk 1  (2 SJE rows so far)
+  Q1: source=1 sje=2 unresolved_ref=0 spills=1
+  Merging 1 spill(s) → /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-balance-3199517735874388387/out/SortedJEFY03q1exp.csv ...
+  Written: /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-balance-3199517735874388387/out/SortedJEFY03q1exp.csv (2 rows)
+
+Control totals:
+  Source rows processed : 1
+  SJE rows produced     : 2  (= ~2 × source rows)
+  Unresolved ref lookups: 0
+
+RESULT step=ttl year=2003 rc=0 records_read=1 records_written=2 elapsed_s=1 input_bytes=294 output_bytes=479
+RESOURCE step=ttl year=2003 jvm_heap_bytes=1073741824
+STATUS: COMPLETE
+****************************************************************************************************
+Process End Time: Sat Nov 14 19:11:49 MST 2026
+****************************************************************************************************
+****************************************************************************************************
+                   Step ttl — APA Technical Transform Layer (standardizeAndSort.applyAPA)
+Start Time: Sat Nov 14 19:11:49 MST 2026
+****************************************************************************************************
+WARNING: VendorMaster not found at data/VendorMaster_full.csv — instIDs will be 0000000000
+  inPath      : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-agencykey-4636480692125685044/VARawFiles
+  refPath     : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-agencykey-4636480692125685044/data
+  outPath     : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-agencykey-4636480692125685044/out
+  year        : 2003  types: E
+  SortSpec    : ../sort_specs/SortedJE.sortspec  (15 fields)
+  VendorMaster: data/VendorMaster_full.csv  (0 entries)
+  ChunkSize   : 200000
+  Reference   : agency=2 fund=2 object=2 program=2 source=2
+  Source folder (Expenditure FY2003): /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-agencykey-4636480692125685044/VARawFiles/FY 2003 Expenditure
+  Discovered 1 E files for FY2003
+
+  Processing E Q1 → /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-agencykey-4636480692125685044/out/SortedJEFY03q1exp.csv  (1 file(s))
+
+  File Expenditures Jul 2002 2003.csv: data_lines=1 source=1 unresolved_ref=0 blank=0
+  Spilled chunk 1  (2 SJE rows so far)
+  Q1: source=1 sje=2 unresolved_ref=0 spills=1
+  Merging 1 spill(s) → /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-agencykey-4636480692125685044/out/SortedJEFY03q1exp.csv ...
+  Written: /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-agencykey-4636480692125685044/out/SortedJEFY03q1exp.csv (2 rows)
+
+Control totals:
+  Source rows processed : 1
+  SJE rows produced     : 2  (= ~2 × source rows)
+  Unresolved ref lookups: 0
+
+RESULT step=ttl year=2003 rc=0 records_read=1 records_written=2 elapsed_s=1 input_bytes=294 output_bytes=479
+RESOURCE step=ttl year=2003 jvm_heap_bytes=1073741824
+STATUS: COMPLETE
+****************************************************************************************************
+Process End Time: Sat Nov 14 19:11:49 MST 2026
+****************************************************************************************************
+****************************************************************************************************
+                   Step ttl — APA Technical Transform Layer (standardizeAndSort.applyAPA)
+Start Time: Sat Nov 14 19:11:49 MST 2026
+****************************************************************************************************
+WARNING: VendorMaster not found at data/VendorMaster_full.csv — instIDs will be 0000000000
+  inPath      : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-quarters-1227172989287907284/VARawFiles
+  refPath     : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-quarters-1227172989287907284/data
+  outPath     : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-quarters-1227172989287907284/out
+  year        : 2003  types: E
+  SortSpec    : ../sort_specs/SortedJE.sortspec  (15 fields)
+  VendorMaster: data/VendorMaster_full.csv  (0 entries)
+  ChunkSize   : 200000
+  Reference   : agency=2 fund=2 object=2 program=2 source=2
+  Source folder (Expenditure FY2003): /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-quarters-1227172989287907284/VARawFiles/FY 2003 Expenditure
+  Discovered 2 E files for FY2003
+
+  Processing E Q1 → /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-quarters-1227172989287907284/out/SortedJEFY03q1exp.csv  (1 file(s))
+
+  File Expenditures Jul 2002 2003.csv: data_lines=1 source=1 unresolved_ref=0 blank=0
+  Spilled chunk 1  (2 SJE rows so far)
+  Q1: source=1 sje=2 unresolved_ref=0 spills=1
+  Merging 1 spill(s) → /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-quarters-1227172989287907284/out/SortedJEFY03q1exp.csv ...
+  Written: /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-quarters-1227172989287907284/out/SortedJEFY03q1exp.csv (2 rows)
+
+  Processing E Q4 → /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-quarters-1227172989287907284/out/SortedJEFY03q4exp.csv  (1 file(s))
+
+  File Expenditures Apr 2003 2003.csv: data_lines=1 source=1 unresolved_ref=0 blank=0
+  Spilled chunk 1  (2 SJE rows so far)
+  Q4: source=1 sje=2 unresolved_ref=0 spills=1
+  Merging 1 spill(s) → /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-quarters-1227172989287907284/out/SortedJEFY03q4exp.csv ...
+  Written: /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-quarters-1227172989287907284/out/SortedJEFY03q4exp.csv (2 rows)
+
+Control totals:
+  Source rows processed : 2
+  SJE rows produced     : 4  (= ~2 × source rows)
+  Unresolved ref lookups: 0
+
+RESULT step=ttl year=2003 rc=0 records_read=2 records_written=4 elapsed_s=1 input_bytes=582 output_bytes=479
+RESOURCE step=ttl year=2003 jvm_heap_bytes=1073741824
+STATUS: COMPLETE
+****************************************************************************************************
+Process End Time: Sat Nov 14 19:11:49 MST 2026
+****************************************************************************************************
+****************************************************************************************************
+                   Step ttl — APA Technical Transform Layer (standardizeAndSort.applyAPA)
+Start Time: Sat Nov 14 19:11:49 MST 2026
+****************************************************************************************************
+WARNING: VendorMaster not found at data/VendorMaster_full.csv — instIDs will be 0000000000
+  inPath      : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-revenue-5789058788471958124/VARawFiles
+  refPath     : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-revenue-5789058788471958124/data
+  outPath     : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-revenue-5789058788471958124/out
+  year        : 2003  types: R
+  SortSpec    : ../sort_specs/SortedJE.sortspec  (15 fields)
+  VendorMaster: data/VendorMaster_full.csv  (0 entries)
+  ChunkSize   : 200000
+  Reference   : agency=2 fund=2 object=2 program=2 source=2
+  Source folder (Revenue FY2003): /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-revenue-5789058788471958124/VARawFiles/FY 2003 Revenue
+  Discovered 1 R files for FY2003
+
+  Processing R rev → /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-revenue-5789058788471958124/out/SortedJEFY03rev.csv  (1 file(s))
+
+  File Revenues Jul 2002.csv: data_lines=1 source=1 unresolved_ref=0 blank=0
+  Spilled chunk 1  (2 SJE rows so far)
+  rev: source=1 sje=2 unresolved_ref=0 spills=1
+  Merging 1 spill(s) → /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-revenue-5789058788471958124/out/SortedJEFY03rev.csv ...
+  Written: /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-revenue-5789058788471958124/out/SortedJEFY03rev.csv (2 rows)
+
+RESULT step=ttl year=2003 rc=0 records_read=1 records_written=2 elapsed_s=1 input_bytes=222 output_bytes=490
+RESOURCE step=ttl year=2003 jvm_heap_bytes=1073741824
+****************************************************************************************************
+Process End Time: Sat Nov 14 19:11:49 MST 2026
+****************************************************************************************************
+****************************************************************************************************
+                   Step ttl — APA Technical Transform Layer (standardizeAndSort.applyAPA)
+Start Time: Sat Nov 14 19:11:49 MST 2026
+****************************************************************************************************
+WARNING: VendorMaster not found at data/VendorMaster_full.csv — instIDs will be 0000000000
+  inPath      : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-both-post-8708733316167626480/VARawFiles
+  refPath     : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-both-post-8708733316167626480/refs
+  outPath     : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-both-post-8708733316167626480/out
+  year        : 03  types: E,R
+  SortSpec    : ../sort_specs/SortedJE.sortspec  (15 fields)
+  VendorMaster: data/VendorMaster_full.csv  (0 entries)
+  ChunkSize   : 200000
+  Reference   : agency=2 fund=2 object=2 program=2 source=2
+  Source folder (Expenditure FY2003): /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-both-post-8708733316167626480/VARawFiles/FY 2003 Expenditure
+  Discovered 1 E files for FY3
+
+  Processing E 0003/07 → /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-both-post-8708733316167626480/out/SortedJEFY03_0003_07_exp.csv  (1 file(s))
+
+  File Expenditures Jul 2003.csv: data_lines=1 source=1 unresolved_ref=0 blank=0
+  Spilled chunk 1  (2 SJE rows so far)
+  0003/07: source=1 sje=2 unresolved_ref=0 spills=1
+  Merging 1 spill(s) → /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-both-post-8708733316167626480/out/SortedJEFY03_0003_07_exp.csv ...
+  Written: /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-both-post-8708733316167626480/out/SortedJEFY03_0003_07_exp.csv (2 rows)
+
+Control totals:
+  Source rows processed : 1
+  SJE rows produced     : 2  (= ~2 × source rows)
+  Unresolved ref lookups: 0
+
+RESULT step=ttl year=03 rc=0 records_read=1 records_written=2 elapsed_s=1 input_bytes=294 output_bytes=0
+RESOURCE step=ttl year=03 jvm_heap_bytes=1073741824
+STATUS: COMPLETE
+  Source folder (Revenue FY2003): /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-both-post-8708733316167626480/VARawFiles/FY 2003 Revenue
+  Discovered 1 R files for FY3
+
+  Processing R rev → /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-both-post-8708733316167626480/out/SortedJEFY03rev.csv  (1 file(s))
+
+  File Revenues Jul 2002.csv: data_lines=1 source=1 unresolved_ref=0 blank=0
+  Spilled chunk 1  (2 SJE rows so far)
+  rev: source=1 sje=2 unresolved_ref=0 spills=1
+  Merging 1 spill(s) → /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-both-post-8708733316167626480/out/SortedJEFY03rev.csv ...
+  Written: /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-both-post-8708733316167626480/out/SortedJEFY03rev.csv (2 rows)
+
+RESULT step=ttl year=03 rc=0 records_read=2 records_written=4 elapsed_s=1 input_bytes=207 output_bytes=491
+RESOURCE step=ttl year=03 jvm_heap_bytes=1073741824
+****************************************************************************************************
+Process End Time: Sat Nov 14 19:11:49 MST 2026
+****************************************************************************************************
+****************************************************************************************************
+                                Post Module
+Start Time: Sat Nov 14 19:11:49 MST 2026
+****************************************************************************************************
+processing file: /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-both-post-8708733316167626480/out/SortedJEFY03_0003_07_exp.csv
+No existing ledger file.  File will be created: LDGR2003.csv
+----------------------------------
+processing file: /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-both-post-8708733316167626480/out/SortedJEFY03rev.csv
+****************************************************************************************************
+Files Processed:               2
+Journal Records Read:          4
+Ledger Records Read:           2
+Ledger Records Written:        4
+Process End Time:      Sat Nov 14 19:11:49 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2003 rc=0 records_read=4 records_written=4 elapsed_s=1 input_bytes=0 output_bytes=1095
+RESOURCE step=3 year=2003 jvm_heap_bytes=1073741824
+WARNING: VendorMaster not found at data/VendorMaster_full.csv — instIDs will be 0000000000
+****************************************************************************************************
+                   Step ttl — APA Technical Transform Layer (standardizeAndSort.applyAPA)
+Start Time: Sat Nov 14 19:11:49 MST 2026
+****************************************************************************************************
+****************************************************************************************************
+                   Step ttl — APA Technical Transform Layer (standardizeAndSort.applyAPA)
+Start Time: Sat Nov 14 19:11:49 MST 2026
+****************************************************************************************************
+  inPath      : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/../../session-run.tmp/identity-6940071957783583059/raw
+  refPath     : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/../../session-run.tmp/identity-6940071957783583059
+  outPath     : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/../../session-run.tmp/identity-6940071957783583059/posted_input
+  year        : 03  types: E
+  SortSpec    : ../sort_specs/SortedJE.sortspec  (15 fields)
+  VendorMaster: /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/../../session-run.tmp/identity-6940071957783583059/master.csv  (2 entries)
+  ChunkSize   : 200000
+WARNING: Reference table not found: /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/../../session-run.tmp/identity-6940071957783583059/aRefAgencyCSV.txt — name lookups will miss
+WARNING: Reference table not found: /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/../../session-run.tmp/identity-6940071957783583059/aRefFundCSV.txt — name lookups will miss
+WARNING: VendorMaster not found at data/VendorMaster_full.csv — instIDs will be 0000000000
+  inPath      : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-unresolved-6084605371874720433/VARawFiles
+  refPath     : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-unresolved-6084605371874720433/data
+  outPath     : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-unresolved-6084605371874720433/out
+  year        : 2003  types: E
+  SortSpec    : ../sort_specs/SortedJE.sortspec  (15 fields)
+  VendorMaster: data/VendorMaster_full.csv  (0 entries)
+  ChunkSize   : 200000
+  Reference   : agency=2 fund=2 object=2 program=2 source=2WARNING: Reference table not found: /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/../../session-run.tmp/identity-6940071957783583059/aRefObjectCSV.txt — name lookups will miss
+
+WARNING: Reference table not found: /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/../../session-run.tmp/identity-6940071957783583059/aRefProgramCSV.txt — name lookups will miss
+WARNING: Reference table not found: /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/../../session-run.tmp/identity-6940071957783583059/aRefSourceCSV.txt — name lookups will miss
+  Reference   : agency=0 fund=0 object=0 program=0 source=0
+  Source folder (Expenditure FY2003): /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-unresolved-6084605371874720433/VARawFiles/FY 2003 Expenditure
+  Source folder (Expenditure FY2003): /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/../../session-run.tmp/identity-6940071957783583059/raw/FY 2003 Expenditure
+  Discovered 1 E files for FY2003
+  Discovered 1 E files for FY3
+
+  Processing E Q1 → /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-unresolved-6084605371874720433/out/SortedJEFY03q1exp.csv  (1 file(s))
+
+  Processing E 0003/07 → /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/../../session-run.tmp/identity-6940071957783583059/posted_input/SortedJEFY03_0003_07_exp.csv  (1 file(s))
+
+  File Expenditures Jul 2002 2003.csv: data_lines=1 source=1 unresolved_ref=0 blank=0
+
+  File Expenditures Jul 2002.csv: data_lines=1 source=1 unresolved_ref=0 blank=0
+  Spilled chunk 1  (2 SJE rows so far)
+  Q1: source=1 sje=2 unresolved_ref=0 spills=1
+  Merging 1 spill(s) → /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-unresolved-6084605371874720433/out/SortedJEFY03q1exp.csv ...
+  Spilled chunk 1  (2 SJE rows so far)
+  0003/07: source=1 sje=2 unresolved_ref=0 spills=1
+  Merging 1 spill(s) → /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/../../session-run.tmp/identity-6940071957783583059/posted_input/SortedJEFY03_0003_07_exp.csv ...
+  Written: /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-unresolved-6084605371874720433/out/SortedJEFY03q1exp.csv (2 rows)
+  Written: /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/../../session-run.tmp/identity-6940071957783583059/posted_input/SortedJEFY03_0003_07_exp.csv (2 rows)
+
+Control totals:
+  Source rows processed : 1
+  SJE rows produced     : 2  (= ~2 × source rows)
+  Unresolved ref lookups: 0
+
+RESULT step=ttl year=2003 rc=0 records_read=1 records_written=2 elapsed_s=1 input_bytes=268 output_bytes=476
+RESOURCE step=ttl year=2003 jvm_heap_bytes=1073741824
+STATUS: COMPLETE
+
+Control totals:
+  Source rows processed : 1
+  SJE rows produced     : 2  (= ~2 × source rows)
+  Unresolved ref lookups: 0
+
+RESULT step=ttl year=03 rc=0 records_read=1 records_written=2 elapsed_s=1 input_bytes=160 output_bytes=0
+RESOURCE step=ttl year=03 jvm_heap_bytes=1073741824
+STATUS: COMPLETE
+****************************************************************************************************
+****************************************************************************************************
+Process End Time: Sat Nov 14 19:11:49 MST 2026
+****************************************************************************************************
+Process End Time: Sat Nov 14 19:11:49 MST 2026
+****************************************************************************************************
+****************************************************************************************************
+                   Step ttl — APA Technical Transform Layer (standardizeAndSort.applyAPA)
+Start Time: Sat Nov 14 19:11:49 MST 2026
+****************************************************************************************************
+  inPath      : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/../../session-run.tmp/identity-288053805844009828/raw
+  refPath     : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/../../session-run.tmp/identity-288053805844009828
+  outPath     : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/../../session-run.tmp/identity-288053805844009828/sje
+  year        : 03  types: E
+  SortSpec    : ../sort_specs/SortedJE.sortspec  (15 fields)
+  VendorMaster: /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/../../session-run.tmp/identity-288053805844009828/master.csv  (1 entries)
+  ChunkSize   : 200000
+WARNING: Reference table not found: /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/../../session-run.tmp/identity-288053805844009828/aRefAgencyCSV.txt — name lookups will miss
+WARNING: Reference table not found: /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/../../session-run.tmp/identity-288053805844009828/aRefFundCSV.txt — name lookups will miss
+WARNING: Reference table not found: /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/../../session-run.tmp/identity-288053805844009828/aRefObjectCSV.txt — name lookups will miss
+WARNING: Reference table not found: /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/../../session-run.tmp/identity-288053805844009828/aRefProgramCSV.txt — name lookups will miss
+WARNING: Reference table not found: /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/../../session-run.tmp/identity-288053805844009828/aRefSourceCSV.txt — name lookups will miss
+  Reference   : agency=0 fund=0 object=0 program=0 source=0
+  Source folder (Expenditure FY2003): /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/../../session-run.tmp/identity-288053805844009828/raw/FY 2003 Expenditure
+  Discovered 1 E files for FY3
+
+  Processing E 0003/07 → /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/../../session-run.tmp/identity-288053805844009828/sje/SortedJEFY03_0003_07_exp.csv  (1 file(s))
+WARNING: VendorMaster not found at data/VendorMaster_full.csv — instIDs will be 0000000000
+
+  File Expenditures Jul 2002.csv: data_lines=1 source=1 unresolved_ref=0 blank=0
+  Spilled chunk 1  (2 SJE rows so far)
+  0003/07: source=1 sje=2 unresolved_ref=0 spills=1
+  Merging 1 spill(s) → /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/../../session-run.tmp/identity-288053805844009828/sje/SortedJEFY03_0003_07_exp.csv ...
+  Written: /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/../../session-run.tmp/identity-288053805844009828/sje/SortedJEFY03_0003_07_exp.csv (2 rows)
+
+Control totals:
+  Source rows processed : 1
+  SJE rows produced     : 2  (= ~2 × source rows)
+  Unresolved ref lookups: 0
+
+RESULT step=ttl year=03 rc=0 records_read=1 records_written=2 elapsed_s=1 input_bytes=174 output_bytes=0
+RESOURCE step=ttl year=03 jvm_heap_bytes=1073741824
+STATUS: COMPLETE
+****************************************************************************************************
+Process End Time: Sat Nov 14 19:11:49 MST 2026
+****************************************************************************************************
+WARNING: Reference table not found: /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/../../session-run.tmp/identity-17772296347414596772/aRefAgencyCSV.txt — name lookups will miss
+WARNING: Reference table not found: /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/../../session-run.tmp/identity-17772296347414596772/aRefFundCSV.txt — name lookups will miss
+WARNING: Reference table not found: /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/../../session-run.tmp/identity-17772296347414596772/aRefObjectCSV.txt — name lookups will miss
+WARNING: Reference table not found: /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/../../session-run.tmp/identity-17772296347414596772/aRefProgramCSV.txt — name lookups will miss
+WARNING: Reference table not found: /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/../../session-run.tmp/identity-17772296347414596772/aRefSourceCSV.txt — name lookups will miss
+RAW Expenditures Apr 2003.csv: legacy_accepted=0 legacy_rejected=0
+RAW Expenditures Aug 2002.csv: legacy_accepted=0 legacy_rejected=0
+RAW Expenditures Dec 2002.csv: legacy_accepted=0 legacy_rejected=0
+RAW Expenditures Feb 2003.csv: legacy_accepted=0 legacy_rejected=0
+RAW Expenditures Jan 2003.csv: legacy_accepted=0 legacy_rejected=0
+RAW Expenditures Jul 2002.csv: legacy_accepted=1 legacy_rejected=0
+RAW Expenditures Jun 2003.csv: legacy_accepted=0 legacy_rejected=0
+RAW Expenditures Mar 2003.csv: legacy_accepted=0 legacy_rejected=0
+RAW Expenditures May 2003.csv: legacy_accepted=0 legacy_rejected=0
+RAW Expenditures Nov 2002.csv: legacy_accepted=0 legacy_rejected=0
+RAW Expenditures Oct 2002.csv: legacy_accepted=0 legacy_rejected=0
+RAW Expenditures Sep 2002.csv: legacy_accepted=0 legacy_rejected=0
+RAW Revenues Apr 2003.csv: legacy_accepted=0 legacy_rejected=0
+RAW Revenues Aug 2002.csv: legacy_accepted=0 legacy_rejected=0
+RAW Revenues Dec 2002.csv: legacy_accepted=0 legacy_rejected=0
+RAW Revenues Feb 2003.csv: legacy_accepted=0 legacy_rejected=0
+RAW Revenues Jan 2003.csv: legacy_accepted=0 legacy_rejected=0
+RAW Revenues Jul 2002.csv: legacy_accepted=1 legacy_rejected=0
+RAW Revenues Jun 2003.csv: legacy_accepted=0 legacy_rejected=0
+RAW Revenues Mar 2003.csv: legacy_accepted=0 legacy_rejected=0
+RAW Revenues May 2003.csv: legacy_accepted=0 legacy_rejected=0
+RAW Revenues Nov 2002.csv: legacy_accepted=0 legacy_rejected=0
+RAW Revenues Oct 2002.csv: legacy_accepted=0 legacy_rejected=0
+RAW Revenues Sep 2002.csv: legacy_accepted=0 legacy_rejected=0
+CANONICAL SortedJEFY03merged.csv: rows=3
+CANONICAL LDGR2003.csv: rows=3
+CANONICAL SortedJEFY04merged.csv: rows=3
+CANONICAL LDGR2004.csv: rows=3
+[info] ApaTtlSpec:
+[info] - loadApaReferenceData loads four reference tables with correct entry counts
+[info] - Step ttl: applyAPA produces 2 SJE rows per source row with 39 columns
+[info] - Step ttl: debit and credit amounts cancel within each journal group
+[info] - Step ttl: AGENCY_NAME is resolved to AGY_AGENCY_KEY in transLegalEntityID (col 12)
+[info] - Step ttl: monthly files are routed to correct fiscal quarters
+[info] - Step ttl: revenue files produce SortedJEFY03rev.csv with correct schema
+[info] - combined monthly TTL preserves revenue and expenditure through posting
+[info] - Step ttl: RESULT step=ttl and RESOURCE step=ttl are emitted to stdout
+[info] - Step ttl: source rows with unknown agency name still produce SJE rows with key '0'
+[info] - Step ttl: year '03' reads FY 2003 and not FY 2013 (folders share the digit 3)
+[info] IdentityAuditSpec:
+[info] - quoted names expose actual legacy truncation and last-row-wins collision
+[info] - case whitespace BOM numeric keys and generic labels remain explicit
+[info] - bounded spill reduction combines duplicate keys across several merge levels
+[info] - single-vendor count above production row guard retains only source counters
+[info] - diagnostic records literal-key disorder and reentry without losing counts
+[info] - a partial read digest is explicitly labeled rather than masking a scan failure
+[info] - actual APA producer reproduces quoted-name identity collision without audit changing it
+[info] - quoted object text shifts the actual producer's vendor lookup to a program label
+[info] - raw audit reconciles actual acceptance and resolves revenue lookup to agency key
+[info] - canonical scan combines years but does not silently equate padded PO keys
+[info] Run completed in 1 second, 27 milliseconds.
+[info] Total number of tests run: 26
+[info] Suites: completed 4, aborted 0
+[info] Tests: succeeded 26, failed 0, canceled 0, ignored 0, pending 0
+[info] All tests passed.
+[success] Total time: 10 s, completed Nov 14, 2026, 7:11:49 PM

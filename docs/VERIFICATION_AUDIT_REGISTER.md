@@ -1,5 +1,72 @@
 # Verification Audit Register
 
+## 2026-11-14 — completed identity/concentration audit
+
+Status: verified diagnostic counts within the declared scope; production identity
+recovery, CSV correction, reporting ordering and bounded-state recovery are not
+implemented by this audit. Contract `docs/IDENTITY_AUDIT_CONTRACT.md`; findings
+`docs/IDENTITY_AUDIT_FINDINGS_2026-11-14.md`; compact evidence
+`data/test_evidence/identity_audit_20261114/`. No new control-repository reading.
+
+One immutable monthly_c population: 114,164,816 accepted APA source records,
+259,471,158 merged journal rows and 11,140,226 actual posted rows. Every source
+acceptance, source-to-journal identity-class and recorded canonical-row count
+check passes. Both master snapshots have 1,248 lookup names; enrichment changes
+zero legacy IDs. No actual-master quote/ambiguity discrepancy was detected.
+
+Counterfactual source-name parsing differs on 23,021,103 accepted expense rows;
+1,040,212 rows have a previously missing existing-master lookup candidate,
+6,139 lose a legacy match, and no accepted-source correction has been applied.
+Examples and real-producer fixtures show quoted earlier fields shifting the
+vendor lookup to program labels while a journal still balances. This does not
+certify a complete financial parser correction or recover rejected source rows.
+
+Concentration: 65,940 literal keys; 41 groups over 250,000 input rows. Primary
+zero has 185,296,098 journal/posted rows. Existing generated AGENCY TRANSACTION
+VOUCHER has 10,129,151; known PO placeholder 3,503,026; JOURNAL ENTRY 2,067,835.
+The refined unmapped-name inventory is 3,794,594 candidates, not legal-party
+identity evidence or a prescribed generation count. Heuristic labels/rules and
+numeric/punctuation exclusions are published separately.
+
+Canonical probe found literal-order incompatibility (`c12464` before `c1246`).
+Diagnostic v2 retains original failures, records 214 literal decreases, externally
+combines counts and finds zero within-file vendor/year/side re-entries. It does
+not change financial sorting or certify old financial/view semantics. Only two
+literal keys overlap payment/PO sources; formatting/prefix resemblances are not
+validated bridges. Twenty-six focused tests pass, including thirteen unchanged
+TTL/one-read tests. Full external tables, input digests and separate JVM resource
+logs are retained; compact evidence excludes the large name/segment tables.
+
+Next: semantic CSV/schema adapter validation, a canonical key/reporting order
+contract and bounded large-group reporting, then a small registry/synthetic pilot.
+No financial producer/post/report code, measured outputs or Gold files changed.
+
+## 2026-11-14 — read-only identity-audit verification and execution
+
+Owner authorized the identity/concentration audit. Contract:
+`docs/IDENTITY_AUDIT_CONTRACT.md`. Financial source and report implementation
+unchanged; audit is unmeasured diagnostic Scala, orchestrated by Bash. Seven new
+focused tests plus thirteen unchanged TTL/one-read tests pass (20 total).
+Cheapest actual-producer falsifier: two quoted master names ACME, INC / ACME, LLC
+both become legacy key ACME; the last master row wins and actual APA generation
+assigns the INC event to LLC's ID. Fixture balances despite wrong identity.
+Separate tests cover BOM/whitespace, duplicate-name ambiguity, padded IDs,
+bounded multi-level spill counting, and a 250,001-row group held as one source
+counter. These do not prove that production expanded reporting handles that group.
+
+Master phase completed against frozen run master and current enriched snapshot:
+1,248 legacy keys / 1,248 quote-aware names in each, zero changed legacy lookups.
+No actual-master ambiguity or quoted-field discrepancy was found; numeric padding
+is recorded separately. Corpus name/concentration phases remain in progress at
+this entry and carry no completed finding yet. Outputs:
+`/Users/ktwitchell001/workspace/identity_audit_20261114/`.
+
+Producer-trace correction: `resolveApaRevRow` returns the reference agency KEY;
+`buildJEPairsAPA` passes that normalized field to `buildRevenuePairs`, whose master
+lookup therefore receives the code, not the raw source agency name. The earlier
+plan shorthand is incomplete. Audit uses the current public reference loader and
+the frozen reference snapshot and records source-count controls against TTL.
+
 ## 2026-11-14 00:30 AZT — expanded corpus reporting falsified its configured row bound
 
 The automatic gate waited for all three validated corpus runs, revalidated the

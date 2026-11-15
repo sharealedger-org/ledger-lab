@@ -1,0 +1,6 @@
+has_payment,has_revenue,has_po,vendor_keys,journal_rows,posted_rows
+false,false,true,64701,31128550,5643708
+false,true,false,110,17214768,218351
+true,false,false,1012,15170366,1486025
+true,false,true,2,61450,4770
+true,true,false,115,195896024,3787372

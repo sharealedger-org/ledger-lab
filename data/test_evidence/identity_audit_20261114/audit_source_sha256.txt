@@ -1,0 +1,6 @@
+f539dcaf0586b1448d7d05e581ae0755f6b989c14248a34cecd436e4b525d96f  /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/corpus/IdentityAudit.scala
+b312aad04297ef0299aa80e3ab5d5f406041ba7ac93528f180eebfcb1ceb4e0b  /Users/ktwitchell001/workspace/sharealedger/ledger-lab/scripts/run_identity_audit.sh
+4ac1ecefb52487cde31f6f31833346b997f86a620796e9e52162d448bfc038da  /Users/ktwitchell001/workspace/sharealedger/ledger-lab/docs/IDENTITY_AUDIT_CONTRACT.md
+7ed0820644ba28c2d2617fccb021b808c549f911f6dd41ba1a3260e817f3d356  /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/ledger/standardizeAndSort.scala
+1fbc22ce78d89433238e7b2eef050c611dfa63dd971112f2e2da0ec6255e81e9  /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/ledger/SortEngine.scala
+bf6105319b000d29cc9ee2dfa17125b8dc1b88b4967be1c65822c5ba89d52413  /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/corpus/CorpusProfile.scala

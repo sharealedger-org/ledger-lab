@@ -1,0 +1,15 @@
+metric,value
+version,identity-audit-1
+measured_master_legacy_keys,1248
+measured_master_strict_names,1248
+enriched_master_strict_names,1248
+master_names_with_changed_legacy_lookup,0
+generic_exact_labels,;JOURNAL ENTRIES;JOURNAL ENTRY;MULTIPLE VENDORS;N/A;NONE;PAYROLL;UNKNOWN;VARIOUS
+raw_accepted_rows,114164816
+raw_emitted_rows,114164816
+source_count_mismatches,0
+peak_name_keys,50000
+name_spills,294
+name_merge_levels,3
+global_name_spills,237
+peak_global_name_keys,50000

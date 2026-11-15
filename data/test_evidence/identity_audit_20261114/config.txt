@@ -1,0 +1,5 @@
+git=79b9eb973a441e4ad63fdd02ffd118cdaeac6c16
+source_root=/Users/ktwitchell001/workspace/va_fresh_root/VARawFiles
+run_root=/Users/ktwitchell001/workspace/ckb_expanded_queue_20261113_ready/monthly_c/output
+years=03,04,05,06,07,08,09,10,11,12,13,14,15,16
+financial_state_changed=no

@@ -1,0 +1,15 @@
+shape,literal_length,vendor_keys,financial_input_rows
+c_prefixed_numeric,4,19,937
+c_prefixed_numeric,5,178,56072
+c_prefixed_numeric,6,438,60549
+numeric,9,40070,32563678
+numeric,10,1236,48476808
+numeric,12,1,3503026
+other_literal,2,2,25708
+other_literal,3,12,240
+other_literal,4,64,2949
+other_literal,5,561,13384
+other_literal,9,23298,611049
+other_literal,13,59,828
+zero_sentinel,9,1,58
+zero_sentinel,10,1,185296098
