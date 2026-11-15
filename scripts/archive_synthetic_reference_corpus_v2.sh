@@ -24,14 +24,16 @@ printf 'archive,bytes,sha256,destination_sha256,status\n' > "$root/archive_recei
 package() {
   local name="$1" source="$2" dereference="$3" archive="$root/archives/$1.tar.gz"
   [[ ! -e "$archive" && ! -e "$archive.partial" ]] || exit 2
-  local retained free
-  retained="$(du -sk "$source" | awk '{print $1}')"
+  local free archive_limit_kib
   free="$(df -Pk "$root" | awk 'END {print $4}')"
-  ((free > retained + 10 * 1024 * 1024)) || { echo "Archive scratch insufficient for $name" >&2; exit 2; }
+  ((free > 20 * 1024 * 1024)) || { echo "Archive scratch insufficient for $name" >&2; exit 2; }
+  archive_limit_kib=$((free - 10 * 1024 * 1024))
   # Dereference final-run FY links so archives restore without depending on local absolute paths.
   # Prepared-input source links intentionally remain links; raw sources are separately catalogued.
-  if [[ "$dereference" == yes ]]; then tar -chf - -C "$source" . | gzip -1 > "$archive.partial"
-  else tar -cf - -C "$source" . | gzip -1 > "$archive.partial"; fi
+  # Bash -f limits the compressed writer in KiB, retaining a 10-GiB disk reserve.
+  # Compression streams directly to disk; no uncompressed tar is materialized.
+  if [[ "$dereference" == yes ]]; then tar -chf - -C "$source" . | (ulimit -f "$archive_limit_kib"; exec gzip -1) > "$archive.partial"
+  else tar -cf - -C "$source" . | (ulimit -f "$archive_limit_kib"; exec gzip -1) > "$archive.partial"; fi
   gzip -t "$archive.partial"
   tar -tzf "$archive.partial" > "$root/archives/$name.contents.txt"
   mv "$archive.partial" "$archive"
