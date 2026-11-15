@@ -215,3 +215,22 @@ Next proposed workload: real dated agency 405 hierarchy change plus a dated
 secretarial attribute change; validate stable business-code/surrogate crosswalks
 before joining existing canonical keys. Keep exact published effective dates,
 release observations, unknown dates and synthetic test dates explicitly distinct.
+
+## Owner clarification: synthetic history validity and source independence
+
+Following the released-reference research, the owner authorized synthetic data
+whose scenarios are informed by the publications without requiring access to them.
+Raw downloaded publications were removed from the current corpus; URLs, hashes,
+research observations and assumptions remain records of that work. An optional
+temporary cache is outside the repository and may disappear without invalidating
+the synthetic inputs. No Git history was rewritten to remove earlier research.
+
+`data/synthetic/reclass_history_v1` is the new standalone synthetic input pack.
+Its compiled Scala generator and fixed configuration reproduce histories without
+network access, official PDFs, raw VA data, a machine-current date or randomness.
+All generated keys, names and scenario assignments are explicitly synthetic.
+Main histories use start-date version selection; fixed as-of, supplied run date
+and event-date operands have declared expectations. Recorded dates remain separate
+lineage metadata; they do not silently impose a database/knowledge snapshot filter.
+This is input preparation, not reclass-journal generation or a measured CKB view.
+It does not resolve the real corpus's surrogate/name ambiguities or change Gold.

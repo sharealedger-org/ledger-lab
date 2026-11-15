@@ -1,0 +1,7 @@
+change_id,effective_date,recorded_date,scenario,inspiration_id,synthetic
+C_ATTRIBUTE,2014-03-03,2014-04-23,attribute_only,INSPIRE_COA_2014,true
+C_LEAF,2014-06-23,2018-07-12,leaf_parent_late_recorded,INSPIRE_COA_2014,true
+C_ANCESTOR,2015-01-01,2015-01-01,ancestor_only,SYNTHETIC_ASSUMPTION,true
+C_PARTY,2014-07-01,2014-07-01,party_and_role,SYNTHETIC_ASSUMPTION,true
+C_QUIET,2015-06-26,2015-06-26,no_new_business_event,INSPIRE_COA_2015_SYNTHETIC_DATE,true
+C_ALIAS,2015-01-01,2015-01-01,contextual_alias_version,SYNTHETIC_ASSUMPTION,true

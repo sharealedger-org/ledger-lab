@@ -1,0 +1,4 @@
+inspiration_id,url,use,required_for_generation
+INSPIRE_COA_2014,https://dpb.virginia.gov/forms/20140717-1/CHARTOFACCOUNTSCHANGES6-6-13through6-25-14-updated2018-07-12.pdf,Dated attribute/parent changes and a later recorded correction; SIM labels/keys/baseline are invented,false
+INSPIRE_COA_2015_SYNTHETIC_DATE,https://dpb.virginia.gov/forms/20140717-1/FINAL--CHARTOFACCOUNTSCHANGES6-26-2014through6-30-2015.pdf,Responsible-parent move; adopting action date as synthetic effective date is an explicit scenario assumption,false
+SYNTHETIC_ASSUMPTION,,Population/keys/party-role/risk/ancestor/alias cases and all ungrounded dates are invented,false

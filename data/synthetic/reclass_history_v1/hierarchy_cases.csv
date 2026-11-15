@@ -1,0 +1,7 @@
+case_id,hierarchy_id,child_type,child_key,lookup_date,expected_path
+leaf_before,reporting,agency,SIM_A405,2014-06-22,agency:SIM_A405>secretarial_area:SIM_S01>root:SIM_ROOT
+leaf_on,reporting,agency,SIM_A405,2014-06-23,agency:SIM_A405>secretarial_area:SIM_S02>root:SIM_ROOT
+leaf_after,reporting,agency,SIM_A405,2014-06-24,agency:SIM_A405>secretarial_area:SIM_S02>root:SIM_ROOT
+ancestor_before,program,service_area,SIM_SA71501,2014-12-31,service_area:SIM_SA71501>program:SIM_P715>function:SIM_FN7>root:SIM_ROOT
+ancestor_on,program,service_area,SIM_SA71501,2015-01-01,service_area:SIM_SA71501>program:SIM_P715>function:SIM_FN3>root:SIM_ROOT
+quiet_instrument,reporting,instrument,SIM_I000002,2015-06-26,instrument:SIM_I000002>agency:SIM_A748>agency:SIM_A793>secretarial_area:SIM_S01>root:SIM_ROOT

@@ -1,0 +1,15 @@
+case_id,table,business_key,date_mode,as_of_date,event_date,run_date,value_field,expected_version_id,expected_value
+before_baseline,reference_history,agency|SIM_A405,AS_OF,2002-12-31,2013-07-01,2015-07-01,label,NOT_FOUND,
+attribute_before,reference_history,agency|SIM_A405,AS_OF,2014-03-02,2013-07-01,2015-07-01,label,REF-agency-SIM_A405-v1,SIMULATED ADMINISTRATIVE AGENCY
+attribute_on,reference_history,agency|SIM_A405,AS_OF,2014-03-03,2013-07-01,2015-07-01,label,REF-agency-SIM_A405-v2,SIMULATED SERVICE AGENCY
+attribute_after,reference_history,agency|SIM_A405,AS_OF,2014-03-04,2013-07-01,2015-07-01,label,REF-agency-SIM_A405-v2,SIMULATED SERVICE AGENCY
+event_date_switch,reference_history,agency|SIM_A405,EVENT_DATE,,2013-07-01,2015-07-01,label,REF-agency-SIM_A405-v1,SIMULATED ADMINISTRATIVE AGENCY
+supplied_run_date,reference_history,agency|SIM_A405,RUN_DATE,,2013-07-01,2015-07-01,label,REF-agency-SIM_A405-v2,SIMULATED SERVICE AGENCY
+sal_change,sal_history,SIM_I000001,AS_OF,2014-03-03,2013-07-01,2015-07-01,risk_band,SAL-SIM_I000001-v2,HIGH
+party_change,party_history,SIM_P000001,AS_OF,2014-07-01,2013-07-01,2015-07-01,sector,PARTY-SIM_P000001-v2,PUBLIC
+car_before,car_history,SIM_I000001|SIM_C000001|OWNER,AS_OF,2014-06-30,2013-07-01,2015-07-01,party_id,CAR-SIM_I000001-OWNER-v1,SIM_P000001
+car_on,car_history,SIM_I000001|SIM_C000001|OWNER,AS_OF,2014-07-01,2013-07-01,2015-07-01,party_id,CAR-SIM_I000001-OWNER-v2,SIM_P000002
+alias_many_to_one,alias_history,fund|SIM_A405|SIMULATED GENERAL,AS_OF,2015-01-01,2013-07-01,2015-07-01,target_key,ALIAS-405-GENERAL-v1,SIM_F405
+alias_context,alias_history,fund|SIM_A748|SIMULATED GENERAL FUND,AS_OF,2015-01-01,2013-07-01,2015-07-01,target_key,ALIAS-748-FUND-v1,SIM_F748
+alias_dated_before,alias_history,fund|SIM_A405|SIMULATED GENERAL FUND,AS_OF,2014-12-31,2013-07-01,2015-07-01,target_key,ALIAS-405-FUND-v1,SIM_F405
+alias_dated_on,alias_history,fund|SIM_A405|SIMULATED GENERAL FUND,AS_OF,2015-01-01,2013-07-01,2015-07-01,target_key,ALIAS-405-FUND-v2,SIM_F405B

@@ -1535,3 +1535,24 @@ reporting fixes, a small simulated registry fixture, then one new corpus run if
 checks pass. See [identity recovery v1](IDENTITY_RECOVERY_V1_DESIGN.md). The
 three-party/two-year pilot is separate from a full synthetic population. Real
 reference-name ambiguities and disk capacity still gate full-corpus admission.
+
+### Reclass synthetic-source independence (owner clarification, 2026-11-14)
+
+The owner authorized source-informed synthetic histories without requiring the
+official publications as corpus inputs. `scripts/generate_reclass_history.sh`
+reproduces the versioned pack from compiled Scala and fixed parameters. All dates,
+keys and assumptions are recorded; selected VA patterns/dates are inspiration for
+fictional records, not claims about actual entity histories. Sources need not
+remain accessible. The raw research downloads were removed from the current
+corpus; URL/hash/observation records remain. Generation has no network/raw-VA/PDF
+dependency. [Evidence](../data/test_evidence/reclass_history_v1_20261115/README.txt).
+
+The two logical families are reference/entity/relationship histories and hierarchy
+edges. Physical schemas include agency/fund/object/program/source attributes, SAL,
+CAR owner/party relationships, parties, contextual aliases and multiple hierarchies.
+Start dates are inclusive; later starts delimit versions. Explicit end-date/gap
+semantics are intentionally not inferred. RUNDATE is a supplied lookup operand,
+not the machine clock or a knowledge snapshot. Recorded change dates are separate.
+Generated oracles are input controls, not measured reclass processing. The actual
+04 engine must still generate balanced SJE transfers and apply them through CKB;
+05 Switch/Recast must consume the declared histories through explicit adapters.

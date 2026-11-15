@@ -1,0 +1,2 @@
+instrument_id,last_business_event_date,reference_change_id,new_activity_on_change_date,synthetic
+SIM_I000002,2013-07-01,C_QUIET,false,true

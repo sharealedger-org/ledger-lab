@@ -1581,3 +1581,43 @@ Local Git history inspected has one reference import, not released histories.
 Source hashes/sizes, group counts, candidate source paths/date formats verified.
 Methods and qualifications retained in research_method.txt. No financial producer,
 lookup policy, corpus output, Gold, Python logic or Control access changed.
+
+## 2026-11-14 - Self-contained synthetic reference history v1 (Track D)
+
+**Claim:** deterministic input histories can exercise GenevaERS-style start-date
+selection and hierarchy changes without downloaded-source availability. **State:**
+`verified` for bounded synthetic generation and declared fixture/oracle validation
+only; reclass financial engine, corpus adapter and target-runtime execution remain
+`not_implemented` by this slice. [Input contract](../data/synthetic/README.md),
+[pack](../data/synthetic/reclass_history_v1/README.txt),
+[evidence](../data/test_evidence/reclass_history_v1_20261115/README.txt).
+
+Owner explicitly approved recording source inspiration and synthetic assumptions
+without requiring the publications in the corpus. Scala SyntheticReferenceHistory
+prepares six declared CSV histories; SyntheticReferenceHistoryCheck consumes those
+same contracts. Bash orchestrates only. Bound: 2..10000 instruments, 100000 total
+history rows, 32 MiB history bytes, bounded date/forest indexes. No whole-corpus
+financial work, no new Python and no embedded accounting in Bash. The generator
+is outside the measured financial path and emits no SJEs.
+
+Actual pack: 207 history rows/32 simulated instruments and parties, six change
+journal records, 14 lookup oracles, six path oracles, quiet-instrument context and
+three deliberately invalid hierarchy variants. Main histories are start-only;
+greatest start <= explicit fixed/event/run date. Recorded dates are separate from
+lookup operands and do not impose a database-wide snapshot or knowledge cutoff.
+Repeated labels have explicit context, not invented real-VA chronology.
+
+Baseline 11 APA tests passed before additions. Final 18 tests (7 new + 11 baseline)
+passed; actual delivered CSV pack separately validated. Exact boundary and bad
+oracle falsifiers, ancestor-only changes, duplicate starts/cycles/orphans and SAL
+agency/hierarchy consistency covered. Independent Bash/Scala regeneration matches
+byte-for-byte; all 18 manifest hashes verified. Prepublication review caught a
+quiet-instrument SAL/hierarchy mismatch; fixed and added a regression before final
+pack generation/replay. Earlier preparation logs are explicitly preliminary.
+
+Raw downloaded research PDFs/HTML removed from current corpus, preserving optional
+research metadata and a temporary external cache. This does not alter Git history,
+prior measured outputs, Gold or real-reference mappings. No external source is
+read during generation. No new Control reading. Subsequent SJE generation/apply,
+Switch/Recast engine outputs, explicit end dates/gaps, backdated walk-forward,
+independent engine architecture certification and scale measurements remain open.

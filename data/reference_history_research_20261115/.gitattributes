@@ -1,2 +1,0 @@
-# Preserve downloaded source bytes so recorded SHA-256 values survive checkout.
-sources/* -text

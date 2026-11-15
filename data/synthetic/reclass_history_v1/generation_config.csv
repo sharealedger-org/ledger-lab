@@ -1,0 +1,9 @@
+parameter,value
+generator_version,reclass_history_v1.0
+generator_source_sha256,935c1fc8dc67cbe70c7c785de29e49f5b7444275821d7149038f21070c002078
+instruments,32
+baseline_date,2003-01-01
+run_date,2015-07-01
+date_semantics,greatest_start_not_after_lookup_date
+external_sources_required,false
+generated_data_classification,synthetic_source_informed

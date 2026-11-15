@@ -62,7 +62,7 @@ Seeded 2026-11-11 from the handoff entries. On the same day the handoff was trim
 
 ## Track D: control comparison (Track D)
 
-- [ ] Build the reclass reference-history fixture from retained official VA releases: explicit agency 405 hierarchy move and dated secretarial attribute change. Validate agency/fund context and surrogate crosswalks; preserve unknown effective dates. Sources: `data/reference_history_research_20261115/`.
+- [x] Generate a reproducible synthetic reclass reference/history pack informed by official VA examples, with publications optional provenance: `data/synthetic/reclass_history_v1/`; 18 tests and byte-identical replay. Real-surrogate crosswalks and financial consumers remain separate work.
 
 
 - [ ] Resolve 371 ambiguous APA reference names with an explicit key/date contract before the identity-recovery corpus run; preserve candidates in `data/test_evidence/identity_recovery_20261114/conflicts.csv`. Confirm sufficient disk space (75 GiB free, about 128 GiB prior output plus scratch) without deleting retained runs implicitly. See `docs/IDENTITY_RECOVERY_V1_DESIGN.md`.

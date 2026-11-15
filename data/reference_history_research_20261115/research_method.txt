@@ -1,9 +1,13 @@
 Scope: read-only reference-data research, November 14 Arizona / November 15 UTC.
 No engine, lookup policy, canonical financial state, or effective date was changed.
 
-Official PDFs/HTML are retained under sources/. source_urls.tsv gives URLs;
-source_manifest.csv records retrieval timestamps, byte counts and SHA-256. The
-archive HTML is separately hashed. PDF types and page counts were checked with
+Owner clarification after research: the publications are optional design
+provenance, not synthetic-data inputs. Raw PDFs/HTML were removed from the corpus;
+a temporary research cache was retained at
+/private/tmp/ledger-lab-va-reference-research-20261115/sources/.
+source_urls.tsv and source_manifest.csv preserve URLs and original retrieval
+timestamps, sizes and hashes, even if that cache or the websites disappear. The
+archive-listing hash likewise records the earlier retrieval. PDF types and page counts were checked with
 file; text was inspected through the web PDF reader. Screenshot retrieval failed;
 no visual-table extraction or OCR result is claimed.
 
