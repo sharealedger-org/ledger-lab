@@ -70,5 +70,8 @@ for current in monthly_a monthly_b monthly_c; do
   du -sk "$run" > "$run/retained_allocated_kib.txt"
   date -u +%FT%TZ > "$run/EVALUATED"
   printf '%s,EVALUATED,%s\n' "$current" "$(date -u +%FT%TZ)" >> "$out/status.csv"
+  if [[ "$current" != monthly_a ]]; then
+    bash "$repo/scripts/deduplicate_verified_run_storage.sh" "$out/monthly_a" "$run" > "$run/storage_deduplication.log" 2>&1
+  fi
 done
 date -u +%FT%TZ > "$out/THREE_EXECUTIONS_EVALUATED"

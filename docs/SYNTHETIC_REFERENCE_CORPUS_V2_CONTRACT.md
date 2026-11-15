@@ -54,5 +54,10 @@ correct and rerun under a new attempt identity; no mixed-code replicates.
 Keep active work local with caffeinate and monitoring. Verify run success,
 controls and hashes before archive copying; verify destination capacity and
 copied bytes. Three retained corpora plus reports need measured admission;
-archive sequentially only after each successful evaluation if simultaneous local
-retention is insufficient. Do not delete local results without separate authority.
+The independently measured runs retain every path and byte. After evaluation and
+repeat comparisons, identical large files in subsequent new runs may share hard
+links to the first run, after SHA-256 and byte comparison. Record allocation
+before/after this post-measurement storage operation separately; it is not an
+engine optimization or a change to logical retention. No historical data is
+selected and no differing file is replaced. Archive copies remain independent.
+Do not delete local results without separate authority.
