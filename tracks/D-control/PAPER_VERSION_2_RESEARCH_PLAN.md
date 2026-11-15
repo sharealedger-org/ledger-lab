@@ -6,6 +6,27 @@ Updated by Codex, 2026-11-13 12:49:02 AZT (UTC−07:00).
 
 ## Deliverable and scope
 
+### Phase introductions (owner direction, 2026-11-15)
+
+Include a phase introduction before Papers 01 and 02, another before Papers 03
+and 04, and further introductions at subsequent phase boundaries. These give
+context to the papers that follow and can summarize what preceding papers
+concluded. They complement the overall monograph introduction; they do not
+replace the individual papers' arguments or change existing paper numbers.
+
+Each phase introduction should explain the research questions, data and experiment
+scope, why the following papers belong together, and how the phase builds on
+earlier findings and remaining limitations. Summarize prior conclusions with their
+evidence qualifications, distinguishing completed results from proposed work.
+The first introduction establishes the direct-VA-corpus Phase 1 setting; the next
+bridges Papers 01/02 results to the vendor-centered synthetic Phase 2 work likely
+addressed in Papers 03/04. A later introduction frames the broader Phase 3 topology
+from allocations to reclass; exact subsequent paper groupings remain to be set.
+
+Draft/revise these introductions alongside the papers in the separate writing
+sessions. Preserve the existing private-source/member-review workflow and decide
+section filenames and numbering there rather than renumbering public interfaces.
+
 **Owner sequencing correction, 2026-11-14:** Complete Phase 1b before revising Papers 1 and 2; formal Phase 2 follows. Phase 1b separates generated-data enhancement, bounded companion reporting, and the broadened native-AI exploration objective. See the [owner statement and reflection](CODEX_REFLECTIONS.md#2026-11-14--native-ai-for-financial-exploration-owners-correction-and-codex-reflection). This supersedes the earlier immediate-revision sequence below; it does not upgrade any evidence.
 
 Produce two coherent, circulation-ready revised papers reflecting Phase 1, for the owner to share with interested parties. The earlier versions remain preserved in the control repository. Paper source editing remains in TDS; this repository holds the evidence and revision plan. Do not copy private monograph sources into public tracked files or alter the control's copies.

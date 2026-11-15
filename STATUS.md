@@ -1,5 +1,11 @@
 # Ledger Lab: Status (read this first)
 
+**2026-11-15 bounded Phase 2 pilot:** FY2003–FY2004 synthetic component test passed
+through generation, sorted assignment, posting and expanded reporting; see
+[evidence](data/test_evidence/component_pilot_0304_20261115/README.md). Limits remain
+explicit. Next checkpoint is a separate repository consolidation session before
+larger Phase 2 execution; paper revisions proceed independently.
+
 **Experiment phases, owner clarification 2026-11-15:** Phase 1 = direct VA corpus;
 Phase 2 = current vendor-centered synthetic work, likely Papers 3 and 4 on improved
 cost curves and AI models; Phase 3 = broader CKB topology from tentative allocations

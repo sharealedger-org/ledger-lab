@@ -1,0 +1,28 @@
+[2026-11-15 02:15:50] corpus start: years=03,04 lanes=1 chainWidth=1  wall-clock record: /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/component_pilot_0304_20261115_v1/logs/financial/corpus_wallclock_20261115_021550.csv
+[2026-11-15 02:15:50] === FY2003 prep start (ttl,2p,2m) ===
+[2026-11-15 02:16:24] === FY2003 prep exit 0 ===
+[2026-11-15 02:16:24] === FY2004 prep start (ttl,2p,2m) ===
+[2026-11-15 02:16:30] === FY2003 chain start (3,20,21) ===
+[2026-11-15 02:17:25] === FY2004 prep exit 0 ===
+[2026-11-15 02:17:25] prep lanes finished rc=0
+[2026-11-15 02:17:30] === VIEWS (5v) over 2 years (all prep committed; posting may still be running) ===
+[2026-11-15 02:17:46] === FY2003 chain exit 0 ===
+[2026-11-15 02:17:46] === FY2004 chain start (3,20,21) ===
+[2026-11-15 02:18:01] === VIEWS (5v) exit 0 ===
+[2026-11-15 02:18:41] === FY2004 chain exit 0 ===
+[2026-11-15 02:18:41] chain finished rc=0
+[2026-11-15 02:18:41] views finished rc=0
+[2026-11-15 02:18:41] Archiving run evidence into repository...
+Archiving corpus run evidence to /Users/ktwitchell001/workspace/sharealedger/ledger-lab/data/test_evidence/corpus_runs/run_20261115_021550 ...
+  Copied wallclock record: /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/component_pilot_0304_20261115_v1/logs/financial/corpus_wallclock_20261115_021550.csv
+  Combined cost_surface_all_years.csv (4 rows)
+  Combined reconciliation_results_all_years.csv (6 rows)
+  Combined process_metrics_all_years.csv (12 rows)
+  Combined run_manifest_all_years.csv (4 rows)
+  Combined partition_catalog_all_years.csv (13 rows)
+  Combined sort_events_all_years.csv (4 rows)
+  Copied 5v cost surface
+  Written quarantine summary (/Users/ktwitchell001/workspace/sharealedger/ledger-lab/data/test_evidence/corpus_runs/run_20261115_021550/quarantine_summary.csv)
+  Written corpus totals (/Users/ktwitchell001/workspace/sharealedger/ledger-lab/data/test_evidence/corpus_runs/run_20261115_021550/corpus_totals.csv)
+Archive complete: /Users/ktwitchell001/workspace/sharealedger/ledger-lab/data/test_evidence/corpus_runs/run_20261115_021550/RUN_SUMMARY.md
+[2026-11-15 02:18:42] ALL YEARS COMPLETE; wall-clock record: /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/component_pilot_0304_20261115_v1/logs/financial/corpus_wallclock_20261115_021550.csv

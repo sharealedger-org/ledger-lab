@@ -201,3 +201,50 @@ Chapter 58 connects contract identity, detailed balances and effective-dated des
 The preceding owner clarifications also govern the next session: the original minimum-cost paper is 2018; it honored Denna's first class, which Kip attended. Papers 1 and 2 are for initial review by Eric Denna, potentially passed to McCarthy at Kip's request. Owner has removed synthetic generation as a present necessity. We are assessing a Paper 1 stopping point around demonstrated utility of the transaction–balance measurement framework; proving marginal costs of expanded views may belong in Paper 5. Paper 2 can report narrow experimental limits and articulate a broader research invitation. No new synthetic-data task, reporting repair or training launch follows from this scan.
 
 My changed understanding: the contribution must be located within the chain from REA/REAL education through practical systems and the textbook, then the 2018 cost framework, then our reproducible measurements and proposed AI inquiry. We should not rebrand longstanding goals as AI-era inventions. The current contribution can be valuable precisely because it makes selected claims measurable and exposes where our tests do not yet reach the inherited ambition.
+
+## 2026-11-15 — Owner intervention on determination order before CKB execution order
+
+Authorship: Codex, CKB-side session. This is a qualitative interaction record,
+not a controlled model comparison or evidence of changed model training.
+
+While preparing the authorized FY2003–FY2004 synthetic test, I proposed reusing
+existing vendor/revenue adapters. When the owner asked whether they scale and
+are CKB-compatible, I identified bounded in-memory reference maps and outstanding
+scale verification. I did not first derive a sorted-stream alternative from the
+CKB principles already available in this repository.
+
+The owner supplied the architectural prompt: sort source data by the determining
+keys, resolve vendor assignment and emit records, then re-sort into the receiving
+business process's CKB order. I recognized that this generalizes beyond vendor
+assignment to identity resolution, contextual references and cross-process routing.
+The owner then observed that native CKB training might have led me to this pattern
+without their interruption.
+
+The useful observation is the gap between being able to explain CKB after a prompt
+and spontaneously applying it to a new adapter problem. I initially treated the
+existing adapter and its lookup limits as the starting architecture. The owner
+redirected the design toward the access order required by the determination, then
+the order required by the downstream process. Written architectural instructions
+were present; their presence alone did not ensure that I used this reasoning first.
+This exchange does not establish why that happened or prove a training remedy.
+
+Reusable lesson: before choosing a lookup structure, declare the determining key,
+ordered source/reference/rule partitions, effective-date and ambiguity semantics,
+bounded merge state, emitted record contract and receiving CKB sort order. Identify
+which orders can share a stream and which require a physical sort. A small lookup
+may still be appropriate, but should follow an explicit workload/bounds argument.
+Do not claim the existing TTL implements this proposed sorted assignment topology
+without tracing and testing its actual producers and consumers.
+
+Potential research use: an attributed design-process anecdote for Papers 3/4,
+illustrating the difference between prompted architectural recognition and
+unprompted architectural application. A stronger test would use held-out adapter
+workloads and compare generic instructions, explicit CKB examples and any available
+training intervention, under matched tasks and resources. Assess first-proposal
+quality, required owner corrections, semantic correctness, bounded state, declared
+sorts and actual downstream consumption. Do not infer runtime superiority from a
+better design explanation or treat this exposed conversation as a holdout case.
+
+Status: design correction recorded; no new adapter implementation or successful
+FY2003–FY2004 test is established by this entry. Keep this companion reflection
+outside any later Control data-generation handoff unless disclosure is authorized.

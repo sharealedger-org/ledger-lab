@@ -6,6 +6,14 @@ capabilities or new experimental results.
 
 ## Purpose and sequencing
 
+**Paper context, owner direction 2026-11-15:** The monograph should include a
+phase introduction before Papers 01/02, another before 03/04, and introductions
+at subsequent phase boundaries. Each frames the papers that follow and can
+summarize prior papers' conclusions, preserving their limitations and separating
+results from proposed experiments. See the
+[paper revision plan](../tracks/D-control/PAPER_VERSION_2_RESEARCH_PLAN.md#phase-introductions-owner-direction-2026-11-15).
+Writing remains in separate paper sessions; exact later paper groupings are open.
+
 **Current transition, owner clarification 2026-11-15:** We are closing Phase 1 by
 updating Papers 1 and 2 with its experimental results, while preparing the first
 version of Phase 2 synthetic data to inform development/revision of Papers 3 and
@@ -166,6 +174,18 @@ truth, causal validity or correctness of a proposed allocation. Future-dated
 outputs are conditional scenarios, not forecasts established by execution alone.
 
 ## Architecture and current limits
+
+### Repository consolidation checkpoint
+
+Owner agreed 2026-11-15: finish the authorized bounded FY2003–FY2004 test, then
+perform a separate infrastructure session before larger Phase 2 execution. Paper
+revisions may proceed independently. Consolidation should establish one current
+roadmap and authoritative generation design, classify current contracts/evidence/
+historical records/superseded proposals, replace obsolete plans with pointers,
+check links and session entry points, and produce a document map and reviewable
+cleanup commit. Preserve dated reflections, failed approaches and experiment
+evidence. Keep cleanup separate from engine changes and do not rewrite history
+to imply that earlier decisions were always current.
 
 Scala owns financial processing and measured views; Bash owns orchestration.
 Preserve SJE balance, lineage, rule identity, effective dates and process metrics.

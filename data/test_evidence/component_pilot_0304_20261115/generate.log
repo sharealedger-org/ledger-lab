@@ -1,0 +1,28 @@
+[info] welcome to sbt 1.10.11 (Eclipse Adoptium Java 21.0.8)
+[info] loading settings for project global-plugins from idea.sbt...
+[info] loading global plugins from /Users/ktwitchell001/.sbt/1.0/plugins
+[info] loading settings for project va_pipeline-build from assembly.sbt, plugins.sbt...
+[info] loading project definition from /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/project
+[info] loading settings for project root from build.sbt...
+[info] set current project to va_pipeline (in build file:/Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/)
+[info] running org.universalledger.foundation.va.corpus.ComponentPilot --spec /Users/ktwitchell001/workspace/sharealedger/ledger-lab/data/synthetic/component_pilot_0304_v1 --base /Users/ktwitchell001/workspace/sharealedger/ledger-lab/data/synthetic/connected_reporting_v1 --histories /Users/ktwitchell001/workspace/sharealedger/ledger-lab/data/synthetic/reclass_history_v1 --out /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/component_pilot_0304_20261115_v1/inputs --chunk 2
+RESULT component_pilot=/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/component_pilot_0304_20261115_v1/inputs status=generated_not_posted
+[success] Total time: 1 s, completed Nov 15, 2026, 2:15:50 AM
+        9.94 real        24.82 user         1.69 sys
+           666333184  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              291970  page reclaims
+                   0  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   8  messages sent
+                   8  messages received
+                  39  signals received
+                 193  voluntary context switches
+               46530  involuntary context switches
+         56808101924  instructions retired
+         87247955446  cycles elapsed
+           650297344  peak memory footprint

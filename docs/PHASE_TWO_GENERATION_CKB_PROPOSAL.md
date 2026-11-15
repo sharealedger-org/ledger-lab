@@ -1,5 +1,13 @@
 # Proposed Phase 2 synthetic generation CKB
 
+**Bounded implementation evidence, 2026-11-15:** The
+[FY2003–FY2004 pilot](../data/test_evidence/component_pilot_0304_20261115/README.md)
+ran successfully with an additional determining-key assignment sort/merge between
+context and entity order. Its bounded contract is in
+[COMPONENT_PILOT_0304_CONTRACT.md](COMPONENT_PILOT_0304_CONTRACT.md). The wider design
+below remains a proposal beyond that evidence. Consolidate repository documents
+in a separate session before larger execution.
+
 2026-11-15. Design proposal only, before test code. This generator supports
 integrated experiment Phase 2: initial vendor-centered synthetic work, likely
 informing Papers 3 and 4 on improved cost curves and AI models. Phase 1 is direct
@@ -46,6 +54,14 @@ the first slice should use additive synthetic events with separate totals instea
 Select companion scale after reviewing the scenario matrix and source profile.
 
 ## Topology
+
+**Adapter refinement from owner discussion, 2026-11-15:** Before choosing a
+lookup map, consider sorting by the determining keys, merging source/identity/
+reference/rule partitions, emitting resolved records with explicit ambiguity
+statuses, then sorting into the receiving process's CKB order. Component order,
+assignment order and entity execution order can differ. Share compatible orders;
+declare additional sorts when required. This is a design requirement to evaluate,
+not evidence that existing adapters already implement a sorted assignment join.
 
 ```text
 Frozen sources + manifest + scenario/reference specifications

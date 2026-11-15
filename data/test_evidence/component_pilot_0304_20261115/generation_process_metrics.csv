@@ -1,0 +1,8 @@
+process_id,rows_in,rows_out,spills,output_bytes
+context_sort,60,60,30,7322
+context_generation,24,36,0,6660
+registry_sort,6,6,3,439
+determination_sort,36,36,18,6660
+sorted_assignment_merge,36,36,0,9190
+entity_sort,36,36,18,9190
+entity_source_emission,36,36,0,3902

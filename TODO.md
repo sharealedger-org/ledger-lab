@@ -64,6 +64,10 @@ Seeded 2026-11-11 from the handoff entries. On the same day the handoff was trim
 
 ## Track D: control comparison (Track D)
 
+- [ ] In the separate paper-writing sessions, add phase introductions before Papers 01/02, before 03/04, and at later phase boundaries. Frame the following papers and summarize prior conclusions with evidence qualifications; see the paper revision plan. Preserve existing paper numbers and private-source workflow.
+
+- [ ] The bounded test completed on 2026-11-15. After the bounded FY2003–FY2004 synthetic test, run a separate repository consolidation session before larger Phase 2 execution: current document map, authoritative plans, superseded pointers and link checks; preserve evidence/reflections and keep engine changes separate.
+
 Current direction is the 2026-11-15 [strategy](docs/SYNTHETIC_CONNECTED_PROCESS_STRATEGY.md)
 and [Phase 2 proposal](docs/PHASE_TWO_GENERATION_CKB_PROPOSAL.md). Older Phase 1b
 sequencing and reclass-in-Phase-2 tasks below are historical backlog; papers are

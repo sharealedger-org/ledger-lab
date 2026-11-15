@@ -1,5 +1,21 @@
 # Ledger Lab Handoff
 
+## 2026-11-15 (TRACK D) - Phase introductions in the paper plan
+
+Owner requested an introduction before Papers 01/02, another before 03/04 and further introductions as later phases begin. These frame following papers and may summarize prior conclusions. Recorded in `tracks/D-control/PAPER_VERSION_2_RESEARCH_PLAN.md`, strategy and TODO. Separate paper sessions implement them in the established private-source workflow; later paper groupings/section filenames remain open. No paper source edits or new execution.
+
+## 2026-11-15 (TRACK D) - Bounded component FY2003–FY2004 pilot completed
+
+Owner requested recording consolidation then resuming the authorized test. Plan now requires a separate infrastructure session after this test and before larger Phase 2 execution; paper revisions remain independent. Implemented source-preparation Scala `ComponentPilot`/`ComponentPilotCheck`, Bash `run_component_pilot.sh`, input fixture and four tests. Explicit workload contract: `docs/COMPONENT_PILOT_0304_CONTRACT.md`. Existing financial engine unchanged; earlier corpus assignment draft remains excluded.
+
+Command: `bash scripts/run_component_pilot.sh --out "$PWD/session-run.tmp/component_pilot_0304_20261115_v1"`. Financial run 02:15:50–02:18:42 AZT; checker completed 02:19:17. Runtime `PILOT_COMPLETE` exists. Evidence: `data/test_evidence/component_pilot_0304_20261115/README.md`; auto financial archive `data/test_evidence/corpus_runs/run_20261115_021550/`. Baseline 32 passed, generator tests four passed; 30 financial events/60 balanced SJE rows, six employee responsibility records, 96 conservation checks, 20 prior history oracles, cross-component vendor and quiet master/cutoff checks passed. Generation used real context/determination/entity external sorts with tiny chunks and supplied IDs.
+
+Limits: bounded fixture, synthetic financial envelopes without verified VA 2003/04 anchors; employee evidence only, no payroll; no AI evaluation; existing 2014/15 history changes not retimed. APA drops raw event ID downstream (signature multiset verified instead); PO SJE rule fields blank. These are recorded partial lineage, not fixed or certified. Sources matched saved SHA receipts; runtime code snapshots retained. No larger run, new cost point, allocation/reclass engine or Control access. Next: repository consolidation in a separate session. New test work not committed/pushed by this session.
+
+## 2026-11-15 (TRACK D) - Adapter pattern and native-CKB reasoning anecdote
+
+Owner interrupted test preparation to ask about adapter scale/CKB compatibility, then supplied the determining-key sort/merge/emission followed by execution-key sort pattern. Recorded the interaction and qualified training hypothesis in `tracks/D-control/CODEX_REFLECTIONS.md`; updated generation proposal. No new adapter/test outcome. Resume authorized FY2003–FY2004 work with this pattern evaluated before defaulting to reference maps. No baseline test log exists from the interrupted launch; do not claim it ran.
+
 ## 2026-11-15 (TRACK D) - Planning checkpoint for continued generation
 
 Owner will revise Papers 1–4 in separate sessions, authorized further synthetic generation work and requested commit/push of conclusions. Strategy, integrated phase numbering, component-first/two-order CKB proposal, financial bounds and exploratory corpus/paper iteration are checkpointed. The older SyntheticVendorAssignments source and its preparation-script additions remain uncommitted drafts. Next: finalize small scenario/schema/adapter contracts and proceed with a bounded connected implementation; no full-corpus admission from planning alone.

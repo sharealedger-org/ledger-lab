@@ -1,0 +1,8 @@
+check,status,detail
+generation_context_and_identity,PASS,36 events; shared supplier across two components; background separate
+financial_event_multiset,PASS,30 financial source events; 60 balanced SJE rows; exact known totals by year/family
+dated_master_quiet_change,PASS,SMALL FY2003; LARGE FY2004; change after last transaction
+employee_cutoff,PASS,six responsibility records; 35 available evidence rows at 2004-01-20
+explicit_sje_source_event_lineage,PARTIAL,"APA TTL drops voucher/source event identity; raw sidecar exact, downstream signature multiset only; PO SJE rule fields blank"
+va_financial_anchor,NOT_VERIFIED,envelopes synthetic; no FY2003/04 ACFR tie-out
+scale_and_ai_effectiveness,NOT_TESTED,bounded fixture only; no model evaluated

@@ -1648,3 +1648,47 @@ views, connected-fixture controls, and a new full corpus run/inspection. No new
 reclass journals or engine demonstrations are prerequisites. Existing legacy
 reclass code is not removed or newly certified by this decision. No financial
 engine change or new Control access in this cleanup session.
+
+## 2026-11-15 — component-pilot-0304-v1 pre-implementation contract
+
+State: `partially_verified` source-preparation slice, owner-authorized bounded test.
+Contract: `docs/COMPONENT_PILOT_0304_CONTRACT.md`. Claim: context-generated inputs
+can use determination-key sorted assignment and process/entity/date resorting,
+then reach actual financial consumers. Inspected SortEngine, APA/PO producer,
+39-column SJE, Bash orchestration and expanded report consumers. Cheapest baseline
+falsifier passed: 32 tests in `/private/tmp/phase2-0304-baseline.log` before changes.
+Initial generator tests passed four cases (determinism/chunking, bad assignment,
+invalid dates/duplicate IDs, bounded sort fan-in). New workload not yet admitted
+as corpus-scale or target-runtime evidence.
+
+Finding: existing APA makeRow sets original document ID to Unknown and does not
+carry voucher number/raw event identity into SJE. Pilot preserves exact raw-file/
+row/event sidecar and tests financial signature multisets, but this does not prove
+an unambiguous source-event lineage contract at corpus scale. No financial engine
+change is introduced to conceal this limitation. Employee responsibility evidence
+is nonfinancial; no employee payroll adapter is claimed. Existing GERS-001/002/003
+qualifications apply; supplied IDs avoid implementing a new allocator. Synthetic
+FY2003/04 envelopes are not verified VA anchors. Actual pipeline result pending.
+
+### Completed bounded evidence, 2026-11-15 02:19 AZT
+
+Actual `component-pilot-0304-v1` run completed under
+`session-run.tmp/component_pilot_0304_20261115_v1/`; evidence receipt
+`data/test_evidence/component_pilot_0304_20261115/README.md`. Four new tests pass,
+including reorder/chunk invariance and negative controls. Actual context sort,
+determination-key registry merge, entity sort, source emission, APA/PO consumers,
+posting/GL/permutation and separate expanded reporting all executed. Independent
+checker verifies 30 financial events → 60 SJE rows in 30 balanced journal groups,
+known family/year totals, shared vendor across contexts, quiet master change and
+availability cutoff. Reporting verifies 96 conservation checks and 20 existing
+history oracles; 86 input rows comprise movements and period balances.
+
+Assessment remains `partially_verified` overall: verified bounded functional path,
+not full-corpus capacity or a target-runtime capability. Source lineage is exact
+up to raw input records; downstream financial signature multiset matches but APA
+source IDs are not retained. Inspection also found PO SJE rule fields blank. These
+are unresolved existing adapter limitations. No financial logic was changed to
+make the fixture pass; new code prepares/inspects inputs in Scala and orchestration
+is Bash. Generation process RSS/time is retained separately from financial metrics.
+No verified VA 2003/04 anchors, payroll, model result, allocation/reclass engine or
+comparable new cost point. Repository consolidation is next, before larger Phase 2.

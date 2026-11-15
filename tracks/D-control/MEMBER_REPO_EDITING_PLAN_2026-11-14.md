@@ -1,3 +1,16 @@
+# Phase introduction requirement — owner update, 2026-11-15
+
+Include a contextual phase introduction before Papers 01/02, another before
+03/04, and introductions at later phase boundaries. They frame the research,
+data and experiments in the papers that follow and may summarize preceding
+papers' conclusions with their evidence limitations. Phase 1 covers direct VA
+corpus work; Phase 2 introduces vendor-centered synthetic work, likely Papers
+03/04 on improved cost curves and AI models; Phase 3 broadens the topology from
+allocations to reclass. Later paper groupings remain open. Preserve paper numbers;
+agree section filenames in the writing session. This extends the writing plan,
+not the scope of any completed member-repository edit. No private sources are
+changed by recording this requirement here.
+
 # Member repository editing plan for the introduction and Papers 1 and 2
 
 Prepared 2026-11-14 from the owner's extended discussion with Codex. The deliverable is a coherent private review package for Eric Denna, who may pass it to William E. McCarthy at the owner's request. Revise the monograph 00 introduction and Papers 1 and 2 together. This is an evidence-led revision of an ongoing collaborative research program, not a claim that every proposed capability has been built.
