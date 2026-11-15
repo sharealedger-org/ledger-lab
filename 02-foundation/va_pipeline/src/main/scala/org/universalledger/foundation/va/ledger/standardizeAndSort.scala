@@ -154,6 +154,18 @@ import scala.io.Source
 
 object standardizeAndSort {
 
+  // Snapshot-scoped source provenance, encoded for the existing unquoted SJE CSV contract.
+  // This identifies an existing input record; it does not allocate a new business entity.
+  private case class SourceRecord(document: String, locator: String)
+  private def encoded(value: String): String = java.util.Base64.getUrlEncoder.withoutPadding
+    .encodeToString(value.getBytes(StandardCharsets.UTF_8))
+  private def locator(path: String, ordinal: Long): String = {
+    require(ordinal > 0)
+    s"SRC1:${encoded(path)}:$ordinal"
+  }
+  private def document(source: Option[SourceRecord]): String = source.filter(_.document.nonEmpty)
+    .map(r => "DOC1:" + encoded(r.document)).getOrElse("Unknown")
+
   private case class AccountingRule(
     recordType: String,
     ruleSetId: String,
@@ -485,6 +497,9 @@ object standardizeAndSort {
                 val uomCode    = cols(15)
                 val amt        = price * qty
 
+                val sourceRecord = SourceRecord(poNumber,
+                  locator("VAPOData/" + inF.getName, rec.ordinal))
+
                 val jid = "ID" + jrnlID + acctDate + "PO"
 
                 // Build the fiscal period key for this PO row.
@@ -499,11 +514,11 @@ object standardizeAndSort {
                 val debitRow  = makePORow(vendorId, poNumber, jid, "1", "COMMITMENT",
                                           agency, nigpCode, poPeriodKey, acctDate, ordDate,
                                           amt.toString(), uomCode, price.toString(), qty.toString(),
-                                          commDesc)
+                                          commDesc, sourceRecord)
                 val creditRow = makePORow(vendorId, poNumber, jid, "2", "COMMITMENT",
                                           agency, "0000", poPeriodKey, acctDate, ordDate,
                                           (-amt).toString(), uomCode, price.toString(), qty.toString(),
-                                          "COMMITMENT_OFFSET")
+                                          "COMMITMENT_OFFSET", sourceRecord)
 
                 totalRows += 2
                 totalAmt  += amt + (-amt)   // always 0; tracked for control assertion
@@ -599,16 +614,17 @@ object standardizeAndSort {
       uomCode:   String,
       price:     String,
       qty:       String,
-      descript:  String
+      descript:  String,
+      source: SourceRecord
   ): String = {
     def clean(s: String): String = if (s != null) s.replace(",", " ") else ""
     Seq(
-      clean(instId), "0", clean(poNumber), clean(jrnlId), clean(lineId), clean(bizEvent), "PO Sys", "Unknown", clean(descript),
+      clean(instId), "0", clean(poNumber), clean(jrnlId), clean(lineId), clean(bizEvent), "PO Sys", document(Some(source)), clean(descript),
       LEDGER_ID, JRNL_TYPE, BOOK_CODE,
       clean(agency), "0000", clean(nigpCode), PRODUCT_ID, if (lineId == "1") "COMMIT" else "0000", ALT_ACCOUNT,
       CCY_SRC, CCY_TYPE_SRC, CCY_TGT, CCY_TYPE_TGT,
       clean(year), clean(acctDate), clean(transDate), amount,
-      clean(uomCode), price, qty, " ", " ", if (lineId == "1") "D" else "O", "N", "N", " ", " ", " ", " ", " "
+      clean(uomCode), price, qty, "VA_PO_BUILTIN", "PO_QUANTITY_PRICE", if (lineId == "1") "D" else "O", "N", "N", "RULE1:" + encoded("1"), source.locator, " ", " ", " "
     ).mkString(",")
   }
 
@@ -811,15 +827,17 @@ object standardizeAndSort {
                       agency: String, fund: String, objCode: String,
                       nominalAcct: String, year: String, acctDate: String,
                       transDate: String, amount: String,
-                      ruleSetId: String, ruleId: String): String = {
+                      ruleSetId: String, ruleId: String,
+                      source: Option[SourceRecord] = None, ruleVersion: String = ""): String = {
     def clean(s: String): String = if (s != null) s.replace(",", " ") else ""
     Seq(
-      clean(instId), "0", "0", clean(jrnlId), clean(lineId), clean(bizEvent), clean(srcSys), "Unknown", clean(descript),
+      clean(instId), "0", "0", clean(jrnlId), clean(lineId), clean(bizEvent), clean(srcSys), document(source), clean(descript),
       LEDGER_ID, JRNL_TYPE, BOOK_CODE,
       clean(agency), clean(fund), clean(objCode), PRODUCT_ID, clean(nominalAcct), ALT_ACCOUNT,
       CCY_SRC, CCY_TYPE_SRC, CCY_TGT, CCY_TYPE_TGT,
       clean(year), clean(acctDate), clean(transDate), amount,
-      " ", "0", "0", clean(ruleSetId), clean(ruleId), if (lineId == "1") "D" else "O", "N", "N", " ", " ", " ", " ", " "
+      " ", "0", "0", clean(ruleSetId), clean(ruleId), if (lineId == "1") "D" else "O", "N", "N",
+      if (source.nonEmpty) "RULE1:" + encoded(ruleVersion) else " ", source.map(_.locator).getOrElse(" "), " ", " ", " "
     ).mkString(",")
   }
 
@@ -839,7 +857,8 @@ object standardizeAndSort {
       cols: Array[String], recFormat: String,
       vendorMap: Map[String, String],
       accountingRule: AccountingRule,
-      year: String, acctDate: String, seqNo: Int
+      year: String, acctDate: String, seqNo: Int,
+      source: Option[SourceRecord] = None
     ): Seq[(String, Boolean, BigDecimal)] = {
 
     val (agency, fund, objCode, prog, vendor, rawAmt, transDate) = recFormat match {
@@ -867,10 +886,10 @@ object standardizeAndSort {
     Seq(
       (makeRow(instId, jid, "1", accountingRule.businessEventCode, "Payment Sys", vDesc,
                agency, fund, debitProject, debitAccount, year, acctDate, transDate,
-               amt.toString(), accountingRule.ruleSetId, accountingRule.ruleId), matched, amt),
+               amt.toString(), accountingRule.ruleSetId, accountingRule.ruleId, source, accountingRule.ruleVersion), matched, amt),
       (makeRow(instId, jid, "2", accountingRule.businessEventCode, "Payment Sys", accountingRule.offsetDescription,
                agency, "0000", creditProject, creditAccount, year, acctDate, transDate,
-               (-amt).toString(), accountingRule.ruleSetId, accountingRule.ruleId), matched, -amt)
+               (-amt).toString(), accountingRule.ruleSetId, accountingRule.ruleId, source, accountingRule.ruleVersion), matched, -amt)
     )
   }
 
@@ -878,7 +897,8 @@ object standardizeAndSort {
       cols: Array[String], recFormat: String,
       vendorMap: Map[String, String],
       accountingRule: AccountingRule,
-      year: String, acctDate: String, seqNo: Int
+      year: String, acctDate: String, seqNo: Int,
+      source: Option[SourceRecord] = None
     ): Seq[(String, Boolean, BigDecimal)] = {
 
     val (agency, fund, src, rawAmt, transDate) = recFormat match {
@@ -902,10 +922,10 @@ object standardizeAndSort {
     Seq(
       (makeRow(instId, jid, "1", accountingRule.businessEventCode, "Revenue Sys", "Tax Receipt from Taxpayer",
                agency, fund, debitProject, debitAccount, year, acctDate, transDate,
-               amt.toString(), accountingRule.ruleSetId, accountingRule.ruleId), matched, amt),
+               amt.toString(), accountingRule.ruleSetId, accountingRule.ruleId, source, accountingRule.ruleVersion), matched, amt),
       (makeRow(instId, jid, "2", accountingRule.businessEventCode, "Revenue Sys", accountingRule.offsetDescription,
                agency, "0000", creditProject, creditAccount, year, acctDate, transDate,
-               (-amt).toString(), accountingRule.ruleSetId, accountingRule.ruleId), matched, -amt)
+               (-amt).toString(), accountingRule.ruleSetId, accountingRule.ruleId, source, accountingRule.ruleVersion), matched, -amt)
     )
   }
 
@@ -1272,8 +1292,12 @@ object standardizeAndSort {
                       sourceRows += 1
                       jrnlID     += 1
                       if (!parseOnly) {
+                        val relative = new File(inPath).toPath.toAbsolutePath.normalize()
+                          .relativize(inFile.toPath.toAbsolutePath.normalize()).toString.replace(File.separatorChar, '/')
+                        val provenance = SourceRecord(if (recType == "E") cols(7) else "",
+                          locator("VARawFiles/" + relative, rowNum - 1L))
                         val pairs = buildJEPairsAPA(normalized, recType, vendorMap,
-                                                    accountingRule, filePeriodKey, acctDate, jrnlID)
+                                                    accountingRule, filePeriodKey, acctDate, jrnlID, provenance)
                         for ((rowStr, _, _) <- pairs) {
                           chunk += rowStr
                           sjeRows += 1
@@ -1377,15 +1401,16 @@ object standardizeAndSort {
       accountingRule: AccountingRule,
       year:           String,
       acctDate:       String,
-      seqNo:          Int
+      seqNo:          Int,
+      source: SourceRecord
   ): Seq[(String, Boolean, BigDecimal)] = {
     if (recType == "R") {
       // RC consumes agency, amount, fund, source, date; normalized APA order differs.
       val cols = Array(normalized(0), normalized(3), normalized(1), normalized(2), normalized(4))
-      buildRevenuePairs(cols, "RC", vendorMap, accountingRule, year, acctDate, seqNo)
+      buildRevenuePairs(cols, "RC", vendorMap, accountingRule, year, acctDate, seqNo, Some(source))
     } else {
       // expense: reuse buildExpensePairs with format "B" (agencyKey, fundKey, objKey, progKey, vendorName, amount, transDate)
-      buildExpensePairs(normalized, "B", vendorMap, accountingRule, year, acctDate, seqNo)
+      buildExpensePairs(normalized, "B", vendorMap, accountingRule, year, acctDate, seqNo, Some(source))
     }
   }
 }

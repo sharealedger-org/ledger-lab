@@ -22,6 +22,25 @@ import scala.io.Source
 
 class StandardizeAndSortPOSpec extends AnyFunSuite {
 
+  test("PO repeated document lines retain distinct source records and built-in rule version") {
+    withTempDirectory("po-lineage-") { dir =>
+      val in=Files.createDirectory(dir.resolve("in")); val out=Files.createDirectory(dir.resolve("out"))
+      writePOFile(in, poRow1, poRow1)
+      standardizeAndSort.applyPO(Map("inPath"->in.toString,"outPath"->out.toString,"year"->"2003","quarter"->"1","chunkSize"->"1"))
+      val src=Source.fromFile(out.resolve("SortedJEFY03q1PO.csv").toFile,"UTF-8")
+      val rows=try src.getLines().map(_.split(",",-1).toVector).toVector finally src.close()
+      def decode(s: String): String = new String(java.util.Base64.getUrlDecoder.decode(s),"UTF-8")
+      assert(rows.size==4 && rows.forall(_.size==39))
+      assert(rows.forall(r=>decode(r(7).stripPrefix("DOC1:"))=="A501_0000200268" && r(29)=="VA_PO_BUILTIN" && r(30)=="PO_QUANTITY_PRICE" && decode(r(34).stripPrefix("RULE1:"))=="1"))
+      val groups=rows.groupBy(_(35)); assert(groups.size==2)
+      assert(groups.keys.map(_.split(":").last).toSet==Set("1","2"))
+      groups.foreach { case(loc,rs)=>
+        assert(decode(loc.split(":")(1))=="VAPOData/VA_opendata_FY2003.txt")
+        assert(rs.size==2 && rs.map(r=>BigDecimal(r(25))).sum==0)
+      }
+    }
+  }
+
   private def withTempDirectory(prefix: String)(test: Path => Unit): Unit = {
     val tempRoot = Paths.get("../../session-run.tmp").toAbsolutePath.normalize()
     Files.createDirectories(tempRoot)

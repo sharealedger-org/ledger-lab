@@ -3,6 +3,11 @@
 Updated 2026-11-15 (Arizona). Start here, then read the relevant track status.
 The audit register wins any evidence disagreement.
 
+**Latest bounded continuation:** lineage-v2 verifies exact source/document/rule
+provenance on the FY2003/04 pilot, with unchanged ledger/GL and 48 passing tests.
+[Receipt](data/test_evidence/component_pilot_0304_20261115/README.md#lineage-v2-continuation-after-consolidation-2026-11-15).
+Corpus-scale generation and VA financial anchors remain open; no new cost point.
+
 **Current checkpoint: `213b20f`.** The bounded FY2003–FY2004 synthetic component
 pilot completed generation, sorted assignment, posting and expanded reporting.
 [Evidence and limits](data/test_evidence/component_pilot_0304_20261115/README.md):

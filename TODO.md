@@ -68,6 +68,9 @@ Seeded 2026-11-11 from the handoff entries. On the same day the handoff was trim
 
 ## Track D: Primary experiment and shared work
 
+- [x] 2026-11-15: Close bounded pilot source/document/rule lineage checks with actual FY2003/04 consumers, unchanged ledger/GL and negative controls; [lineage-v2 receipt](data/test_evidence/component_pilot_0304_20261115/README.md#lineage-v2-continuation-after-consolidation-2026-11-15). Full-corpus coverage remains open.
+- [ ] Before interpreting new cost curves, specify the role of audit identity fields in permutation/query capability. Lineage enrichment changes permutation capacities despite unchanged financial outputs; preserve both versions and their scope.
+
 - [ ] In the separate paper-writing sessions, add phase introductions before Papers 01/02, before 03/04, and at later phase boundaries. Frame the following papers and summarize prior conclusions with evidence qualifications; see the paper revision plan. Preserve existing paper numbers and private-source workflow.
 
 - [x] 2026-11-15: Repository consolidation after bounded pilot checkpoint `213b20f`: current document map, authoritative plans, superseded pointers and link checks; evidence/reflections preserved and engine changes excluded. [Receipt](docs/archive/consolidation_2026-11-15/README.md).

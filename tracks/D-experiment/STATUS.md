@@ -26,6 +26,16 @@ specific decision needs explanation; do not reconstruct the current plan from it
 
 ## Current plans and evidence
 
+**2026-11-15 lineage-v2 bounded continuation:** [Receipt](../../data/test_evidence/component_pilot_0304_20261115/README.md#lineage-v2-continuation-after-consolidation-2026-11-15).
+48 relevant tests passed. Actual FY2003/04 pipeline verifies all 30 financial
+source locators, two balanced legs each and original document/rule versions;
+four ledger/GL files are byte-identical to v1 and all 50 generated inputs match.
+Corrupted locator/rule fixtures correctly fail. This closes v1's specific lineage
+checks at fixture scale only. Permutation includes audit fields, so metadata
+changes its capacities; financial keys/counts and provenance cardinalities pass.
+Next: verified financial-anchor coverage and the next scenario/scale contract;
+do not treat the 4,096-row generator as corpus-ready or adopt the excluded draft.
+
 **2026-11-15 reflection:** Appended “From vendor enrichment to a connected
 experimental foundation” to [Codex reflections](CODEX_REFLECTIONS.md). It records
 the owner's component/topology, tentative relationship, financial grounding,
@@ -63,7 +73,8 @@ remain CKB-side qualitative context, outside the Control package; no evidence up
 
 1. In a separate implementation session, review pilot limitations and define the
    next versioned scenario/schema/adapter slice before scale-up. Resolve explicit
-   lineage and verified financial-anchor coverage; responsibility evidence is not
+   corpus lineage and verified financial-anchor coverage; the v2 fixture checks
+   above do not establish corpus-scale admission. Responsibility evidence is not
    payroll. Preserve observed inputs and separate withheld truth from AI evidence.
 2. Before larger execution, satisfy architecture gates, actual downstream-consumer
    checks, key/date/identity contracts, measured disk/scratch admission and bounded

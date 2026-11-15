@@ -24,6 +24,53 @@ import scala.io.Source
 
 class ApaTtlSpec extends AnyFunSuite {
 
+  test("APA source locators distinguish duplicate documents and rejected rows and survive root relocation") {
+    withTempDirectory("ttl-lineage-") { root =>
+      val doc = "DOC, \"quoted\" \u03b1"
+      val csvRow = ReportingSupport.csv(Vector("The College of William and Mary in Virginia", "45.32",
+        "HIGHER EDUCATION OPERATING", "VIRGINIA", "LAUNDRY & LINEN SERVICES", "CUSTODIAL SERVICE",
+        "SERVITEX INC", doc, "04-30-03"))
+      def run(name: String): Vector[Vector[String]] = {
+        val base = Files.createDirectory(root.resolve(name)); val in = Files.createDirectory(base.resolve("VARawFiles"))
+        val fy = Files.createDirectory(in.resolve("FY 2003 Expenditure")); val out = Files.createDirectory(base.resolve("out"))
+        writeRefTables(base)
+        writeExpFile(fy, "Apr", csvRow, "", "BAD", csvRow)
+        val rules = base.resolve("VAAccountingRules.csv")
+        Files.write(rules, ("recordType,ruleSetId,ruleVersion,ruleId,businessEventCode,debitAccountExpression,creditAccountExpression,debitProjectExpression,creditProjectExpression,offsetDescription,effectiveStart,effectiveEnd\n" +
+          "E,TEST_RULES,7,TEST_EXPENSE,EXPENSE_PAYMENT,EXP+object,0000,object,zero,CASH_CLEARING,2003-01-01,9999-12-31\n").getBytes("UTF-8"))
+        standardizeAndSort.applyAPA(Map("inPath"->in.toString,"refPath"->base.toString,"outPath"->out.toString,
+          "year"->"2003","type"->"E","chunkSize"->"1"))
+        val src = Source.fromFile(out.resolve("SortedJEFY03q4exp.csv").toFile,"UTF-8")
+        try src.getLines().map(_.split(",",-1).toVector).toVector finally src.close()
+      }
+      val a=run("a"); val b=run("b"); assert(a==b && a.size==4)
+      def decode(s: String): String = new String(java.util.Base64.getUrlDecoder.decode(s),"UTF-8")
+      assert(a.forall(r=>r.size==39 && decode(r(7).stripPrefix("DOC1:"))==doc && r(29)=="TEST_RULES" && r(30)=="TEST_EXPENSE" && decode(r(34).stripPrefix("RULE1:"))=="7"))
+      val groups=a.groupBy(_(35)); assert(groups.size==2)
+      assert(groups.keys.map(_.split(":").last).toSet==Set("1","4"))
+      groups.foreach { case (loc,rows)=>
+        assert(decode(loc.split(":")(1))=="VARawFiles/FY 2003 Expenditure/Expenditures Apr 2003.csv")
+        assert(rows.size==2 && rows.map(r=>BigDecimal(r(25))).sum==0)
+      }
+    }
+  }
+
+  test("APA revenue source identity includes fiscal folder when filenames repeat") {
+    withTempDirectory("ttl-receipt-lineage-") { root =>
+      val in=Files.createDirectory(root.resolve("VARawFiles")); writeRefTables(root)
+      val locators=Vector(2003,2013).map { year =>
+        val fy=Files.createDirectory(in.resolve(s"FY $year Revenue")); val out=Files.createDirectory(root.resolve(s"out$year"))
+        Files.write(fy.resolve("Revenues Apr.csv"),(revHeader+"\n"+revRowJul+"\n").getBytes("UTF-8"))
+        standardizeAndSort.applyAPA(Map("inPath"->in.toString,"refPath"->root.toString,"outPath"->out.toString,"year"->year.toString,"type"->"R"))
+        val src=Source.fromFile(out.resolve(s"SortedJEFY${year.toString.takeRight(2)}rev.csv").toFile,"UTF-8")
+        val rows=try src.getLines().map(_.split(",",-1)).toVector finally src.close()
+        assert(rows.size==2 && rows.forall(_(7)=="Unknown")); assert(rows.map(_(35)).distinct.size==1)
+        rows.head(35)
+      }
+      assert(locators.distinct.size==2)
+    }
+  }
+
   private def withTempDirectory(prefix: String)(test: Path => Unit): Unit = {
     val tempRoot = Paths.get("../../session-run.tmp").toAbsolutePath.normalize()
     Files.createDirectories(tempRoot)

@@ -1717,3 +1717,53 @@ layer-owner descriptions with existing AGENTS rules. Corrected two Markdown link
 targets in prior register entries without changing their findings. Original entry
 pages/handoff/statuses are archived; moved reasoning records retain original bytes.
 Receipt: `docs/COLLABORATOR_REVIEW_2026-11-15.md`. Evidence maturity unchanged.
+
+## 2026-11-15 03:09 AZT — lineage-v2 contract before implementation
+
+Owner authorized continued synthetic work after consolidation. State:
+`partially_verified`, bounded implementation slice approved within that scope.
+Contract appended to `docs/COMPONENT_PILOT_0304_CONTRACT.md`. Source/consumer trace
+confirms APA makeRow discards vouchers, PO makePORow emits blank rule fields,
+post.scala parses all 39 SJE columns but its 15-field key excludes cols 7/29/30/
+34/35. Sortspec agrees. Cheapest executable baseline: unchanged APA, PO, legacy
+standardization, component and reporting suites: 45 tests passed in
+`/private/tmp/component-lineage-baseline.log`. New exact-lineage behavior is not
+implemented or verified at this entry. Proposed fix enriches metadata at existing
+emission sites, adds no sort or financial calculation, and keeps historical inputs
+and pilot outputs immutable. Source locator is snapshot-scoped, not a new entity
+allocator or a claim of global event identity across input revisions.
+
+### Lineage-v2 producer tests and consumer review, 2026-11-15
+
+Before actual execution, 48 relevant tests passed (45 baseline plus three new
+lineage tests). Covers repeated/quoted Unicode documents, blank/rejected APA rows,
+root relocation, repeated filenames under different FY folders, repeated PO
+numbers, rule/version retention and existing financial/report controls. Consumer
+review found PermutationGenerator includes cols 7/34/35 as potential dimensions.
+Therefore richer provenance may change its counts/capacity even with byte-identical
+ledger/GL. Checker now independently derives document/source cardinalities for
+the bounded SJE population and compares financial permutation keys/counts; it does
+not enforce a stale capacity target. Final checker compile passed. Actual lineage
+and balance comparison remain pending at this entry; test source/metrics are kept
+under `data/test_evidence/component_pilot_0304_20261115/lineage_v2/`.
+
+### Completed lineage-v2 bounded evidence, 2026-11-15 03:20 AZT
+
+Actual execution complete: `component-pilot-0304-lineage-v2`, receipts under
+`data/test_evidence/component_pilot_0304_20261115/lineage_v2/`. All 50 generated
+input files equal v1 byte-for-byte. 48 relevant tests pass. Actual producer/sort/
+merge/posting/report consumers verify 30 exact raw locators with two balanced SJE
+legs each, document identities and rule/version provenance. All four ledger/GL
+files are byte-identical to v1 and monetary SJE projection is unchanged. Existing
+reporting/temporal/cutoff checks pass. Negative source-locator and rule-version
+fixtures keep monetary data unchanged but both correctly fail the strict checker.
+Producer/checker/script SHA receipts match after execution.
+
+Assessment: source/rule provenance is verified for this bounded financial workload;
+full-corpus lineage/scale and target runtime remain `partially_verified`/unmeasured,
+not globally promoted. Legacy v1 remains partial as recorded. No new effective-date
+rule selector, payroll, VA financial tie-out, AI result or cost point. The existing
+permutation report includes audit identity dimensions; its capacities change with
+metadata, so v1/v2 are not interchangeable measurement replicates. Stable financial
+keys/counts and independently derived provenance distinct counts passed. Clarify
+business-query versus audit-identifier capability scope before cost interpretation.

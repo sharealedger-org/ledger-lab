@@ -1,0 +1,2 @@
+source_tamper_exit=1
+rule_tamper_exit=1

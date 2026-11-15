@@ -57,3 +57,54 @@ matched after execution; code snapshots are retained under the runtime root.
 scale/AI effectiveness NOT_TESTED. No employee financial engine, allocation,
 reclass, target-runtime capability or new cost-curve point is established.
 No original VA corpus files or prior financial outputs were modified.
+
+## Lineage-v2 continuation after consolidation, 2026-11-15
+
+Evidence: `lineage_v2/`. Workload `component-pilot-0304-lineage-v2`; generator and
+all 50 generated input files are byte-identical to v1. Metadata is enriched in
+existing APA/PO emission before their existing sorts, without another source scan,
+new allocation rule, new ID allocator or financial calculation change.
+
+Command:
+
+```sh
+bash scripts/run_component_pilot.sh \
+  --out "$PWD/session-run.tmp/component_pilot_0304_20261115_lineage_v2" \
+  --baselineRoot "$PWD/session-run.tmp/component_pilot_0304_20261115_v1"
+```
+
+Before edits, 45 relevant baseline tests passed. Final producer/generator/report
+suite: 48 passed, including three new tests for exact lineage, duplicate/quoted
+Unicode documents, rejected/blank source rows, root relocation and repeated
+filenames/PO documents. Checker refinement for permutation cardinalities compiled
+and then ran in the real pipeline.
+
+Actual financial pipeline ran 03:16:04–03:18:33 AZT. `PILOT_COMPLETE` exists. The
+checker verified 30 exact snapshot-scoped source locators, two SJE legs each,
+original documents when present, and configured APA/built-in PO rule versions.
+All prior financial, temporal, cutoff and reporting controls passed. SJE columns
+outside declared metadata fields match v1; all four ledger/GL files are
+byte-identical. Source hashes match after execution. Event provenance is in
+retained SJE, not asserted to be preserved per event in aggregate balances.
+
+Two separately copied negative fixtures preserve the amounts and prior reporting
+controls but alter one retained source locator or rule-version value. Both checker
+runs exit 1 at the corresponding lineage check; logs and exit receipts are in
+`lineage_v2/`. This tests a stronger requirement than balance/signature equivalence.
+
+Permutation financial keys and row counts match v1. Document/source distinct
+counts independently match the bounded SJE rows. The richer metadata changes
+reported capacities, as expected from the consumer's dimension definition:
+
+| Year | v1 capacity | v2 capacity | v1 capacity_independent | v2 capacity_independent |
+|---|---:|---:|---:|---:|
+| 2003 | 34 | 36 | 214 | 16,536 |
+| 2004 | 40 | 36 | 166 | 3,642 |
+
+These figures are this report's observed outputs, not new cost points or evidence
+of greater business/AI utility. Agree the role of audit identifiers in the query
+capability definition before comparing curves. Original v1 partial-lineage
+receipts remain historical evidence; v2 closes those checks only at fixture scale.
+Verified VA financial anchors, corpus-scale assignment/sort admission, payroll,
+allocation/reclass and model effectiveness remain unresolved. The unused older
+assignment producer/launcher draft was not invoked.

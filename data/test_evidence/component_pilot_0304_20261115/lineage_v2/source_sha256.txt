@@ -1,0 +1,4 @@
+1dcc66a084bab322e79929c6c3572047c377c2967eb38744e00fd442089a0ffe  /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/corpus/ComponentPilot.scala
+33b1e57cac43fdbfd74dbb6315cce7149adc83772238787adf257cf522e75a4a  /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/corpus/ComponentPilotCheck.scala
+67435517461d1d96bc1864fce090b68fdd8852aa917254f05acdeb1696ee0954  /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/ledger/standardizeAndSort.scala
+fd330e986857ae822f14b0e167aaf3fe358fd28970fd83de3f24b6863590ddd3  /Users/ktwitchell001/workspace/sharealedger/ledger-lab/scripts/run_component_pilot.sh

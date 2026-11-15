@@ -1,0 +1,32 @@
+[info] welcome to sbt 1.10.11 (Eclipse Adoptium Java 21.0.8)
+[info] loading settings for project global-plugins from idea.sbt...
+[info] loading global plugins from /Users/ktwitchell001/.sbt/1.0/plugins
+[info] loading settings for project va_pipeline-build from assembly.sbt, plugins.sbt...
+[info] loading project definition from /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/project
+[info] loading settings for project root from build.sbt...
+[info] set current project to va_pipeline (in build file:/Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/)
+[info] running org.universalledger.foundation.va.corpus.ComponentPilotCheck --root /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/component_pilot_0304_20261115_lineage_v2_negative_source --requireLineage true
+PASS reconciliation.csv rows=26
+PASS synthetic_validation.csv rows=20
+PASS synthetic_conservation.csv rows=96
+PASS financial_rows=86 vendors=3 attributed_input_rows=56 unattributed_input_rows=30
+PASS vendor_temporal_summary.csv rows=96
+PASS vendor_attribute_summary.csv rows=208
+[error] java.lang.IllegalArgumentException: requirement failed: Unknown/missing retained source locator: SRC1:invalid:999
+[error] 	at scala.Predef$.require(Predef.scala:281)
+[error] 	at org.universalledger.foundation.va.corpus.ComponentPilotCheck$.$anonfun$inspect$20(ComponentPilotCheck.scala:70)
+[error] 	at org.universalledger.foundation.va.corpus.ComponentPilotCheck$.$anonfun$inspect$20$adapted(ComponentPilotCheck.scala:60)
+[error] 	at scala.collection.Iterator.foreach(Iterator.scala:943)
+[error] 	at scala.collection.Iterator.foreach$(Iterator.scala:943)
+[error] 	at scala.collection.AbstractIterator.foreach(Iterator.scala:1431)
+[error] 	at scala.collection.IterableLike.foreach(IterableLike.scala:74)
+[error] 	at scala.collection.IterableLike.foreach$(IterableLike.scala:73)
+[error] 	at scala.collection.AbstractIterable.foreach(Iterable.scala:56)
+[error] 	at org.universalledger.foundation.va.corpus.ComponentPilotCheck$.inspect(ComponentPilotCheck.scala:60)
+[error] 	at org.universalledger.foundation.va.corpus.ComponentPilotCheck$.main(ComponentPilotCheck.scala:160)
+[error] 	at org.universalledger.foundation.va.corpus.ComponentPilotCheck.main(ComponentPilotCheck.scala)
+[error] 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+[error] 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+[error] stack trace is suppressed; run 'last Compile / runMain' for the full output
+[error] (Compile / runMain) java.lang.IllegalArgumentException: requirement failed: Unknown/missing retained source locator: SRC1:invalid:999
+[error] Total time: 1 s, completed Nov 15, 2026, 3:19:55 AM

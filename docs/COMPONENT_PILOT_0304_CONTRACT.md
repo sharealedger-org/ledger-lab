@@ -1,5 +1,12 @@
 # Component pilot 0304 contract
 
+**Latest bounded result, 2026-11-15:** lineage-v2 completed the same financial
+workload with exact snapshot-scoped source/document/rule provenance, unchanged
+SJE monetary projection and byte-identical ledger/GL. See the
+[v2 receipt](../data/test_evidence/component_pilot_0304_20261115/README.md#lineage-v2-continuation-after-consolidation-2026-11-15).
+The following initial result describes v1 historically; scale and VA anchors are
+still unverified. A richer permutation metadata population is not a new cost point.
+
 Result: bounded actual run completed; see
 [evidence](../data/test_evidence/component_pilot_0304_20261115/README.md). Source
 assignment, consumption and controls passed within the declared fixture envelope.
@@ -59,3 +66,55 @@ with tiny spill limits, source/posted reconciliation and dated master cuts.
 Full-corpus capacity, target GenevaERS unique-ID/sort-runtime capabilities,
 verified VA anchors, payroll engine, allocation/reclass engine and AI results
 remain outside this pilot. Apply gap register GERS-001/002/003 qualifications.
+
+## Next bounded slice: source/rule lineage v2
+
+2026-11-15, continuation after consolidation. Claim to falsify: exact source-record
+and rule/version provenance can reach the merged 39-column SJE stream without
+changing monetary fields, posting keys, balances or process boundaries. Logical
+owner is 01 TTL/ARE; insertion points are existing APA pair emission and PO pair
+emission before their existing external sorts. No new financial rule or lookup
+substrate is introduced. Determination-key assignment in generation remains the
+sorted merge proven by v1; existing bounded TTL maps are not made corpus-scale.
+
+Record contract: reuse SJE col 7 for `DOC1:<base64url original document>` when
+present, col 34 for `RULE1:<base64url rule version>`, col 35 for
+`SRC1:<base64url canonical family-relative path>:<source data record ordinal>`.
+Original document remains Unknown where source has none. APA ordinals count data
+physical lines, including rejected/blank rows; PO ordinals follow PORecordReader's
+logical records, including rejected records. Locators are scoped to the immutable
+input snapshot/manifest, not claimed globally unique across changed source files.
+No new persistent entity-ID allocator is needed. Encoding preserves commas/Unicode
+without changing the existing headerless comma-separated SJE parser contract.
+
+APA records retain the selected rule-set/rule ID and now its configured version.
+PO records identify the existing built-in quantity-times-price commitment rule,
+version 1; do not pretend it was selected from VAAccountingRules.csv. This slice
+does not implement effective-date rule selection or configurable PO accounting.
+Event dates, rule selection, accounting dimensions, all 15 sort fields and the
+30-column balance schema stay unchanged. Per-event provenance remains in retained
+SJEs; aggregate balances are not asserted to preserve every event identifier.
+
+No extra scan, history load, materialization profile or sort is required. Live
+state is one source record plus existing chunk buffers; metadata increases SJE
+bytes and must be included in storage/I/O metrics. Run metadata, source hashes
+and existing process RSS remain separate from generation costs. Baseline and v2
+are capability versions, not interchangeable cost replicates.
+
+Cheapest falsifier already exists in v1: raw vouchers become Unknown and PO rule
+fields are blank. Before edits rerun unchanged APA/PO/report/pilot tests. Add
+focused controls for duplicate vouchers, rejected/blank rows, quoted document
+values, identical filenames under different fiscal folders and relocated input
+roots. Rerun the same generated FY2003/04 workload through actual orchestration;
+verify two balanced SJE legs for each exact source locator, expected rule version,
+original documents, and unchanged monetary/SJE projections and persisted balance
+outputs against v1. Preserve both versions. VA anchors, payroll, AI and scale
+remain explicitly unresolved after a successful lineage slice.
+
+Consumer trace refinement before execution: PermutationGenerator includes original
+document and source-extension fields among potential dimensions. Its metadata
+cardinalities/capacity can change legitimately. Require byte-identical ledger/GL,
+stable permutation financial keys/row counts, and independently checked document/
+source distinct counts from the bounded SJE fixture; do not require byte-identical
+permutation artifacts or hide their additional cost. The monetary task is unchanged
+but the retained information capability is richer.

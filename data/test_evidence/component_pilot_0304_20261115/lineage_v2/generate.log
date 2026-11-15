@@ -1,0 +1,28 @@
+[info] welcome to sbt 1.10.11 (Eclipse Adoptium Java 21.0.8)
+[info] loading settings for project global-plugins from idea.sbt...
+[info] loading global plugins from /Users/ktwitchell001/.sbt/1.0/plugins
+[info] loading settings for project va_pipeline-build from assembly.sbt, plugins.sbt...
+[info] loading project definition from /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/project
+[info] loading settings for project root from build.sbt...
+[info] set current project to va_pipeline (in build file:/Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/)
+[info] running org.universalledger.foundation.va.corpus.ComponentPilot --spec /Users/ktwitchell001/workspace/sharealedger/ledger-lab/data/synthetic/component_pilot_0304_v1 --base /Users/ktwitchell001/workspace/sharealedger/ledger-lab/data/synthetic/connected_reporting_v1 --histories /Users/ktwitchell001/workspace/sharealedger/ledger-lab/data/synthetic/reclass_history_v1 --out /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/component_pilot_0304_20261115_lineage_v2/inputs --chunk 2
+RESULT component_pilot=/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/component_pilot_0304_20261115_lineage_v2/inputs status=generated_not_posted
+[success] Total time: 1 s, completed Nov 15, 2026, 3:16:04 AM
+       10.54 real        25.97 user         1.85 sys
+           699400192  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              308616  page reclaims
+                   0  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   8  messages sent
+                   8  messages received
+                  35  signals received
+                 172  voluntary context switches
+               55651  involuntary context switches
+         58652704753  instructions retired
+         90546193535  cycles elapsed
+           683343872  peak memory footprint

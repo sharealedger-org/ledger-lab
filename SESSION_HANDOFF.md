@@ -41,3 +41,33 @@ pilot's actual evidence and unresolved lineage/anchor/scale/AI limits. Acknowled
 that consolidation/path review now exist at `ddde891`/`9cab0c0`, superseding the
 older conversational statement that infrastructure had not begun. Journal/status
 only; no code, run, paper source or Control disclosure.
+
+## 2026-11-15 (TRACK D) — Synthetic continuation: bounded lineage-v2
+
+Owner resumed implementation here after infrastructure completion. Reviewed current
+entry points and pilot limitations; declared source/rule lineage v2 in the existing
+pilot contract and audit register before code. Baseline 45 tests passed; final
+relevant suites 48 passed. APA preserves document and source-record locators plus
+configured rule version in existing SJE metadata; PO records its existing built-in
+rule identity/version and source locator. Encoding is reversible and CSV-safe.
+No new financial calculation, sort, ID allocator or history map; current ordered
+assignment topology remains intact. Existing effective-date rule-selection behavior
+is not extended by this slice.
+
+Actual command: `bash scripts/run_component_pilot.sh --out "$PWD/session-run.tmp/component_pilot_0304_20261115_lineage_v2" --baselineRoot "$PWD/session-run.tmp/component_pilot_0304_20261115_v1"`.
+Financial pipeline 03:16:04–03:18:33 AZT; PILOT_COMPLETE published. All 50 generated
+inputs equal v1. All 30 financial raw locators have two balanced SJE legs with exact
+document/rule versions. Monetary SJE projection and four ledger/GL files match v1;
+old report/temporal/cutoff checks pass. Two separately copied fixtures corrupt
+source locator or rule version without altering amounts; both fail strict checks.
+Receipts/logs: `data/test_evidence/component_pilot_0304_20261115/lineage_v2/`;
+auto financial archive `data/test_evidence/corpus_runs/run_20261115_031604/`.
+
+PermutationGenerator includes provenance as dimensions, so richer metadata changes
+its capacities. Checker verifies financial populations and independently derived
+source/document distinct counts, not stale capacity equality. This needs query-
+capability scope clarification before cost interpretation. VA anchors, corpus-scale
+assignment/sort admission, payroll and AI remain open. The excluded old assignment
+producer/launcher draft was neither invoked nor edited. Next: verified financial
+bounds and a versioned scenario/scale slice before larger execution. No paper edits,
+Control read/disclosure or full-corpus run.
