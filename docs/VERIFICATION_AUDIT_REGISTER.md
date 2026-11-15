@@ -1767,3 +1767,66 @@ permutation report includes audit identity dimensions; its capacities change wit
 metadata, so v1/v2 are not interchangeable measurement replicates. Stable financial
 keys/counts and independently derived provenance distinct counts passed. Clarify
 business-query versus audit-identifier capability scope before cost interpretation.
+
+## 2026-11-15 08:23 AZT — zero-key practicality probe declared
+
+Owner explicitly requested full-corpus time/scratch projection for remaining zero
+IDs, not merely bounded-state correctness. Existing contract extended before
+probe implementation. Historical audited zero count 185,296,156 includes 58 rows
+under a separate nine-zero PO sentinel; use canonical summary rather than largest-
+group table alone. Parser audit still has 87,815,525 unmatched expense records and
+zero enrichment-induced name-lookup changes. Policy keeping agency-grain receipts
+unattributed may increase the group. These are historical/scenario counts, not a
+fresh current-input census or guaranteed ceiling after parser/generation changes.
+
+New code prepares bounded balanced SJE fixtures, invokes existing Scala post, then
+actual unchanged expanded report/reduce consumers. No new financial engine or
+vendor splitting. Probe preparation is not TTL/cost-point evidence. Planned
+500k repetitive, 2M matched-key-ratio and 500k distinct-heavy cases use fixed 1 GiB
+heap/four active processors, production-like capacities and 15-minute/20-GiB probe
+bounds. New main compiled; actual controls/timings not yet verified at this entry.
+Results will separate engine time, two-pass reads, cumulative spill writes, retained
+bytes and sampled occupancy. Conditional projections must disclose merge-depth,
+cardinality, multi-year and unchanged-population assumptions; no false upper-bound
+or full-run forecast claim. No Control access or cloud archive write.
+
+## 2026-11-15 — verified FY2012 anchor preparation
+
+Published summary facts verified via official G p50 and L p174/177 table renderings
+(after web screenshots failed, used downloaded PDFs and macOS PDFKit). URL/hash/
+page records and scope correction are in `data/acfr_anchors/ACFR_FIXTURE_MANIFEST.md`.
+New anchor/bridge CSVs are self-contained; PDFs remain optional provenance, not
+corpus inputs. Three focused Scala tests pass: statement identities and six-item
+closing bridge, bad scope/measure/sign controls, and proposed calibration/scale-case
+configuration counts. No full-corpus tie-out, new generator or posted adjustment
+is established. Food-stamp estimate is Federal Trust scope and excluded; aggregate
+basis differences are not specific tax or movement adjustments. Inputs define a
+1% synthetic-only General Fund panel and 90/3,000/30,000-event ladder. Current
+calendar/global sets/sort-reader behavior still block launch without bounded
+implementation changes. Owner stopped Dropbox and left OneDrive only as a possible
+verified post-success archive; processing remains local.
+
+### Zero-key probe completed, 2026-11-15 08:48 AZT
+
+All three declared probes completed actual posting and unchanged expanded report
+stages with original zero ID, fixed 1-GiB heap/four active processors. No report
+limit trips. Receipt/CSV/logs: `data/test_evidence/component_pilot_0304_20261115/zero_key_projection/`.
+500,064 financial rows repetitive: 26.349 engine seconds; 2,040,384 rows at historical-
+like posted-key ratio: 109.314 seconds; 750,384 distinct-heavy rows: 130.163 seconds.
+Controls/history oracles/zero coverage pass. OS RSS about 1.03–1.06 GiB; host
+verified x86_64, 16 GiB, two physical/four logical CPUs. Source preparation excluded
+from report timings and not presented as a new TTL or financial cost point.
+
+Historical zero count 185.296M; policy scenarios 214.589–222.170M remain conditional
+on old source/posted counts. Matched-rate projections 3.194–3.307 h for zero-report
+component, 2x depth sensitivity 6.387–6.613 h; distinct-heavy 10.340–10.705 h. These
+are planning scenarios, not bounds, confidence intervals or whole-run predictions.
+Report retention, cumulative spill writes and sampled occupancy stay distinct.
+Reference/parser changes can increase cardinality; old balance totals are not a
+current ceiling. Projection-only assumption labels were clarified and an extreme
+scenario added after all measured jobs finished; measured/final analysis hashes
+are separate. No rekeying to evade work and no new Control access/cloud transfer.
+
+Admission remains unverified: profile a representative current year with real
+byte widths and zero/key distributions, then reconcile projected time/output/
+scratch to a practical run window. Bounded memory alone does not admit full scale.

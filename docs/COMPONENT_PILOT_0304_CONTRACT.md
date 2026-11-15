@@ -118,3 +118,132 @@ stable permutation financial keys/row counts, and independently checked document
 source distinct counts from the bounded SJE fixture; do not require byte-identical
 permutation artifacts or hide their additional cost. The monetary task is unchanged
 but the retained information capability is richer.
+
+## Prepared next workload: FY2012 anchor and bounded scale
+
+2026-11-15 08:05 AZT. Owner requested push and next-test preparation. `5e44a8e`
+is pushed; no new financial execution accompanies this section. Inputs are in
+`data/synthetic/component_anchor_2012_v1/`; verified facts are the two versioned
+General Fund CSVs in `data/acfr_anchors/`, with source/page/hash records in their
+existing manifest. Three offline Scala tests validate flow identities, six-item
+closing-balance reconciliation, unit conversion and scope/sign rejection. These
+checks do not reconcile observed APA data or constitute a posted adjustment engine.
+
+Source verification: FY2012 General Fund budget Actual (L p174), modified-accrual
+statement (G p50), and signed budget-to-modified-accrual closing balance adjustments
+(L p177). Food-stamp estimate excluded: the source footnote is Federal Trust Fund,
+not General Fund. The six bridge items concern closing balances, not a movement
+breakdown. Older estimated/derived CSVs remain historical and are not added to
+these six items. Source PDFs are optional provenance, not runtime dependencies.
+
+Workload: a fictional panel calibrated to 1% of the published General Fund budget
+values. Convert thousands to USD once, then apply the fraction. Revenue envelope
+USD 171,019,590; expenditure USD 168,940,140, constant across population sizes.
+No additive union with observed VA data. Opening balance, other financing and
+closing balance are separate control measures. Bridge records remain diagnostic
+until explicit balanced accounting offsets and adapters are declared. No allocation
+or reclass engine is introduced as a prerequisite. PO commitments have their own
+synthetic policy and do not count as additional recognized expenditures.
+
+Admission ladder: three components/90 events/168 SJE rows, then 100/3,000/5,600,
+then 1,000/30,000/56,000. Each component has 12 expense events, 12 receipts,
+four commitments and two nonfinancial employee responsibility events. The next
+scenario matrix must define component shares, repeated/shared participants,
+incidental/ambiguous connections, date changes and observation cutoffs without
+answer-bearing labels. Holdout mechanisms remain separate from these inspection
+cases. Supply namespace-checked identities as inputs; no runtime entity allocator.
+
+Required implementation before launch:
+
+1. Generalize the hardcoded 2003/04 calendar and source-family routing while
+   retaining the unchanged lineage-v2 regression. Do not retime old history packs
+   silently or equate an earlier record's availability with its effective date.
+2. Determine component budgets in anchor/year/fund/basis/measure order by merging
+   anchors and declared synthetic shares; control share totals and cent remainders.
+   Emit budgets into context order, then retain the determining-key assignment
+   merge and receiving entity/date order. These are preparation/calibration rules,
+   not asserted economic allocations or new accounting journals.
+3. Replace population-wide event-ID/entity-ID sets with declared externally sorted
+   uniqueness/coalescing controls. Keep per-context recipe state bounded; emit
+   master/assignment rows in registry/entity order rather than collecting all
+   vendors. Resolve ambiguous assignments explicitly and reconcile every emitted
+   record. Do not materialize an entity lifetime into a JVM collection.
+4. Use bounded multi-level sort merging with at most 16 live readers and a fixed
+   256-row chunk in scale cases. Current SortEngine opens every spill reader and
+   the pilot has fixed row/byte caps; simply raising those caps is not admission.
+   Record levels, passes, rows/bytes, scratch, wall/CPU and process RSS separately.
+   Respect target-runtime capability gaps; input-preparation prototype results do
+   not establish a new measured GenevaERS capability or cost point.
+5. Replace hardcoded 36-event checker assumptions with manifest-driven expected
+   counts and sorted control streams. Retain independent known totals, exact
+   source/rule lineage, period/side/currency reconciliation, temporal cases,
+   correct rejection of scope/sign/duplicate/cutoff faults, and provenance-aware
+   permutation checks. Keep financial amount and model-evidence evaluations distinct.
+
+Use a 1,024 MiB generation heap, explicit scratch/retention caps and a fresh local
+output root; resource admission must recheck the live host. Repeat a named case
+with reordered inputs and a different chunk size after primary correctness passes.
+Abort on any failed control or resource allowance; preserve failed attempts. Before
+full-corpus admission, separately test a legitimate and an unattributed key above
+250,000 reporting input rows. The planned 30,000-event case does not cover that.
+
+Owner stopped Dropbox; OneDrive remains a potential post-success archive. Keep
+active processing local. Verify archive destination/capacity and hashes before
+any future copy. No OneDrive upload or full-corpus run was started by preparation.
+
+## Mandatory unattributed-key practicality projection
+
+Owner direction, 2026-11-15: bounded memory/spill support is insufficient if a
+remaining zero-ID group takes impractical time. Add actual report probes and a
+conditional full-corpus projection before admission. Preserve the zero sentinel;
+do not invent vendors or split identities to make the test pass.
+
+Historical audited population: 181,736,476 zero-ID movement rows and 3,559,680
+posted rows, 185,296,156 total. The largest-group CSV omits a nine-zero PO key
+(58 rows); use canonical summary/breakdown totals. Parser summary still reports
+87,815,525 unmatched expense source records; enrichment changed zero name lookups.
+Those inputs predate current adapters and are not a fresh future-run census.
+If all agency-grain revenue is retained unattributed, as intended, current policy
+can increase zero counts rather than reduce them. Model explicit historical,
+quote-aware-expense/all-revenue-zero and frozen-accepted-APA ceiling scenarios;
+refresh actual counts before full admission. Do not call historical counts an
+upper bound on the changed workload.
+
+Named workload `report-zero-key-projection-v1`: synthetic, balanced 39-column SJE
+snapshots, posted by the existing Scala post process, then actual expanded 5v/5r
+with temporal/master cuts, default prospective report capacities (50,000 base /
+10,000 synthetic keys, fan-in 16). Fixture source preparation is outside report
+timings, not a replacement TTL engine or a comparable cost-curve run. Fixed 1 GiB
+JVM heap / four active processors, local paths, supplied zero ID only. Source
+preparation sort has 50,000-row chunks, at most 64 readers and at most 2M rows;
+report does not acquire a new sort implementation or changed financial logic.
+
+Probe cases: 500k movement rows with repeating keys; 2M movement rows with roughly
+2% posted-key ratio like the historical group; and 500k movement rows with one
+unique direct posting context per source pair to stress distinct-key/output cost.
+Keep date/agency/fund/account diversity explicit. The last case is intentionally
+more diverse than the historical average, not a claim about real VA relationships.
+Profile with original zero identity, not an assigned synthetic vendor. Every probe
+must complete reconciliation/coverage/conservation controls; retain abort/failure
+receipts. Per-probe runtime limit 15 minutes and root size 20 GiB are engineering
+probe bounds, not an owner-approved full-run window.
+
+Record extraction order-index scan time (report has two input passes), aggregation,
+merge levels/passes, cumulative spill writes, output bytes, reduction time, OS wall/
+CPU/RSS and sampled root occupancy. Derive row-rate and diversity stress scenarios
+separately; include larger merge-depth sensitivity, full-input read volume and
+output/scratch expansion. A worst-observed-rate extrapolation is not a guaranteed
+upper bound or confidence interval. Do not equate cumulative bytes written with
+peak scratch, or extrapolate the small two-row-buffer pilot as production settings.
+This projection covers the zero-key reporting component only, not generation,
+posting, the remaining 85M baseline report rows, or the entire run.
+
+Practicality evidence completed: the
+[zero-key receipt](../data/test_evidence/component_pilot_0304_20261115/zero_key_projection/README.md)
+records all three profiles, controls, OS metrics and conditional projections.
+Matched-density scenarios are hours, not instant completion; distinct-heavy
+sensitivity is substantially higher. Larger reference-key diversity can increase
+posted/output keys even with a fixed zero source population. A fresh current-year
+profile is therefore required before full execution. A next implementation must
+classify true GL-grain versus unresolved-party records before changing their
+common key, and preserve identities/output controls under any new profile.

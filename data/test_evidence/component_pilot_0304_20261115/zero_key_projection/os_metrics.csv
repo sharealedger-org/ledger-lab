@@ -1,0 +1,4 @@
+case_id,extract_wall_seconds,extract_cpu_user_seconds,extract_cpu_system_seconds,extract_peak_rss_bytes,peak_sampled_root_kib
+repetitive_500k,39.97,68.89,2.69,1101742080,134576
+matched_2m,119.09,159.85,4.80,1122897920,651660
+diverse_500k,140.14,174.87,8.68,1143222272,840928

@@ -1,0 +1,2 @@
+case_id,shape,movement_rows,balance_rows,financial_rows,extract_seconds,reduce_seconds,order_seconds,input_bytes,spill_write_bytes,report_retained_bytes,merge_passes
+repetitive_500k,repetitive,500000,64,500064,26.323505888,0.025279235,9.214255066,128342203,256697,241863,0

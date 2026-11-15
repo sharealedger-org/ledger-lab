@@ -1,0 +1,7 @@
+metric,value
+merge_passes,0
+fan_in,16
+merged_rows,0
+intermediate_bytes,0
+output_rows,640
+elapsed_seconds,0.042089189

@@ -1,0 +1,7 @@
+metric,value
+movement_rows,2000000
+source_pairs,1000000
+contexts,40000
+shape,matched
+sort_spills,40
+source_bytes,515333340

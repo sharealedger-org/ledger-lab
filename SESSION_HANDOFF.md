@@ -71,3 +71,45 @@ assignment/sort admission, payroll and AI remain open. The excluded old assignme
 producer/launcher draft was neither invoked nor edited. Next: verified financial
 bounds and a versioned scenario/scale slice before larger execution. No paper edits,
 Control read/disclosure or full-corpus run.
+
+## 2026-11-15 (TRACK D) — Pushed lineage, prepared anchors, measured zero-key practicality
+
+Owner requested push/next-test preparation, then specifically required projecting
+remaining zero-ID runtime on this hardware. Existing checkpoints through `5e44a8e`
+were pushed. Official FY2012 General Fund anchors and six signed closing-balance
+bridge items verified against G p50/L p174/177; source PDFs rendered locally after
+web screenshot failure. New versioned CSVs, 1% synthetic-only panel config and
+90/3,000/30,000-event ladder prepared. Three offline Scala tests pass. Food-stamp
+estimate belongs to Federal Trust scope and is excluded; no observed APA tie-out
+or posted adjustment is claimed. Details extend the existing pilot contract.
+
+Owner stopped Dropbox and left OneDrive as a potential verified post-success
+archive; processing stayed local, no copy/upload initiated. The component generator
+still needs general calendar, anchor-order calibration, sorted uniqueness/master
+emission, bounded merge fan-in and manifest-driven controls before its next run.
+
+Zero-key report probes ran separately through actual existing post + expanded
+report/reduce, using only the zero ID, fixed 1-GiB heap/four logical CPUs and
+production-like buffer settings. All three profiles passed controls within probe
+limits. Runtime root `session-run.tmp/report_zero_key_20261115/` has PROBE_COMPLETE.
+Receipt: `data/test_evidence/component_pilot_0304_20261115/zero_key_projection/README.md`.
+500k repetitive movement rows: 26.349 engine seconds; 2M at historical-like posted-
+key ratio: 109.314 s; 500k distinct-heavy: 130.163 s. Extract RSS about 1.03–1.06 GiB.
+Host verified 16 GiB, two physical/four logical CPUs, x86_64/Java21.
+
+Historical zero financial inputs 185.3M; current-policy scenarios 215–222M are not
+fresh counts. Matched zero-only projections 3.2–3.3 h; 2x merge-depth sensitivity
+6.4–6.6 h. Distinct-heavy stress 10–11 h, deliberately higher key density, not a
+forecast interval/upper bound. Retained files, cumulative writes and sampled peak
+occupancy are distinct; wider real records, changed reference keys, multi-year
+input and thermal/I/O contention remain sensitivities. Report source fixture
+preparation is not a new TTL/financial cost point. Projection-only labels/extreme
+case refined after timings; measured/final source hashes recorded separately.
+
+Next admission gate: profile a representative current real year with current
+parser/reference/source policies, zero rows, byte widths and posting/output key
+diversity. Do not run full corpus just because heap is bounded, split zeros into
+fake vendors, or silently reduce output. True GL-grain/common-key/materialization
+alternatives need declared semantics and controls if projections are impractical.
+No full-corpus run, paper edit or Control access/disclosure. Older assignment draft
+remains excluded and unchanged.

@@ -1,0 +1,7 @@
+metric,value
+movement_rows,500000
+source_pairs,250000
+contexts,250000
+shape,diverse
+sort_spills,10
+source_bytes,128333340

@@ -1,0 +1,42 @@
+[info] welcome to sbt 1.10.11 (Eclipse Adoptium Java 21.0.8)
+[info] loading settings for project global-plugins from idea.sbt...
+[info] loading global plugins from /Users/ktwitchell001/.sbt/1.0/plugins
+[info] loading settings for project va_pipeline-build from assembly.sbt, plugins.sbt...
+[info] loading project definition from /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/project
+[info] loading settings for project root from build.sbt...
+[info] set current project to va_pipeline (in build file:/Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/)
+[info] running org.universalledger.foundation.va.ledger.LedgerApp --step 5r --outPath /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/report_zero_key_20261115/matched_2m/report.attempt --mergeFanIn 16
+****************************************************************************************************
+                                    Ledger Lab
+                                    VA Corpus
+                  Using State of Virginia Public Financial Data
+                  step=5r  FY2003  quarter=01
+                  started 2026-11-15T08:27:05
+****************************************************************************************************
+[CLI] step=5r  inPath=/VAdata/data/  outPath=/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/report_zero_key_20261115/matched_2m/report.attempt  year=03  quarter=01
+-----------------------------------
+RESULT step=5r rc=0 records_written=640 merge_passes=0
+****************************************************************************************************
+                                  End of Ledger Lab step
+                  step=5r  FY2003  quarter=01
+                  status=ok  elapsed=0:00:00
+****************************************************************************************************
+[success] Total time: 1 s, completed Nov 15, 2026, 8:27:06 AM
+       10.62 real        25.16 user         1.77 sys
+           666243072  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              291448  page reclaims
+                   0  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   8  messages sent
+                   8  messages received
+                  32  signals received
+                 127  voluntary context switches
+               61614  involuntary context switches
+         53962844258  instructions retired
+         85737917051  cycles elapsed
+           648462336  peak memory footprint

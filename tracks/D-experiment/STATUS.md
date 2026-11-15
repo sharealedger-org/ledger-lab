@@ -1,8 +1,9 @@
 # Track D: Primary research experiment
 
-Updated 2026-11-15 (Arizona). Latest bounded implementation/evidence checkpoint:
-**`213b20f`**. Initial Track D consolidation: `ddde891`; broader collaborator review and path reorganization follow here;
-no engine changes, financial execution, paper edits or new Control read.
+Updated 2026-11-15 (Arizona). Latest bounded financial-lineage checkpoint:
+**`5e44a8e`** (lineage-v2, pushed). Initial Track D consolidation: `ddde891`; broader collaborator review and path reorganization follow here;
+those infrastructure commits made no engine changes or financial executions.
+Subsequent bounded work is recorded below; no paper edits or new Control read.
 
 ## Workstreams and reading path
 
@@ -25,6 +26,25 @@ rationale and routes implementation work to its contracts. Read history when a
 specific decision needs explanation; do not reconstruct the current plan from it.
 
 ## Current plans and evidence
+
+**2026-11-15 zero-key practicality measured:** [Receipt](../../data/test_evidence/component_pilot_0304_20261115/zero_key_projection/README.md).
+Three actual report probes passed under fixed 1-GiB heap/four logical CPUs.
+Historical zero workload is 185.3M rows; current-policy sensitivities 215–222M
+are not a fresh census. Matched-density zero-only report projection 3.2–3.3 h,
+2x merge-depth sensitivity 6.4–6.6 h; distinct-heavy stress 10–11 h, not an expected
+interval or guaranteed bound. Counts, input widths, key/output cardinality and
+scratch must be profiled on a representative current real year before full run.
+Do not fabricate vendor IDs to evade the hot group. No full-corpus/cloud run.
+
+**2026-11-15 next test prepared, not executed:** Official FY2012 General Fund
+anchors and six signed closing-balance bridge items verified from G p50 and L
+p174/177; three offline Scala checks pass. [Receipt](../../data/test_evidence/component_pilot_0304_20261115/anchor_preparation_2012/README.md).
+Food-stamp estimate excluded as Federal Trust scope. Prepared a 1% synthetic-only
+panel and 90/3,000/30,000-event ladder; see the existing pilot contract and
+`data/synthetic/component_anchor_2012_v1/`. Before launch implement calendar,
+anchor-ordered calibration, sorted uniqueness/registry emission, bounded merge
+fan-in and manifest-driven controls; do not raise fixture caps alone. Processing
+stays local; owner stopped Dropbox and left OneDrive as a possible verified archive.
 
 **2026-11-15 lineage-v2 bounded continuation:** [Receipt](../../data/test_evidence/component_pilot_0304_20261115/README.md#lineage-v2-continuation-after-consolidation-2026-11-15).
 48 relevant tests passed. Actual FY2003/04 pipeline verifies all 30 financial

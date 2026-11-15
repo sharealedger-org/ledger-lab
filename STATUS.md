@@ -8,7 +8,7 @@ provenance on the FY2003/04 pilot, with unchanged ledger/GL and 48 passing tests
 [Receipt](data/test_evidence/component_pilot_0304_20261115/README.md#lineage-v2-continuation-after-consolidation-2026-11-15).
 Corpus-scale generation and VA financial anchors remain open; no new cost point.
 
-**Current checkpoint: `213b20f`.** The bounded FY2003–FY2004 synthetic component
+**Prior pilot checkpoint: `213b20f`.** The bounded FY2003–FY2004 synthetic component
 pilot completed generation, sorted assignment, posting and expanded reporting.
 [Evidence and limits](data/test_evidence/component_pilot_0304_20261115/README.md):
 32 baseline tests and four generator tests passed; 30 financial events produced
@@ -17,11 +17,23 @@ and scale/AI effectiveness untested. This is fixture evidence, not a cost point.
 
 Initial Track D consolidation: `ddde891` ([receipt](docs/archive/consolidation_2026-11-15/README.md)).
 The broader collaborator review/path reorganization is recorded in its
-[review receipt](docs/COLLABORATOR_REVIEW_2026-11-15.md) and [document map](docs/README.md). No engine changes or
-larger execution in this session. The older assignment producer and its launcher
+[review receipt](docs/COLLABORATOR_REVIEW_2026-11-15.md) and [document map](docs/README.md). Those infrastructure commits made no engine changes or
+workload executions; subsequent probes are recorded below. The older assignment producer and its launcher
 edits remain uncommitted and excluded.
 
 ## Current direction
+
+Zero-key report practicality is now measured on bounded probes; conditional
+zero-only runtime is hours, with strong distinct-key sensitivity. See
+[receipt](data/test_evidence/component_pilot_0304_20261115/zero_key_projection/README.md).
+A representative current-year profile of zero rows/keys/bytes is required before
+full-corpus admission; spill capability alone is insufficient.
+
+Next test preparation: FY2012 General Fund facts and closing-balance bridge
+verified, with three offline checks passing; proposed scale ladder is not yet run.
+See [Track D](tracks/D-experiment/STATUS.md) for its implementation/admission gates.
+Latest tested implementation `5e44a8e` is pushed. Active processing stays local;
+OneDrive is only a potential verified post-success archive.
 
 - Phase 1: direct VA corpus; revise Papers 1/2 from results independently.
 - Phase 2: vendor-centered synthetic work, likely Papers 3/4 on improved cost

@@ -1,0 +1,4 @@
+case_id,components,expense_events_per_component,revenue_events_per_component,po_events_per_component,employee_events_per_component,total_events,financial_sje_rows,status
+smoke,3,12,12,4,2,90,168,PROPOSED_AFTER_IMPLEMENTATION
+representative,100,12,12,4,2,3000,5600,PROPOSED_AFTER_SMOKE
+spill_stress,1000,12,12,4,2,30000,56000,PROPOSED_AFTER_REPRESENTATIVE

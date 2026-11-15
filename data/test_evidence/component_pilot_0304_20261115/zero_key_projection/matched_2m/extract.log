@@ -1,0 +1,42 @@
+[info] welcome to sbt 1.10.11 (Eclipse Adoptium Java 21.0.8)
+[info] loading settings for project global-plugins from idea.sbt...
+[info] loading global plugins from /Users/ktwitchell001/.sbt/1.0/plugins
+[info] loading settings for project va_pipeline-build from assembly.sbt, plugins.sbt...
+[info] loading project definition from /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/project
+[info] loading settings for project root from build.sbt...
+[info] set current project to va_pipeline (in build file:/Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/)
+[info] running org.universalledger.foundation.va.ledger.LedgerApp --step 5v --reportProfile expanded --inPaths /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/report_zero_key_20261115/matched_2m/input --outPath /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/report_zero_key_20261115/matched_2m/report.attempt --mergeFanIn 16 --refPath /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/report_zero_key_20261115/matched_2m --syntheticHistories /Users/ktwitchell001/workspace/sharealedger/ledger-lab/data/synthetic/reclass_history_v1 --syntheticAssignments /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/report_zero_key_20261115/matched_2m/assignments.csv --syntheticAsOf 2012-06-30 --syntheticRunDate 2012-07-01 --aggregateKeys 50000 --syntheticAggregateKeys 10000 --spillRows 50000
+****************************************************************************************************
+                                    Ledger Lab
+                                    VA Corpus
+                  Using State of Virginia Public Financial Data
+                  step=5v - Views (CKB)  all years (1 input directories)  quarter=01
+                  started 2026-11-15T08:25:06
+****************************************************************************************************
+[CLI] step=5v  inPath=/VAdata/data/  outPath=/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/report_zero_key_20261115/matched_2m/report.attempt  year=03  quarter=01
+-----------------------------------
+RESULT step=5v profile=expanded rc=0 records_read=2040384 vendors=1 spills=1
+****************************************************************************************************
+                                  End of Ledger Lab step
+                  step=5v - Views (CKB)  all years (1 input directories)  quarter=01
+                  status=ok  elapsed=0:01:49
+****************************************************************************************************
+[success] Total time: 110 s (0:01:50.0), completed Nov 15, 2026, 8:26:55 AM
+      119.09 real       159.85 user         4.80 sys
+          1122897920  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              529263  page reclaims
+                   2  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   8  messages sent
+                   8  messages received
+                  49  signals received
+                 277  voluntary context switches
+              280274  involuntary context switches
+        721336741407  instructions retired
+        549060514716  cycles elapsed
+          1086283776  peak memory footprint

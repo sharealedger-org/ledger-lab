@@ -68,6 +68,12 @@ Seeded 2026-11-11 from the handoff entries. On the same day the handoff was trim
 
 ## Track D: Primary experiment and shared work
 
+- [x] 2026-11-15: Measure zero-ID report practicality and save conditional full-corpus projections; [receipt](data/test_evidence/component_pilot_0304_20261115/zero_key_projection/README.md). Actual representative/stress probes passed; no full-run readiness claim.
+- [ ] Before full corpus, profile one current real year after actual parser/reference/source-policy changes: zero movement/balance counts, key diversity, byte widths and output/scratch. Reconcile the zero-only 3.2–3.3 h matched and 10–11 h distinct-heavy scenarios with practical run time; no fake vendor splitting or silent output reduction.
+
+- [x] 2026-11-15: Prepare verified FY2012 General Fund anchors/closing bridge and scale-ladder inputs; two offline checks pass. [Receipt](data/test_evidence/component_pilot_0304_20261115/anchor_preparation_2012/README.md). This is not an observed-corpus tie-out.
+- [ ] Implement and admit the prepared FY2012 test per the existing pilot contract: general calendar, anchor-ordered calibration, sorted uniqueness/master emission, bounded 16-reader merge and manifest-driven controls; unchanged lineage-v2 regression before 90/3,000/30,000-event runs. Keep hot-key/full-corpus gates separate.
+
 - [x] 2026-11-15: Close bounded pilot source/document/rule lineage checks with actual FY2003/04 consumers, unchanged ledger/GL and negative controls; [lineage-v2 receipt](data/test_evidence/component_pilot_0304_20261115/README.md#lineage-v2-continuation-after-consolidation-2026-11-15). Full-corpus coverage remains open.
 - [ ] Before interpreting new cost curves, specify the role of audit identity fields in permutation/query capability. Lineage enrichment changes permutation capacities despite unchanged financial outputs; preserve both versions and their scope.
 

@@ -1,0 +1,5 @@
+git=5e44a8ee48c1162af1d93eb16bea8034d8e12b88
+heap_mib=1024
+active_processors=4
+report_timeout_seconds=900
+probe_root_limit_kib=20971520

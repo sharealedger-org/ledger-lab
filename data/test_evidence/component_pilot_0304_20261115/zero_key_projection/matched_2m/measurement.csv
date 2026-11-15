@@ -1,0 +1,2 @@
+case_id,shape,movement_rows,balance_rows,financial_rows,extract_seconds,reduce_seconds,order_seconds,input_bytes,spill_write_bytes,report_retained_bytes,merge_passes
+matched_2m,matched,2000000,40384,2040384,109.275489557,0.0382916,36.281810416,520653474,201295353,67442536,3
