@@ -112,6 +112,13 @@ remain CKB-side qualitative context, outside the Control package; no evidence up
 
 ## Next actions and decisions waiting
 
+**Session boundary, 2026-11-15:** Owner plans a fresh corpus-run session. Start
+with current status/reflection and checklist; validate representative current-year
+zero counts/key diversity, source policies and live time/scratch before launch.
+No full run started. Use local execution/caffeinate/monitoring if admitted; any
+OneDrive archive follows success and verification. Old assignment drafts stay
+excluded. Measured checkpoint `6b6a561`; document transition through `b0c667d`.
+
 1. In a separate implementation session, review pilot limitations and define the
    next versioned scenario/schema/adapter slice before scale-up. Resolve explicit
    corpus lineage and verified financial-anchor coverage; the v2 fixture checks

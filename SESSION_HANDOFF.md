@@ -7,6 +7,25 @@ The [unchanged previous handoff](docs/archive/collaborator_review_2026-11-15/SES
 preserves the detailed chronology through the initial consolidation at `ddde891`.
 Earlier archives remain linked there; no session reasoning or evidence was discarded.
 
+## 2026-11-15 09:20:25 AZT (UTC-0700) (TRACK D) - Corpus-run session boundary
+
+Owner will start a fresh session to complete the corpus-run checklist and, if
+admitted, launch for the rest of the day. Latest measured probe/anchor checkpoint
+is `6b6a561`; document cleanup/transition reflection through `b0c667d` is preserved.
+Read current root/Track D status and the latest canonical reflection first. Validate
+a representative current real-year zero-ID count/key/byte profile, source policies,
+downstream controls and live time/scratch admission before full execution. Zero-only
+3.2-3.3 h matched and 10-11 h distinct-heavy figures are conditional projections,
+not whole-run guarantees. Use the runbook with current contracts; do not assume
+the prepared FY2012 component generator is already implemented.
+
+No full-corpus run has started. If gates pass, run locally with caffeinate and
+background status monitoring. Owner stopped Dropbox; OneDrive is only a possible
+verified post-success archive, with destination/capacity checked before copying.
+Preserve excluded `SyntheticVendorAssignments.scala` and preparation-script drafts;
+do not execute or stage them as accepted design. This boundary adds documentation
+only, with no new execution, paper edit or Control access.
+
 ## 2026-11-15 (TRACK D) — Reflection on the approaching Phase 1 conclusion
 
 Owner asked about the reflection journal's path and requested a short reflection
