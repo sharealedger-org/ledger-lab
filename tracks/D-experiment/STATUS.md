@@ -42,6 +42,16 @@ in AGENTS and the contributor guide. Runtime checkpoints and next gates are unch
 
 ## Current plans and evidence
 
+**2026-11-15 canonical quote boundary:** Corrected FY2012 financial/source-policy
+checks pass: all 2,745,656 receipt legs zero; GL byte-identical across the identity
+policy change. Reporting exposed literal quotes in canonical SJE fields being
+misread as RFC quoting. ReportingOrder now follows the existing literal canonical
+contract for movement/balance/opening while retaining strict CSV for dimensions.
+47 tests pass, including actual post/report exact-quote preservation. Reporting
+only is replaying from the same committed inputs into `fy12/report_literal_v3`
+under the corrected admission root. Earlier failed report scratch is retained;
+full-corpus admission and OneDrive archival are still pending.
+
 **2026-11-15 source-policy correction during admission:** First FY2012 profile
 passed monetary controls but exposed legacy REV master aliases attributing
 2,452,576 agency-grain receipt SJE rows. It is not admitted; financial/profile

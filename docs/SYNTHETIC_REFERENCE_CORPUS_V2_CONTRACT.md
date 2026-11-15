@@ -34,6 +34,20 @@ Require all actual APA receipt rows to retain the original zero ID in the new
 preparation profile. This is a versioned input-policy change, not a historical
 baseline correction. Use a fresh root and replay the entire financial process.
 
+Actual corrected FY2012 reporting then exposed a record-parser boundary: journal
+and ledger writers use the established literal comma-delimited canonical fields,
+with commas sanitized but quote characters retained as data. RFC CSV tokenization
+in the reporting-only indexed reader rejects such valid fields. Reproduce this
+on a named balanced source with quotes in description/commitment fields; retain
+exact raw strings through actual post and report. Only canonical movement,
+balance and opening reads use literal field splitting; headered source, dimension,
+assignment and reference CSVs keep strict RFC parsing. Existing posting/sorting
+schemas and monetary behavior are unchanged. Index scan and ordered read remain
+the same two physical passes, bounded by existing record/block allowances.
+Retry reporting from the same immutable committed financial inputs into a fresh
+report attempt after baseline and quote-boundary tests pass. Preserve the failure;
+do not suppress offending records or add a lenient skip policy.
+
 New Scala post-financial preparation scans exactly the merged SJE and actual
 ledger selected by the committed run. It records full hashes, row/zero counts,
 UTF-8 byte widths and source-family zero counts. It writes ID candidates only at

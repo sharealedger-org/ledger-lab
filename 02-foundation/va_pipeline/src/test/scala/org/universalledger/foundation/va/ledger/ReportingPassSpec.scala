@@ -70,6 +70,27 @@ class ReportingPassSpec extends AnyFunSuite {
     ReportingReduce(Map("outPath" -> out.toString, "mergeFanIn" -> fanIn.toString))
     out
   }
+  test("canonical quotes remain literal through actual posting and indexed reporting") {
+    val root=Files.createTempDirectory(Paths.get("../../session-run.tmp"),"literal-quotes-")
+    val input=Files.createDirectories(root.resolve("input"))
+    val quoted="\"VENDOR\" unusual quoted description"
+    val commitment="\"PO\"literal"
+    val rows=pair("0000000000","0014/07","17.25","EXP1","EXPENSE_PAYMENT").map { line=>
+      val r=line.split(",",-1);r(2)=commitment;r(8)=quoted;r.mkString(",")
+    }
+    write(input.resolve("SortedJEFY14merged.csv"),SortEngine.sortChunk(rows,spec))
+    post(input.toString+"/",input.toString+"/","14")
+    val out=run(root,Map("inPaths"->input.toString,"reportProfile"->"expanded","packetVendors"->"0000000000"),"report")
+    assert(table(out.resolve("reconciliation.csv")).forall(_("status")=="PASS"))
+    val packets=table(out.resolve("analysis_packets.csv"))
+    def field(r:Map[String,String],index:Int):String={
+      val p=CSVParser.parse(r("canonical_record_csv"),CSVFormat.DEFAULT)
+      try p.getRecords.get(0).get(index) finally p.close()
+    }
+    assert(packets.exists(r=>r("kind")=="movement" && field(r,8)==quoted))
+    assert(packets.exists(r=>r("kind")=="balance" && field(r,2)==commitment))
+    assert(table(out.resolve("input_manifest.csv")).filter(r=>Set("movement","balance")(r("kind"))).map(_("rows").toLong).sum==4)
+  }
   test("real posting output reconciles; features and effective dimensions remain aligned") {
     withFixture { (dir, params) =>
       val out = run(dir, params, "report")

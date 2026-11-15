@@ -1,0 +1,3 @@
+file,kind,rows,bytes,zero_rows,zero_bytes,max_record_bytes,zero_max_record_bytes,expense_rows,expense_zero_rows,revenue_rows,revenue_zero_rows
+/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/corpus_admission_20261115_receipts_v2/fy12/output/FY12.generations/run_20261115_110611_81754/SortedJEFY12merged.csv,movement,22260988,7803983748,17592858,6094299500,2363,409,16177442,14847202,2745656,2745656
+/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/corpus_admission_20261115_receipts_v2/fy12/output/FY12.generations/run_20261115_110611_81754/LDGR2012.csv,balance,1031381,167561274,335103,48258968,215,152,0,0,0,0

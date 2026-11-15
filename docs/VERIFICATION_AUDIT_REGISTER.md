@@ -1904,3 +1904,36 @@ and unchanged APA/PO/report behavior. Log: `receipt_policy_tests.log`. Corrected
 fresh FY2012 replay now running under
 `session-run.tmp/corpus_admission_20261115_receipts_v2/`. Full admission remains
 pending actual zero/key/byte/report cardinalities and time/scratch evaluation.
+
+### Canonical quote boundary verified on fixture; real-year retry running
+
+Corrected receipt-safe FY2012 financial processing completed 11:18:18 AZT.
+Actual preparation: 22,260,988 movement rows; 1,031,381 posted rows; zero group
+17,592,858 movement plus 335,103 posted. All 2,745,656 receipt SJE rows retain
+zero. GL2012 is byte-identical to the original policy profile (cmp exit 0).
+Forty-two additional expense legs with agency-like vendor labels also lose their
+legacy REV alias mapping, intentionally remaining unresolved. No amounts changed.
+
+Actual report then failed after 659 engine seconds at the RFC parser boundary,
+not at a financial or memory control. Real SJE row 3,826,539 has a description
+beginning with a literal unmatched quote; canonical writers sanitize commas but
+retain quotes. Existing post/sort use literal comma splitting. The indexed report
+reader incorrectly treated canonical movement/ledger text as RFC quoted CSV.
+Failure logs/scratch remain at `fy12/report.attempt/` in the corrected admission
+root; no EXTRACT_COMPLETE/REPORT_COMPLETE or full-corpus admission resulted.
+
+Contract extended before changing ReportingOrder: only movement/balance/opening
+records now use bounded line reads and literal splitting. Headered dimensions,
+assignments and references retain strict RFC CSV. Index/order guards, hashes,
+record/block limits, two physical input passes and financial schema are unchanged.
+A named actual-post/report test preserves quote-bearing descriptions/commitments
+through correctly quoted analytical packets and exact reconciliation. First test
+assertion incorrectly inspected nested serialized CSV as raw text; corrected it
+to decode the inner packet and compare exact fields. Final 47 tests pass, none
+failed/canceled: `canonical_quote_regression_final.log` in the corrected root.
+
+Real-year reporting replay is active under `fy12/report_literal_v3/` (attempt
+suffixed until publication), using the unchanged committed financial snapshot and
+same prepared assignments. Latest retry marker is LITERAL_RETRY_FAILED, with
+PREFLIGHT_COMPLETE written only after report validation and cardinality census.
+Admission and all three full runs remain pending. No Control read or cloud copy.

@@ -1,0 +1,77 @@
+[info] welcome to sbt 1.10.11 (Eclipse Adoptium Java 21.0.8)
+[info] loading settings for project global-plugins from idea.sbt...
+[info] loading global plugins from /Users/ktwitchell001/.sbt/1.0/plugins
+[info] loading settings for project va_pipeline-build from assembly.sbt, plugins.sbt...
+[info] loading project definition from /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/project
+[info] loading settings for project root from build.sbt...
+[info] set current project to va_pipeline (in build file:/Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/)
+[info] running org.universalledger.foundation.va.ledger.LedgerApp --step 5v --reportProfile expanded --inPaths /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/corpus_admission_20261115_receipts_v2/fy12/output/FY12 --outPath /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/corpus_admission_20261115_receipts_v2/fy12/report.attempt --mergeFanIn 16 --vendorMaster /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/corpus_admission_20261115_receipts_v2/inputs/VendorMaster.csv --refPath /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/corpus_admission_20261115_receipts_v2/inputs --syntheticHistories /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/corpus_admission_20261115_receipts_v2/inputs/synthetic_histories --syntheticAssignments /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/corpus_admission_20261115_receipts_v2/fy12/preparation/synthetic_assignments.csv --syntheticAsOf 2012-06-30 --syntheticRunDate 2016-07-01 --aggregateKeys 50000 --syntheticAggregateKeys 10000 --spillRows 50000
+****************************************************************************************************
+                                    Ledger Lab
+                                    VA Corpus
+                  Using State of Virginia Public Financial Data
+                  step=5v - Views (CKB)  all years (1 input directories)  quarter=01
+                  started 2026-11-15T11:19:34
+****************************************************************************************************
+[CLI] step=5v  inPath=/VAdata/data/  outPath=/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/corpus_admission_20261115_receipts_v2/fy12/report.attempt  year=03  quarter=01
+-----------------------------------
+****************************************************************************************************
+                                  End of Ledger Lab step
+                  step=5v - Views (CKB)  all years (1 input directories)  quarter=01
+                  status=FAILED  elapsed=0:10:59
+****************************************************************************************************
+[error] java.io.UncheckedIOException: org.apache.commons.csv.CSVException: Invalid character between encapsulated token and delimiter at line: 4,188,195, position: 1,446,615,573
+[error] 	at org.apache.commons.io.function.Uncheck.wrap(Uncheck.java:355)
+[error] 	at org.apache.commons.io.function.Uncheck.get(Uncheck.java:215)
+[error] 	at org.apache.commons.csv.CSVParser$CSVRecordIterator.getNextRecord(CSVParser.java:234)
+[error] 	at org.apache.commons.csv.CSVParser$CSVRecordIterator.hasNext(CSVParser.java:245)
+[error] 	at org.universalledger.foundation.va.ledger.ReportingOrder.next(ReportingOrder.scala:76)
+[error] 	at org.universalledger.foundation.va.ledger.ReportingSupport$OrderedInput.next(ReportingSupport.scala:74)
+[error] 	at org.universalledger.foundation.va.ledger.ReportingPass$.advance$1(ReportingPass.scala:238)
+[error] 	at org.universalledger.foundation.va.ledger.ReportingPass$.apply(ReportingPass.scala:287)
+[error] 	at org.universalledger.foundation.va.ledger.CKBViews$.apply(CKBViews.scala:186)
+[error] 	at org.universalledger.foundation.va.ledger.LedgerApp$.dispatch(LedgerApp.scala:239)
+[error] 	at org.universalledger.foundation.va.ledger.LedgerApp$.runCLI(LedgerApp.scala:135)
+[error] 	at org.universalledger.foundation.va.ledger.LedgerApp$.main(LedgerApp.scala:110)
+[error] 	at org.universalledger.foundation.va.ledger.LedgerApp.main(LedgerApp.scala)
+[error] 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+[error] 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+[error] Caused by: org.apache.commons.csv.CSVException: Invalid character between encapsulated token and delimiter at line: 4,188,195, position: 1,446,615,573
+[error] 	at org.apache.commons.csv.Lexer.parseEncapsulatedToken(Lexer.java:371)
+[error] 	at org.apache.commons.csv.Lexer.nextToken(Lexer.java:294)
+[error] 	at org.apache.commons.csv.CSVParser.nextRecord(CSVParser.java:892)
+[error] 	at org.apache.commons.io.function.Uncheck.get(Uncheck.java:213)
+[error] 	at org.apache.commons.csv.CSVParser$CSVRecordIterator.getNextRecord(CSVParser.java:234)
+[error] 	at org.apache.commons.csv.CSVParser$CSVRecordIterator.hasNext(CSVParser.java:245)
+[error] 	at org.universalledger.foundation.va.ledger.ReportingOrder.next(ReportingOrder.scala:76)
+[error] 	at org.universalledger.foundation.va.ledger.ReportingSupport$OrderedInput.next(ReportingSupport.scala:74)
+[error] 	at org.universalledger.foundation.va.ledger.ReportingPass$.advance$1(ReportingPass.scala:238)
+[error] 	at org.universalledger.foundation.va.ledger.ReportingPass$.apply(ReportingPass.scala:287)
+[error] 	at org.universalledger.foundation.va.ledger.CKBViews$.apply(CKBViews.scala:186)
+[error] 	at org.universalledger.foundation.va.ledger.LedgerApp$.dispatch(LedgerApp.scala:239)
+[error] 	at org.universalledger.foundation.va.ledger.LedgerApp$.runCLI(LedgerApp.scala:135)
+[error] 	at org.universalledger.foundation.va.ledger.LedgerApp$.main(LedgerApp.scala:110)
+[error] 	at org.universalledger.foundation.va.ledger.LedgerApp.main(LedgerApp.scala)
+[error] 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+[error] 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+[error] stack trace is suppressed; run 'last Compile / run' for the full output
+[error] (Compile / run) java.io.UncheckedIOException: org.apache.commons.csv.CSVException: Invalid character between encapsulated token and delimiter at line: 4,188,195, position: 1,446,615,573
+[error] Total time: 661 s (0:11:01.0), completed Nov 15, 2026, 11:30:33 AM
+      668.82 real       703.28 user         6.15 sys
+          1350807552  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              543933  page reclaims
+                   9  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   8  messages sent
+                   8  messages received
+                  91  signals received
+                 241  voluntary context switches
+              142167  involuntary context switches
+       2633454604085  instructions retired
+       2379425984784  cycles elapsed
+          1296519168  peak memory footprint

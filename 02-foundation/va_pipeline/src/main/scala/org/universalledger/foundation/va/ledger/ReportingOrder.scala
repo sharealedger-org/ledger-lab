@@ -70,11 +70,22 @@ final class ReportingOrder(file: File, kind: String, header: Vector[String], ind
   private val source = new RandomAccessFile(file, "r")
   private var parser: CSVParser = null
   private var iterator: java.util.Iterator[org.apache.commons.csv.CSVRecord] = null
+  // Canonical SJE/ledger records are literal comma-delimited fields. Writers
+  // sanitize commas but preserve quotes as data; only dimension CSVs use RFC quoting.
+  private val literal = Set("movement", "balance", "opening")(kind)
+  private var canonicalReader: BufferedReader = null
+  private var canonicalRow: String = null
+  private def readCanonical(): String = {
+    var line = canonicalReader.readLine()
+    while (line != null && line.isEmpty) line = canonicalReader.readLine()
+    line
+  }
   private var nextOrdinal = 0L
   var ordinal = 0L
   def next(): Option[Vector[String]] = {
-    while (iterator == null || !iterator.hasNext) {
+    while (if (literal) canonicalRow == null else iterator == null || !iterator.hasNext) {
       if (parser != null) { parser.close(); parser = null }
+      if (canonicalReader != null) { canonicalReader.close(); canonicalReader = null }
       if (!ordered.hasNext) {
         require(file.length() == originalBytes && file.lastModified() == originalModified, s"Indexed input changed: $file")
         return None
@@ -88,11 +99,19 @@ final class ReportingOrder(file: File, kind: String, header: Vector[String], ind
           require(n > 0, "Truncated indexed input"); remaining -= n; n
         }
       }
-      parser = new CSVParser(new InputStreamReader(bounded, StandardCharsets.UTF_8), CSVFormat.DEFAULT)
-      iterator = parser.iterator()
+      if (literal) {
+        canonicalReader = new BufferedReader(new InputStreamReader(bounded, StandardCharsets.UTF_8),65536)
+        canonicalRow = readCanonical()
+      } else {
+        parser = new CSVParser(new InputStreamReader(bounded, StandardCharsets.UTF_8), CSVFormat.DEFAULT)
+        iterator = parser.iterator()
+      }
     }
     ordinal = nextOrdinal; nextOrdinal += 1
-    Some(iterator.next().iterator.asScala.toVector)
+    if (literal) {
+      val line = canonicalRow; canonicalRow = readCanonical()
+      Some(line.split(",",-1).toVector)
+    } else Some(iterator.next().iterator.asScala.toVector)
   }
-  def close(): Unit = { if (parser != null) parser.close(); source.close() }
+  def close(): Unit = { if (parser != null) parser.close(); if (canonicalReader != null) canonicalReader.close(); source.close() }
 }

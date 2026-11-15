@@ -1,0 +1,1 @@
+PASS: cmp old/new GL2012.csv exit=0; byte-identical amounts and GL keys under receipt identity input-policy correction.

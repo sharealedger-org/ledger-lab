@@ -9,6 +9,19 @@ Earlier archives remain linked there; no session reasoning or evidence was disca
 
 ## 2026-11-15 (TRACK D) - Autonomous synthetic-reference v2 work in progress
 
+Latest: corrected FY2012 financial/source checks passed; 2,745,656 receipt legs
+all zero, GL byte-identical to the first financial profile. The report failed on
+valid literal quotes in canonical SJE fields at 11:30:33 AZT. ReportingOrder's
+canonical movement/balance/opening path now matches existing literal delimiter
+semantics, with strict RFC CSV retained for dimensions/references. Final 47 tests
+passed at 13:20:31 AZT. Report-only replay is exec session 89527, runtime
+`retry_literal_report.sh`, monitor exec session 96271. Latest PID is literal_retry.pid;
+output `fy12/report_literal_v3`, summary `fy12/admission_summary_literal_v3`.
+Earlier failure marker renamed PREFLIGHT_FAILED_original_quote; old monitor
+storage history preserved as monitor_storage_financial_and_failed_quote.csv.
+Use LITERAL_RETRY_FAILED / PREFLIGHT_COMPLETE for the latest attempt. Wait for
+actual report controls/cardinalities/time/scratch before full admission.
+
 Latest continuation: first FY2012 financial run completed at 10:19:33 AZT,
 but its fresh profile falsified receipt source policy: 2,452,576/2,745,656 receipt
 SJE rows mapped to legacy REV agency-name aliases. SOURCE_POLICY_FAILED marks
