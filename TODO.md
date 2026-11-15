@@ -62,6 +62,8 @@ Seeded 2026-11-11 from the handoff entries. On the same day the handoff was trim
 
 ## Track D: control comparison (Track D)
 
+- Build the Phase 2 scenario matrix and confirm monograph paper mapping before revising generation; see [connected-process strategy](docs/SYNTHETIC_CONNECTED_PROCESS_STRATEGY.md) for Phase 3 ideas and bias controls.
+
 - [ ] **Pre-question foundation (owner, 2026-11-15):** connect/scale synthetic inputs; add date/coverage/hierarchy validation views; complete multidimensional vendor CKB reporting; verify the connected fixture; then run and inspect one new full corpus execution before defining Phase 2 questions. Reclass engine creation/extension is deferred to the Q2 response.
 - [x] **Retire prior expanded datasets:** monthly_a/b/c generated outputs deleted per owner, 376.43 GiB additional free space; 1,050 retained evidence files hash-verified. Receipt: `data/test_evidence/corpus_cleanup_20261115/`.
 

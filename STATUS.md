@@ -1,5 +1,11 @@
 # Ledger Lab: Status (read this first)
 
+**Experiment phases, owner clarification 2026-11-15:** Phase 1 = direct VA corpus;
+Phase 2 = current vendor-centered synthetic work, likely Papers 3 and 4 on improved
+cost curves and AI models; Phase 3 = broader CKB topology from tentative allocations
+to reclass. Data generation follows this same numbering. See
+[strategy](docs/SYNTHETIC_CONNECTED_PROCESS_STRATEGY.md).
+
 Updated 2026-11-12. One page. A session starts here, then reads only the `STATUS.md` of the track it works on. Do not read the whole `SESSION_HANDOFF.md` or the audit register unless a track page points to an entry. If this page and the register disagree, the register wins.
 
 **2026-11-15 execution/scope update:** Owner-authorized retirement of generated data

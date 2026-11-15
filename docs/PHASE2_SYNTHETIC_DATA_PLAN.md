@@ -1,9 +1,32 @@
 # Phase 2: Synthetic Data Generation and Engine Demonstration Plan
 
+**Current transition, 2026-11-15:** Complete the Phase 1 results-based revision of
+Papers 1 and 2 while producing initial Phase 2 synthetic inputs to inform Papers
+3 and 4. A further versioned data-design round may clarify their questions and
+protocols before freezing formal experiments and the Control handoff. See the
+[strategy](SYNTHETIC_CONNECTED_PROCESS_STRATEGY.md#purpose-and-sequencing).
+
+**Integrated experiment numbering, owner clarification 2026-11-15:** Phase 1 is
+direct VA corpus work. Phase 2 is the current initial vendor-centered synthetic
+work, likely informing Papers 3 and 4 on improved cost curves and AI models.
+Phase 3 extends to the broader CKB topology, from tentative allocations to reclass.
+Generation uses these same experiment phases. Earlier broad engine strands below
+are a backlog spanning Phases 2 and 3, not all prerequisites for Phase 2.
+
+**2026-11-15 controlling sequencing update:** See the
+[connected-process strategy](SYNTHETIC_CONNECTED_PROCESS_STRATEGY.md) for the
+two-stage generation plan: vendor-centered evidence with limited employee/revenue
+connections for early Papers 3 and 4 AI work, followed by broader process topology,
+tentative allocation relationships and temporary future-dated scenarios. It also
+records bias controls and the longer-term AI vision. These are planning decisions,
+not implemented capabilities; they supersede conflicting earlier sequencing below.
+
 Drafted 2026-11-14. **Implementation started 2026-11-14 by owner direction.**
 
-**Owner sequencing decision, 2026-11-15:** Reclass engine creation/extension belongs
-to the Phase 2 Q2 response, after the questions and evaluation criteria are fixed.
+**Earlier owner sequencing decision, 2026-11-15 (historical numbering):** Reclass
+engine creation/extension belongs to the Q2 response, after the questions and
+evaluation criteria are fixed. Under the integrated numbering above this broader
+reclass work is in Phase 3, not a prerequisite for current Phase 2 generation.
 Before question definition: connect/scale the synthetic inputs, build synthetic
 validation views, complete multidimensional vendor CKB reporting, verify a connected
 fixture, then execute and inspect one new full corpus run. Date-effective lookups

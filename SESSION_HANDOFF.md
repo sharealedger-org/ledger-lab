@@ -1,5 +1,29 @@
 # Ledger Lab Handoff
 
+## 2026-11-15 (TRACK D) - Planning checkpoint for continued generation
+
+Owner will revise Papers 1–4 in separate sessions, authorized further synthetic generation work and requested commit/push of conclusions. Strategy, integrated phase numbering, component-first/two-order CKB proposal, financial bounds and exploratory corpus/paper iteration are checkpointed. The older SyntheticVendorAssignments source and its preparation-script additions remain uncommitted drafts. Next: finalize small scenario/schema/adapter contracts and proceed with a bounded connected implementation; no full-corpus admission from planning alone.
+
+## 2026-11-15 (TRACK D) - Closing Phase 1 and preparing Phase 2
+
+Owner clarified present sequencing: update Papers 1 and 2 from Phase 1 results while generating initial Phase 2 synthetic inputs to inform Papers 3 and 4. Another data-design round may improve those inputs before the experiment path is clear. Updated strategy/plan to allow this exploratory corpus/paper iteration before formal protocol/corpus freeze and Control handoff. Record versions and inspection exposure; preserve evaluation separation. No code, execution or Control contact.
+
+## 2026-11-15 (TRACK D) - Integrated experiment phase numbering
+
+Owner corrected the assistant interpretation: generation phases are integrated with proposed experiment phases, not separately numbered. Phase 1 is direct VA corpus work; Phase 2 is current vendor-centered synthetic work, likely informing Papers 3 and 4 on improved cost curves and AI models; Phase 3 is broader topology from tentative allocations to reclass. Updated current strategy/proposal/plan/status; preserved historical entries and an old proposal-path pointer. No implementation or execution.
+
+## 2026-11-15 (TRACK D) - Components and VA financial bounds
+
+Owner agreed independent synthetic data and extended context generation toward cross-process business components. Requested feasible adjustments connecting generated activity to higher-level VA financial data as bounds. Added financial bridge design to `docs/PHASE_ONE_GENERATION_CKB_PROPOSAL.md`: scope/basis-compatible anchors, component envelopes, nonoverlapping comparison populations, supported adjustments versus synthetic calibration versus residuals, and balanced ARE processing only for declared postable items. Inspected existing ACFR fixture manifest/CSVs; they include estimated and aggregate-derived values, not verified detailed reconciliation. No new source verification, code or execution. Next: narrow anchor selection and coverage contracts.
+
+## 2026-11-15 (TRACK D) - Proposed generation CKB structure before code
+
+Owner requested a concrete phase-one generation structure with phase-two reuse before any test implementation. `docs/PHASE_ONE_GENERATION_CKB_PROPOSAL.md` proposes two generation orders: shared business context, then process/entity/effective-date. Records preserve source grain, separate synthetic companion provenance, temporal history and hidden relationship truth. Employee/revenue adapters are proposed, not verified existing consumers. Includes bounded-state contracts, physical sort/materialization boundaries, downstream controls and a manual cheapest falsifier. No code, tests, generation or Control access in this design session. Discuss source policy, contexts/grains and evaluator scope before final schemas and implementation.
+
+## 2026-11-15 (TRACK D) - Strategic generation plan
+
+Documented the owner discussion in `docs/SYNTHETIC_CONNECTED_PROCESS_STRATEGY.md`, linked from the existing plan. Vendor-centered employee/revenue evidence supports earlier AI work; broader topology, tentative allocations and temporary future-dated reclass follow later. Includes bias controls, withheld truth versus inferability and the AI proposal/execution/evidence loop. Confirm paper mapping before revising generation. Documentation only; no new execution or Control reading.
+
 **2026-11-15 reporting checkpoint:** Owner requested a selective commit before corpus-wide generation. Reporting views, bounded reference preparation, fixture and plans are checkpointed; the corpus assignment producer and its launcher additions remain an uncommitted draft. Latest focused suite: 32 passed. Two-year financial fixture completed; latest streamed-assignment reporting still needs end-to-end validation. Evidence: `data/test_evidence/connected_views_checkpoint_20261115/`. Next: discuss the larger business-process topology, then revise the generation plan. No new full run launched.
 
 ## 2026-11-15 (TRACK D/B1) - Multi-business-process CKB clarification
