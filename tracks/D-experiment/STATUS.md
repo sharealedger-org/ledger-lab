@@ -42,6 +42,20 @@ in AGENTS and the contributor guide. Runtime checkpoints and next gates are unch
 
 ## Current plans and evidence
 
+**2026-11-15 autonomous execution preparation:** Owner authorized three executions
+of the synthetic-reference corpus with expanded reports, evaluation and verified
+OneDrive archival, and explicitly authorized a new preparation path after the
+excluded-draft dependency was found. New
+[v2 contract](../../docs/SYNTHETIC_REFERENCE_CORPUS_V2_CONTRACT.md): assignments
+come from actual committed SJE/ledger IDs through bounded literal sorting and
+declared synthetic template cycling. No excluded artifacts are consumed.
+Unchanged baseline 42 tests passed (one environment-dependent case canceled),
+two new preparation tests passed; actual connected reporting passed 26
+reconciliation, 20 history and 96 conservation checks. FY2012 current-policy
+financial/report admission profile is running with caffeinate under
+`session-run.tmp/corpus_admission_20261115/`. Full execution/time/scratch admission
+and archival remain pending; these are exploratory results, not new cost points.
+
 
 **2026-11-15 zero-key practicality measured:** [Receipt](../../data/test_evidence/component_pilot_0304_20261115/zero_key_projection/README.md).
 Three actual report probes passed under fixed 1-GiB heap/four logical CPUs.
@@ -111,6 +125,17 @@ preserves the full decision/exposure chronology and unaccepted proposals.
 remain CKB-side qualitative context, outside the Control package; no evidence upgrade.
 
 ## Next actions and decisions waiting
+
+**Owner clarification, 2026-11-15 09:26 AZT:** The downloaded VA corpus run is
+complete; retained historical evidence/Gold (including OneDrive) remains the
+record for that measured workload. The next requested run is the prepared
+synthetic-reference corpus, supporting the Phase 1 conclusion and preparation
+for Phase 2 Q2 development, not another direct-VA baseline. The
+[current pre-run checklist](../../docs/FULL_CORPUS_RUN_CHECKLIST.md#current-run-selection--owner-clarification-2026-11-15)
+now distinguishes these workloads. Later parser/lineage/reporting changes mean
+HEAD must not be assumed identical to historical measured code. Synthetic
+admission remains pending; no full run launched or OneDrive copy made this session.
+Older excluded assignment drafts/artifacts remain outside accepted execution.
 
 **Draft cleanup, 2026-11-15:** Owner authorized deleting the unused assignment
 draft. Only its own uncommitted launcher and historical records referenced it.

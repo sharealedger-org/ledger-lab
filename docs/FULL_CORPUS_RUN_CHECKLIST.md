@@ -1,5 +1,53 @@
 # Full Corpus Run Checklist
 
+## Current run selection — owner clarification, 2026-11-15
+
+The downloaded VA corpus has already been run successfully. Its retained evidence
+and Gold remain valid for the recorded input population, code revision and output
+capability; synthetic preparation does not invalidate those historical results.
+See the [baseline record](COMPANION_BASELINE_RECORD_2026-11-12.md),
+[audit register](VERIFICATION_AUDIT_REGISTER.md) and
+[expanded-run retention receipt](../data/test_evidence/corpus_cleanup_20261115/README.txt).
+The baseline record identifies OneDrive `LedgerLabOutputs-Gold`; the owner also
+confirms evidence on OneDrive. This session has not reverified the remote archive.
+
+The next intended workload is the **prepared synthetic-reference corpus**, to
+support the Phase 1 conclusion and prepare data for Phase 2 Q2 development.
+It is not a request to repeat the completed direct-VA baseline. Q2 development,
+formal phase closure and corpus-scale synthetic readiness are separate milestones.
+Later parser, lineage and reporting changes exist in this checkout: do not infer
+that HEAD is byte-identical to a historical measured revision. Preserve the
+historical result and identify the new workload separately.
+
+Before any future launch, complete this current checklist; the dated sections
+below are historical troubleshooting guidance, not an unfinished baseline queue.
+
+- [ ] Name the selected workload: historical-baseline reproduction, synthetic-reference
+      exploration, or versioned generated-component scenario. State its purpose and
+      frozen code/input/rule/reference hashes; do not substitute one for another.
+- [ ] Identify prior evidence being reused, its measured population and limits.
+      A new workload does not require repeating a valid baseline merely because
+      synthetic preparation is underway; changed measured behavior needs its own checks.
+- [ ] For synthetic-reference exploration, declare real raw inputs versus simulated
+      references/histories, source-family policy, zero/placeholder identity behavior,
+      assignment provenance and actual downstream consumers. Excluded older assignment
+      drafts and their generated artifacts are not accepted inputs by default.
+- [ ] Confirm the selected generation/assignment path is accepted and ready. The
+      bounded FY2003/04 pilot and prepared FY2012 anchors do not establish corpus
+      readiness. Apply the current strategy, pilot contract and Track D gates.
+- [ ] Run unchanged focused controls and the named new workload checks. Profile a
+      representative year under the selected current policies: zero movement and
+      balance rows, bytes/widths, posting-key and report-output cardinalities.
+      Historical zero-only projections are conditional, not whole-run guarantees.
+- [ ] Admit live time, retained output, simultaneous scratch and per-process memory;
+      distinguish cumulative writes from peak occupancy. Confirm power and competing
+      processes, isolated attempt paths, fail-stop behavior and sufficient run window.
+- [ ] Only after admission, launch locally in the background with caffeinate and
+      monitoring; record command, PIDs, logs and completion/control markers.
+- [ ] Verify successful outputs and hashes before optional OneDrive archival;
+      check destination/capacity and verify copied bytes. Keep active processing local
+      and preserve prior evidence and excluded drafts.
+
 **Runbook with dated observations:** This preserves the 2026-11-10/11 launch experience, not a live queue or current capacity receipt. Follow [Track D](../tracks/D-experiment/STATUS.md) for the selected workload and its admission gates; verify current inputs, source hashes, paths and available disk/scratch. Historical completed or pending marks do not authorize a launch or a change to a frozen measurement. No corpus execution is part of documentation consolidation.
 
 Working checklist for a full FY2003-FY2016 corpus run on the Zenodo-restored data root. Written

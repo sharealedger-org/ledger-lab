@@ -7,6 +7,28 @@ The [unchanged previous handoff](docs/archive/collaborator_review_2026-11-15/SES
 preserves the detailed chronology through the initial consolidation at `ddde891`.
 Earlier archives remain linked there; no session reasoning or evidence was discarded.
 
+## 2026-11-15 09:26:41 AZT (UTC-0700) (TRACK D) - Clarified next workload
+
+Owner confirms the downloaded VA corpus execution is complete, with evidence
+on OneDrive. Historical evidence remains valid within its recorded scope. The
+next intended execution is the prepared synthetic-reference corpus, supporting
+the Phase 1 conclusion and preparing data for Phase 2 Q2 development. Codex's
+initial direct-VA interpretation in this session was incorrect. Updated the
+runbook's current checklist and Track D status to prevent that repetition.
+Current HEAD contains later parser/lineage/reporting changes; no claim of unchanged
+code relative to a historical run was verified. OneDrive contents were not rescanned.
+
+Pre-interruption checks: prepared reference/master/history hash list passed;
+about 450 GiB free, AC power, 16 GiB RAM/two physical/four logical CPUs; process
+check found no matching pipeline/JVM. Prepared root lacks INPUTS_COMPLETE and
+contains assignments produced by the excluded older draft: neither those artifacts
+nor the prepared FY2012 scenario are thereby admitted. Focused sbt tests did not
+start because sandbox denied the sbt boot lock; no test failure or passing baseline
+is claimed. Logs are under session-run.tmp/corpus_admission_20261115/.
+No new code, financial profile, full-corpus launch, archive copy or Control read.
+Continue synthetic admission from the current checklist; leave excluded drafts
+and their existing artifacts untouched.
+
 ## 2026-11-15 09:21:57 AZT (UTC-0700) (TRACK D) - Unused assignment drafts removed
 
 Owner authorized deletion if no active dependencies. Search found only the draft

@@ -1849,3 +1849,32 @@ prose/code remains intact, with Markdown links rebased. Previous frozen snapshot
 evidence and attributed reflections retained; only navigation links in maintained
 records changed. Current protocols, open tasks and implementation/admission gates
 remain. No runtime test, engine change, new Control read or evidence-maturity change.
+
+## 2026-11-15 — synthetic-reference corpus v2 admission in progress
+
+Owner explicitly authorized a new preparation path after the excluded-draft
+assignment dependency was identified. Contract:
+`docs/SYNTHETIC_REFERENCE_CORPUS_V2_CONTRACT.md` (declared before implementation).
+This is the synthetic-reference exploration workload, not the wider component
+scenario generator and not a repeat of historical VA baseline measurements.
+
+Unchanged focused Scala baseline: 42 passed, one environment-dependent integration
+case canceled; `session-run.tmp/corpus_admission_20261115/baseline_retry.log`.
+New `CorpusReportingPreparation` uses literal-ID break candidates, bounded
+50,000-ID sorting and at most 16 merge readers; deterministic template cycling
+is preparation only, not measured CKB or identity recovery. Two tests passed,
+including duplicates, variable-width/sentinel IDs, reordered inputs, multiple
+merge levels and invalid capacity/ID rejection. Actual unchanged lineage-v2
+FY03/04 outputs then produced 2 attributed assignments and excluded the zero ID;
+86 financial rows were scanned with full hashes and zero/byte profiles.
+Actual separate report consumer completed with 26 reconciliation checks, 20
+history checks and 96 conservation checks passing; all 86 financial rows covered.
+Logs: `session-run.tmp/corpus_admission_20261115/connected_*` and
+`new_preparation_tests.log`. This is bounded functional evidence, not full admission.
+
+Fresh references/master/histories prepared in an isolated v2 root by the existing
+accepted preparation script. FY2012 current-policy financial/report profile is
+running locally with caffeinate; full three-run admission, time/scratch and remote
+archive verification remain pending. No excluded-draft assignments consumed and
+no Control access. GERS-002/003 remain open; no new target-runtime or cost-point
+claim. Earlier recorded source runs remain valid for their own frozen scope.
