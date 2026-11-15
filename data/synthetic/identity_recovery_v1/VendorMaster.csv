@@ -1,0 +1,4 @@
+instID,instHolderName,instEffectDate,instEffectEndDate,synthetic_namespace,party_type,parent_bucket
+c1246,"SIMULATED SUPPLIER, ONE",2000-01-01,9999-99-99,identity_recovery_v1,supplier,simulated_services
+c12464,SIMULATED SUPPLIER TWO,2000-01-01,9999-99-99,identity_recovery_v1,supplier,simulated_services
+SIM_VENDOR_0001,SIMULATED PAYROLL ADMINISTRATOR,2000-01-01,9999-99-99,identity_recovery_v1,administrator,simulated_payroll

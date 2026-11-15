@@ -1,0 +1,6 @@
+vendor_id,fiscal_year,cutoff,feature_version,attributed,currency,po_count,max_monthly_agencies,max_monthly_classes,committed_amount,annual_distinct_agencies,annual_distinct_classes,signed_direct_po_count,signed_direct_po_amount,debit_amount,offset_amount,ledger_rows,distinct_accounts,distinct_periods,has_movements,has_balances,eligible_matched_vendor,vendor_name,name_status
+0000000000,2003,2003-06-30,legacy_sign_v1_plus_annual_distinct,false,USD,0,0,0,0,0,0,0,0,225,-225,3,3,1,true,true,false,,missing
+SIM_VENDOR_0001,2003,2003-06-30,legacy_sign_v1_plus_annual_distinct,true,USD,0,0,0,0,0,0,0,0,20,-20,2,2,1,true,true,false,SIMULATED PAYROLL ADMINISTRATOR,matched_asof
+c1246,2003,2003-06-30,legacy_sign_v1_plus_annual_distinct,true,USD,1,1,1,50,1,1,1,50,125,-125,4,3,2,true,true,true,"SIMULATED SUPPLIER, ONE",matched_asof
+c1246,2004,2004-06-30,legacy_sign_v1_plus_annual_distinct,true,USD,0,0,0,0,0,0,0,0,30,-30,2,2,1,true,true,false,"SIMULATED SUPPLIER, ONE",matched_asof
+c12464,2003,2003-06-30,legacy_sign_v1_plus_annual_distinct,true,USD,1,1,1,70,1,1,1,70,110,-110,4,3,2,true,true,true,SIMULATED SUPPLIER TWO,matched_asof

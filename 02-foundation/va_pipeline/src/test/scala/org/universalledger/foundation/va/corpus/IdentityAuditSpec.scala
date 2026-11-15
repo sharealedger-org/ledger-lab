@@ -83,7 +83,7 @@ class IdentityAuditSpec extends AnyFunSuite {
     assert(text.toString.contains("PARTIAL_READ:"))
   }}
 
-  test("actual APA producer reproduces quoted-name identity collision without audit changing it") { temp { dir =>
+  test("APA producer preserves quoted-name identity while audit retains legacy emulator") { temp { dir =>
     put(dir.resolve("master.csv"), masterText)
     val input = dir.resolve("raw/FY 2003 Expenditure/Expenditures Jul 2002.csv")
     put(input, "AGENCY_NAME,AMOUNT,FUND_NAME,LOCALITY,OBJECT_NAME,PROGRAM_NAME,VENDOR_NAME,VOUCHER_NUMBER,VOUCHER_DATE\n" +
@@ -94,11 +94,11 @@ class IdentityAuditSpec extends AnyFunSuite {
       "year" -> "03", "periodGranularity" -> "monthly"))
     val rows = lines(output.resolve("SortedJEFY03_0003_07_exp.csv"))
     assert(rows.size == 2 && rows.forall(_.split(",", -1).length == 39))
-    assert(rows.forall(_.startsWith("0000000002,"))) // wrong party under current producer
+    assert(rows.forall(_.startsWith("0000000001,")))
     assert(rows.map(_.split(",", -1)(25)).map(BigDecimal(_)).sum == 0)
   }}
 
-  test("quoted object text shifts the actual producer's vendor lookup to a program label") { temp { dir =>
+  test("quoted object text preserves the actual producer vendor lookup") { temp { dir =>
     put(dir.resolve("master.csv"), "instID,instHolderName\n1,REAL VENDOR\n")
     val row = "AGENCY,10,FUND,VA,\"SALARIES, TEACHING\",PROGRAM,REAL VENDOR,V1,07-01-02"
     assert(legacy(row)(6) == "PROGRAM")
@@ -110,7 +110,7 @@ class IdentityAuditSpec extends AnyFunSuite {
       "refPath" -> dir.toString, "vendormaster" -> dir.resolve("master.csv").toString,
       "year" -> "03", "periodGranularity" -> "monthly"))
     val rows = lines(output.resolve("SortedJEFY03_0003_07_exp.csv"))
-    assert(rows.size == 2 && rows.forall(_.startsWith(Zero + ",")))
+    assert(rows.size == 2 && rows.forall(_.startsWith("0000000001,")))
     assert(rows.map(_.split(",", -1)(25)).map(BigDecimal(_)).sum == 0)
   }}
 

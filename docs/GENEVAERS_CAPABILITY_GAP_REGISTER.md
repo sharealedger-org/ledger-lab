@@ -166,3 +166,16 @@ When a required capability is absent:
 - Ledger Lab may measure the workload only with a declared capability version, or mark the workload `blocked_by_engine_capability`.
 
 A Scala helper that bypasses the GenevaERS contract is not evidence that the target architecture ran.
+
+### 2026-11-14 identity recovery application: GERS-002/003 remain open
+
+The reporting prototype now indexes immutable byte ranges by literal Instrument ID
+and spills current-vendor posting buckets, relationships and cross-cut summaries.
+This is a declared preparation scan plus an indexed read and analytical partial
+reductions, not evidence of an existing GenevaERS indexed-input or extract runtime
+capability. Feature/dimension/index capacities remain explicit fail-closed bounds.
+A target implementation needs an equivalent ordered-input preparation contract
+(e.g. external sort) and GERS-003's bounded associative aggregation; measure any
+extra pass/materialization rather than attributing it to an in-flight CKB view.
+The APA adapter caps each reference/master snapshot at 16 MiB; this does not solve
+the large-reference join in GERS-002. No target gap or new cost point is closed.

@@ -1,0 +1,5 @@
+vendor_id,start_byte,end_byte,first_record
+0000000000,552,958,1
+SIM_VENDOR_0001,958,1237,4
+c12464,1237,1794,6
+c1246,1794,2351,10

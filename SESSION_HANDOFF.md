@@ -1,5 +1,11 @@
 # Ledger Lab Handoff
 
+## 2026-11-14 (TRACK D/B1) - Identity recovery fixture; corpus admission blocked
+
+2026-11-14 - Identity recovery fixes/pilot: quoted APA parsing, schema/reject lineage, ambiguous-lookup rejection, literal-ID reporting index and bounded local aggregates are fixture-verified. Baseline 28 tests passed; 56 focused tests, 12 overlapping reporting/connected checks and 11 final APA checks passed. Three simulated identities/two years completed the real pipeline and separate reporting with zero reconciliation failures. Full new corpus NOT launched: 371 reference names have multiple keys, and only 75 GiB is free versus about 128 GiB prior footprint plus scratch. Prior generations/Gold unchanged. Next: explicit reference key/date contract, then disk admission. GERS-002/003 and independent architecture review remain open. No new Control access.
+
+[Contract](docs/IDENTITY_RECOVERY_V1_DESIGN.md); [evidence](data/test_evidence/identity_recovery_20261114/README.md). Fresh outputs: `session-run.tmp/identity_recovery_v1_final/`. Preliminary failed attempt is retained and explicitly marked; reject evidence now has an APARejects_ prefix. Do not treat the synthetic fixture as a full corpus or a cost measurement.
+
 ## 2026-11-14 (TRACK D/B1) Identity/concentration audit complete; correct semantics before vendor generation
 
 Owner requested the first audit slice. Added read-only Scala IdentityAudit, independent IdentityAuditSummary/IdentityAuditParserSummary and Bash launcher, with declared contract; full findings in `docs/IDENTITY_AUDIT_FINDINGS_2026-11-14.md`, compact evidence `data/test_evidence/identity_audit_20261114/`. All 14 accepted-source controls, source-to-journal identity count checks and recorded canonical-row checks match: 114,164,816 accepted APA records; 259,471,158 journal rows; 11,140,226 posted rows from monthly_c only. Twenty-six focused tests pass, including thirteen unchanged TTL/one-read tests. No new Python, vendors, financial source/report changes, financial rerun, original-output/Gold edits or control-repository reading.

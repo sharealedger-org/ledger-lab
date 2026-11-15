@@ -16,6 +16,8 @@ object ReportingPass {
   case class Bucket(var movement: BigDecimal = 0, var balance: BigDecimal = 0,
     var opening: BigDecimal = 0, var movements: Long = 0, var balances: Long = 0, var openings: Long = 0)
   class Features {
+    var stateKeys = 0
+    private def distinct(s: mutable.Set[String], v: String): Unit = if (s.add(v)) stateKeys += 1
     var debit = BigDecimal(0); var credit = BigDecimal(0); var rows = 0L
     var poAmount = BigDecimal(0); var poCount = 0L; var reversals = 0L
     var directPoAmount = BigDecimal(0); var directPoCount = 0L
@@ -30,9 +32,9 @@ object ReportingPass {
     val events = mutable.HashMap[String, Activity]()
     def add(r: Financial): Unit = {
       rows += 1; if (r.flag == "D") debit += r.amount else credit += r.amount
-      accounts += r.dimensions(7); periods += r.dimensions(13)
-      val activity = events.getOrElseUpdate(r.event, new Activity)
-      activity.rows += 1; activity.periods += r.dimensions(13)
+      distinct(accounts, r.dimensions(7)); distinct(periods, r.dimensions(13))
+      val activity = events.getOrElseUpdate(r.event, { stateKeys += 1; new Activity })
+      activity.rows += 1; distinct(activity.periods, r.dimensions(13))
       if (r.flag == "D") { activity.direct += r.amount; if (r.amount < 0) activity.negative += 1 }
       else activity.offset += r.amount
       if (r.flag == "D" && r.amount < 0) reversals += 1
@@ -41,9 +43,9 @@ object ReportingPass {
       if (r.event == "COMMITMENT" && r.amount >= 0) {
         poCount += 1; poAmount += r.amount
         val agency = r.dimensions(3); val cls = r.dimensions(5).take(3).padTo(3, '0'); val p = r.dimensions(13)
-        poAgencies.getOrElseUpdate(p, mutable.HashSet[String]()) += agency
-        poClasses.getOrElseUpdate(p, mutable.HashSet[String]()) += cls
-        agencies += agency; classes += cls
+        distinct(poAgencies.getOrElseUpdate(p, { stateKeys += 1; mutable.HashSet[String]() }), agency)
+        distinct(poClasses.getOrElseUpdate(p, { stateKeys += 1; mutable.HashSet[String]() }), cls)
+        distinct(agencies, agency); distinct(classes, cls)
       }
     }
     def movementValues: Seq[Any] = Seq(poCount, poAgencies.values.map(_.size).foldLeft(0)(math.max),
@@ -57,10 +59,13 @@ object ReportingPass {
     val out = new File(params("outPath")); out.mkdirs()
     require(!new File(out, "input_manifest.csv").exists(), "Output already contains a reporting attempt")
     val basis = params.getOrElse("balanceBasis", "period_movements")
+    require(!params.contains("maxVendorRows"), "maxVendorRows is obsolete; use maxFeatureKeys and aggregateKeys")
     require(Set("period_movements", "opening_plus_movements")(basis))
-    val maxVendorRows = params.getOrElse("maxVendorRows", "250000").toInt
+    val maxFeatureKeys = params.getOrElse("maxFeatureKeys", "250000").toInt
+    val aggregateKeys = params.getOrElse("aggregateKeys", "50000").toInt
+    val mergeFanIn = params.getOrElse("mergeFanIn", "16").toInt
     val maxInputs = params.getOrElse("maxInputs", "128").toInt
-    require(maxVendorRows > 0 && maxInputs > 0)
+    require(maxFeatureKeys > 0 && maxInputs > 0)
     val dirs = params.getOrElse("inPaths", "").split(",").filter(_.nonEmpty).map(p => new File(p).getCanonicalFile).toVector
     require(dirs.nonEmpty && dirs.forall(_.isDirectory), "Committed input directories required")
     val files = dirs.flatMap(d => Option(d.listFiles()).getOrElse(Array.empty[File]).filter(_.isFile))
@@ -114,15 +119,17 @@ object ReportingPass {
       case None => ("", if (refHeaders.contains(table)) "missing" else "table_unavailable")
     }
     val inputs = mutable.ArrayBuffer[Input]()
-    var readRows = 0L; var vendorRows = 0; var peakVendorRows = 0; var peakVendorKeys = 0
+    var readRows = 0L; var vendorRows = 0L; var peakVendorRows = 0L; var peakVendorKeys = 0
     var failed = 0L; var vendorCount = 0L
+    var peakFeatureKeys = 0; var vendorCrossBytes = 0L; var vendorCrossPasses = 0L
+    var orderPreparationNanos = 0L
     val spills = new Spills(out, params.getOrElse("spillRows", "50000").toInt)
     val selectedPackets = params.getOrElse("packetVendors", "").split(",").filter(_.nonEmpty).toSet
     var current = ""
-    val buckets = mutable.HashMap[Vector[String], Bucket]()
+    val buckets = new ReportingSums(new File(out, "bucket_partials"), aggregateKeys, mergeFanIn)
     val mf = mutable.HashMap[Int, Features](); val bf = mutable.HashMap[Int, Features]()
     val dims = mutable.ArrayBuffer[Dimension]()
-    val relationships = mutable.HashMap[Vector[String], (Sum, BigDecimal)]()
+    val relationships = new ReportingSums(new File(out, "relationship_partials"), aggregateKeys, mergeFanIn)
     val eventAbs = mutable.HashMap[(String, String, String), BigDecimal]()
     val currencies = mutable.HashMap[Int, String]()
     def active(d: Dimension, cutoff: LocalDate): Boolean = {
@@ -143,9 +150,10 @@ object ReportingPass {
     }
     def closeVendor(): Unit = if (current.nonEmpty) {
       vendorCount += 1
-      peakVendorKeys = peakVendorKeys.max(buckets.size + relationships.size + mf.size + bf.size + dims.size)
-      val cross = mutable.HashMap[String, Sum]()
-      buckets.toVector.sortBy { case (k, _) => key(k) }.foreach { case (k, b) =>
+      peakVendorKeys = peakVendorKeys.max(buckets.peak + relationships.peak + mf.size + bf.size + dims.size)
+      val cross = new ReportingSums(new File(out, "vendor_cross_partials"), aggregateKeys, mergeFanIn)
+      buckets.foreach { (k, v) =>
+        val b = Bucket(v(0), v(1), v(2), v(3).toLongExact, v(4).toLongExact, v(5).toLongExact)
         if (b.movements > 0) movementOut.println(csv(Seq(current) ++ k ++ Seq(b.movement, b.movements)))
         if (b.balances > 0 || b.openings > 0) balanceOut.println(csv(Seq(current) ++ k ++ Seq(b.balance, b.balances, b.opening)))
         val delta = b.balance - b.opening - b.movement
@@ -153,10 +161,11 @@ object ReportingPass {
         if (!ok) failed += 1
         recon.println(csv(Seq(current) ++ k ++ Seq(basis, b.movement, b.opening, b.balance, delta, if (ok) "PASS" else "FAIL", b.movements, b.balances)))
         Seq(("movement", b.movement, b.movements), ("balance", b.balance, b.balances)).foreach { case (side, amt, n) =>
-          if (n > 0) cross.getOrElseUpdate(key(Seq(side, fiscalYear(k(13)).toString, k(3), k(4), k(7), k(10))), Sum()).add(amt, n, 0)
+          if (n > 0) cross.add(Seq(side, fiscalYear(k(13)).toString, k(3), k(4), k(7), k(9)), amt, BigDecimal(n))
         }
       }
-      cross.toVector.sortBy(_._1).foreach { case (k, s) => spills.add(k, s.amount, s.rows, 1) }
+      cross.foreach { (k, v) => spills.add(key(k), v(0), v(1).toLongExact, 1) }
+      vendorCrossBytes += cross.bytes; vendorCrossPasses += cross.passes; cross.close()
       (mf.keySet ++ bf.keySet).toVector.sorted.foreach { fy =>
         val m = mf.getOrElse(fy, new Features); val b = bf.getOrElse(fy, new Features)
         val featurePrefix = Seq(current, fy, s"$fy-06-30", "legacy_sign_v1_plus_annual_distinct", attributed(current), currencies(fy))
@@ -174,7 +183,8 @@ object ReportingPass {
           }
         }
       }
-      relationships.toVector.sortBy { case (k, _) => key(k) }.foreach { case (k, (s, absolute)) =>
+      relationships.foreach { (k, v) =>
+        val s = Sum(v(0), v(1).toLongExact); val absolute = v(2)
         val denom = eventAbs((k(0), k(1), k(2)))
         val status = if (k(6).isEmpty || k(6) == "0") "unattributed" else dimension("contract", k(0).toInt, k(6))._2
         relationOut.println(csv(Seq(current) ++ k ++ Seq(s.amount, s.rows, absolute, if (denom == 0) BigDecimal(0) else absolute / denom, status, lookup("aRefAgencyCSV.txt", k(3))._1, lookup("aRefFundCSV.txt", k(4))._1)))
@@ -183,7 +193,7 @@ object ReportingPass {
           case (label, (table, value)) => row(coverage, current, k(0), label, value, lookup(table, value)._2)
         }
       }
-      buckets.clear(); mf.clear(); bf.clear(); dims.clear(); relationships.clear(); eventAbs.clear(); currencies.clear(); vendorRows = 0
+      mf.clear(); bf.clear(); dims.clear(); eventAbs.clear(); currencies.clear(); vendorRows = 0
     }
     try {
       refFiles.foreach { f =>
@@ -203,7 +213,11 @@ object ReportingPass {
         } finally in.close()
       }
       selected.foreach { case (f, kind) =>
-        val in = new Input(f, kind, kind != "movement"); inputs += in
+        val orderStart = System.nanoTime()
+        val in = new OrderedInput(f, kind, new File(out, s"order_index_${inputs.size}.csv"),
+          params.getOrElse("maxIndexedBlocks", "100000").toInt,
+          params.getOrElse("maxRecordBytes", "1048576").toInt); inputs += in
+        orderPreparationNanos += System.nanoTime() - orderStart
         if (Set("balance", "opening")(kind)) require(in.header == ledgerHeader, s"Ledger schema mismatch: $f")
         if (kind == "vendor") require(in.header.contains("instID"), "Vendor dimension requires instID")
         if (kind == "contract") require(Set("vendor_id", "contract_id").subsetOf(in.header.toSet), "Contract dimension requires vendor_id,contract_id")
@@ -218,14 +232,13 @@ object ReportingPass {
         val idIndex = if (in.kind == "vendor") in.header.indexOf("instID") else if (in.kind == "contract") in.header.indexOf("vendor_id") else 0
         val id = values(idIndex)
         require(id.nonEmpty, s"Empty instrument key ${in.file}:${in.count}; use explicit unattributed sentinel")
-        in.checkVendor(id); queue.enqueue(Head(id, i, values, in.count))
+        in.checkVendor(id); queue.enqueue(Head(id, i, values, in.ordinal))
       }
       inputs.indices.foreach(advance)
       while (queue.nonEmpty) {
         val h = queue.dequeue(); val in = inputs(h.index); val r = h.values
         if (h.vendor != current) { closeVendor(); current = h.vendor }
         vendorRows += 1; readRows += 1; peakVendorRows = peakVendorRows.max(vendorRows)
-        require(vendorRows <= maxVendorRows, s"Vendor working-state bound exceeded: $current")
         if (Set("vendor", "contract")(in.kind)) {
           val d = Dimension(in.kind, in.header.zip(r).toMap, in.file.getPath, h.ordinal)
           // Validate dates even when no financial row later matches this dimension.
@@ -240,29 +253,39 @@ object ReportingPass {
           val amount = BigDecimal(r(if (movement) 25 else 19))
           val flag = r(if (movement) 31 else 22); require(Set("D", "O")(flag), s"Invalid direction $flag")
           val record = Financial(current, dimsKey, amount, flag, if (movement) r(5) else "POSTED", r(1), in, h.ordinal, r)
-          require(!currencies.contains(record.fy) || currencies(record.fy) == dimsKey(10), "AIM vendor-year mixes currencies; partition inference features by currency before running")
-          currencies(record.fy) = dimsKey(10)
-          val b = buckets.getOrElseUpdate(dimsKey, Bucket())
+          require(!currencies.contains(record.fy) || currencies(record.fy) == dimsKey(9), "AIM vendor-year mixes currencies; partition inference features by currency before running")
+          currencies(record.fy) = dimsKey(9)
           in.kind match {
-            case "movement" => b.movement += amount; b.movements += 1; mf.getOrElseUpdate(record.fy, new Features).add(record)
-            case "balance" => b.balance += amount; b.balances += 1; bf.getOrElseUpdate(record.fy, new Features).add(record)
-            case "opening" => b.opening += amount; b.openings += 1
+            case "movement" => buckets.add(dimsKey, amount, 0, 0, 1, 0, 0); mf.getOrElseUpdate(record.fy, new Features).add(record)
+            case "balance" => buckets.add(dimsKey, 0, amount, 0, 0, 1, 0); bf.getOrElseUpdate(record.fy, new Features).add(record)
+            case "opening" => buckets.add(dimsKey, 0, 0, amount, 0, 0, 1)
           }
           if (movement && flag == "D") {
-            val k = Vector(record.fy.toString, record.event, dimsKey(10), dimsKey(3), dimsKey(4), dimsKey(5), record.contract)
-            val (sum, abs) = relationships.getOrElse(k, (Sum(), BigDecimal(0)))
-            sum.add(amount, 1, 0); relationships(k) = (sum, abs + amount.abs)
+            val k = Vector(record.fy.toString, record.event, dimsKey(9), dimsKey(3), dimsKey(4), dimsKey(5), record.contract)
+            relationships.add(k, amount, 1, amount.abs)
             val ek = (k(0), k(1), k(2)); eventAbs(ek) = eventAbs.getOrElse(ek, BigDecimal(0)) + amount.abs
           }
           if (selectedPackets(current)) row(packets, current, in.kind, in.file.getPath, h.ordinal, csv(r))
         }
+        val featureKeys = mf.valuesIterator.map(_.stateKeys).sum + bf.valuesIterator.map(_.stateKeys).sum +
+          mf.size + bf.size + currencies.size + dims.size + eventAbs.size
+        peakFeatureKeys = peakFeatureKeys.max(featureKeys)
+        require(featureKeys <= maxFeatureKeys, s"Reporting feature/dimension key allowance exceeded: $current")
         advance(h.index)
       }
-      closeVendor(); spills.flush()
+      closeVendor(); buckets.close(); relationships.close(); spills.flush()
       inputs.foreach(in => row(manifest, in.kind, in.file.getPath, in.count, in.file.length(), in.hash))
       val metrics = output("extract_metrics.csv", Seq("metric", "value"))
       Seq("records_read" -> readRows, "vendors" -> vendorCount, "peak_vendor_rows" -> peakVendorRows,
-        "peak_vendor_state_keys" -> peakVendorKeys, "peak_buffer_keys" -> spills.peak,
+        "peak_vendor_state_keys" -> peakVendorKeys,
+        "aggregate_capacity_keys" -> aggregateKeys, "aggregate_merge_fan_in" -> mergeFanIn,
+        "aggregate_spill_bytes" -> (buckets.bytes + relationships.bytes + vendorCrossBytes),
+        "peak_feature_keys" -> peakFeatureKeys, "feature_capacity_keys" -> maxFeatureKeys,
+        "order_preparation_seconds" -> (orderPreparationNanos / 1e9),
+        "reporting_input_passes" -> 2,
+        "order_index_blocks" -> inputs.collect { case in: OrderedInput => in.indexedBlocks.toLong }.sum,
+        "order_index_bytes" -> out.listFiles().filter(_.getName.startsWith("order_index_")).map(_.length()).sum,
+        "aggregate_merge_passes" -> (buckets.passes + relationships.passes + vendorCrossPasses), "peak_buffer_keys" -> spills.peak,
         "spill_chunks" -> spills.chunks, "partial_rows" -> spills.partials, "spill_bytes" -> spills.bytes,
         "reference_bytes" -> refFiles.map(_.length()).sum, "reconciliation_failures" -> failed,
         "elapsed_seconds" -> ((System.nanoTime() - start) / 1e9)).foreach { case (k, v) => row(metrics, k, v) }

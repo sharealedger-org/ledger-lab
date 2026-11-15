@@ -35,6 +35,8 @@ Updated 2026-11-12. One page. A session starts here, then reads only the `STATUS
 - ~~`AGENTS.md` line pointing here~~ Done 2026-11-12.
 - Track decisions are listed on each track page.
 
+**2026-11-14 identity recovery:** Parser/key/bounded-reporting fixes and two-year simulated pilot verified; full corpus gated by 371 ambiguous reference names and disk capacity. See [evidence](data/test_evidence/identity_recovery_20261114/README.md) and track pages. Existing corpus/Gold preserved.
+
 ## Next session (updated 2026-11-12)
 
 **Identity audit complete, 2026-11-14:** Read-only Scala counts reconcile across all 14 years. Attribute enrichment changes no identity lookups; 23,021,103 accepted expense rows have different vendor-name fields under quote-aware parsing; 41 observed reporting groups exceed the guard; 214 literal key-order decreases also require a reporting contract decision. [Findings](docs/IDENTITY_AUDIT_FINDINGS_2026-11-14.md), [evidence](data/test_evidence/identity_audit_20261114/). Next: CSV/schema semantics and key/order/bounded-reporting contracts before selecting a full generated vendor population. No vendors or financial outputs changed.

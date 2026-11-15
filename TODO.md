@@ -62,6 +62,9 @@ Seeded 2026-11-11 from the handoff entries. On the same day the handoff was trim
 
 ## Track D: control comparison (Track D)
 
+- [ ] Resolve 371 ambiguous APA reference names with an explicit key/date contract before the identity-recovery corpus run; preserve candidates in `data/test_evidence/identity_recovery_20261114/conflicts.csv`. Confirm sufficient disk space (75 GiB free, about 128 GiB prior output plus scratch) without deleting retained runs implicitly. See `docs/IDENTITY_RECOVERY_V1_DESIGN.md`.
+
+
 - [x] **Read-only identity/concentration audit:** completed 2026-11-14; all source/journal/canonical row-count controls match and 26 tests pass. Findings: `docs/IDENTITY_AUDIT_FINDINGS_2026-11-14.md`; compact evidence: `data/test_evidence/identity_audit_20261114/`. No vendors or financial outputs changed.
 - [ ] **Identity/reporting recovery implementation:** resolve source CSV/schema semantics (23,021,103 expense-name interpretation differences), canonical literal-key order (214 decreases), and bounded reporting (41 oversized groups), then a small deterministic registry/synthetic pilot. Refined 3,794,594 unmapped source-name candidates are not verified legal entities or a generation target. Keep original Gold and measured outputs immutable; do not split parties arbitrarily to evade the row guard.
 

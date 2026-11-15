@@ -38,9 +38,9 @@ object ReportingSupport {
     if (p(0).startsWith("00")) 2000 + y else y + (if (p.length == 2 && p(1).toInt >= 7) 1 else 0)
   }
   def date(s: String): LocalDate = LocalDate.parse(s.replace('/', '-'))
-  def attributed(v: String): Boolean = v.nonEmpty && !v.forall(_ == '0') && !v.startsWith("UNMATCHED_")
+  def attributed(v: String): Boolean = v.nonEmpty && !v.forall(_ == '0') && v != "999999999999" && !v.startsWith("UNMATCHED_")
 
-  final class Input(val file: File, val kind: String, headerRequired: Boolean) extends AutoCloseable {
+  class Input(val file: File, val kind: String, headerRequired: Boolean) extends AutoCloseable {
     val sha = MessageDigest.getInstance("SHA-256")
     private val stream = new DigestInputStream(new FileInputStream(file), sha)
     private val parser = new CSVParser(new InputStreamReader(stream, StandardCharsets.UTF_8), CSVFormat.DEFAULT)
@@ -50,6 +50,7 @@ object ReportingSupport {
       records.next().iterator().asScala.toVector.reverse.dropWhile(_.isEmpty).reverse.map(_.stripPrefix("\uFEFF"))
     } else Vector.empty
     var count = 0L
+    def ordinal: Long = count
     var previous = ""
     def next(): Option[Vector[String]] = if (!records.hasNext) None else {
       count += 1
@@ -61,6 +62,19 @@ object ReportingSupport {
     }
     def hash: String = sha.digest().map(b => f"${b & 255}%02x").mkString
     def close(): Unit = parser.close()
+  }
+
+  final class OrderedInput(file: File, kind: String, index: File, maxBlocks: Int, maxRecordBytes: Int)
+      extends Input(file, kind, kind != "movement") {
+    private val ordered = try new ReportingOrder(file, kind, header, index, maxBlocks, maxRecordBytes)
+      catch { case scala.util.control.NonFatal(e) => super.close(); throw e }
+    val indexedBlocks: Int = ordered.indexedBlocks
+    override def ordinal: Long = ordered.ordinal
+    override def next(): Option[Vector[String]] = {
+      val r = ordered.next(); if (r.nonEmpty) count += 1; r
+    }
+    override def hash: String = ordered.hash
+    override def close(): Unit = { ordered.close(); super.close() }
   }
 
   case class Sum(var amount: BigDecimal = 0, var rows: Long = 0, var contributors: Long = 0) {

@@ -1,0 +1,655 @@
+diff --git a/02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/ledger/ReportingPass.scala b/02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/ledger/ReportingPass.scala
+index 77bc386..d6dbaaa 100644
+--- a/02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/ledger/ReportingPass.scala
++++ b/02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/ledger/ReportingPass.scala
+@@ -16,6 +16,8 @@ object ReportingPass {
+   case class Bucket(var movement: BigDecimal = 0, var balance: BigDecimal = 0,
+     var opening: BigDecimal = 0, var movements: Long = 0, var balances: Long = 0, var openings: Long = 0)
+   class Features {
++    var stateKeys = 0
++    private def distinct(s: mutable.Set[String], v: String): Unit = if (s.add(v)) stateKeys += 1
+     var debit = BigDecimal(0); var credit = BigDecimal(0); var rows = 0L
+     var poAmount = BigDecimal(0); var poCount = 0L; var reversals = 0L
+     var directPoAmount = BigDecimal(0); var directPoCount = 0L
+@@ -30,9 +32,9 @@ object ReportingPass {
+     val events = mutable.HashMap[String, Activity]()
+     def add(r: Financial): Unit = {
+       rows += 1; if (r.flag == "D") debit += r.amount else credit += r.amount
+-      accounts += r.dimensions(7); periods += r.dimensions(13)
+-      val activity = events.getOrElseUpdate(r.event, new Activity)
+-      activity.rows += 1; activity.periods += r.dimensions(13)
++      distinct(accounts, r.dimensions(7)); distinct(periods, r.dimensions(13))
++      val activity = events.getOrElseUpdate(r.event, { stateKeys += 1; new Activity })
++      activity.rows += 1; distinct(activity.periods, r.dimensions(13))
+       if (r.flag == "D") { activity.direct += r.amount; if (r.amount < 0) activity.negative += 1 }
+       else activity.offset += r.amount
+       if (r.flag == "D" && r.amount < 0) reversals += 1
+@@ -41,9 +43,9 @@ object ReportingPass {
+       if (r.event == "COMMITMENT" && r.amount >= 0) {
+         poCount += 1; poAmount += r.amount
+         val agency = r.dimensions(3); val cls = r.dimensions(5).take(3).padTo(3, '0'); val p = r.dimensions(13)
+-        poAgencies.getOrElseUpdate(p, mutable.HashSet[String]()) += agency
+-        poClasses.getOrElseUpdate(p, mutable.HashSet[String]()) += cls
+-        agencies += agency; classes += cls
++        distinct(poAgencies.getOrElseUpdate(p, { stateKeys += 1; mutable.HashSet[String]() }), agency)
++        distinct(poClasses.getOrElseUpdate(p, { stateKeys += 1; mutable.HashSet[String]() }), cls)
++        distinct(agencies, agency); distinct(classes, cls)
+       }
+     }
+     def movementValues: Seq[Any] = Seq(poCount, poAgencies.values.map(_.size).foldLeft(0)(math.max),
+@@ -57,10 +59,13 @@ object ReportingPass {
+     val out = new File(params("outPath")); out.mkdirs()
+     require(!new File(out, "input_manifest.csv").exists(), "Output already contains a reporting attempt")
+     val basis = params.getOrElse("balanceBasis", "period_movements")
++    require(!params.contains("maxVendorRows"), "maxVendorRows is obsolete; use maxFeatureKeys and aggregateKeys")
+     require(Set("period_movements", "opening_plus_movements")(basis))
+-    val maxVendorRows = params.getOrElse("maxVendorRows", "250000").toInt
++    val maxFeatureKeys = params.getOrElse("maxFeatureKeys", "250000").toInt
++    val aggregateKeys = params.getOrElse("aggregateKeys", "50000").toInt
++    val mergeFanIn = params.getOrElse("mergeFanIn", "16").toInt
+     val maxInputs = params.getOrElse("maxInputs", "128").toInt
+-    require(maxVendorRows > 0 && maxInputs > 0)
++    require(maxFeatureKeys > 0 && maxInputs > 0)
+     val dirs = params.getOrElse("inPaths", "").split(",").filter(_.nonEmpty).map(p => new File(p).getCanonicalFile).toVector
+     require(dirs.nonEmpty && dirs.forall(_.isDirectory), "Committed input directories required")
+     val files = dirs.flatMap(d => Option(d.listFiles()).getOrElse(Array.empty[File]).filter(_.isFile))
+@@ -114,15 +119,17 @@ object ReportingPass {
+       case None => ("", if (refHeaders.contains(table)) "missing" else "table_unavailable")
+     }
+     val inputs = mutable.ArrayBuffer[Input]()
+-    var readRows = 0L; var vendorRows = 0; var peakVendorRows = 0; var peakVendorKeys = 0
++    var readRows = 0L; var vendorRows = 0L; var peakVendorRows = 0L; var peakVendorKeys = 0
+     var failed = 0L; var vendorCount = 0L
++    var peakFeatureKeys = 0; var vendorCrossBytes = 0L; var vendorCrossPasses = 0L
++    var orderPreparationNanos = 0L
+     val spills = new Spills(out, params.getOrElse("spillRows", "50000").toInt)
+     val selectedPackets = params.getOrElse("packetVendors", "").split(",").filter(_.nonEmpty).toSet
+     var current = ""
+-    val buckets = mutable.HashMap[Vector[String], Bucket]()
++    val buckets = new ReportingSums(new File(out, "bucket_partials"), aggregateKeys, mergeFanIn)
+     val mf = mutable.HashMap[Int, Features](); val bf = mutable.HashMap[Int, Features]()
+     val dims = mutable.ArrayBuffer[Dimension]()
+-    val relationships = mutable.HashMap[Vector[String], (Sum, BigDecimal)]()
++    val relationships = new ReportingSums(new File(out, "relationship_partials"), aggregateKeys, mergeFanIn)
+     val eventAbs = mutable.HashMap[(String, String, String), BigDecimal]()
+     val currencies = mutable.HashMap[Int, String]()
+     def active(d: Dimension, cutoff: LocalDate): Boolean = {
+@@ -143,9 +150,10 @@ object ReportingPass {
+     }
+     def closeVendor(): Unit = if (current.nonEmpty) {
+       vendorCount += 1
+-      peakVendorKeys = peakVendorKeys.max(buckets.size + relationships.size + mf.size + bf.size + dims.size)
+-      val cross = mutable.HashMap[String, Sum]()
+-      buckets.toVector.sortBy { case (k, _) => key(k) }.foreach { case (k, b) =>
++      peakVendorKeys = peakVendorKeys.max(buckets.peak + relationships.peak + mf.size + bf.size + dims.size)
++      val cross = new ReportingSums(new File(out, "vendor_cross_partials"), aggregateKeys, mergeFanIn)
++      buckets.foreach { (k, v) =>
++        val b = Bucket(v(0), v(1), v(2), v(3).toLongExact, v(4).toLongExact, v(5).toLongExact)
+         if (b.movements > 0) movementOut.println(csv(Seq(current) ++ k ++ Seq(b.movement, b.movements)))
+         if (b.balances > 0 || b.openings > 0) balanceOut.println(csv(Seq(current) ++ k ++ Seq(b.balance, b.balances, b.opening)))
+         val delta = b.balance - b.opening - b.movement
+@@ -153,10 +161,11 @@ object ReportingPass {
+         if (!ok) failed += 1
+         recon.println(csv(Seq(current) ++ k ++ Seq(basis, b.movement, b.opening, b.balance, delta, if (ok) "PASS" else "FAIL", b.movements, b.balances)))
+         Seq(("movement", b.movement, b.movements), ("balance", b.balance, b.balances)).foreach { case (side, amt, n) =>
+-          if (n > 0) cross.getOrElseUpdate(key(Seq(side, fiscalYear(k(13)).toString, k(3), k(4), k(7), k(10))), Sum()).add(amt, n, 0)
++          if (n > 0) cross.add(Seq(side, fiscalYear(k(13)).toString, k(3), k(4), k(7), k(9)), amt, BigDecimal(n))
+         }
+       }
+-      cross.toVector.sortBy(_._1).foreach { case (k, s) => spills.add(k, s.amount, s.rows, 1) }
++      cross.foreach { (k, v) => spills.add(key(k), v(0), v(1).toLongExact, 1) }
++      vendorCrossBytes += cross.bytes; vendorCrossPasses += cross.passes; cross.close()
+       (mf.keySet ++ bf.keySet).toVector.sorted.foreach { fy =>
+         val m = mf.getOrElse(fy, new Features); val b = bf.getOrElse(fy, new Features)
+         val featurePrefix = Seq(current, fy, s"$fy-06-30", "legacy_sign_v1_plus_annual_distinct", attributed(current), currencies(fy))
+@@ -174,7 +183,8 @@ object ReportingPass {
+           }
+         }
+       }
+-      relationships.toVector.sortBy { case (k, _) => key(k) }.foreach { case (k, (s, absolute)) =>
++      relationships.foreach { (k, v) =>
++        val s = Sum(v(0), v(1).toLongExact); val absolute = v(2)
+         val denom = eventAbs((k(0), k(1), k(2)))
+         val status = if (k(6).isEmpty || k(6) == "0") "unattributed" else dimension("contract", k(0).toInt, k(6))._2
+         relationOut.println(csv(Seq(current) ++ k ++ Seq(s.amount, s.rows, absolute, if (denom == 0) BigDecimal(0) else absolute / denom, status, lookup("aRefAgencyCSV.txt", k(3))._1, lookup("aRefFundCSV.txt", k(4))._1)))
+@@ -183,7 +193,7 @@ object ReportingPass {
+           case (label, (table, value)) => row(coverage, current, k(0), label, value, lookup(table, value)._2)
+         }
+       }
+-      buckets.clear(); mf.clear(); bf.clear(); dims.clear(); relationships.clear(); eventAbs.clear(); currencies.clear(); vendorRows = 0
++      mf.clear(); bf.clear(); dims.clear(); eventAbs.clear(); currencies.clear(); vendorRows = 0
+     }
+     try {
+       refFiles.foreach { f =>
+@@ -203,7 +213,11 @@ object ReportingPass {
+         } finally in.close()
+       }
+       selected.foreach { case (f, kind) =>
+-        val in = new Input(f, kind, kind != "movement"); inputs += in
++        val orderStart = System.nanoTime()
++        val in = new OrderedInput(f, kind, new File(out, s"order_index_${inputs.size}.csv"),
++          params.getOrElse("maxIndexedBlocks", "100000").toInt,
++          params.getOrElse("maxRecordBytes", "1048576").toInt); inputs += in
++        orderPreparationNanos += System.nanoTime() - orderStart
+         if (Set("balance", "opening")(kind)) require(in.header == ledgerHeader, s"Ledger schema mismatch: $f")
+         if (kind == "vendor") require(in.header.contains("instID"), "Vendor dimension requires instID")
+         if (kind == "contract") require(Set("vendor_id", "contract_id").subsetOf(in.header.toSet), "Contract dimension requires vendor_id,contract_id")
+@@ -218,14 +232,13 @@ object ReportingPass {
+         val idIndex = if (in.kind == "vendor") in.header.indexOf("instID") else if (in.kind == "contract") in.header.indexOf("vendor_id") else 0
+         val id = values(idIndex)
+         require(id.nonEmpty, s"Empty instrument key ${in.file}:${in.count}; use explicit unattributed sentinel")
+-        in.checkVendor(id); queue.enqueue(Head(id, i, values, in.count))
++        in.checkVendor(id); queue.enqueue(Head(id, i, values, in.ordinal))
+       }
+       inputs.indices.foreach(advance)
+       while (queue.nonEmpty) {
+         val h = queue.dequeue(); val in = inputs(h.index); val r = h.values
+         if (h.vendor != current) { closeVendor(); current = h.vendor }
+         vendorRows += 1; readRows += 1; peakVendorRows = peakVendorRows.max(vendorRows)
+-        require(vendorRows <= maxVendorRows, s"Vendor working-state bound exceeded: $current")
+         if (Set("vendor", "contract")(in.kind)) {
+           val d = Dimension(in.kind, in.header.zip(r).toMap, in.file.getPath, h.ordinal)
+           // Validate dates even when no financial row later matches this dimension.
+@@ -240,29 +253,39 @@ object ReportingPass {
+           val amount = BigDecimal(r(if (movement) 25 else 19))
+           val flag = r(if (movement) 31 else 22); require(Set("D", "O")(flag), s"Invalid direction $flag")
+           val record = Financial(current, dimsKey, amount, flag, if (movement) r(5) else "POSTED", r(1), in, h.ordinal, r)
+-          require(!currencies.contains(record.fy) || currencies(record.fy) == dimsKey(10), "AIM vendor-year mixes currencies; partition inference features by currency before running")
+-          currencies(record.fy) = dimsKey(10)
+-          val b = buckets.getOrElseUpdate(dimsKey, Bucket())
++          require(!currencies.contains(record.fy) || currencies(record.fy) == dimsKey(9), "AIM vendor-year mixes currencies; partition inference features by currency before running")
++          currencies(record.fy) = dimsKey(9)
+           in.kind match {
+-            case "movement" => b.movement += amount; b.movements += 1; mf.getOrElseUpdate(record.fy, new Features).add(record)
+-            case "balance" => b.balance += amount; b.balances += 1; bf.getOrElseUpdate(record.fy, new Features).add(record)
+-            case "opening" => b.opening += amount; b.openings += 1
++            case "movement" => buckets.add(dimsKey, amount, 0, 0, 1, 0, 0); mf.getOrElseUpdate(record.fy, new Features).add(record)
++            case "balance" => buckets.add(dimsKey, 0, amount, 0, 0, 1, 0); bf.getOrElseUpdate(record.fy, new Features).add(record)
++            case "opening" => buckets.add(dimsKey, 0, 0, amount, 0, 0, 1)
+           }
+           if (movement && flag == "D") {
+-            val k = Vector(record.fy.toString, record.event, dimsKey(10), dimsKey(3), dimsKey(4), dimsKey(5), record.contract)
+-            val (sum, abs) = relationships.getOrElse(k, (Sum(), BigDecimal(0)))
+-            sum.add(amount, 1, 0); relationships(k) = (sum, abs + amount.abs)
++            val k = Vector(record.fy.toString, record.event, dimsKey(9), dimsKey(3), dimsKey(4), dimsKey(5), record.contract)
++            relationships.add(k, amount, 1, amount.abs)
+             val ek = (k(0), k(1), k(2)); eventAbs(ek) = eventAbs.getOrElse(ek, BigDecimal(0)) + amount.abs
+           }
+           if (selectedPackets(current)) row(packets, current, in.kind, in.file.getPath, h.ordinal, csv(r))
+         }
++        val featureKeys = mf.valuesIterator.map(_.stateKeys).sum + bf.valuesIterator.map(_.stateKeys).sum +
++          mf.size + bf.size + currencies.size + dims.size + eventAbs.size
++        peakFeatureKeys = peakFeatureKeys.max(featureKeys)
++        require(featureKeys <= maxFeatureKeys, s"Reporting feature/dimension key allowance exceeded: $current")
+         advance(h.index)
+       }
+-      closeVendor(); spills.flush()
++      closeVendor(); buckets.close(); relationships.close(); spills.flush()
+       inputs.foreach(in => row(manifest, in.kind, in.file.getPath, in.count, in.file.length(), in.hash))
+       val metrics = output("extract_metrics.csv", Seq("metric", "value"))
+       Seq("records_read" -> readRows, "vendors" -> vendorCount, "peak_vendor_rows" -> peakVendorRows,
+-        "peak_vendor_state_keys" -> peakVendorKeys, "peak_buffer_keys" -> spills.peak,
++        "peak_vendor_state_keys" -> peakVendorKeys,
++        "aggregate_capacity_keys" -> aggregateKeys, "aggregate_merge_fan_in" -> mergeFanIn,
++        "aggregate_spill_bytes" -> (buckets.bytes + relationships.bytes + vendorCrossBytes),
++        "peak_feature_keys" -> peakFeatureKeys, "feature_capacity_keys" -> maxFeatureKeys,
++        "order_preparation_seconds" -> (orderPreparationNanos / 1e9),
++        "reporting_input_passes" -> 2,
++        "order_index_blocks" -> inputs.collect { case in: OrderedInput => in.indexedBlocks.toLong }.sum,
++        "order_index_bytes" -> out.listFiles().filter(_.getName.startsWith("order_index_")).map(_.length()).sum,
++        "aggregate_merge_passes" -> (buckets.passes + relationships.passes + vendorCrossPasses), "peak_buffer_keys" -> spills.peak,
+         "spill_chunks" -> spills.chunks, "partial_rows" -> spills.partials, "spill_bytes" -> spills.bytes,
+         "reference_bytes" -> refFiles.map(_.length()).sum, "reconciliation_failures" -> failed,
+         "elapsed_seconds" -> ((System.nanoTime() - start) / 1e9)).foreach { case (k, v) => row(metrics, k, v) }
+diff --git a/02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/ledger/ReportingSupport.scala b/02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/ledger/ReportingSupport.scala
+index 4522376..add0265 100644
+--- a/02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/ledger/ReportingSupport.scala
++++ b/02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/ledger/ReportingSupport.scala
+@@ -38,9 +38,9 @@ object ReportingSupport {
+     if (p(0).startsWith("00")) 2000 + y else y + (if (p.length == 2 && p(1).toInt >= 7) 1 else 0)
+   }
+   def date(s: String): LocalDate = LocalDate.parse(s.replace('/', '-'))
+-  def attributed(v: String): Boolean = v.nonEmpty && !v.forall(_ == '0') && !v.startsWith("UNMATCHED_")
++  def attributed(v: String): Boolean = v.nonEmpty && !v.forall(_ == '0') && v != "999999999999" && !v.startsWith("UNMATCHED_")
+ 
+-  final class Input(val file: File, val kind: String, headerRequired: Boolean) extends AutoCloseable {
++  class Input(val file: File, val kind: String, headerRequired: Boolean) extends AutoCloseable {
+     val sha = MessageDigest.getInstance("SHA-256")
+     private val stream = new DigestInputStream(new FileInputStream(file), sha)
+     private val parser = new CSVParser(new InputStreamReader(stream, StandardCharsets.UTF_8), CSVFormat.DEFAULT)
+@@ -50,6 +50,7 @@ object ReportingSupport {
+       records.next().iterator().asScala.toVector.reverse.dropWhile(_.isEmpty).reverse.map(_.stripPrefix("\uFEFF"))
+     } else Vector.empty
+     var count = 0L
++    def ordinal: Long = count
+     var previous = ""
+     def next(): Option[Vector[String]] = if (!records.hasNext) None else {
+       count += 1
+@@ -63,6 +64,19 @@ object ReportingSupport {
+     def close(): Unit = parser.close()
+   }
+ 
++  final class OrderedInput(file: File, kind: String, index: File, maxBlocks: Int, maxRecordBytes: Int)
++      extends Input(file, kind, kind != "movement") {
++    private val ordered = try new ReportingOrder(file, kind, header, index, maxBlocks, maxRecordBytes)
++      catch { case scala.util.control.NonFatal(e) => super.close(); throw e }
++    val indexedBlocks: Int = ordered.indexedBlocks
++    override def ordinal: Long = ordered.ordinal
++    override def next(): Option[Vector[String]] = {
++      val r = ordered.next(); if (r.nonEmpty) count += 1; r
++    }
++    override def hash: String = ordered.hash
++    override def close(): Unit = { ordered.close(); super.close() }
++  }
++
+   case class Sum(var amount: BigDecimal = 0, var rows: Long = 0, var contributors: Long = 0) {
+     def add(a: BigDecimal, n: Long, c: Long): Unit = { amount += a; rows += n; contributors += c }
+   }
+diff --git a/02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/ledger/standardizeAndSort.scala b/02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/ledger/standardizeAndSort.scala
+index a161525..fc6f47b 100644
+--- a/02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/ledger/standardizeAndSort.scala
++++ b/02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/ledger/standardizeAndSort.scala
+@@ -631,6 +631,23 @@ object standardizeAndSort {
+     line.split(delim, -1).map(_.trim.stripPrefix("\"").stripSuffix("\""))
+   }
+ 
++  // APA publishes one logical record per physical line. Reject malformed quoting
++  // rather than shifting columns or consuming the following source event.
++  private def apaCsv(line: String): Array[String] = {
++    import scala.collection.JavaConverters._
++    val parser = CSVParser.parse(line.stripPrefix("\uFEFF"), CSVFormat.DEFAULT)
++    try {
++      val records = parser.getRecords.asScala
++      require(records.size == 1, "Expected one APA CSV record")
++      records.head.iterator().asScala.map(_.trim).toArray
++    } finally parser.close()
++  }
++
++  private def uniqueLookup(target: mutable.Map[String, String], name: String, id: String): Unit = {
++    require(!target.contains(name) || target(name) == id, s"Ambiguous name lookup: $name")
++    target(name) = id
++  }
++
+   private def validateSourceHeader(rawHeader: Array[String], recFormat: String): Unit = {
+     val header = rawHeader.map(_.stripPrefix("\uFEFF").trim.toUpperCase).toSeq
+     val expenseBase = Seq(
+@@ -756,13 +773,14 @@ object standardizeAndSort {
+       System.err.println(s"WARNING: VendorMaster not found at $path — instIDs will be $UNKNOWN_INST")
+       return vm.toMap
+     }
++    require(new File(path).length() <= 16L * 1024 * 1024, "Vendor lookup exceeds bounded snapshot; sorted reference join required (GERS-002)")
+     implicit val codec = scala.io.Codec.UTF8.onMalformedInput(java.nio.charset.CodingErrorAction.REPLACE).onUnmappableCharacter(java.nio.charset.CodingErrorAction.REPLACE)
+     val src = Source.fromFile(path)(codec)
+     try {
+       val lines = src.getLines().filter(l => !l.startsWith("#"))
+       if (lines.hasNext) {
+         val headerRaw = lines.next().stripPrefix("\uFEFF")
+-        val header = headerRaw.split(",").map(_.trim.stripPrefix("\"").stripSuffix("\""))
++        val header = apaCsv(headerRaw)
+         val nameIdx = header.indexOf("instHolderName")
+         val idIdx   = header.indexOf("instID")
+         if (nameIdx < 0 || idIdx < 0) {
+@@ -770,13 +788,14 @@ object standardizeAndSort {
+           return vm.toMap
+         }
+         for (line <- lines) {
+-          val cols = line.split(",", -1).map(_.trim.stripPrefix("\"").stripSuffix("\""))
++          val cols = apaCsv(line)
++          require(cols.length == header.length, s"VendorMaster schema mismatch: $path")
+           if (cols.length > math.max(nameIdx, idIdx)) {
+             val name   = cols(nameIdx).toUpperCase
+             val rawId  = cols(idIdx)
+             val instId = try { rawId.toLong.formatted("%010d") }
+                          catch { case _: NumberFormatException => rawId }
+-            if (name.nonEmpty && rawId.nonEmpty) vm(name) = instId
++            if (name.nonEmpty && rawId.nonEmpty) uniqueLookup(vm, name, instId)
+           }
+         }
+       }
+@@ -939,6 +958,7 @@ object standardizeAndSort {
+       System.err.println(s"WARNING: Reference table not found: $path — name lookups will miss")
+       return result.toMap
+     }
++    require(f.length() <= 16L * 1024 * 1024, s"Reference snapshot exceeds bounded lookup: $path")
+     implicit val codec = scala.io.Codec.UTF8
+       .onMalformedInput(java.nio.charset.CodingErrorAction.REPLACE)
+       .onUnmappableCharacter(java.nio.charset.CodingErrorAction.REPLACE)
+@@ -946,7 +966,7 @@ object standardizeAndSort {
+     try {
+       val lines = src.getLines()
+       if (!lines.hasNext) return result.toMap
+-      val rawHeader = lines.next().stripPrefix("\uFEFF").split(",", -1).map(_.trim)
++      val rawHeader = apaCsv(lines.next())
+       val ki = rawHeader.indexOf(keyCol)
+       val ni = rawHeader.indexOf(nameCol)
+       if (ki < 0 || ni < 0) {
+@@ -954,11 +974,12 @@ object standardizeAndSort {
+         return result.toMap
+       }
+       for (line <- lines) {
+-        val cols = line.split(",", -1).map(_.trim.stripPrefix("\"").stripSuffix("\""))
++        val cols = apaCsv(line)
++        require(cols.length == rawHeader.length, s"Reference schema mismatch: $path")
+         if (cols.length > math.max(ki, ni)) {
+           val key  = cols(ki)
+           val name = cols(ni).toUpperCase
+-          if (key.nonEmpty && name.nonEmpty) result(name) = key
++          if (key.nonEmpty && name.nonEmpty) uniqueLookup(result, name, key)
+         }
+       }
+     } finally src.close()
+@@ -1044,7 +1065,7 @@ object standardizeAndSort {
+   // Returns (agencyKey, fundKey, objKey, progKey, vendorName, amount, transDate) or None.
+   private def resolveApaExpRow(cols: Array[String], ref: ApaReferenceData, rowNum: Int)
+       : Option[(String, String, String, String, String, String, String)] = {
+-    if (cols.length < 7) return None
++    if (cols.length != 9) return None
+     val agencyName  = cols(0)
+     val rawAmt      = cols(1)
+     val fundName    = cols(2)
+@@ -1067,7 +1088,7 @@ object standardizeAndSort {
+   // APA revenue row TTL: resolve one revenue row.
+   private def resolveApaRevRow(cols: Array[String], ref: ApaReferenceData, rowNum: Int)
+       : Option[(String, String, String, String, String)] = {
+-    if (cols.length < 6) return None
++    if (cols.length != 7) return None
+     val agencyName = cols(0)
+     val rawAmt     = cols(1)
+     val fundName   = cols(2)
+@@ -1205,13 +1226,20 @@ object standardizeAndSort {
+           else
+             yearStr
+           val src = Source.fromFile(inFile)(codec)
++          val rejectFile = new File(new File(outFile).getParentFile,
++            "APARejects_" + new File(outFile).getName + s".${batchFiles.indexWhere(_._1 == inFile)}.rejects.csv")
++          val rejects = if (parseOnly) None else Some(new PrintWriter(rejectFile, "UTF-8"))
++          rejects.foreach(_.println("source_file,physical_line,reason,raw_record"))
+           fileDataLines = 0L; fileBlank = 0L
+           fileSource = sourceRows; fileUnmatched = unmatchedRef
+           try {
+             val lines = src.getLines()
+             if (!lines.hasNext) { /* empty file */ }
+             else {
+-              val headerLine = lines.next()  // consume BOM + header
++              val header = apaCsv(lines.next()).map(_.toUpperCase)
++              val expected = if (recType == "R") Array("AGENCY_NAME", "AMOUNT", "FUND_NAME", "LOCALITY", "SOURCE_TYPE", "SOURCE", "DEPOSIT_DATE")
++                else Array("AGENCY_NAME", "AMOUNT", "FUND_NAME", "LOCALITY", "OBJECT_NAME", "PROGRAM_NAME", "VENDOR_NAME", "VOUCHER_NUMBER", "VOUCHER_DATE")
++              require(header.sameElements(expected), s"APA schema mismatch: $inFile")
+               var rowNum = 1
+               for (line <- lines) {
+                 val raw = line.trim
+@@ -1219,7 +1247,10 @@ object standardizeAndSort {
+                 if (raw.isEmpty) fileBlank += 1
+                 if (raw.nonEmpty) {
+                   rowNum += 1
+-                  val cols = splitAndStrip(raw, ",")
++                  var parseFailure = ""
++                  val cols = try apaCsv(raw) catch {
++                    case scala.util.control.NonFatal(_) => parseFailure = "malformed_csv"; Array.empty[String]
++                  }
+                   val resolved = if (recType == "R")
+                     resolveApaRevRow(cols, ref, rowNum).map { case (agk, fnk, srck, amt, td) =>
+                       val transDate = if (td.nonEmpty) td else acctDate
+@@ -1232,7 +1263,11 @@ object standardizeAndSort {
+                     }
+ 
+                   resolved match {
+-                    case None => unmatchedRef += 1
++                    case None =>
++                      unmatchedRef += 1
++                      val reason = if (parseFailure.nonEmpty) parseFailure
++                        else if (cols.length != (if (recType == "R") 7 else 9)) "schema_width" else "invalid_amount"
++                      rejects.foreach(_.println(ReportingSupport.csv(Seq(inFile.getCanonicalPath, rowNum, reason, line))))
+                     case Some(normalized) =>
+                       sourceRows += 1
+                       jrnlID     += 1
+@@ -1249,7 +1284,10 @@ object standardizeAndSort {
+                 }
+               }
+             }
+-          } finally src.close()
++          } finally {
++            src.close()
++            rejects.foreach { p => p.flush(); val error = p.checkError(); p.close(); require(!error, "APA reject evidence write failed") }
++          }
+           // Reconciliation: data_lines (file lines minus header) = source + unresolved_ref + blank.
+           println(s"\n  File ${inFile.getName}: data_lines=$fileDataLines " +
+                   s"source=${sourceRows - fileSource} unresolved_ref=${unmatchedRef - fileUnmatched} blank=$fileBlank")
+diff --git a/02-foundation/va_pipeline/src/test/scala/org/universalledger/foundation/va/corpus/IdentityAuditSpec.scala b/02-foundation/va_pipeline/src/test/scala/org/universalledger/foundation/va/corpus/IdentityAuditSpec.scala
+index f02d561..3cd04bb 100644
+--- a/02-foundation/va_pipeline/src/test/scala/org/universalledger/foundation/va/corpus/IdentityAuditSpec.scala
++++ b/02-foundation/va_pipeline/src/test/scala/org/universalledger/foundation/va/corpus/IdentityAuditSpec.scala
+@@ -83,7 +83,7 @@ class IdentityAuditSpec extends AnyFunSuite {
+     assert(text.toString.contains("PARTIAL_READ:"))
+   }}
+ 
+-  test("actual APA producer reproduces quoted-name identity collision without audit changing it") { temp { dir =>
++  test("APA producer preserves quoted-name identity while audit retains legacy emulator") { temp { dir =>
+     put(dir.resolve("master.csv"), masterText)
+     val input = dir.resolve("raw/FY 2003 Expenditure/Expenditures Jul 2002.csv")
+     put(input, "AGENCY_NAME,AMOUNT,FUND_NAME,LOCALITY,OBJECT_NAME,PROGRAM_NAME,VENDOR_NAME,VOUCHER_NUMBER,VOUCHER_DATE\n" +
+@@ -94,11 +94,11 @@ class IdentityAuditSpec extends AnyFunSuite {
+       "year" -> "03", "periodGranularity" -> "monthly"))
+     val rows = lines(output.resolve("SortedJEFY03_0003_07_exp.csv"))
+     assert(rows.size == 2 && rows.forall(_.split(",", -1).length == 39))
+-    assert(rows.forall(_.startsWith("0000000002,"))) // wrong party under current producer
++    assert(rows.forall(_.startsWith("0000000001,")))
+     assert(rows.map(_.split(",", -1)(25)).map(BigDecimal(_)).sum == 0)
+   }}
+ 
+-  test("quoted object text shifts the actual producer's vendor lookup to a program label") { temp { dir =>
++  test("quoted object text preserves the actual producer vendor lookup") { temp { dir =>
+     put(dir.resolve("master.csv"), "instID,instHolderName\n1,REAL VENDOR\n")
+     val row = "AGENCY,10,FUND,VA,\"SALARIES, TEACHING\",PROGRAM,REAL VENDOR,V1,07-01-02"
+     assert(legacy(row)(6) == "PROGRAM")
+@@ -110,7 +110,7 @@ class IdentityAuditSpec extends AnyFunSuite {
+       "refPath" -> dir.toString, "vendormaster" -> dir.resolve("master.csv").toString,
+       "year" -> "03", "periodGranularity" -> "monthly"))
+     val rows = lines(output.resolve("SortedJEFY03_0003_07_exp.csv"))
+-    assert(rows.size == 2 && rows.forall(_.startsWith(Zero + ",")))
++    assert(rows.size == 2 && rows.forall(_.startsWith("0000000001,")))
+     assert(rows.map(_.split(",", -1)(25)).map(BigDecimal(_)).sum == 0)
+   }}
+ 
+diff --git a/02-foundation/va_pipeline/src/test/scala/org/universalledger/foundation/va/ledger/ApaTtlSpec.scala b/02-foundation/va_pipeline/src/test/scala/org/universalledger/foundation/va/ledger/ApaTtlSpec.scala
+index c446f0e..f67d4ac 100644
+--- a/02-foundation/va_pipeline/src/test/scala/org/universalledger/foundation/va/ledger/ApaTtlSpec.scala
++++ b/02-foundation/va_pipeline/src/test/scala/org/universalledger/foundation/va/ledger/ApaTtlSpec.scala
+@@ -84,6 +84,33 @@ class ApaTtlSpec extends AnyFunSuite {
+   private val revRowJul =
+     "\"University of Virginia - College at Wise\",240,\"HIGHER EDUCATION LOCAL FUNDS UNRESTRICTED\",\"VIRGINIA\",\"TAXES\",\"LOCAL FUND TAXES\",07-31-02"
+ 
++  test("APA malformed records are isolated, headers are validated, and ambiguous names fail") {
++    withTempDirectory("ttl-strict-") { dir =>
++      val raw = Files.createDirectory(dir.resolve("raw"))
++      val fy = Files.createDirectory(raw.resolve("FY 2003 Expenditure"))
++      val out = Files.createDirectory(dir.resolve("out"))
++      val refs = Files.createDirectory(dir.resolve("refs")); writeRefTables(refs)
++      val master = dir.resolve("master.csv")
++      Files.write(master, "instID,instHolderName\n1,SERVITEX INC\n".getBytes("UTF-8"))
++      val source = writeExpFile(fy, "Jul", expRowJul, expRowJul.replace("45.32", "invalid"),
++        "AGENCY,10,FUND,VA,OBJECT,PROGRAM,\"unterminated", "AGENCY,10,FUND")
++      val params = Map("inPath" -> raw.toString, "outPath" -> out.toString, "refPath" -> refs.toString,
++        "vendormaster" -> master.toString, "year" -> "2003", "type" -> "E")
++      standardizeAndSort.applyAPA(params)
++      val rejectFile = out.toFile.listFiles().find(_.getName.endsWith("rejects.csv")).get
++      val rejected = Source.fromFile(rejectFile, "UTF-8")
++      val evidence = try rejected.mkString finally rejected.close()
++      assert(evidence.contains("invalid_amount") && evidence.contains("malformed_csv") && evidence.contains("schema_width"))
++      val produced = Source.fromFile(out.resolve("SortedJEFY03q1exp.csv").toFile, "UTF-8")
++      val rows = try produced.getLines().toVector finally produced.close()
++      assert(rows.size == 2 && rows.map(_.split(",", -1)(25)).map(BigDecimal(_)).sum == 0)
++      Files.write(source, "WRONG,HEADER\n".getBytes("UTF-8"))
++      intercept[IllegalArgumentException] { standardizeAndSort.applyAPA(params) }
++      Files.write(master, "instID,instHolderName\n1,SERVITEX INC\n2,SERVITEX INC\n".getBytes("UTF-8"))
++      intercept[IllegalArgumentException] { standardizeAndSort.applyAPA(params) }
++    }
++  }
++
+   // ── Test 1: reference table loading ─────────────────────────────────────────
+   test("loadApaReferenceData loads four reference tables with correct entry counts") {
+     withTempDirectory("ttl-ref-") { tempDir =>
+diff --git a/02-foundation/va_pipeline/src/test/scala/org/universalledger/foundation/va/ledger/ReportingPassSpec.scala b/02-foundation/va_pipeline/src/test/scala/org/universalledger/foundation/va/ledger/ReportingPassSpec.scala
+index 61bc6a6..4853596 100644
+--- a/02-foundation/va_pipeline/src/test/scala/org/universalledger/foundation/va/ledger/ReportingPassSpec.scala
++++ b/02-foundation/va_pipeline/src/test/scala/org/universalledger/foundation/va/ledger/ReportingPassSpec.scala
+@@ -65,7 +65,8 @@ class ReportingPassSpec extends AnyFunSuite {
+   }
+   private def run(dir: Path, params: Map[String, String], name: String, buffer: Int = 2, fanIn: Int = 2): Path = {
+     val out = dir.resolve(name)
+-    CKBViews(params ++ Map("outPath" -> out.toString, "spillRows" -> buffer.toString))
++    CKBViews(params ++ Map("outPath" -> out.toString, "spillRows" -> buffer.toString,
++      "aggregateKeys" -> params.getOrElse("aggregateKeys", buffer.toString), "mergeFanIn" -> fanIn.toString))
+     ReportingReduce(Map("outPath" -> out.toString, "mergeFanIn" -> fanIn.toString))
+     out
+   }
+@@ -77,6 +78,7 @@ class ReportingPassSpec extends AnyFunSuite {
+       val a = combined.find(r => r("vendor_id") == "0000000001" && r("fiscal_year") == "2014").get
+       assert(a("vendor_name") == "Acme, Old")
+       assert(a("name_status") == "matched_asof")
++      assert(a("currency") == "USD")
+       assert(BigDecimal(a("debit_amount")) == 190)
+       assert(a("po_count") == "2" && BigDecimal(a("committed_amount")) == 140) // legacy sign selection
+       assert(a("signed_direct_po_count") == "2" && BigDecimal(a("signed_direct_po_amount")) == 100)
+@@ -92,6 +94,11 @@ class ReportingPassSpec extends AnyFunSuite {
+       assert(!manifest.exists(_("path").endsWith("q1exp.csv")))
+       assert(manifest.filter(_("kind") == "movement").map(_("rows").toInt).sum == 16)
+       assert(manifest.forall(_("sha256").length == 64))
++      manifest.foreach { r =>
++        val bytes = Files.readAllBytes(new File(r("path")).toPath)
++        val expected = java.security.MessageDigest.getInstance("SHA-256").digest(bytes).map(b => f"${b & 255}%02x").mkString
++        assert(r("sha256") == expected)
++      }
+       assert(Files.exists(out.resolve("REPORT_COMPLETE")))
+     }
+   }
+@@ -119,15 +126,18 @@ class ReportingPassSpec extends AnyFunSuite {
+       intercept[IllegalArgumentException] { ReportingReduce(Map("outPath" -> out.toString)) }
+     }
+   }
+-  test("disorder, vendor bounds, reference bounds and duplicate inputs fail closed") {
++  test("feature bounds, reference bounds and duplicate inputs fail closed; disorder is indexed") {
+     withFixture { (dir, params) =>
+-      intercept[IllegalArgumentException] { CKBViews(params ++ Map("outPath" -> dir.resolve("cap").toString, "maxVendorRows" -> "2")) }
++      intercept[IllegalArgumentException] { CKBViews(params ++ Map("outPath" -> dir.resolve("cap").toString, "maxFeatureKeys" -> "2")) }
+       intercept[IllegalArgumentException] { CKBViews(params ++ Map("outPath" -> dir.resolve("refcap").toString, "maxReferenceBytes" -> "1")) }
++      intercept[IllegalArgumentException] { CKBViews(params ++ Map("outPath" -> dir.resolve("indexcap").toString, "maxIndexedBlocks" -> "1")) }
++      intercept[IllegalArgumentException] { CKBViews(params ++ Map("outPath" -> dir.resolve("recordcap").toString, "maxRecordBytes" -> "10")) }
+       intercept[IllegalArgumentException] { CKBViews(params ++ Map("outPath" -> dir.resolve("dup").toString, "inPaths" -> (params("inPaths") + "," + params("inPaths")))) }
+       val f = dir.resolve("inputs/SortedJEFY14merged.csv")
+       val src = scala.io.Source.fromFile(f.toFile); val lines = try src.getLines().toVector finally src.close()
+       write(f, lines.reverse)
+-      intercept[IllegalArgumentException] { CKBViews(params + ("outPath" -> dir.resolve("disorder").toString)) }
++      val reordered = run(dir, params, "disorder")
++      assert(table(reordered.resolve("reconciliation.csv")).forall(_("status") == "PASS"))
+     }
+   }
+   test("fiscal-year contract distinguishes payment fiscal labels from calendar PO dates") {
+@@ -165,6 +175,60 @@ class ReportingPassSpec extends AnyFunSuite {
+       assert(table(out.resolve("reconciliation.csv")).forall(_("status") == "PASS"))
+     }
+   }
++  test("literal variable-width IDs retain identity across arbitrary physical order and dimension joins") {
++    withFixture { (dir, params) =>
++      val input = Files.createDirectory(dir.resolve("literal-input"))
++      val rows = pair("c12464", "0014/07", "7", "EXP1", "PAYMENT") ++
++        pair("c1246", "0014/07", "11", "EXP1", "PAYMENT") ++
++        pair("999999999999", "0014/07", "13", "EXP1", "PAYMENT")
++      write(input.resolve("SortedJEFY14merged.csv"), SortEngine.sortChunk(rows, spec))
++      post(input.toString + "/", input.toString + "/", "14")
++      write(dir.resolve("literal-vendors.csv"), Seq("instID,instHolderName", "c12464,Simulated Four", "c1246,Simulated Six"))
++      val out = run(dir, params ++ Map("inPaths" -> input.toString, "vendorMaster" -> dir.resolve("literal-vendors.csv").toString), "literal")
++      val combined = table(out.resolve("aim_combined.csv"))
++      assert(combined.find(_("vendor_id") == "c1246").get("vendor_name") == "Simulated Six")
++      assert(combined.find(_("vendor_id") == "c12464").get("vendor_name") == "Simulated Four")
++      assert(combined.find(_("vendor_id") == "999999999999").get("attributed") == "false")
++      assert(table(out.resolve("reconciliation.csv")).forall(_("status") == "PASS"))
++    }
++  }
++  test("source currencies cannot mix merely because their currency types match") {
++    withFixture { (dir, params) =>
++      val input = Files.createDirectory(dir.resolve("currency-input"))
++      val usd = pair("0000000001", "0014/07", "10", "EXP1", "PAYMENT")
++      val eur = pair("0000000001", "0014/07", "20", "EXP1", "PAYMENT").map { line =>
++        val r = line.split(",", -1); r(18) = "EUR"; r(20) = "EUR"; r.mkString(",")
++      }
++      write(input.resolve("SortedJEFY14merged.csv"), SortEngine.sortChunk(usd ++ eur, spec))
++      post(input.toString + "/", input.toString + "/", "14")
++      val error = intercept[IllegalArgumentException] {
++        CKBViews(params ++ Map("inPaths" -> input.toString, "outPath" -> dir.resolve("mixed-currency").toString))
++      }
++      assert(error.getMessage.contains("mixes currencies"))
++    }
++  }
++  test("a legitimate and an unattributed group exceed the old row guard with bounded aggregation") {
++    withFixture { (dir, params) =>
++      val input = Files.createDirectory(dir.resolve("large-input"))
++      val p = new java.io.PrintWriter(input.resolve("SortedJEFY14merged.csv").toFile, "UTF-8")
++      try Seq("0000000000", "SIM_VENDOR_0001").foreach { id =>
++        val sorted = SortEngine.sortChunk(pair(id, "0014/07", "1.25", "EXP1", "PAYMENT"), spec)
++        sorted.foreach { row =>
++          (1 to 125001).foreach { n =>
++            val r = row.split(",", -1); r(3) = s"simulated-$id-$n"; p.println(r.mkString(","))
++          }
++        }
++      } finally p.close()
++      post(input.toString + "/", input.toString + "/", "14")
++      val out = run(dir, params + ("inPaths" -> input.toString) + ("aggregateKeys" -> "1"), "large-group")
++      assert(table(out.resolve("reconciliation.csv")).forall(_("status") == "PASS"))
++      val feature = table(out.resolve("aim_combined.csv")).find(_("vendor_id") == "SIM_VENDOR_0001").get
++      assert(BigDecimal(feature("debit_amount")) == BigDecimal("156251.25"))
++      val metrics = table(out.resolve("extract_metrics.csv")).map(r => r("metric") -> r("value")).toMap
++      assert(metrics("peak_vendor_rows").toLong > 250000)
++      assert(metrics("aggregate_capacity_keys") == "1")
++    }
++  }
+   test("export connected fixture for separate-process orchestration when requested") {
+     sys.env.get("CKB_REPORT_FIXTURE_EXPORT").foreach { path =>
+       val root = Paths.get(path); require(!Files.exists(root)); Files.createDirectories(root)
+diff --git a/scripts/run_reporting.sh b/scripts/run_reporting.sh
+index 656f181..fbd5d05 100644
+--- a/scripts/run_reporting.sh
++++ b/scripts/run_reporting.sh
+@@ -1,9 +1,10 @@
+ #!/usr/bin/env bash
+ # Expanded analytical reporting only: distinct JVMs for 5v extract and 5r spill reduction.
+ # No source transformation, accounting logic, posting, or cost-curve mutation in this wrapper.
+-# Usage: run_reporting.sh --inPaths DIR[,DIR] --outPath NEW_DIR [--vendorMaster SORTED_CSV]
+-# Optional: --contractDimensions SORTED_CSV --refPath DIR --packetVendors ID[,ID]
+-# --spillRows N --mergeFanIn N --maxVendorRows N --maxReferenceBytes N --maxInputs N
++# Usage: run_reporting.sh --inPaths DIR[,DIR] --outPath NEW_DIR [--vendorMaster CSV]
++# Optional: --contractDimensions CSV --refPath DIR --packetVendors ID[,ID]
++# --spillRows N --aggregateKeys N --mergeFanIn N --maxFeatureKeys N
++# --maxIndexedBlocks N --maxRecordBytes N --maxReferenceBytes N --maxInputs N
+ # --balanceBasis period_movements|opening_plus_movements --openingFiles FILE[,FILE]
+ set -euo pipefail
+ script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+@@ -17,7 +18,7 @@ while [[ $# -gt 0 ]]; do
+     --outPath) out="$value" ;;
+     --inPaths) inputs="$value" ;;
+     --mergeFanIn) fan_in="$value" ;;
+-    --vendorMaster|--contractDimensions|--refPath|--packetVendors|--spillRows|--maxVendorRows|--maxReferenceBytes|--maxInputs|--balanceBasis|--openingFiles)
++    --vendorMaster|--contractDimensions|--refPath|--packetVendors|--spillRows|--aggregateKeys|--maxFeatureKeys|--maxIndexedBlocks|--maxRecordBytes|--maxReferenceBytes|--maxInputs|--balanceBasis|--openingFiles)
+       options+=" $key $(quote "$value")" ;;
+     *) echo "Unknown option: $key" >&2; exit 1 ;;
+   esac
+@@ -43,7 +44,9 @@ printf 'git=%s\ninputs=%s\noptions=%s\n' "$(git -C "$repo" rev-parse HEAD)" "$in
+ git -C "$repo" diff -- scripts/run_reporting.sh 02-foundation/va_pipeline > "$attempt/source_changes.patch"
+ shasum -a 256 "$repo/scripts/run_reporting.sh" \
+   "$repo/02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/ledger/ReportingPass.scala" \
+-  "$repo/02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/ledger/ReportingSupport.scala" > "$attempt/reporting_source_sha256.txt"
++  "$repo/02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/ledger/ReportingSupport.scala" \
++  "$repo/02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/ledger/ReportingSums.scala" \
++  "$repo/02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/ledger/ReportingOrder.scala" > "$attempt/reporting_source_sha256.txt"
+ if command -v caffeinate >/dev/null 2>&1; then caffeinate -i -s -w $$ & fi
+ run_stage() {
+   local stage="$1" command="$2"
+@@ -53,7 +56,7 @@ run_stage() {
+     (cd "$repo/02-foundation/va_pipeline" && /usr/bin/time -v sbt -batch "$command") > "$attempt/$stage.log" 2>&1
+   fi
+ }
+-run_stage extract "run --step 5v --reportProfile expanded --inPaths $(quote "$inputs") --outPath $(quote "$attempt")$options"
++run_stage extract "run --step 5v --reportProfile expanded --inPaths $(quote "$inputs") --outPath $(quote "$attempt") --mergeFanIn $fan_in$options"
+ [[ -s "$attempt/EXTRACT_COMPLETE" ]] || exit 1
+ run_stage reduce "run --step 5r --outPath $(quote "$attempt") --mergeFanIn $fan_in"
+ [[ -s "$attempt/REPORT_COMPLETE" ]] || exit 1

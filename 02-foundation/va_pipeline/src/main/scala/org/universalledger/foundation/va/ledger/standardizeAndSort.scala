@@ -631,6 +631,23 @@ object standardizeAndSort {
     line.split(delim, -1).map(_.trim.stripPrefix("\"").stripSuffix("\""))
   }
 
+  // APA publishes one logical record per physical line. Reject malformed quoting
+  // rather than shifting columns or consuming the following source event.
+  private def apaCsv(line: String): Array[String] = {
+    import scala.collection.JavaConverters._
+    val parser = CSVParser.parse(line.stripPrefix("\uFEFF"), CSVFormat.DEFAULT)
+    try {
+      val records = parser.getRecords.asScala
+      require(records.size == 1, "Expected one APA CSV record")
+      records.head.iterator().asScala.map(_.trim).toArray
+    } finally parser.close()
+  }
+
+  private def uniqueLookup(target: mutable.Map[String, String], name: String, id: String): Unit = {
+    require(!target.contains(name) || target(name) == id, s"Ambiguous name lookup: $name")
+    target(name) = id
+  }
+
   private def validateSourceHeader(rawHeader: Array[String], recFormat: String): Unit = {
     val header = rawHeader.map(_.stripPrefix("\uFEFF").trim.toUpperCase).toSeq
     val expenseBase = Seq(
@@ -756,13 +773,14 @@ object standardizeAndSort {
       System.err.println(s"WARNING: VendorMaster not found at $path — instIDs will be $UNKNOWN_INST")
       return vm.toMap
     }
+    require(new File(path).length() <= 16L * 1024 * 1024, "Vendor lookup exceeds bounded snapshot; sorted reference join required (GERS-002)")
     implicit val codec = scala.io.Codec.UTF8.onMalformedInput(java.nio.charset.CodingErrorAction.REPLACE).onUnmappableCharacter(java.nio.charset.CodingErrorAction.REPLACE)
     val src = Source.fromFile(path)(codec)
     try {
       val lines = src.getLines().filter(l => !l.startsWith("#"))
       if (lines.hasNext) {
         val headerRaw = lines.next().stripPrefix("\uFEFF")
-        val header = headerRaw.split(",").map(_.trim.stripPrefix("\"").stripSuffix("\""))
+        val header = apaCsv(headerRaw)
         val nameIdx = header.indexOf("instHolderName")
         val idIdx   = header.indexOf("instID")
         if (nameIdx < 0 || idIdx < 0) {
@@ -770,13 +788,14 @@ object standardizeAndSort {
           return vm.toMap
         }
         for (line <- lines) {
-          val cols = line.split(",", -1).map(_.trim.stripPrefix("\"").stripSuffix("\""))
+          val cols = apaCsv(line)
+          require(cols.length == header.length, s"VendorMaster schema mismatch: $path")
           if (cols.length > math.max(nameIdx, idIdx)) {
             val name   = cols(nameIdx).toUpperCase
             val rawId  = cols(idIdx)
             val instId = try { rawId.toLong.formatted("%010d") }
                          catch { case _: NumberFormatException => rawId }
-            if (name.nonEmpty && rawId.nonEmpty) vm(name) = instId
+            if (name.nonEmpty && rawId.nonEmpty) uniqueLookup(vm, name, instId)
           }
         }
       }
@@ -939,6 +958,7 @@ object standardizeAndSort {
       System.err.println(s"WARNING: Reference table not found: $path — name lookups will miss")
       return result.toMap
     }
+    require(f.length() <= 16L * 1024 * 1024, s"Reference snapshot exceeds bounded lookup: $path")
     implicit val codec = scala.io.Codec.UTF8
       .onMalformedInput(java.nio.charset.CodingErrorAction.REPLACE)
       .onUnmappableCharacter(java.nio.charset.CodingErrorAction.REPLACE)
@@ -946,7 +966,7 @@ object standardizeAndSort {
     try {
       val lines = src.getLines()
       if (!lines.hasNext) return result.toMap
-      val rawHeader = lines.next().stripPrefix("\uFEFF").split(",", -1).map(_.trim)
+      val rawHeader = apaCsv(lines.next())
       val ki = rawHeader.indexOf(keyCol)
       val ni = rawHeader.indexOf(nameCol)
       if (ki < 0 || ni < 0) {
@@ -954,11 +974,12 @@ object standardizeAndSort {
         return result.toMap
       }
       for (line <- lines) {
-        val cols = line.split(",", -1).map(_.trim.stripPrefix("\"").stripSuffix("\""))
+        val cols = apaCsv(line)
+        require(cols.length == rawHeader.length, s"Reference schema mismatch: $path")
         if (cols.length > math.max(ki, ni)) {
           val key  = cols(ki)
           val name = cols(ni).toUpperCase
-          if (key.nonEmpty && name.nonEmpty) result(name) = key
+          if (key.nonEmpty && name.nonEmpty) uniqueLookup(result, name, key)
         }
       }
     } finally src.close()
@@ -1044,7 +1065,7 @@ object standardizeAndSort {
   // Returns (agencyKey, fundKey, objKey, progKey, vendorName, amount, transDate) or None.
   private def resolveApaExpRow(cols: Array[String], ref: ApaReferenceData, rowNum: Int)
       : Option[(String, String, String, String, String, String, String)] = {
-    if (cols.length < 7) return None
+    if (cols.length != 9) return None
     val agencyName  = cols(0)
     val rawAmt      = cols(1)
     val fundName    = cols(2)
@@ -1067,7 +1088,7 @@ object standardizeAndSort {
   // APA revenue row TTL: resolve one revenue row.
   private def resolveApaRevRow(cols: Array[String], ref: ApaReferenceData, rowNum: Int)
       : Option[(String, String, String, String, String)] = {
-    if (cols.length < 6) return None
+    if (cols.length != 7) return None
     val agencyName = cols(0)
     val rawAmt     = cols(1)
     val fundName   = cols(2)
@@ -1205,21 +1226,31 @@ object standardizeAndSort {
           else
             yearStr
           val src = Source.fromFile(inFile)(codec)
+          val rejectFile = new File(new File(outFile).getParentFile,
+            "APARejects_" + new File(outFile).getName + s".${batchFiles.indexWhere(_._1 == inFile)}.rejects.csv")
+          val rejects = if (parseOnly) None else Some(new PrintWriter(rejectFile, "UTF-8"))
+          rejects.foreach(_.println("source_file,physical_line,reason,raw_record"))
           fileDataLines = 0L; fileBlank = 0L
           fileSource = sourceRows; fileUnmatched = unmatchedRef
           try {
             val lines = src.getLines()
             if (!lines.hasNext) { /* empty file */ }
             else {
-              val headerLine = lines.next()  // consume BOM + header
+              val header = apaCsv(lines.next()).map(_.toUpperCase)
+              val expected = if (recType == "R") Array("AGENCY_NAME", "AMOUNT", "FUND_NAME", "LOCALITY", "SOURCE_TYPE", "SOURCE", "DEPOSIT_DATE")
+                else Array("AGENCY_NAME", "AMOUNT", "FUND_NAME", "LOCALITY", "OBJECT_NAME", "PROGRAM_NAME", "VENDOR_NAME", "VOUCHER_NUMBER", "VOUCHER_DATE")
+              require(header.sameElements(expected), s"APA schema mismatch: $inFile")
               var rowNum = 1
               for (line <- lines) {
                 val raw = line.trim
                 fileDataLines += 1
+                rowNum += 1
                 if (raw.isEmpty) fileBlank += 1
                 if (raw.nonEmpty) {
-                  rowNum += 1
-                  val cols = splitAndStrip(raw, ",")
+                  var parseFailure = ""
+                  val cols = try apaCsv(raw) catch {
+                    case scala.util.control.NonFatal(_) => parseFailure = "malformed_csv"; Array.empty[String]
+                  }
                   val resolved = if (recType == "R")
                     resolveApaRevRow(cols, ref, rowNum).map { case (agk, fnk, srck, amt, td) =>
                       val transDate = if (td.nonEmpty) td else acctDate
@@ -1232,7 +1263,11 @@ object standardizeAndSort {
                     }
 
                   resolved match {
-                    case None => unmatchedRef += 1
+                    case None =>
+                      unmatchedRef += 1
+                      val reason = if (parseFailure.nonEmpty) parseFailure
+                        else if (cols.length != (if (recType == "R") 7 else 9)) "schema_width" else "invalid_amount"
+                      rejects.foreach(_.println(ReportingSupport.csv(Seq(inFile.getCanonicalPath, rowNum, reason, line))))
                     case Some(normalized) =>
                       sourceRows += 1
                       jrnlID     += 1
@@ -1249,7 +1284,10 @@ object standardizeAndSort {
                 }
               }
             }
-          } finally src.close()
+          } finally {
+            src.close()
+            rejects.foreach { p => p.flush(); val error = p.checkError(); p.close(); require(!error, "APA reject evidence write failed") }
+          }
           // Reconciliation: data_lines (file lines minus header) = source + unresolved_ref + blank.
           println(s"\n  File ${inFile.getName}: data_lines=$fileDataLines " +
                   s"source=${sourceRows - fileSource} unresolved_ref=${unmatchedRef - fileUnmatched} blank=$fileBlank")

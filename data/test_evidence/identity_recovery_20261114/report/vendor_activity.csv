@@ -1,0 +1,14 @@
+vendor_id,fiscal_year,side,event,rows,direct_amount,offset_amount,negative_direct_rows,observed_periods,largest_inactive_month_gap,period_grain
+0000000000,2003,movement,EXPENSE_PAYMENT,4,25,-25,0,1,,monthly
+0000000000,2003,movement,REVENUE_RECEIPT,2,200,-200,0,1,,monthly
+0000000000,2003,balance,POSTED,3,225,-225,0,1,,monthly
+SIM_VENDOR_0001,2003,movement,EXPENSE_PAYMENT,2,20,-20,0,1,,monthly
+SIM_VENDOR_0001,2003,balance,POSTED,2,20,-20,0,1,,monthly
+c1246,2003,movement,COMMITMENT,2,50,-50,0,1,,monthly
+c1246,2003,movement,EXPENSE_PAYMENT,4,75,-75,1,1,,monthly
+c1246,2003,balance,POSTED,4,125,-125,0,2,,monthly
+c1246,2004,movement,EXPENSE_PAYMENT,2,30,-30,0,1,,monthly
+c1246,2004,balance,POSTED,2,30,-30,0,1,,monthly
+c12464,2003,movement,COMMITMENT,2,70,-70,0,1,,monthly
+c12464,2003,movement,EXPENSE_PAYMENT,2,40,-40,0,1,,monthly
+c12464,2003,balance,POSTED,4,110,-110,0,2,,monthly

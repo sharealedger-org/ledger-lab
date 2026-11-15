@@ -84,6 +84,34 @@ class ApaTtlSpec extends AnyFunSuite {
   private val revRowJul =
     "\"University of Virginia - College at Wise\",240,\"HIGHER EDUCATION LOCAL FUNDS UNRESTRICTED\",\"VIRGINIA\",\"TAXES\",\"LOCAL FUND TAXES\",07-31-02"
 
+  test("APA malformed records are isolated, headers are validated, and ambiguous names fail") {
+    withTempDirectory("ttl-strict-") { dir =>
+      val raw = Files.createDirectory(dir.resolve("raw"))
+      val fy = Files.createDirectory(raw.resolve("FY 2003 Expenditure"))
+      val out = Files.createDirectory(dir.resolve("out"))
+      val refs = Files.createDirectory(dir.resolve("refs")); writeRefTables(refs)
+      val master = dir.resolve("master.csv")
+      Files.write(master, "instID,instHolderName\n1,SERVITEX INC\n".getBytes("UTF-8"))
+      val source = writeExpFile(fy, "Jul", expRowJul, "", expRowJul.replace("45.32", "invalid"),
+        "AGENCY,10,FUND,VA,OBJECT,PROGRAM,\"unterminated", "AGENCY,10,FUND")
+      val params = Map("inPath" -> raw.toString, "outPath" -> out.toString, "refPath" -> refs.toString,
+        "vendormaster" -> master.toString, "year" -> "2003", "type" -> "E")
+      standardizeAndSort.applyAPA(params)
+      val rejectFile = out.toFile.listFiles().find(_.getName.endsWith("rejects.csv")).get
+      val rejected = Source.fromFile(rejectFile, "UTF-8")
+      val evidence = try rejected.mkString finally rejected.close()
+      assert(evidence.contains("invalid_amount") && evidence.contains("malformed_csv") && evidence.contains("schema_width"))
+      assert(evidence.contains(",4,invalid_amount,")) // physical lines include blank records
+      val produced = Source.fromFile(out.resolve("SortedJEFY03q1exp.csv").toFile, "UTF-8")
+      val rows = try produced.getLines().toVector finally produced.close()
+      assert(rows.size == 2 && rows.map(_.split(",", -1)(25)).map(BigDecimal(_)).sum == 0)
+      Files.write(source, "WRONG,HEADER\n".getBytes("UTF-8"))
+      intercept[IllegalArgumentException] { standardizeAndSort.applyAPA(params) }
+      Files.write(master, "instID,instHolderName\n1,SERVITEX INC\n2,SERVITEX INC\n".getBytes("UTF-8"))
+      intercept[IllegalArgumentException] { standardizeAndSort.applyAPA(params) }
+    }
+  }
+
   // ── Test 1: reference table loading ─────────────────────────────────────────
   test("loadApaReferenceData loads four reference tables with correct entry counts") {
     withTempDirectory("ttl-ref-") { tempDir =>

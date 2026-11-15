@@ -1529,6 +1529,9 @@ then a small deterministic registry and skewed synthetic fixture. Review measure
 coverage and concentration before selecting full population size or scheduling
 another corpus run. Payroll/generic-label decomposition assumptions and the
 synthetic population specification are the material owner decisions; retain
-unresolved groups until those assumptions are chosen. Only the diagnostic audit
-was authorized and completed; no generator, identity remap, financial parser change
-or new financial corpus run follows from this audit request.
+unresolved groups until those assumptions are chosen. The original diagnostic authorization did not itself authorize generation or a
+financial rerun. On 2026-11-14 the owner subsequently approved the CSV/key/bounded
+reporting fixes, a small simulated registry fixture, then one new corpus run if
+checks pass. See [identity recovery v1](IDENTITY_RECOVERY_V1_DESIGN.md). The
+three-party/two-year pilot is separate from a full synthetic population. Real
+reference-name ambiguities and disk capacity still gate full-corpus admission.

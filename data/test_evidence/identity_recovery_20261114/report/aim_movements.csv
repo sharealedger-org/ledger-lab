@@ -1,0 +1,6 @@
+vendor_id,fiscal_year,cutoff,feature_version,attributed,currency,po_count,max_monthly_agencies,max_monthly_classes,committed_amount,annual_distinct_agencies,annual_distinct_classes,signed_direct_po_count,signed_direct_po_amount
+0000000000,2003,2003-06-30,legacy_sign_v1_plus_annual_distinct,false,USD,0,0,0,0,0,0,0,0
+SIM_VENDOR_0001,2003,2003-06-30,legacy_sign_v1_plus_annual_distinct,true,USD,0,0,0,0,0,0,0,0
+c1246,2003,2003-06-30,legacy_sign_v1_plus_annual_distinct,true,USD,1,1,1,50,1,1,1,50
+c1246,2004,2004-06-30,legacy_sign_v1_plus_annual_distinct,true,USD,0,0,0,0,0,0,0,0
+c12464,2003,2003-06-30,legacy_sign_v1_plus_annual_distinct,true,USD,1,1,1,70,1,1,1,70

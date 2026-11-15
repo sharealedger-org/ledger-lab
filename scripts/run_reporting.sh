@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 # Expanded analytical reporting only: distinct JVMs for 5v extract and 5r spill reduction.
 # No source transformation, accounting logic, posting, or cost-curve mutation in this wrapper.
-# Usage: run_reporting.sh --inPaths DIR[,DIR] --outPath NEW_DIR [--vendorMaster SORTED_CSV]
-# Optional: --contractDimensions SORTED_CSV --refPath DIR --packetVendors ID[,ID]
-# --spillRows N --mergeFanIn N --maxVendorRows N --maxReferenceBytes N --maxInputs N
+# Usage: run_reporting.sh --inPaths DIR[,DIR] --outPath NEW_DIR [--vendorMaster CSV]
+# Optional: --contractDimensions CSV --refPath DIR --packetVendors ID[,ID]
+# --spillRows N --aggregateKeys N --mergeFanIn N --maxFeatureKeys N
+# --maxIndexedBlocks N --maxRecordBytes N --maxReferenceBytes N --maxInputs N
 # --balanceBasis period_movements|opening_plus_movements --openingFiles FILE[,FILE]
 set -euo pipefail
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -17,7 +18,7 @@ while [[ $# -gt 0 ]]; do
     --outPath) out="$value" ;;
     --inPaths) inputs="$value" ;;
     --mergeFanIn) fan_in="$value" ;;
-    --vendorMaster|--contractDimensions|--refPath|--packetVendors|--spillRows|--maxVendorRows|--maxReferenceBytes|--maxInputs|--balanceBasis|--openingFiles)
+    --vendorMaster|--contractDimensions|--refPath|--packetVendors|--spillRows|--aggregateKeys|--maxFeatureKeys|--maxIndexedBlocks|--maxRecordBytes|--maxReferenceBytes|--maxInputs|--balanceBasis|--openingFiles)
       options+=" $key $(quote "$value")" ;;
     *) echo "Unknown option: $key" >&2; exit 1 ;;
   esac
@@ -43,7 +44,9 @@ printf 'git=%s\ninputs=%s\noptions=%s\n' "$(git -C "$repo" rev-parse HEAD)" "$in
 git -C "$repo" diff -- scripts/run_reporting.sh 02-foundation/va_pipeline > "$attempt/source_changes.patch"
 shasum -a 256 "$repo/scripts/run_reporting.sh" \
   "$repo/02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/ledger/ReportingPass.scala" \
-  "$repo/02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/ledger/ReportingSupport.scala" > "$attempt/reporting_source_sha256.txt"
+  "$repo/02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/ledger/ReportingSupport.scala" \
+  "$repo/02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/ledger/ReportingSums.scala" \
+  "$repo/02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/ledger/ReportingOrder.scala" > "$attempt/reporting_source_sha256.txt"
 if command -v caffeinate >/dev/null 2>&1; then caffeinate -i -s -w $$ & fi
 run_stage() {
   local stage="$1" command="$2"
@@ -53,7 +56,7 @@ run_stage() {
     (cd "$repo/02-foundation/va_pipeline" && /usr/bin/time -v sbt -batch "$command") > "$attempt/$stage.log" 2>&1
   fi
 }
-run_stage extract "run --step 5v --reportProfile expanded --inPaths $(quote "$inputs") --outPath $(quote "$attempt")$options"
+run_stage extract "run --step 5v --reportProfile expanded --inPaths $(quote "$inputs") --outPath $(quote "$attempt") --mergeFanIn $fan_in$options"
 [[ -s "$attempt/EXTRACT_COMPLETE" ]] || exit 1
 run_stage reduce "run --step 5r --outPath $(quote "$attempt") --mergeFanIn $fan_in"
 [[ -s "$attempt/REPORT_COMPLETE" ]] || exit 1

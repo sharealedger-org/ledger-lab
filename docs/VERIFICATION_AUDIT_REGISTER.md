@@ -1529,3 +1529,33 @@ The control's `quote_aware_po_records` / `parse_po_candidate` does something the
 **Proposed fix for the CKB:** Add a quote-aware boundary detection pass to `PORecordReader` mirroring the control's `PO_START` pattern: before falling back to date-in-position-2 detection, attempt to match a leading `"[^"]*"\t"[^"]*"\t` prefix. For the parse step, attempt `scala.io.Source`-based CSV parsing (or a minimal RFC-4180 column splitter) before the plain tab-join fallback. This requires a new `PORecordReader` test and a re-run on FY2012 to confirm recovery count.
 
 **Decision required:** Whether to implement the fix before or after the Phase 2 synthetic data work. The fix recovers ~24,700 commitment records; whether this materially changes any cost point or AI feature depends on the year distribution. If most recovered rows are FY2006–FY2012 (the control handoff's highest quarantine-count years), it could affect vendor survival labels. Owner decision.
+
+## 2026-11-14 — Identity recovery v1 parser/reporting slice (Tracks B1/D)
+
+**Claim:** quoted APA fields preserve identity/reference positions; literal keys
+join without normalization; valid and unattributed groups above 250,000 rows can
+reconcile with bounded aggregate state. **State:** `partially_verified` overall;
+focused and connected synthetic fixtures verified, corpus/independent architecture
+review not verified. [Contract](IDENTITY_RECOVERY_V1_DESIGN.md),
+[evidence](../data/test_evidence/identity_recovery_20261114/README.md).
+
+Producer/consumer trace: APA CSV -> existing ARE 39-field SJE -> existing sort,
+merge and post -> actual 30-field ledger -> reporting literal-ID block index ->
+bounded local partial reductions -> separate 5r cross-cut reduction. Canonical
+posting order/IDs remain unchanged. Raw-row guard replaced by bounded aggregation
+and explicit feature/index capacities. Source-currency index corrected; known PO
+placeholder excluded from attribution. Baseline 28 tests passed before edits;
+56 focused tests and 12 overlapping final reporting/connected checks passed.
+Actual two-year simulated fixture completed TTL/PO/merge/post/GL/permutation/views
+and separate report; exact expected controls and all posting-key reconciliations
+passed. Large-group fixture consumes 500,004 SJE rows through actual posting.
+
+Cheapest falsifiers also exposed a reject filename selected as an SJE; preliminary
+attempt failed and is retained, never promoted. Bad amounts/quotes/widths retain
+source/physical-line reject evidence; wrong headers and ambiguous lookup keys
+fail closed. New real-reference preflight fails: 371 names have multiple internal
+keys; all candidates/hashes retained. Current 75 GiB free also fails corpus capacity
+admission (~128 GiB prior footprint plus scratch). No full new corpus run, no
+invented ambiguity resolution, no prior output/Gold deletion, no new Control read,
+no Python or Bash financial substitute. GERS-002/003 remain open. Next: explicit
+reference/date/key resolution contract and disk admission before a new corpus run.

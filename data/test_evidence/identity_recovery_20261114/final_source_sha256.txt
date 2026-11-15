@@ -1,0 +1,5 @@
+701882ef04bc8385a2c8b1e0f18714d6d0c579d6bf5b606ff77021668478b634  02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/ledger/ReportingPass.scala
+60fbb6c5b17819bffd0f744df229156cf68f1f589ddbc05d269a6245e4be144e  02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/ledger/ReportingOrder.scala
+72f40ce9b7f8ceb9653a629edabdb8cf5bee4761f68575c8ab70f099dffc9d4c  02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/ledger/ReportingSums.scala
+004f9dacbf50f65f814f814be49d59d4684e5b250db31bd97efc1e0cb3cda182  02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/ledger/ReportingSupport.scala
+d7dd6f688a59a84de8caa1f01cbb92b134be68d6ffa8c09008458e6cca52e3a5  02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/ledger/standardizeAndSort.scala

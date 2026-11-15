@@ -1,0 +1,6 @@
+vendor_id,fiscal_year,cutoff,feature_version,attributed,currency,debit_amount,offset_amount,ledger_rows,distinct_accounts,distinct_periods
+0000000000,2003,2003-06-30,legacy_sign_v1_plus_annual_distinct,false,USD,225,-225,3,3,1
+SIM_VENDOR_0001,2003,2003-06-30,legacy_sign_v1_plus_annual_distinct,true,USD,20,-20,2,2,1
+c1246,2003,2003-06-30,legacy_sign_v1_plus_annual_distinct,true,USD,125,-125,4,3,2
+c1246,2004,2004-06-30,legacy_sign_v1_plus_annual_distinct,true,USD,30,-30,2,2,1
+c12464,2003,2003-06-30,legacy_sign_v1_plus_annual_distinct,true,USD,110,-110,4,3,2

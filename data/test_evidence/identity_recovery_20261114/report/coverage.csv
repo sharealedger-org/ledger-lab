@@ -1,0 +1,30 @@
+vendor_id,fiscal_year,dimension,key,status
+0000000000,2003,vendor,0000000000,unattributed
+0000000000,2003,contract,0,unattributed
+0000000000,2003,agency,101,matched_current_reference
+0000000000,2003,fund,201,matched_current_reference
+0000000000,2003,contract,0,unattributed
+0000000000,2003,agency,101,matched_current_reference
+0000000000,2003,fund,201,matched_current_reference
+SIM_VENDOR_0001,2003,vendor,SIM_VENDOR_0001,matched_asof
+SIM_VENDOR_0001,2003,contract,0,unattributed
+SIM_VENDOR_0001,2003,agency,101,matched_current_reference
+SIM_VENDOR_0001,2003,fund,201,matched_current_reference
+c1246,2003,vendor,c1246,matched_asof
+c1246,2004,vendor,c1246,matched_asof
+c1246,2003,contract,0,unattributed
+c1246,2003,agency,SIMULATED AGENCY,missing
+c1246,2003,fund,0000,missing
+c1246,2003,contract,0,unattributed
+c1246,2003,agency,101,matched_current_reference
+c1246,2003,fund,201,matched_current_reference
+c1246,2004,contract,0,unattributed
+c1246,2004,agency,101,matched_current_reference
+c1246,2004,fund,201,matched_current_reference
+c12464,2003,vendor,c12464,matched_asof
+c12464,2003,contract,0,unattributed
+c12464,2003,agency,SIMULATED AGENCY,missing
+c12464,2003,fund,0000,missing
+c12464,2003,contract,0,unattributed
+c12464,2003,agency,101,matched_current_reference
+c12464,2003,fund,201,matched_current_reference

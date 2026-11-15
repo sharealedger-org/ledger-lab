@@ -65,7 +65,8 @@ class ReportingPassSpec extends AnyFunSuite {
   }
   private def run(dir: Path, params: Map[String, String], name: String, buffer: Int = 2, fanIn: Int = 2): Path = {
     val out = dir.resolve(name)
-    CKBViews(params ++ Map("outPath" -> out.toString, "spillRows" -> buffer.toString))
+    CKBViews(params ++ Map("outPath" -> out.toString, "spillRows" -> buffer.toString,
+      "aggregateKeys" -> params.getOrElse("aggregateKeys", buffer.toString), "mergeFanIn" -> fanIn.toString))
     ReportingReduce(Map("outPath" -> out.toString, "mergeFanIn" -> fanIn.toString))
     out
   }
@@ -77,6 +78,7 @@ class ReportingPassSpec extends AnyFunSuite {
       val a = combined.find(r => r("vendor_id") == "0000000001" && r("fiscal_year") == "2014").get
       assert(a("vendor_name") == "Acme, Old")
       assert(a("name_status") == "matched_asof")
+      assert(a("currency") == "USD")
       assert(BigDecimal(a("debit_amount")) == 190)
       assert(a("po_count") == "2" && BigDecimal(a("committed_amount")) == 140) // legacy sign selection
       assert(a("signed_direct_po_count") == "2" && BigDecimal(a("signed_direct_po_amount")) == 100)
@@ -92,6 +94,11 @@ class ReportingPassSpec extends AnyFunSuite {
       assert(!manifest.exists(_("path").endsWith("q1exp.csv")))
       assert(manifest.filter(_("kind") == "movement").map(_("rows").toInt).sum == 16)
       assert(manifest.forall(_("sha256").length == 64))
+      manifest.foreach { r =>
+        val bytes = Files.readAllBytes(new File(r("path")).toPath)
+        val expected = java.security.MessageDigest.getInstance("SHA-256").digest(bytes).map(b => f"${b & 255}%02x").mkString
+        assert(r("sha256") == expected)
+      }
       assert(Files.exists(out.resolve("REPORT_COMPLETE")))
     }
   }
@@ -119,15 +126,18 @@ class ReportingPassSpec extends AnyFunSuite {
       intercept[IllegalArgumentException] { ReportingReduce(Map("outPath" -> out.toString)) }
     }
   }
-  test("disorder, vendor bounds, reference bounds and duplicate inputs fail closed") {
+  test("feature bounds, reference bounds and duplicate inputs fail closed; disorder is indexed") {
     withFixture { (dir, params) =>
-      intercept[IllegalArgumentException] { CKBViews(params ++ Map("outPath" -> dir.resolve("cap").toString, "maxVendorRows" -> "2")) }
+      intercept[IllegalArgumentException] { CKBViews(params ++ Map("outPath" -> dir.resolve("cap").toString, "maxFeatureKeys" -> "2")) }
       intercept[IllegalArgumentException] { CKBViews(params ++ Map("outPath" -> dir.resolve("refcap").toString, "maxReferenceBytes" -> "1")) }
+      intercept[IllegalArgumentException] { CKBViews(params ++ Map("outPath" -> dir.resolve("indexcap").toString, "maxIndexedBlocks" -> "1")) }
+      intercept[IllegalArgumentException] { CKBViews(params ++ Map("outPath" -> dir.resolve("recordcap").toString, "maxRecordBytes" -> "10")) }
       intercept[IllegalArgumentException] { CKBViews(params ++ Map("outPath" -> dir.resolve("dup").toString, "inPaths" -> (params("inPaths") + "," + params("inPaths")))) }
       val f = dir.resolve("inputs/SortedJEFY14merged.csv")
       val src = scala.io.Source.fromFile(f.toFile); val lines = try src.getLines().toVector finally src.close()
       write(f, lines.reverse)
-      intercept[IllegalArgumentException] { CKBViews(params + ("outPath" -> dir.resolve("disorder").toString)) }
+      val reordered = run(dir, params, "disorder")
+      assert(table(reordered.resolve("reconciliation.csv")).forall(_("status") == "PASS"))
     }
   }
   test("fiscal-year contract distinguishes payment fiscal labels from calendar PO dates") {
@@ -163,6 +173,60 @@ class ReportingPassSpec extends AnyFunSuite {
       write(file, lines.updated(1, changed.mkString(",")))
       val out = run(dir, params ++ Map("openingFiles" -> openingFile.toString, "balanceBasis" -> "opening_plus_movements"), "with-opening")
       assert(table(out.resolve("reconciliation.csv")).forall(_("status") == "PASS"))
+    }
+  }
+  test("literal variable-width IDs retain identity across arbitrary physical order and dimension joins") {
+    withFixture { (dir, params) =>
+      val input = Files.createDirectory(dir.resolve("literal-input"))
+      val rows = pair("c12464", "0014/07", "7", "EXP1", "PAYMENT") ++
+        pair("c1246", "0014/07", "11", "EXP1", "PAYMENT") ++
+        pair("999999999999", "0014/07", "13", "EXP1", "PAYMENT")
+      write(input.resolve("SortedJEFY14merged.csv"), SortEngine.sortChunk(rows, spec))
+      post(input.toString + "/", input.toString + "/", "14")
+      write(dir.resolve("literal-vendors.csv"), Seq("instID,instHolderName", "c12464,Simulated Four", "c1246,Simulated Six"))
+      val out = run(dir, params ++ Map("inPaths" -> input.toString, "vendorMaster" -> dir.resolve("literal-vendors.csv").toString), "literal")
+      val combined = table(out.resolve("aim_combined.csv"))
+      assert(combined.find(_("vendor_id") == "c1246").get("vendor_name") == "Simulated Six")
+      assert(combined.find(_("vendor_id") == "c12464").get("vendor_name") == "Simulated Four")
+      assert(combined.find(_("vendor_id") == "999999999999").get("attributed") == "false")
+      assert(table(out.resolve("reconciliation.csv")).forall(_("status") == "PASS"))
+    }
+  }
+  test("source currencies cannot mix merely because their currency types match") {
+    withFixture { (dir, params) =>
+      val input = Files.createDirectory(dir.resolve("currency-input"))
+      val usd = pair("0000000001", "0014/07", "10", "EXP1", "PAYMENT")
+      val eur = pair("0000000001", "0014/07", "20", "EXP1", "PAYMENT").map { line =>
+        val r = line.split(",", -1); r(18) = "EUR"; r(20) = "EUR"; r.mkString(",")
+      }
+      write(input.resolve("SortedJEFY14merged.csv"), SortEngine.sortChunk(usd ++ eur, spec))
+      post(input.toString + "/", input.toString + "/", "14")
+      val error = intercept[IllegalArgumentException] {
+        CKBViews(params ++ Map("inPaths" -> input.toString, "outPath" -> dir.resolve("mixed-currency").toString))
+      }
+      assert(error.getMessage.contains("mixes currencies"))
+    }
+  }
+  test("a legitimate and an unattributed group exceed the old row guard with bounded aggregation") {
+    withFixture { (dir, params) =>
+      val input = Files.createDirectory(dir.resolve("large-input"))
+      val p = new java.io.PrintWriter(input.resolve("SortedJEFY14merged.csv").toFile, "UTF-8")
+      try Seq("0000000000", "SIM_VENDOR_0001").foreach { id =>
+        val sorted = SortEngine.sortChunk(pair(id, "0014/07", "1.25", "EXP1", "PAYMENT"), spec)
+        sorted.foreach { row =>
+          (1 to 125001).foreach { n =>
+            val r = row.split(",", -1); r(3) = s"simulated-$id-$n"; p.println(r.mkString(","))
+          }
+        }
+      } finally p.close()
+      post(input.toString + "/", input.toString + "/", "14")
+      val out = run(dir, params + ("inPaths" -> input.toString) + ("aggregateKeys" -> "1"), "large-group")
+      assert(table(out.resolve("reconciliation.csv")).forall(_("status") == "PASS"))
+      val feature = table(out.resolve("aim_combined.csv")).find(_("vendor_id") == "SIM_VENDOR_0001").get
+      assert(BigDecimal(feature("debit_amount")) == BigDecimal("156251.25"))
+      val metrics = table(out.resolve("extract_metrics.csv")).map(r => r("metric") -> r("value")).toMap
+      assert(metrics("peak_vendor_rows").toLong > 250000)
+      assert(metrics("aggregate_capacity_keys") == "1")
     }
   }
   test("export connected fixture for separate-process orchestration when requested") {
