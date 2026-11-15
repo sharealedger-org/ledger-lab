@@ -2,7 +2,8 @@
 
 Owner authorized implementation, fixture verification, then one new corpus execution
 on 2026-11-14. This is a changed input/adapter workload, not a replicate of `b10b480`.
-Prior measured generations and Gold remain immutable.
+Prior measured evidence and Gold remain preserved. The three expanded execution
+datasets were retired with owner authorization on 2026-11-15; see the cleanup receipt.
 
 ## Claim and falsifiers
 
@@ -55,8 +56,15 @@ review remains required for that promotion.
 
 One new full run may start only after the connected fixture passes and capacity
 is sufficient for its roughly 128 GiB historical footprint plus working space.
-At task start only 75 GiB is available. Existing full runs are not authorized for
-deletion. Preserve all prior outputs while preparing concrete validation evidence.
+At task start only 75 GiB was available. On 2026-11-15 the owner authorized deletion
+of generated data from monthly_a/b/c; 1,398 paths were removed, increasing free
+space to 452 GiB. Logs, metrics, controls, compact evidence and Gold were retained.
+Receipt: `data/test_evidence/corpus_cleanup_20261115/`. These historical run directories
+no longer contain financial datasets and cannot feed new reporting attempts.
+
+Owner sequencing: connect synthetic inputs and finish/test validation and vendor
+reporting views before the new full run and Phase 2 question definition. Reclass
+engine creation/extension is deferred to the Q2 response, not an admission gate.
 
 Real-snapshot preflight found 371 ambiguous names (3 agency, 268 fund, 2 object,
 80 program, 18 source). The frozen reference tables have multiple internal keys

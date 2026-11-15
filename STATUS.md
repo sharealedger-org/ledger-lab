@@ -2,6 +2,12 @@
 
 Updated 2026-11-12. One page. A session starts here, then reads only the `STATUS.md` of the track it works on. Do not read the whole `SESSION_HANDOFF.md` or the audit register unless a track page points to an entry. If this page and the register disagree, the register wins.
 
+**2026-11-15 execution/scope update:** Owner-authorized retirement of generated data
+from the three expanded runs completed; 452 GiB free, logs/evidence/Gold retained.
+Reclass engine work belongs to the Q2 response. Pre-question work is synthetic
+input integration, validation/multidimensional views, connected fixture and a new
+full corpus run. See track pages and [cleanup receipt](data/test_evidence/corpus_cleanup_20261115/README.txt).
+
 ## Tracks
 
 **Paper revision planning, 2026-11-13:** Prepare new Papers 1 and 2 reflecting Phase 1 for interim circulation. See the [revision plan](tracks/D-control/PAPER_VERSION_2_RESEARCH_PLAN.md). The earlier statement declaring Track B closed and the track reorganization approved was an assistant misinterpretation of a suggestion, corrected at the owner’s request. It does not change evidence or authorize stopping ongoing work.

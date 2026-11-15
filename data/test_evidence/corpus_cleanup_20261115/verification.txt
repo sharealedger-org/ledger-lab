@@ -1,0 +1,1 @@
+PASS: 1398 generated files absent; all 1050 retained files preserve their byte counts and SHA-256.

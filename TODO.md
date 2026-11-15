@@ -62,10 +62,14 @@ Seeded 2026-11-11 from the handoff entries. On the same day the handoff was trim
 
 ## Track D: control comparison (Track D)
 
+- [ ] **Pre-question foundation (owner, 2026-11-15):** connect/scale synthetic inputs; add date/coverage/hierarchy validation views; complete multidimensional vendor CKB reporting; verify the connected fixture; then run and inspect one new full corpus execution before defining Phase 2 questions. Reclass engine creation/extension is deferred to the Q2 response.
+- [x] **Retire prior expanded datasets:** monthly_a/b/c generated outputs deleted per owner, 376.43 GiB additional free space; 1,050 retained evidence files hash-verified. Receipt: `data/test_evidence/corpus_cleanup_20261115/`.
+
+
 - [x] Generate a reproducible synthetic reclass reference/history pack informed by official VA examples, with publications optional provenance: `data/synthetic/reclass_history_v1/`; 18 tests and byte-identical replay. Real-surrogate crosswalks and financial consumers remain separate work.
 
 
-- [ ] Resolve 371 ambiguous APA reference names with an explicit key/date contract before the identity-recovery corpus run; preserve candidates in `data/test_evidence/identity_recovery_20261114/conflicts.csv`. Confirm sufficient disk space (75 GiB free, about 128 GiB prior output plus scratch) without deleting retained runs implicitly. See `docs/IDENTITY_RECOVERY_V1_DESIGN.md`.
+- [ ] Resolve 371 ambiguous APA reference names with an explicit key/date contract before the identity-recovery corpus run; preserve candidates in `data/test_evidence/identity_recovery_20261114/conflicts.csv`. Disk admission cleared by owner-authorized deletion of the three prior expanded execution datasets on 2026-11-15: 452 GiB free; evidence/Gold preserved. See `docs/IDENTITY_RECOVERY_V1_DESIGN.md`.
 
 
 - [x] **Read-only identity/concentration audit:** completed 2026-11-14; all source/journal/canonical row-count controls match and 26 tests pass. Findings: `docs/IDENTITY_AUDIT_FINDINGS_2026-11-14.md`; compact evidence: `data/test_evidence/identity_audit_20261114/`. No vendors or financial outputs changed.

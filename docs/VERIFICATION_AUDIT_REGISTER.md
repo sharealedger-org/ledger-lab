@@ -1621,3 +1621,30 @@ prior measured outputs, Gold or real-reference mappings. No external source is
 read during generation. No new Control reading. Subsequent SJE generation/apply,
 Switch/Recast engine outputs, explicit end dates/gaps, backdated walk-forward,
 independent engine architecture certification and scale measurements remain open.
+
+## 2026-11-15 - Owner-authorized expanded-run data retirement and Q2 boundary
+
+Owner explicitly authorized deleting data from the three prior expanded corpus
+executions after the synthetic-input validation work. Scope was confined to
+monthly_a/monthly_b/monthly_c under ckb_expanded_queue_20261113_ready. Removed
+1,398 inventoried regular generated SJE/ledger/GL/permutation/view files across
+physical generations; no symlink-directory traversal. Pre-delete checks verified
+path scope, artifact class, size and device/inode; lsof found no open queue files.
+Receipt: `data/test_evidence/corpus_cleanup_20261115/`.
+
+**Verified:** all listed files are absent, and all 1,050 other original regular
+run files retain their size and SHA-256. Filesystem available space increased by
+376.43 GiB (75 to 452 GiB rounded). Historical logs, controls, metrics, quarantine
+and hash receipts remain; Gold, original inputs/master and earlier baselines
+outside this scope remain. The removed datasets cannot support future canonical
+rescans/report retries without a rebuild. Earlier historical evidence/claims are
+not promoted or invalidated merely by retention changes. Retirement markers were
+added to the three surviving run directories.
+
+**Owner scope clarification:** reclass engine creation/extension belongs to the
+Q2 response after question/evaluation definition. Pre-question preparation is
+synthetic-input connection/scaling, validation and multidimensional vendor CKB
+views, connected-fixture controls, and a new full corpus run/inspection. No new
+reclass journals or engine demonstrations are prerequisites. Existing legacy
+reclass code is not removed or newly certified by this decision. No financial
+engine change or new Control access in this cleanup session.

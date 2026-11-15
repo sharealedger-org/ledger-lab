@@ -1,5 +1,9 @@
 # Track B1: Paper 1 cost curve (Virginia public data)
 
+**2026-11-15 - Owner retired the three prior expanded execution datasets and clarified Q2 scope. Deleted 1,398 generated financial files from monthly_a/b/c (all physical generations); 376.43 GiB additional free space measured, now 452 GiB. All 1,050 retained evidence files passed pre/post size/SHA verification; logs, metrics, controls, quarantines, hashes and Gold preserved. Historical financial reruns/audit rescans require rebuilding the deleted outputs. Reclass engine creation/extension is Q2-response work, not a pre-question prerequisite. Next: synthetic-input integration and validation views, completed multidimensional vendor reporting, connected fixture, then one new full corpus run and inspection before defining Phase 2 questions. No new Control read.**
+
+[Cleanup receipt](../../data/test_evidence/corpus_cleanup_20261115/README.txt)
+
 2026-11-14 - Identity recovery fixes/pilot: quoted APA parsing, schema/reject lineage, ambiguous-lookup rejection, literal-ID reporting index and bounded local aggregates are fixture-verified. Baseline 28 tests passed; 56 focused tests, 12 overlapping reporting/connected checks and 11 final APA checks passed. Three simulated identities/two years completed the real pipeline and separate reporting with zero reconciliation failures. Full new corpus NOT launched: 371 reference names have multiple keys, and only 75 GiB is free versus about 128 GiB prior footprint plus scratch. Prior generations/Gold unchanged. Next: explicit reference key/date contract, then disk admission. GERS-002/003 and independent architecture review remain open. No new Control access.
 
 [Contract](../../docs/IDENTITY_RECOVERY_V1_DESIGN.md) | [Evidence](../../data/test_evidence/identity_recovery_20261114/README.md)

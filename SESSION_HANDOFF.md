@@ -1,5 +1,11 @@
 # Ledger Lab Handoff
 
+## 2026-11-15 (TRACK B1/D) - Retired prior run data; reclass engine deferred to Q2 response
+
+2026-11-15 - Owner retired the three prior expanded execution datasets and clarified Q2 scope. Deleted 1,398 generated financial files from monthly_a/b/c (all physical generations); 376.43 GiB additional free space measured, now 452 GiB. All 1,050 retained evidence files passed pre/post size/SHA verification; logs, metrics, controls, quarantines, hashes and Gold preserved. Historical financial reruns/audit rescans require rebuilding the deleted outputs. Reclass engine creation/extension is Q2-response work, not a pre-question prerequisite. Next: synthetic-input integration and validation views, completed multidimensional vendor reporting, connected fixture, then one new full corpus run and inspection before defining Phase 2 questions. No new Control read.
+
+Exact paths, retained hashes, deletion log and disk receipts: `data/test_evidence/corpus_cleanup_20261115/`. Raw inputs, frozen master, earlier baseline data outside the three directories, and the old failed reporting attempt were not deletion targets. Per-run retirement markers prevent confusing the surviving evidence directories with reusable financial outputs.
+
 ## 2026-11-14 (TRACK D) - Self-contained synthetic reference histories
 
 2026-11-14 - Synthetic reference/hierarchy history v1 generated: owner clarified official publications are optional inspiration, not required corpus inputs. Scala generator plus Bash entry point now deliver 207 history rows for 32 simulated instruments/parties across reference, SAL, CAR, party, contextual-alias and hierarchy histories. Fourteen lookup and six hierarchy expectations cover fixed/event/run dates, leaf/ancestor changes, late recording and no-new-activity context. Final 18 tests and separate actual-pack validation pass; independent regeneration is byte-identical and all 18 manifest file hashes pass. Raw research publications removed from current corpus; provenance/assumptions retained. No financial engine, canonical state, real VA remap, full-corpus run, Gold or Control access changed. Next: define the SJE reclass consumer and Switch/Recast adapters against these contracts; end-date/gap and target-runtime gates remain open.

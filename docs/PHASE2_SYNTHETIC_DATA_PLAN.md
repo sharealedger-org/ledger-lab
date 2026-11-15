@@ -2,6 +2,17 @@
 
 Drafted 2026-11-14. **Implementation started 2026-11-14 by owner direction.**
 
+**Owner sequencing decision, 2026-11-15:** Reclass engine creation/extension belongs
+to the Phase 2 Q2 response, after the questions and evaluation criteria are fixed.
+Before question definition: connect/scale the synthetic inputs, build synthetic
+validation views, complete multidimensional vendor CKB reporting, verify a connected
+fixture, then execute and inspect one new full corpus run. Date-effective lookups
+and Switch/Recast validation do not require reclass transfer journals. Existing
+legacy reclass code is not a new pre-question deliverable; do not expand it or run
+a new reclass-engine demonstration as a prerequisite. This overrides C6's earlier
+position in the preparatory timeline. Prior three expanded execution datasets were
+retired by owner authorization; compact evidence and Gold remain.
+
 | Strand | Status | Evidence |
 |---|---|---|
 | A Round 1 | **Complete** | `data/VendorMaster.csv` updated: 232 REV→GOV-RECEIPT/GOV, 183 EXP geo filled from state |
@@ -396,12 +407,16 @@ IL vs. zero in the consolidated GL-analog.
 are named in Section G. The instrument-level consolidation should produce elimination SJEs whose
 net equals the ACFR elimination line for the agencies involved.
 
-### 4.6 C-6 Arrangement reclass audit trail (existing capability, Phase 2 extension)
+### 4.6 C-6 Arrangement reclass audit trail (deferred to Q2 response)
 
 **Status:** `arrangementReclass.scala` exists; `VendorUpdate.csv` drives it. The reclass fixture
 demonstrates instrument-specific reclass SJE generation.
 
-**Phase 2 extension:**
+**Scope gate (owner, 2026-11-15):** The following is a candidate response-stage
+extension, not preparation before Q2. Existing-code claims remain subject to the
+audit register; this historical example is not a selected Q2 or acceptance metric.
+
+**Candidate extension after Q2 is finalized:**
 - Construct a `VendorUpdate.csv` scenario where a vendor changes `instTypeID` from `EXP` to `REV`
   in mid-corpus (e.g., FY2010) — modeling a supplier becoming a revenue partner.
 - Run the reclass pass; verify the RECLASS_SJE entries balance and that downstream LDGR balances
@@ -510,7 +525,7 @@ Week 4 — Tie-out + AI features
 Week 5+ — Engines and Q2-draft
   [C4] IUE accrual engine (Scala, architecture gate)
   [C5] Consolidation instrument trace
-  [C6] Reclass scenario extension
+  [C6] Deferred: reclass creation/extension only as a response after Q2 is finalized
   [Q2-draft] Commit and tag Phase 2 question set
 ```
 
@@ -1534,7 +1549,8 @@ financial rerun. On 2026-11-14 the owner subsequently approved the CSV/key/bound
 reporting fixes, a small simulated registry fixture, then one new corpus run if
 checks pass. See [identity recovery v1](IDENTITY_RECOVERY_V1_DESIGN.md). The
 three-party/two-year pilot is separate from a full synthetic population. Real
-reference-name ambiguities and disk capacity still gate full-corpus admission.
+reference/context mapping and connected-fixture checks still gate full-corpus admission.
+The disk-capacity constraint was cleared by owner-authorized retirement on 2026-11-15.
 
 ### Reclass synthetic-source independence (owner clarification, 2026-11-14)
 
