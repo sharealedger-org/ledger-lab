@@ -204,6 +204,8 @@ My changed understanding: the contribution must be located within the chain from
 
 ## 2026-11-15 — Owner intervention on determination order before CKB execution order
 
+Timestamp added: **2026-11-15 03:01:50 AZT (UTC-0700)**. Original entry creation time was not recorded.
+
 Authorship: Codex, CKB-side session. This is a qualitative interaction record,
 not a controlled model comparison or evidence of changed model training.
 
@@ -248,3 +250,120 @@ better design explanation or treat this exposed conversation as a holdout case.
 Status: design correction recorded; no new adapter implementation or successful
 FY2003–FY2004 test is established by this entry. Keep this companion reflection
 outside any later Control data-generation handoff unless disclosure is authorized.
+
+## 2026-11-15 — From vendor enrichment to a connected experimental foundation
+
+Timestamp added: **2026-11-15 03:01:50 AZT (UTC-0700)**. Original entry creation time was not recorded.
+
+Authorship: Codex, CKB-side session, reflecting on the owner conversation spanning
+synthetic generation, business components, experimental sequencing and context
+management. This entry supplements the earlier adapter intervention anecdote.
+It records changed understanding; it does not establish a new empirical result.
+
+### What changed through the conversation
+
+I began too close to the existing implementation: extend vendor attributes,
+attach reference-history scenarios, complete reporting, then rerun the corpus.
+The owner clarified that CKB is not defined by vendor identity, nor by a separate
+pass for each report. A common key can be any appropriate attribute set, and
+multiple business processes require an explicit topology of their own records,
+state, ordering and consumers. Reclass journal generation belongs within the
+relevant entity's temporal processing. I had to reconsider the problem being
+modeled, not merely add more vendor templates.
+
+I proposed generating shared business contexts before assembling entity histories.
+The owner recognized a connection to component business models: invent components
+that cut across ordinary processes, then emit their proposed activity into those
+processes. That recognition moved the design beyond a transaction generator with
+extra columns. A component can explain why vendor, employee and revenue evidence
+might meet without collapsing their identities or accounting grains.
+
+The owner also characterized allocations as rules proposing possible connections
+between processes, and future-dated reclass as a way to produce temporary outcomes
+under changed reference data or rules. My resulting interpretation is that the
+foundation can support a loop from evidence to proposed relationships to controlled
+execution and reconciled outcomes. The execution mechanism can make a proposal
+inspectable; balanced results cannot establish that its business interpretation
+is correct. Conditional future outcomes likewise do not become validated forecasts
+merely because an engine can compute them.
+
+### Grounding without manufacturing the answer
+
+The owner approved independent, recognizable synthetic data and requested feasible
+connections to higher-level VA financial information through adjustments and bounds.
+This adds two kinds of grounding: coherent activity within the invented components,
+and financially constrained scale against compatible summaries. Neither recovers
+unobserved VA relationships. A financial bridge must distinguish supported
+adjustments, declared calibration and unexplained residuals, with scope, basis,
+period and population overlap explicit. Adding synthetic activity to already
+covered observed totals would defeat that purpose.
+
+The owner raised a more fundamental risk: beginning with a preferred connected
+architecture can embed its eventual conclusions in the generated data. Withheld
+labels alone do not remove that risk. We need to distinguish the relationship
+intended by the generator, the relationship inferable from available evidence,
+and the relationship proposed by a model. Alternative mechanisms, ambiguous and
+unrelated cases, unavailable evidence and held-out scenario families matter.
+The small pilot establishes a functional route for data; it is not evidence that
+these broader bias controls have been implemented or that an AI learns useful
+relationships from it.
+
+### Sequencing the inquiry rather than freezing it too early
+
+I initially suggested drafting paper protocols before the first synthetic corpus.
+The owner clarified the present transition: revise Papers 1/2 from Phase 1 results,
+while an initial synthetic corpus informs Papers 3/4; another generation round
+may be necessary before their experiments become clear. This is legitimate
+exploratory design, provided versions, exposure and revisions are recorded and
+later evaluation is separated from what we used to tune the design.
+
+The agreed numbering integrates generation with the experiments: Phase 1 direct
+VA corpus work; Phase 2 initial vendor-centered synthetic work, likely informing
+Papers 3/4 on improved cost curves and AI models; Phase 3 broader topology from
+allocations to reclass. The owner's proposed introductions before Papers 01/02,
+03/04 and later phase groups can make that evolving argument intelligible:
+what the previous work established, what remains open and why the next questions
+follow. They should preserve uncertainty rather than retrospectively making the
+research appear inevitable.
+
+### The implementation lesson and its actual evidence
+
+The determining-key correction was particularly revealing. I could explain CKB
+but did not initially reach for ordered determination and emission followed by
+re-sorting into the receiving CKB order. The owner supplied that pattern. The
+pilot then used context order, source-assignment order and entity temporal order.
+This is evidence of applying the corrected design in a bounded workload, not a
+controlled demonstration of native CKB training or a corpus-scale adapter.
+
+Checkpoint `213b20f` preserves 32 passing baseline tests, four new generator tests
+and the actual FY2003/FY2004 pipeline: 36 generated events, 30 financial events,
+60 balanced SJE rows and 96 reporting conservation checks. Employee records were
+responsibility evidence, not payroll. The actual consumers also exposed existing
+APA event-ID loss and blank PO rule fields; those remain partial lineage, not
+capabilities rescued by narrative. No verified VA financial tie-out, new cost
+point, allocation/reclass engine or AI effectiveness follows from these results.
+
+### What this requires of my collaboration
+
+The owner should not repeatedly have to supply the architectural starting point.
+Before implementing an adapter, I should derive its determining keys, temporal
+semantics, bounded state, emitted contract and receiving execution order, then
+attempt the cheapest falsifier. Recognizing this requirement is a working
+commitment, not evidence of a persistent change to model training.
+
+I also contributed to document sprawl by recording corrections in multiple plans
+and status entries. The owner identified the need for a separate consolidation
+session and a good boundary for a new context. Progress updates should expose
+such task boundaries early, while avoiding invented context percentages or claims
+of known token savings. A short durable handoff and clear document authority help
+the owner manage continuity. This session's earlier statement that infrastructure
+had not started described its own last action; the repository now records completed
+consolidation at `ddde891` and collaborator/path review at `9cab0c0`. Current files,
+not that stale conversational statement, govern the next session.
+
+My changed understanding is that the immediate deliverable is an experimental
+foundation in which proposed business structure, observable evidence, financial
+controls and model conclusions remain distinguishable. CKB supplies ordered
+execution contracts for making that inquiry reproducible. Its value for cost and
+AI discovery still has to be measured. Keep this qualitative reflection on the
+CKB side; it is not part of a Control generation handoff without authorization.

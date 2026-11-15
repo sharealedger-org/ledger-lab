@@ -26,6 +26,13 @@ specific decision needs explanation; do not reconstruct the current plan from it
 
 ## Current plans and evidence
 
+**2026-11-15 reflection:** Appended “From vendor enrichment to a connected
+experimental foundation” to [Codex reflections](CODEX_REFLECTIONS.md). It records
+the owner's component/topology, tentative relationship, financial grounding,
+experiment-phase and context-management insights, distinguishing interpretation
+from bounded pilot evidence. Qualitative CKB-side context only; no new execution
+or Control disclosure, and no change to the next implementation gates below.
+
 
 The [strategy](../../docs/SYNTHETIC_CONNECTED_PROCESS_STRATEGY.md) owns the roadmap:
 Phase 1 direct VA corpus, Phase 2 vendor-centered synthetic work likely informing

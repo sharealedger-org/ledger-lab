@@ -28,3 +28,16 @@ No engine/code change, new model fit, corpus execution, private-paper edit or Co
 read. The older assignment source/launcher draft remains uncommitted and unchanged.
 Next work remains the declared next versioned slice and its admission checks;
 paper-writing sessions proceed independently. Open actions stay in [TODO](TODO.md).
+
+## 2026-11-15 (TRACK D) — Reflection on the synthetic/topology conversation
+
+Owner requested a broader reflection on this conversation's insights. Appended
+“From vendor enrichment to a connected experimental foundation” to the canonical
+`tracks/D-experiment/CODEX_REFLECTIONS.md`. Covers owner corrections and Codex
+interpretations around cross-process components, tentative allocations and future
+scenarios, financial bounds and bias, integrated phases and paper introductions,
+determination/execution order, and document/context management. Qualifies the
+pilot's actual evidence and unresolved lineage/anchor/scale/AI limits. Acknowledges
+that consolidation/path review now exist at `ddde891`/`9cab0c0`, superseding the
+older conversational statement that infrastructure had not begun. Journal/status
+only; no code, run, paper source or Control disclosure.
