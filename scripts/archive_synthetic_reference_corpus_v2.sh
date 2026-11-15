@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Verified post-success packaging/copying only. Active runs never execute on OneDrive.
 set -euo pipefail
+repo="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 root=""; destination=""
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -47,6 +48,16 @@ package() {
 }
 package prepared_inputs "$inputs" no
 for name in monthly_a monthly_b monthly_c; do package "$name" "$root/$name" yes; done
+revision="$(sed -n 's/^revision=//p' "$root/config.txt")"
+[[ "$revision" =~ ^[a-f0-9]{40}$ ]] || exit 2
+git -C "$repo" archive --format=tar "$revision" | gzip -1 > "$root/archives/source_revision.tar.gz"
+gzip -t "$root/archives/source_revision.tar.gz"
+cp "$root/archives/source_revision.tar.gz" "$destination/source_revision.tar.gz.partial"
+source_digest="$(LC_ALL=C shasum -a 256 "$root/archives/source_revision.tar.gz")"; source_digest="${source_digest%% *}"
+copied_digest="$(LC_ALL=C shasum -a 256 "$destination/source_revision.tar.gz.partial")"; copied_digest="${copied_digest%% *}"
+[[ "$source_digest" == "$copied_digest" ]] || exit 1
+mv "$destination/source_revision.tar.gz.partial" "$destination/source_revision.tar.gz"
+printf 'source_revision.tar.gz,%s,%s,%s,PASS\n' "$(stat -f %z "$root/archives/source_revision.tar.gz")" "$source_digest" "$copied_digest" >> "$root/archive_receipt.csv"
 cp "$root/archive_receipt.csv" "$destination/"
 cp "$root/config.txt" "$root/status.csv" "$root/reference.sha256" "$destination/"
 cat > "$destination/README.txt" <<'EOF'
