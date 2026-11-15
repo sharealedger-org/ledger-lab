@@ -1,5 +1,7 @@
 # Track D: Unrestrained AI Subject Engine — Summary & Assessment
 
+**Pre-measurement assessment:** Projections and launch directions below are historical. The Control's official attempt subsequently completed by its recorded report; population/timing reconciliation remains open. Start with [Track D](../tracks/D-experiment/STATUS.md) and the [comparison plan](../tracks/D-experiment/COMPARISON_PLAN.md). Predictions here are not the observed second cost curve.
+
 **State:** Gate 3 Arm B prototype implemented and verified on the golden acceptance fixture in the companion repository [`sharealedger-org/ledger-lab-control`](https://github.com/sharealedger-org/ledger-lab-control) (commit `c3ec922821f37a2c69a5c7a89892b9b3993f7693`). Ready for full-corpus execution on the designated benchmark machine.
 
 ---

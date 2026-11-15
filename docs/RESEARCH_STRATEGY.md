@@ -1,5 +1,7 @@
 # Research Strategy — Ledger Lab
 
+**Historical strategy, 2026-11-15 navigation update:** Preserve this rationale and earlier paper mapping as research history. Its run order, vendor assumptions, permutation-row argument and predicted proofs are not current directions or measured conclusions. The [connected-process strategy](SYNTHETIC_CONNECTED_PROCESS_STRATEGY.md) owns current phases; [Track D](../tracks/D-experiment/STATUS.md) is the primary experiment. Later paper assignments remain qualified, and [CCP evidence](../tracks/D-experiment/ccp/STATUS.md) distinguishes capacity bounds from measured costs.
+
 **Status:** Working strategy document. Updated 2026-11-04.
 **Audience:** Project owner, coauthors, and AI agents working in this repository.
 **Companion:** [`RESEARCH_OBJECTIVES.md`](RESEARCH_OBJECTIVES.md) — operational spec: CCP/AIM

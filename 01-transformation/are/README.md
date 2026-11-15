@@ -1,6 +1,6 @@
 # Accounting Rules Engine (ARE)
 
-The Accounting Rules Engine is a Foundation component. It translates normalized source/product events into canonical Universal Journal entries (SJEs) before CKB sorting and posting.
+The Accounting Rules Engine belongs to 01 Transformation; Foundation supplies its sort, CKB and control mechanics. It translates normalized source/product events into canonical Universal Journal entries (SJEs) before CKB sorting and posting.
 
 ## Current VA Implementation
 
@@ -82,7 +82,7 @@ source configuration, without inventing an Instrument ID.
 
 - Raw byte parsing and transport handling belong to the Technical Transform Layer.
 - External merge-sort belongs to the Foundation sort/CKB substrate.
-- History-dependent FTP, reserves, revaluation, and allocation calculations belong to the Transformation Layer.
+- History-dependent FTP, reserves, revaluation, and allocation calculations belong to `04-engines`.
 - Finance, Tax, MIS, Risk, and Liquidity policy belongs to the Perspective Layer, although those policies may provide rule specifications to a calculation engine.
 
 ## Today-Input Boundary
@@ -180,4 +180,4 @@ Each ARE output must support:
 6. Add reject/recycle handling.
 7. Add additional source/product adapters without changing the CKB posting engine.
 
-The ARE is therefore identified now as part of Foundation, but its policy is made configurable before new domain perspectives are implemented.
+The ARE has logical ownership in 01 Transformation even where the legacy physical implementation resides under Foundation. Its rule policy must be explicit before new domain perspectives are implemented.

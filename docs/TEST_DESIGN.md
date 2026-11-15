@@ -1,5 +1,7 @@
 # VA Corpus — Unified Test Design (CCP Cost Points + Paper 2 Model Evidence)
 
+**Reading scope, 2026-11-15:** Phase 1 protocol/design reference for CCP/AIM IDs and locked decisions. Readiness statements and model-gap interpretations below are dated; they are not current results or proof of a language-prior effect. Current work is organized under [Track D](../tracks/D-experiment/STATUS.md), with [CCP](../tracks/D-experiment/ccp/STATUS.md) and [AIM](../tracks/D-experiment/aim/STATUS.md). Retain historical thresholds and report deviations; current workload contracts and named audit evidence govern implementation claims.
+
 **Status:** Authoritative. Supersedes `TEST_DESIGN_PAPER_1.md` and `TEST_DESIGN_PAPER_2.md`.
 **Prepared:** 2026-11-04. **Revised:** 2026-11-05 — four-model experiment replaces AIM-centric Paper 2 design.
 **Companion:** [`docs/RESEARCH_OBJECTIVES.md`](RESEARCH_OBJECTIVES.md) — master objectives and run-order map

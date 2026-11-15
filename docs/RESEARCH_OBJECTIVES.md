@@ -1,5 +1,7 @@
 # Research Objectives — Master Experimental Map
 
+**Reading scope, 2026-11-15:** Phase 1 experimental-design record, preserving test IDs, locked thresholds and the original argument. Its authoritative label applies to that dated design, not current priorities, implementation status or established outcomes. Read [Track D](../tracks/D-experiment/STATUS.md) and [CCP](../tracks/D-experiment/ccp/STATUS.md)/[AIM](../tracks/D-experiment/aim/STATUS.md) for current work; the [strategy](SYNTHETIC_CONNECTED_PROCESS_STRATEGY.md) owns current phase/paper mapping. The roughly 133M total is not a PO-only population; see [corpus findings](CORPUS_FINDINGS.md). Preserve protocol deviations rather than silently changing locked criteria.
+
 **Prepared:** 2026-11-04  
 **Status:** Authoritative. Supersedes `docs/next-session-plan.md` and
 `org-members/research/PAPER_02_NOTES.md` as the source of truth for test IDs, objectives,

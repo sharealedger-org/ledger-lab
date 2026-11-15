@@ -1,5 +1,7 @@
 # Full Corpus Run Checklist
 
+**Runbook with dated observations:** This preserves the 2026-11-10/11 launch experience, not a live queue or current capacity receipt. Follow [Track D](../tracks/D-experiment/STATUS.md) for the selected workload and its admission gates; verify current inputs, source hashes, paths and available disk/scratch. Historical completed or pending marks do not authorize a launch or a change to a frozen measurement. No corpus execution is part of documentation consolidation.
+
 Working checklist for a full FY2003-FY2016 corpus run on the Zenodo-restored data root. Written
 2026-11-10 from the first attempt. Items marked `[x]` were done and observed in that session;
 items marked `[ ]` are pending or unverified. Nothing here has been promoted to `verified` in

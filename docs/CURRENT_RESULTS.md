@@ -1,5 +1,7 @@
 # Ledger Lab: Where Things Stand
 
+**Scope notice, 2026-11-15:** This is the dated 2026-11-12 baseline synthesis, not a live summary of all later work. Start with [Track D](../tracks/D-experiment/STATUS.md), [CCP](../tracks/D-experiment/ccp/STATUS.md) and [AIM](../tracks/D-experiment/aim/STATUS.md) for subsequent expanded runs, reporting failure, bounded recovery/pilot results and AI validity qualifications. The three-model branch is merged; training remains unrun. Later narrow evidence does not retroactively verify broad claims below (including minimum cost, same-pass views or language-prior attribution). Preserve the numbers and their original scope when citing them.
+
 **As of 2026-11-12, `main` at `ef78576` (Baseline Tag: `companion-measured-baseline-20261111` on `c3667e4`).**
 **Audience:** someone new to the repository, probably an IT professional who knows GenevaERS concepts (sorted files, keyed merges, reference data, control totals) but is not an AI specialist. The papers are read alongside this page.
 

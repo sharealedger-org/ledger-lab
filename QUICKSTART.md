@@ -1,5 +1,8 @@
 # Ledger Lab — Quick Start
 
+For current work, start with [STATUS](STATUS.md) and [Track D](tracks/D-experiment/STATUS.md).
+This is a technical setup/fixture guide, not the experiment's next-run plan.
+
 This guide orients a technical contributor to the repository's architecture, current
 implementation, and validation status. It distinguishes the target 01–05 design from the legacy
 Virginia executable path.
@@ -275,6 +278,9 @@ directory contract and download instructions in [RUNTIME_DATA_LAYOUT.md](docs/RU
 Do not run a full historical workload with output directed into the Git repository.
 
 ## Reading Order
+
+Begin with [root STATUS](STATUS.md), [Track D](tracks/D-experiment/STATUS.md)
+and the relevant CCP/AIM status. For implementation, continue with:
 
 1. [Repository architecture and implementation status](README.md#architecture-and-status)
 2. The relevant [01–05 layer README](README.md#architecture-and-status)

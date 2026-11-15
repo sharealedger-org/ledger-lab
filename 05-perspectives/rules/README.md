@@ -1,5 +1,7 @@
 # Step-Up Rules
 
+**Historical scaffold:** Generated financial step-up rules are owned by [04 engines](../../04-engines/calculation_engines/README.md); [05 perspectives](../README.md) may select and aggregate their outputs. This older vocabulary does not authorize accounting generation inside 05. Python work remains subject to [AGENTS](../../AGENTS.md), including explicit owner approval.
+
 This directory will contain versioned rule specifications for generated economics.
 
 Rules must identify:

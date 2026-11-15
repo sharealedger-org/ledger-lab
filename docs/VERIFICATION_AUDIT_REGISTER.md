@@ -1010,7 +1010,7 @@ The RESULT log line metric key renamed from `skipped_address_fragment` to `skipp
 
 ### New tests
 
-Two tests added to [`StandardizeAndSortPOSpec`](02-foundation/va_pipeline/src/test/scala/org/universalledger/foundation/va/ledger/StandardizeAndSortPOSpec.scala):
+Two tests added to [`StandardizeAndSortPOSpec`](../02-foundation/va_pipeline/src/test/scala/org/universalledger/foundation/va/ledger/StandardizeAndSortPOSpec.scala):
 - **Test 8:** non-numeric price field row → 0 SJE rows, QUARANTINE logged to stderr
 - **Test 9:** non-numeric price row skipped; adjacent well-formed rows still emit; amounts balance
 
@@ -1511,7 +1511,7 @@ Scope: static code and handoff comparison between [`PORecordReader.scala`](../02
 
 **Root cause identified by source inspection:**
 
-The CKB's [`PORecordReader`](../02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/ledger/PORecordReader.scala:19) detects record boundaries by checking whether the third tab-field (position 2, `ORDEREDDATE`) matches a date pattern `\d{1,2}/\d{1,2}/\d{4}`. Continuation lines that do not match are appended to the current record. All continuation lines are joined with a space and then split on TAB. **Quotes are intentionally not interpreted** (line 27: "measured on FY2003, a quote-aware split rejects ~880 well-formed records"). A record is accepted only if the joined split yields exactly the header field count; otherwise it is quarantined as `FIELD_COUNT`.
+The CKB's [`PORecordReader`](../02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/ledger/PORecordReader.scala) detects record boundaries by checking whether the third tab-field (position 2, `ORDEREDDATE`) matches a date pattern `\d{1,2}/\d{1,2}/\d{4}`. Continuation lines that do not match are appended to the current record. All continuation lines are joined with a space and then split on TAB. **Quotes are intentionally not interpreted** (line 27: "measured on FY2003, a quote-aware split rejects ~880 well-formed records"). A record is accepted only if the joined split yields exactly the header field count; otherwise it is quarantined as `FIELD_COUNT`.
 
 The control's `quote_aware_po_records` / `parse_po_candidate` does something the CKB does not:
 1. **Boundary detection** uses `PO_START = re.compile(r'^"(?:[^"\t\r\n]|"")*"\t"(?:[^"\t\r\n]|"")*"\t')` — it identifies record starts by matching a strict quoted-field RFC-4180 prefix (PONUMBER field quoted, then AGENCY field quoted, then tab, then ORDEREDDATE date). This correctly identifies multi-line records that begin with a quoted PONUMBER or AGENCY, which the CKB's date-only check misses.
@@ -1703,3 +1703,17 @@ records snapshot equality, maintained-link scope and excluded draft hashes.
 Pilot remains `partially_verified` overall with source/rule lineage limits;
 VA anchors, larger scale and AI effectiveness remain unverified/untested.
 No engine change, financial execution, new Control read or capability-gap closure.
+
+## 2026-11-15 — Collaborator navigation and Track D reorganization
+
+Documentation-only review from `ddde891`. Owner places CCP/AIM (formerly B1/B2)
+inside primary Track D; external A is intended conclusion material and Berka/C
+at most a footnote candidate. Canonical statuses are under `tracks/D-experiment/`;
+old paths retain pointers. No research closure, protocol-threshold change, financial
+execution, model result, new Control read or capability-gap closure. The catalog
+states inventory/reading depth; this is not a factual audit of every document.
+Rewrote misleading newcomer summaries, qualified dated authority labels and aligned
+layer-owner descriptions with existing AGENTS rules. Corrected two Markdown link
+targets in prior register entries without changing their findings. Original entry
+pages/handoff/statuses are archived; moved reasoning records retain original bytes.
+Receipt: `docs/COLLABORATOR_REVIEW_2026-11-15.md`. Evidence maturity unchanged.

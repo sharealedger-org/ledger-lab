@@ -45,8 +45,8 @@ validated CKB or reconciliation evidence.
 
 ## VA Accounting Model in the New Workbook
 
-The newly added [VA Data Samples and Specs workbook](../docs/VA%20Data%20Samples%20and%20Specs.xlsx)
-contains an intended VA-to-Universal-Journal mapping that was not implemented by the current UL
+The historical VA Data Samples and Specs workbook, described in the
+[VA data-model contract](../docs/VA_DATA_MODEL_CONTRACT.md), contains an intended VA-to-Universal-Journal mapping that was not implemented by the current UL
 prototype. Its `VA to UnivJE` sheet maps:
 
 | Universal field | FY03-FY12 expense and FY12+ expense | Revenue |

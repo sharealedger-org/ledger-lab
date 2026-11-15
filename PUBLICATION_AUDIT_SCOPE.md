@@ -1,5 +1,7 @@
 # Publication Audit Scope
 
+**Historical release-audit scope:** This describes the staging boundary at the original publication audit, not today's complete repository inventory or a current publication authorization. Selected generated evidence/logs are now intentionally tracked. Use [STATUS](STATUS.md), [the document map](docs/README.md) and the [catalog](docs/DOCUMENT_CATALOG.md) for current navigation; raw corpus and large generated outputs remain external.
+
 This repository is a runnable staging copy for the proposed public
 `sharealedger-org/ledger-lab` repository.
 

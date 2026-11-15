@@ -1,5 +1,7 @@
 # Engine Implementation Plan — CKB Pipeline (Papers 1 & 2)
 
+**Historical implementation plan, 2026-11-15 navigation update:** Retained for original sub-tasks, decisions and reasoning. Completion/readiness statements are dated and must be checked against relevant audit entries; this is not today's work queue. Use [Track D](../tracks/D-experiment/STATUS.md), its CCP/AIM workstreams and [TODO](../TODO.md). New financial changes still require the architecture gates; this plan does not authorize broader engine work or a corpus launch.
+
 **Status:** In progress
 **Revised:** 2026-11-05
 **Scope:** Implement and verify all Scala engine sub-tasks required for the Paper 1 cost curve

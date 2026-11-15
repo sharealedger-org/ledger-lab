@@ -10,8 +10,9 @@ pilot completed generation, sorted assignment, posting and expanded reporting.
 60 balanced SJE rows. Source/rule lineage remains partial, VA anchors unverified,
 and scale/AI effectiveness untested. This is fixture evidence, not a cost point.
 
-Repository consolidation is complete; see the [document map](docs/README.md) and
-[receipt](docs/archive/consolidation_2026-11-15/README.md). No engine changes or
+Initial Track D consolidation: `ddde891` ([receipt](docs/archive/consolidation_2026-11-15/README.md)).
+The broader collaborator review/path reorganization is recorded in its
+[review receipt](docs/COLLABORATOR_REVIEW_2026-11-15.md) and [document map](docs/README.md). No engine changes or
 larger execution in this session. The older assignment producer and its launcher
 edits remain uncommitted and excluded.
 
@@ -24,19 +25,25 @@ edits remain uncommitted and excluded.
   versioned design/inspection may precede formal corpus/protocol freeze.
 - Phase 3: broader CKB topology, tentative allocations through reclass. These
   engine demonstrations are not prerequisites for current generation.
-- Paper editing: use the [member handoff](tracks/D-control/MEMBER_REPO_EDITING_PLAN_2026-11-14.md)
+- Paper editing: use the [member handoff](tracks/D-experiment/MEMBER_REPO_EDITING_PLAN_2026-11-14.md)
   in separate writing sessions, including introductions at phase boundaries.
   Private sources remain in the member repository; owner review precedes circulation.
 
-## Tracks
+## Primary experiment and supporting material
 
-| Track | Scope and state | Start page |
+| Path | Role | Start page |
 |---|---|---|
-| A | Private P&C insurer corpus; another repository, synthesized results only | No local page (owner) |
-| B1 | Paper 1 cost curve; baseline measured, expanded runs retained as evidence; further cost-point work open | [B1 status](tracks/B1-cost/STATUS.md) |
-| B2 | Paper 2 AI/models; prior task tests retained, broader exploration and validity work open | [B2 status](tracks/B2-models/STATUS.md) |
-| C | Berka; stalled, illustrative only | [C status](tracks/C-berka/STATUS.md) |
-| D | Experiment design, synthetic Phase 2 and control comparison; active | [D status](tracks/D-control/STATUS.md) |
+| **D — primary experiment** | Shared design, synthetic inputs, papers and Control comparison | [D status](tracks/D-experiment/STATUS.md) |
+| D / **CCP** (formerly B1) | Cost and capability measurements | [CCP status](tracks/D-experiment/ccp/STATUS.md) |
+| D / **AIM** (formerly B2) | AI tests and reusable financial exploration | [AIM status](tracks/D-experiment/aim/STATUS.md) |
+| A — conclusion material | External private insurer work; qualified results may inform the paper's conclusion | No local execution/status page |
+| C — footnote candidate | Berka exploratory record, outside the active experiment | [Historical C status](tracks/C-berka/STATUS.md) |
+
+Owner direction, 2026-11-15. This reorganizes ongoing work; it does not close
+unfinished CCP/AIM tasks or claim Track A corroboration. Old B1/B2 and `D-control`
+paths are compatibility pointers. Evidence locations and protocol IDs remain stable.
+The [contributor guide](CONTRIBUTOR_ONBOARDING.md) provides a bounded reading path;
+the [catalog](docs/DOCUMENT_CATALOG.md) helps find a particular document.
 
 ## Session entry points and safeguards
 

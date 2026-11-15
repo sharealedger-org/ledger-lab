@@ -1,4 +1,6 @@
-﻿# TDS vs IL: Transaction Store vs Instrument Ledger Architecture
+# TDS vs IL: Transaction Store vs Instrument Ledger Architecture
+
+**Discussion record; rationale rather than implementation evidence:** Retained to explain the distinction between retained transaction history and the state used operationally. Legacy Python examples, permanent-output-retention statements and zero-marginal-cost/completeness claims below are not current execution or retention contracts. Use [AGENTS](../AGENTS.md), the [execution model](CKB_LAYER_EXECUTION_MODEL.md), [CCP status](../tracks/D-experiment/ccp/STATUS.md) and actual retention receipts. Preserve the hypothesis while testing its conditions and measured cost.
 
 > **Status:** Documented from session discussion — flag for inclusion in the monograph
 > **Relates to:** Papers 1, 4, 5 of the monograph; VA pipeline Steps 2 and 3

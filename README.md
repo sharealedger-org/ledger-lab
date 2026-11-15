@@ -27,16 +27,21 @@ repo>`; record IDs and test status are in
 
 ## Start here
 
-**New to Ledger Lab?** Read [`LEDGER_LAB_OVERVIEW.md`](./LEDGER_LAB_OVERVIEW.md) — a plain-English explanation of what all the tests are trying to show and why, grouped by claim rather than by technical name. No prior knowledge of the research papers required. The Overview connects back to the papers for anyone who wants the full argument.
+Start with [STATUS.md](STATUS.md), then the [primary Track D experiment](tracks/D-experiment/STATUS.md).
+Its two workstreams are [CCP cost/capability](tracks/D-experiment/ccp/STATUS.md)
+and [AIM / financial exploration](tracks/D-experiment/aim/STATUS.md), formerly B1/B2.
+Track A supplies possible conclusion material from outside this repository;
+Berka/Track C is retained as a footnote candidate, outside the main work path.
 
-**Already familiar with the research?** For a map of all experiments across both papers, start with [`docs/RESEARCH_OBJECTIVES.md`](docs/RESEARCH_OBJECTIVES.md). Detailed specifications are in [`docs/TEST_DESIGN.md`](docs/TEST_DESIGN.md) (unified CCP cost-curve workloads and AIM model evidence tests).
+- New to the argument: [plain-English overview](LEDGER_LAB_OVERVIEW.md).
+- Contributing with or without AI: [contributor guide](CONTRIBUTOR_ONBOARDING.md).
+- Building/running a small fixture: [quickstart](QUICKSTART.md).
+- Finding a contract, evidence receipt or historical rationale: [document map](docs/README.md).
 
-**Want to know what has actually been run, and how far to trust it?** Read [`docs/CURRENT_RESULTS.md`](docs/CURRENT_RESULTS.md): current results with a status on every claim, what is not yet run, and statements elsewhere that have since been shown wrong.
-
-
-**Working on the repository?** Start with [`STATUS.md`](STATUS.md): the tracks, where each stands, and what to read next. Documents are mapped in [`docs/README.md`](docs/README.md).
-
-
+Current statuses point to the relevant evidence and limitations. Older experiment
+plans preserve IDs and locked protocols; their dated queues and expected outcomes
+are not today's priorities or established findings. Archives preserve the research
+reasoning, including failed approaches and disagreements, for targeted reading.
 
 ## Research Questions
 
@@ -51,9 +56,9 @@ interpreted and what the evidence must contain.
 
 The current VA source-model contract is documented in
 [docs/VA_DATA_MODEL_CONTRACT.md](docs/VA_DATA_MODEL_CONTRACT.md). It is derived from the VA
-source workbook preserved in the Sharealedger conceptual-model repository. For the research
-programme, start with [docs/RESEARCH_OBJECTIVES.md](docs/RESEARCH_OBJECTIVES.md) — master map
-of all experiments, run order, and acceptance thresholds.
+source workbook preserved in the Sharealedger conceptual-model repository. For current research sequencing use [Track D](tracks/D-experiment/STATUS.md);
+[the Phase 1 objectives](docs/RESEARCH_OBJECTIVES.md) preserve test IDs, thresholds
+and design history rather than the current run queue.
 
 ## Strategic Boundary
 
@@ -141,6 +146,7 @@ process, or pass; see [AGENTS.md](AGENTS.md) for the technology boundaries.
 ```bash
 cd 02-foundation/va_pipeline
 sbt -batch compile
+cd ../..
 ```
 
 To inspect the legacy VA runner options without starting a data run:

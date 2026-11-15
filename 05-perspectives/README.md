@@ -68,7 +68,7 @@ Instrument IDs, and the view must not synthesize them.
 - `schemas/`: record, step-up, perspective, provenance, and metric schemas.
 - `rules/`: rule definitions for core and perspective-specific generated economics.
 - `fixtures/`: small synthetic fixtures for perspective behavior and control totals.
-- `engine/`: future Scala implementation boundary for step-up generation and application.
+- `engine/`: historical step-up scaffold; generation belongs to 04 and application to the Foundation path. Use `view_engine/` for the aggregation-only 05 boundary.
 - `results/`: generated experiment output; never source input.
 - `tests/`: focused tests and control-total fixtures.
 
@@ -159,7 +159,7 @@ Vary recompute and materialization levels while preserving the same workload and
 1. Freeze this directory boundary and configuration vocabulary.
 2. Define schemas and control-total expectations.
 3. Build the smallest synthetic fixture containing one core and multiple step-up classes.
-4. Implement the Scala step-up generation/application boundary.
+4. Implement the declared Scala step-up boundary under 04/Foundation ownership; 05 consumes its outputs.
 5. Add perspective-specific outputs and reconciliation checks.
 6. Connect the runtime to the agentic experiment manifest.
 7. Run repeated sweeps and analyze observed cost-capability surfaces.

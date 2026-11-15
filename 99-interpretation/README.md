@@ -3,7 +3,7 @@
 `99-interpretation` is the planned terminal stage of a Ledger Lab run. The run contract is that it
 will execute after the financial process topology completes or stops and available evidence is
 flushed. It will always be last, but it is not a sixth financial layer and must not imply another
-pass over financial records. The interpreter and automatic run hook are not implemented yet.
+pass over financial records. The first fixture interpreter and automatic run hook exist; the generalized interpretation contract below remains a target. See the [quickstart evidence description](../QUICKSTART.md#inspect-a-successful-run) and named audit evidence before claiming wider support.
 
 Its purpose is to turn machine evidence into a reproducible account of what ran, what the results
 show, which architectural responsibilities were exercised, and what evidence is still needed.

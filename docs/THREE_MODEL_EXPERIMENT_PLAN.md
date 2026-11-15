@@ -1,5 +1,7 @@
 # Three-Model Experiment: Working Plan
 
+**Protocol with dated preparation status:** The former `aim-three-model` branch was merged into `main`; planning, preparation and Gold checks have progressed beyond the opening status below. No trained three-model comparison exists. Use [AIM status](../tracks/D-experiment/aim/STATUS.md) and the [validity assessment](../tracks/D-experiment/PAPER2_ASSESSMENT_2026-11-12.md) before interpreting model gaps. This record preserves decisions and approval scope; it does not expand authorization or establish a language-prior effect.
+
 Status: **plan with decisions recorded, 2026-11-11, branch `aim-three-model`.** Nothing here has been run. The experiment definition is in [TEST_DESIGN.md](TEST_DESIGN.md) §2 and §5a and [RESEARCH_OBJECTIVES.md](RESEARCH_OBJECTIVES.md) (Part 2). This file does not change that definition; it turns it into ordered work and records the decisions the design leaves open. The owner delegated D1-D7 to the agent on 2026-11-11 ("I have no opinions... your guidance will be accepted on all the points"), so they are the agent's judgment calls, written down with reasons so a human reviewer can challenge them. They are fixed before any real-data run; a change after that is logged as a deviation, with the reason.
 
 ## 1. Approvals and boundaries

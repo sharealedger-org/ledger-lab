@@ -1,75 +1,107 @@
-# Documents map
+# Document map
 
-Updated 2026-11-15. Start at [`../STATUS.md`](../STATUS.md), then the relevant
-track status. The map below identifies current authority; older results and plans
-remain dated records rather than current run instructions.
+Start with [root STATUS](../STATUS.md), then the
+[primary Track D experiment](../tracks/D-experiment/STATUS.md) and its
+[CCP](../tracks/D-experiment/ccp/STATUS.md) or [AIM](../tracks/D-experiment/aim/STATUS.md)
+workstream. This map routes a task; the [complete prose-document catalog](DOCUMENT_CATALOG.md)
+locates individual records. Neither is a request to read every document.
 
-## Current plan and contract authority
+## Understand the argument and contribute
 
-| Role | Current entry point | Boundary |
+| Need | Entry point | Scope |
 |---|---|---|
-| Roadmap / phase scope | [Connected-process strategy](SYNTHETIC_CONNECTED_PROCESS_STRATEGY.md) | Phase 1 direct VA; Phase 2 vendor-centered synthetic; Phase 3 broader topology |
-| Generation design | [Phase 2 CKB proposal](PHASE_TWO_GENERATION_CKB_PROPOSAL.md) | Wider proposal; implementation bounded by pilot below |
-| Implemented pilot contract | [FY2003/04 component contract](COMPONENT_PILOT_0304_CONTRACT.md) | Tiny synthetic envelopes, no verified VA anchors or scale claim |
-| Pilot result at `213b20f` | [Evidence receipt](../data/test_evidence/component_pilot_0304_20261115/README.md) | Actual downstream flow; partial source/rule lineage, no AI result |
-| Paper writing | [Member editing handoff](../tracks/D-control/MEMBER_REPO_EDITING_PLAN_2026-11-14.md) | Private source workflow, phase introductions; independent writing sessions |
-| Comparison / exposure | [Comparison plan](../tracks/D-control/COMPARISON_PLAN.md), [baseline record](COMPANION_BASELINE_RECORD_2026-11-12.md) | Reconciliation/Q2 decisions open, one-way Control boundary |
-| Identity / reference contracts | [Identity recovery](IDENTITY_RECOVERY_V1_DESIGN.md), [reference architecture](REFERENCE_ARCHITECTURE_MAP.md) | Workload-specific limits remain; not a replacement roadmap |
-| Qualitative design history | [Reflections](../tracks/D-control/CODEX_REFLECTIONS.md), [working list](../tracks/D-control/CODEX_PHASE2_WORKING_LIST.md), [handoff](../SESSION_HANDOFF.md) | Attributed, dated, CKB-side; not Control delivery or runtime evidence |
+| Understand the research position | [Overview](../LEDGER_LAB_OVERVIEW.md) | Motivating claims, evidence limits and current phase structure |
+| Work effectively with or without AI | [Contributor guide](../CONTRIBUTOR_ONBOARDING.md) | Bounded reading path, architecture rationale, disagreement and session discipline |
+| Build or inspect a tiny fixture | [Quickstart](../QUICKSTART.md) | Setup/run examples, not current research priorities |
+| Understand ordered processing | [Execution model](CKB_LAYER_EXECUTION_MODEL.md) | Keys, temporal state, consumers, process/sort/materialization boundaries |
+| Understand the intellectual sources | [Reference architecture map](REFERENCE_ARCHITECTURE_MAP.md) | Sources and correspondence, not proof of implementation |
+| Understand computational discipline | [Method note](BOB_METHOD_NOTE_CKB_EFFICIENCY.md) | Preserved agentic rationale; current AGENTS rules govern older examples |
+| Understand retained events versus state | [TDS/IL discussion](TDS_vs_IL_architecture.md) | Historical rationale; zero-cost and legacy runtime claims are qualified at entry |
 
-Superseded entry paths remain as pointers: [broad strand plan](PHASE2_SYNTHETIC_DATA_PLAN.md),
+## Current experiment direction and work
+
+| Authority | Document | Qualification |
+|---|---|---|
+| Shared experiment | [Track D status](../tracks/D-experiment/STATUS.md) | CCP and AIM inside D; Control comparison is one component |
+| Roadmap and phase scope | [Connected-process strategy](SYNTHETIC_CONNECTED_PROCESS_STRATEGY.md) | Phase 1 direct VA, Phase 2 vendor-centered synthetic, Phase 3 broader topology |
+| Generation design | [Phase 2 CKB proposal](PHASE_TWO_GENERATION_CKB_PROPOSAL.md) | Wider proposal beyond bounded implementation evidence |
+| Bounded workload | [Component contract](COMPONENT_PILOT_0304_CONTRACT.md) | Named FY2003/04 fixture; partial lineage, unverified VA anchors |
+| Open work | [TODO](../TODO.md) | Tasks and owner decisions; handoff is a dated transition log |
+| Paper writing | [Member handoff](../tracks/D-experiment/MEMBER_REPO_EDITING_PLAN_2026-11-14.md) | Private sources, independent writing sessions, phase introductions |
+| Comparison and exposure | [Comparison plan](../tracks/D-experiment/COMPARISON_PLAN.md), [baseline record](COMPANION_BASELINE_RECORD_2026-11-12.md) | Reconciliation and Q2 decisions open; one-way Control access |
+
+CCP uses [graph design](COST_GRAPH_DESIGN.md) and the
+[measurement contract](MEASUREMENT_AND_LOGGING.md). AIM uses the
+[field-label pilot](TRAINING_LANGUAGE_PILOT.md),
+[three-model protocol](THREE_MODEL_EXPERIMENT_PLAN.md) and
+[validity assessment](../tracks/D-experiment/PAPER2_ASSESSMENT_2026-11-12.md).
+Read the selected workstream status before choosing an older test or run plan.
+
+Track A's external insurer work is intended conclusion material, with no local
+execution page. [Track C](../tracks/C-berka/STATUS.md) retains Berka as a possible
+footnote, explicitly exploratory and excluded from the main evidence path.
+
+## Contracts and verification
+
+[AGENTS](../AGENTS.md), [architecture gates](AGENTIC_ARCHITECTURE_GATES.md),
+[verification protocol](VERIFICATION_SESSION_PROTOCOL.md) and the
+[GenevaERS capability gaps](GENEVAERS_CAPABILITY_GAP_REGISTER.md) govern financial
+changes. Read the relevant [layer README](../README.md#architecture-and-status)
+and actual producers/consumers before implementation. The old 05 `engine/` and
+step-up scaffolds are labeled historical; 04 generates SJEs and 05 aggregates only.
+
+Corpus contracts: [external layout](RUNTIME_DATA_LAYOUT.md), [access](CORPUS_ACCESS.md),
+[schemas](CORPUS_SCHEMAS.md), [record identity](CORPUS_RECORD_IDENTITY.md),
+[VA data model](VA_DATA_MODEL_CONTRACT.md) and [accounting classification](VA_ACCOUNTING_CLASSIFICATION.md).
+Workload-specific contracts: [identity audit](IDENTITY_AUDIT_CONTRACT.md),
+[identity recovery](IDENTITY_RECOVERY_V1_DESIGN.md), [reporting](REPORTING_PASS_DESIGN.md).
+These define scope; they do not establish all proposed behavior as implemented.
+
+## Evidence and research provenance
+
+Use the relevant named receipt and audit entry, not a plan's confidence, to assess
+an implementation claim. The [audit register](VERIFICATION_AUDIT_REGISTER.md)
+contains entries in more than one chronological arrangement; find by workload/date
+and read later scoped corrections. It is not a next-task list.
+
+| Evidence group | Entry point | Scope to preserve |
+|---|---|---|
+| Original comparison baseline | [Baseline/exposure record](COMPANION_BASELINE_RECORD_2026-11-12.md) | Frozen tag and population/timing limits |
+| Expanded runs | [Queue receipt](../data/test_evidence/intel_preflight_20261113/README.md) | Three validated runs, 46 compared products; not three cost points |
+| Failed reporting attempt | [Failure receipt](../data/test_evidence/reporting_corpus_20261114/README.md) | No completed corpus report/model inputs |
+| Identity audit / recovery | [Findings](IDENTITY_AUDIT_FINDINGS_2026-11-14.md), [recovery receipt](../data/test_evidence/identity_recovery_20261114/README.md) | Diagnostic scope versus fixture fixes and admission limits |
+| Bounded synthetic component | [Pilot receipt](../data/test_evidence/component_pilot_0304_20261115/README.md) | Actual downstream controls; no AI/scale/VA-anchor result |
+| Older summaries | [2026-11-12 synthesis](CURRENT_RESULTS.md), [2026-11-11 experiment state](EXPERIMENT_STATE_2026-11-11.md) | Dated baseline analysis, not live status |
+| Paper evidence packages | [Paper 1 rev2](tds-evidence/paper-1-rev2-ledger-lab/README.md), [Paper 2 rev1](tds-evidence/paper-2-rev1-ledger-lab/README.md) | Dated packages; later caveats must be checked before citation/circulation |
+| Qualitative reasoning | [Codex reflections](../tracks/D-experiment/CODEX_REFLECTIONS.md), [working list](../tracks/D-experiment/CODEX_PHASE2_WORKING_LIST.md) | Attributed observations/proposals; CKB-side only, not Control delivery |
+
+## Historical plans and archives
+
+Retain the unusual approach's rationale, rejected alternatives, failed approaches,
+original thresholds and corrections so collaborators can scrutinize the research.
+Archive material is available on demand; it is outside the default session reading
+path. Current documents should explain the decision well enough to use without
+reconstructing the whole chronology. If reasoning is disputed, follow the specific
+history link and preserve attribution when recording a correction.
+
+[Phase 1 objectives](RESEARCH_OBJECTIVES.md), [test design](TEST_DESIGN.md),
+[early strategy](RESEARCH_STRATEGY.md), [implementation plan](ENGINE_IMPLEMENTATION_PLAN.md),
+[enhancement plan](DATA_ENHANCEMENT_PLAN.md), [organization proposal](PROJECT_ORGANIZATION_PLAN.md),
+[full-corpus runbook](FULL_CORPUS_RUN_CHECKLIST.md), [rerun handoff](CKB_REVENUE_RERUN_2026-11-13.md)
+and [Control projections](TRACK_D_NOTES.md) have dated roles. Their historical
+queues, branch paths and expected outcomes do not override current status/evidence.
+[Original VA specifications](VA_Data_Layouts_and_Specs.md) remain source design history,
+including historical technology choices, rather than a current runtime mandate.
+
+Superseded pointer paths: [broad strand plan](PHASE2_SYNTHETIC_DATA_PLAN.md),
 [Intel Phase 1b handoff](PHASE_1B_SYNTHETIC_DATA_INTEL_PLAN.md),
-[earlier paper plan](../tracks/D-control/PAPER_VERSION_2_RESEARCH_PLAN.md), and
-[old generation proposal name](PHASE_ONE_GENERATION_CKB_PROPOSAL.md).
-Their uncompleted ideas remain historical backlog, not newly authorized work.
-[Consolidation snapshots and receipt](archive/consolidation_2026-11-15/README.md)
-preserve original wording; evidence, negative results and reflections remain in place.
-The older uncommitted assignment producer/launcher draft remains excluded.
+[old proposal name](PHASE_ONE_GENERATION_CKB_PROPOSAL.md),
+[earlier paper plan](../tracks/D-experiment/PAPER_VERSION_2_RESEARCH_PLAN.md).
+Old track paths likewise point to the current experiment/workstreams.
 
-## Results and evidence (read when a track page points to them)
-
-| File | Use |
-|---|---|
-| [`CURRENT_RESULTS.md`](CURRENT_RESULTS.md) | Where things stand, status per claim, for a newcomer. Refreshed 2026-11-12 with completed run 4 evidence. |
-| [`tds-evidence/paper-1-rev2-ledger-lab/`](tds-evidence/paper-1-rev2-ledger-lab/README.md) | Paper 1 (Revision 2) Evidence Package for TDS: measured results summary, Mix cost curve model, CKB Cost Model Excel workbook, one-page explainer, limits and Phase 2 roadmap. |
-| [`tds-evidence/paper-2-rev1-ledger-lab/`](tds-evidence/paper-2-rev1-ledger-lab/README.md) | Paper 2 (Revision 1) Evidence Package for TDS: Three-Model experiment design, AIM test suite results (AIM1 non-injectivity, AIM3 churn C=0.7527), Gold data ground-truth verification, limits and Phase 2 roadmap. |
-| [`VERIFICATION_AUDIT_REGISTER.md`](VERIFICATION_AUDIT_REGISTER.md) | The evidence ledger, newest entries last. The register wins any disagreement. |
-| [`COMPANION_BASELINE_RECORD_2026-11-12.md`](COMPANION_BASELINE_RECORD_2026-11-12.md) | The preserved baseline for the control comparison, and the exposure log. |
-| [`EXPERIMENT_STATE_2026-11-11.md`](EXPERIMENT_STATE_2026-11-11.md) | Measured facts and what each Paper 1 graph can show. |
-| [`CORPUS_FINDINGS.md`](CORPUS_FINDINGS.md) | What was measured in the raw corpus (2026-10-31). |
-
-## Track B1: Paper 1 cost curve
-
-[`COST_GRAPH_DESIGN.md`](COST_GRAPH_DESIGN.md), [`RESEARCH_OBJECTIVES.md`](RESEARCH_OBJECTIVES.md), [`TEST_DESIGN.md`](TEST_DESIGN.md) (CCP cost points and Paper 2 model evidence), [`RESEARCH_STRATEGY.md`](RESEARCH_STRATEGY.md), [`FULL_CORPUS_RUN_CHECKLIST.md`](FULL_CORPUS_RUN_CHECKLIST.md), [`MEASUREMENT_AND_LOGGING.md`](MEASUREMENT_AND_LOGGING.md), [`ZENODO_ARCHIVE_PLAN.md`](ZENODO_ARCHIVE_PLAN.md), and the draft outside-reader page [`LEDGER_LAB_ONE_PAGE_EXPLAINER.html`](LEDGER_LAB_ONE_PAGE_EXPLAINER.html) (open items in `TODO.md`, "Explainer").
-
-## Track B2: Paper 2 models
-
-[`THREE_MODEL_EXPERIMENT_PLAN.md`](THREE_MODEL_EXPERIMENT_PLAN.md), [`VA_AUDITED_AND_PUBLIC_DATA_SURVEY_2026-11-12.md`](VA_AUDITED_AND_PUBLIC_DATA_SURVEY_2026-11-12.md), [`TEST_DESIGN.md`](TEST_DESIGN.md) (AIM sections), [`VENDOR_IDENTITY_INVESTIGATION.md`](VENDOR_IDENTITY_INVESTIGATION.md), [`SUPPLIER_DIRECTORY_SNAPSHOT.md`](SUPPLIER_DIRECTORY_SNAPSHOT.md), and the vendor-bridge evidence files (`PUBLIC_VENDOR_BRIDGE_*`, `VENDOR_IDENTIFIER_EVIDENCE_*`).
-
-## Track C (parked)
-
-[`TEST_DESIGN_TRACK_C_BERKA.md`](TEST_DESIGN_TRACK_C_BERKA.md), [`PAPER_2_TRACK_C_INSERTION_DRAFT.md`](PAPER_2_TRACK_C_INSERTION_DRAFT.md).
-
-## Track D (control)
-
-Start with the [Track D status](../tracks/D-control/STATUS.md) and [current comparison entry point](../tracks/D-control/COMPARISON_PLAN.md). The original pre-exposure comparison draft is archived; it is not the Phase 2 run plan.
-
-[`TRACK_D_NOTES.md`](TRACK_D_NOTES.md): summary and pre-measurement projections (predictions, not results). The control's own documents are in its repository.
-
-## Engine, rules and method (stable; read before editing the engine)
-
-[`AGENTIC_ARCHITECTURE_GATES.md`](AGENTIC_ARCHITECTURE_GATES.md) (mandatory gates for any new engine or perspective), [`VERIFICATION_SESSION_PROTOCOL.md`](VERIFICATION_SESSION_PROTOCOL.md), [`GENEVAERS_CAPABILITY_GAP_REGISTER.md`](GENEVAERS_CAPABILITY_GAP_REGISTER.md), [`CKB_LAYER_EXECUTION_MODEL.md`](CKB_LAYER_EXECUTION_MODEL.md), [`ENGINE_IMPLEMENTATION_PLAN.md`](ENGINE_IMPLEMENTATION_PLAN.md), [`REFERENCE_ARCHITECTURE_MAP.md`](REFERENCE_ARCHITECTURE_MAP.md), [`TDS_vs_IL_architecture.md`](TDS_vs_IL_architecture.md) (flagged for the monograph), [`BOB_METHOD_NOTE_CKB_EFFICIENCY.md`](BOB_METHOD_NOTE_CKB_EFFICIENCY.md).
-
-## Corpus and data contracts
-
-[`CORPUS_ACCESS.md`](CORPUS_ACCESS.md), [`CORPUS_SCHEMAS.md`](CORPUS_SCHEMAS.md), [`CORPUS_RECORD_IDENTITY.md`](CORPUS_RECORD_IDENTITY.md), [`RUNTIME_DATA_LAYOUT.md`](RUNTIME_DATA_LAYOUT.md), [`VA_DATA_MODEL_CONTRACT.md`](VA_DATA_MODEL_CONTRACT.md), [`VA_ACCOUNTING_CLASSIFICATION.md`](VA_ACCOUNTING_CLASSIFICATION.md), [`VA_Data_Layouts_and_Specs.md`](VA_Data_Layouts_and_Specs.md) (a 2017 SAFR-on-Spark functional definition, background), [`DATA_ENHANCEMENT_PLAN.md`](DATA_ENHANCEMENT_PLAN.md) (an early plan under `PROJECT_BRIEF.md`; not checked against current work).
-
-## Archive
-
-[Documentation cleanup snapshots, 2026-11-12](archive/document_cleanup_2026-11-12/README.md): the superseded Track D comparison draft and the verification protocol before removal of historical status tables. Current verification rules and unresolved gates remain in the active protocol.
-
-[`archive/SESSION_HANDOFF_ARCHIVE_2026-11.md`](archive/SESSION_HANDOFF_ARCHIVE_2026-11.md): handoff entries to 2026-11-10, moved unchanged. Other documents that cite old handoff entries by name now mean this file.
-
-## Other files in `docs/`
-
-[`PROJECT_ORGANIZATION_PLAN.md`](PROJECT_ORGANIZATION_PLAN.md): the proposal this structure follows. `Universal Journal Instrument Ledger Model v0.7.xlsx` and `zenodo_metadata/`: reference material, not classified here.
+Preserved archives: [2026-11-12 cleanup](archive/document_cleanup_2026-11-12/README.md),
+[initial Track D consolidation](archive/consolidation_2026-11-15/README.md),
+[broader collaborator review](archive/collaborator_review_2026-11-15/README.md).
+The [review receipt](COLLABORATOR_REVIEW_2026-11-15.md) states coverage and remaining
+limitations. Evidence and reflections retain their contents; documentation cleanup
+never upgrades a result or authorizes a financial run.

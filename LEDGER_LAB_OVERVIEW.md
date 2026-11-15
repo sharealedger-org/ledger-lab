@@ -1,134 +1,99 @@
-# Ledger Lab — What We're Trying to Show
+# Ledger Lab: The research argument and what tests it
 
-**Start here if you haven't read the papers.**
-This document explains what Ledger Lab is testing and why, in plain English. No academic background required. The papers are referenced at the bottom for anyone who wants the full argument.
+Ledger Lab studies whether a financial architecture can preserve useful business
+detail, support new accounting/reporting questions and reduce the total cost of
+maintaining and using that information. The central proposal is an instrument
+ledger with effective-dated attributes and reusable, ordered financial processing.
+The experiment must establish where this helps, where it costs more and what it
+cannot answer. [STATUS.md](STATUS.md) gives the current checkpoint.
 
----
+## The distinction behind the research
 
-## The one-paragraph version
+Posting accumulates detailed events into balances at a chosen grain. A balance
+can omit vendor identity, timing, event sequence or other distinctions needed by
+later questions. That does not establish that an institution deleted its raw
+history: the question is which retained representation answers a request, and
+what reconstruction, maintenance and reconciliation it requires.
 
-Every major financial institution has spent decades summarizing its raw business records into pre-computed totals — balances, subledgers, General Ledgers. Those summaries are useful for accounting, but they permanently throw away information: *who* ordered what, *when* orders were placed, *what sequence* of events preceded an outcome, *which vendor relationships* lasted and which didn't. Ledger Lab tests the cost and AI consequences of that throw-away decision. Paper 1 measures what it costs — it turns out most institutions are paying far more than they need to. Paper 2 tests what an AI model can and cannot learn once that information is gone.
+An instrument ledger carries identity and declared balance dimensions forward,
+then resolves attributes under an explicit date policy. Detailed events remain
+available for audit and questions that the balance grain cannot answer. A joined
+attribute does not restore an event sequence already absent from that balance.
+Quiet instruments, changed hierarchies and late information are part of the
+research problem, not incidental edge cases.
 
----
+The execution proposal is Common Key Buffer (CKB) processing: bring compatible
+sorted records, state and reference data together, execute dependent process
+sections and let downstream sections consume generated SJEs in the declared flow.
+A key need not be vendor ID. Multiple business processes may need their own keys,
+CKB flows and connecting sorts. A logical capability need not add a physical scan;
+its compute, state, output and any new sort/materialization still have a cost.
 
-## The two questions Ledger Lab answers
+The [execution model](docs/CKB_LAYER_EXECUTION_MODEL.md) defines these conditions.
+The [reference map](docs/REFERENCE_ARCHITECTURE_MAP.md) and dated reflections
+preserve the reasoning and its development. They explain the research position;
+measurements and independent controls must test it.
 
-> **Paper 1:** What is the minimum cost to maintain a financial ledger that can answer any question you might want to ask? Most institutions are far past that minimum.
+## Two workstreams inside one experiment
 
-> **Paper 2:** No model — trained on any substrate — can answer Net Income from raw events alone. Net Income is not a fact about the world; it is a classification decision an organisation made through its chart of accounts. AI completes accounting. It does not replace it.
+[Track D](tracks/D-experiment/STATUS.md) is the main path. CCP and AIM are its
+complementary workstreams, formerly B1 and B2.
 
----
+| Workstream | Question | Evidence required |
+|---|---|---|
+| [CCP: cost/capability](tracks/D-experiment/ccp/STATUS.md) | How do retained outputs, sorting, state and enabled financial capabilities affect total cost? | Comparable workloads, actual resource/pass/storage measurements, controls and replicates |
+| [AIM: AI/exploration](tracks/D-experiment/aim/STATUS.md) | Which distinctions support prediction or reusable financial inquiry, and what is lost at a declared representation? | Matched populations/tasks, valid temporal splits, held-out questions, baselines and explicit uncertainty |
 
-## The two substrates: what survives posting, and what doesn't
+The Mix graph studies the event/balance materialization trade-off; the Process
+graph studies added financial capabilities; the Engine graph compares execution
+approaches. Their [design](docs/COST_GRAPH_DESIGN.md) contains models as well as
+measured constants. A modeled minimum is not an observed universal minimum.
+The old CCP/AIM IDs remain useful protocol/evidence identifiers.
 
-When Virginia processes a purchase order and issues a payment, the data passes through a posting step. That step is one-way:
+## What the recorded work currently supports
 
-| Data | What it contains | What posting discards |
-|------|-----------------|----------------------|
-| **Posted data** (`GL20YY.csv`) | Payments summarized by account code | Order dates, commodity types, vendor identity, revision history, vendor lifecycle |
-| **Instrument Ledger** (`LDGR20YY.csv`) | Vendor-keyed movements — vendor identity preserved | Pre-accumulation sequence only |
+- Monthly VA pipelines completed at corpus scale, including a later expanded
+  expenditure/revenue/PO workload. Named output sets matched across selected
+  executions. Scope, implementation and timing differ between checkpoints.
+- The separate expanded reporting corpus attempt failed. Later bounded fixtures
+  exercise revised reporting and synthetic connections; they do not establish
+  successful corpus reporting or a new cost point.
+- AIM3 has task-specific predictive signal. Posted-total/instrument-balance
+  baselines and combined features complicate any broad advantage claim; a fiscal-
+  period discrepancy leaves the reported incremental gain provisional.
+- AIM4 failed its implemented Q4-ratio test; the locked STL method was not run.
+  A three-model training comparison and a language-prior effect are not established.
+- The FY2003/04 component pilot completed through real downstream reporting with
+  controls, while explicit source/rule lineage remains partial. Its amounts are
+  synthetic envelopes, not verified VA financial anchors. No payroll or AI result
+  follows from the employee responsibility records.
 
-**Ledger Lab uses public Virginia procurement data because both sides of this discarding are available** — raw purchase orders and posted expenditure records. This makes the destruction measurable.
+Use each workstream's status for exact receipts and limitations. The
+[audit register](docs/VERIFICATION_AUDIT_REGISTER.md) remains the evidence ledger.
+These summaries do not substitute for checking a numerical claim at its source.
 
----
+## Phases and papers
 
-## Paper 1 — The cost experiment (CCP1 through CCP5)
+Phase 1 is direct VA corpus work supporting results-based revisions of Papers 1/2.
+Phase 2 is vendor-centered synthetic work, likely informing Papers 3/4 on improved
+cost curves and AI models. Phase 3 expands the business-process topology from
+allocations to reclass. Further versioned data design may precede formal protocol
+freeze; the [current strategy](docs/SYNTHETIC_CONNECTED_PROCESS_STRATEGY.md) owns
+that sequence. Paper writing proceeds independently in the private member repository.
 
-Ledger Lab runs the Virginia corpus through five capability levels (CCP1–CCP5) and measures compute time, storage, and peak memory at each level.
+Track A's external insurer material is intended for the paper's conclusion;
+it is not local corroborating evidence until a qualified result is supplied.
+Berka/Track C is retained as a possible exploratory footnote with unknown source
+lineage and a failed locked protocol, outside the main evidence path.
 
-- **CCP1** is the GL baseline — the most collapsed instance of the fixed-posting-key class (GL, sub-ledger, data warehouse, data mart all sit in the same structural position). It measures the cost of what institutions run today.
-- **CCP2** is the Instrument Ledger — vendor identity preserved, one movement row per vendor-period. This is the bowl minimum.
-- **CCP3–CCP5** add reporting views, revaluation engines, and allocation — each one measured as a marginal cost on top of CCP2.
+## How to collaborate or challenge the approach
 
-The finding: CCP1 → CCP2 is the architectural leap. CCP2 → CCP5 is a small additional cost. Adding the full enterprise capability stack costs almost nothing once you're at the bowl minimum.
+Start with Track D, then the workstream relevant to your task. The
+[contributor guide](CONTRIBUTOR_ONBOARDING.md) explains the implementation and
+reading discipline. Preserve a failed test or alternative explanation so another
+researcher can examine it. The archives retain the fuller development of the
+argument; agreement with the thesis is not a condition for contributing.
 
----
-
-## Paper 2 — The AI experiment (three models + AIM illustrations)
-
-Paper 2 has two parts.
-
-### Part 1 — What a posting system structurally cannot know (AIM illustrations)
-
-Three tests run against both the CCP1 posted output and the CCP2/CCP3 instrument ledger. The same model, same algorithm — different substrate. The gap illustrates what posting permanently destroys:
-
-| Test | Question | Why posting can't answer it |
-|------|----------|-----------------------------|
-| **AIM1** — Non-injectivity | How many distinct order patterns collapsed to the same posted key? | Posting discards vendor identity; the collapse is unmeasurable from the GL |
-| **AIM3** — Vendor survival | Can we predict which vendors will stop doing business with the state? | Posted records have no concept of vendor entry or exit — only transactions |
-| **AIM4** — Ordering seasonality | Does *when* orders are placed carry fiscal-year-end budget signal? | Posted payment dates carry none of the ordering-date timing |
-
-These are illustrations of the information-destruction claim. The structural proof is Paper 1's permutation table — the AIM tests make it concrete.
-
-### Part 2 — The three-model experiment (primary Paper 2 evidence)
-
-The dominant institution practice today: take a pretrained LLM — trained on the internet, which contains language — and fine-tune it on your financial data. The problem is that the language prior survives fine-tuning. The model learns spurious associations between words that happen to appear in customer names and geographic identifiers. More data does not fix it. Better algorithms do not fix it. It is a contamination problem, not a scale problem.
-
-Ledger Lab tests this with three models on the same corpus:
-
-| # | Model | What it trains on | Language prior? |
-|---|-------|--------------------|----------------|
-| 1 | **Posted-FineTune** | Pretrained LLM fine-tuned on posted data (`GL20YY.csv`) | Yes — survives fine-tuning |
-| 2 | **IL-FineTune** | Pretrained LLM fine-tuned on Instrument Ledger (`LDGR20YY.csv`) | Yes — survives fine-tuning |
-| 3 | **IL-Native** | Structured model built directly from the Instrument Ledger — no pretrained LLM | None |
-
-- **Gap 1→2** = the substrate effect: better data, same contaminated prior
-- **Gap 2→3** = the language prior effect: same data, prior removed
-- **Gap 1→3** = total cost of today's institution pattern
-
-**IL-Native closes the experiment with Net Income.** It can answer it — because the Instrument Ledger is the posting layer, and Net Income is a chart-of-accounts classification available there. Posted-FineTune cannot answer Net Income from raw events alone — that classification is not in the events, it is in the posting rules.
-
----
-
-## What counts as overall success
-
-**Paper 1:** The delta CCP1→CCP2 is measurable, non-trivial, and stable across three replicates. CCP5 ≈ CCP4 (single-pass universality holds).
-
-**Paper 2 Part 1:** AIM1, AIM3, and AIM4 each show a non-zero gap between the CCP1 substrate result and the CCP2/CCP3 result, using the same algorithm on both.
-
-**Paper 2 Part 2:** IL-Native outperforms Posted-FineTune on vendor survival and expenditure forecasting. The Net Income closing argument holds logically.
-
----
-
-## Suggested run order
-
-| Step | Run | Why |
-|------|-----|-----|
-| 0 | **AIM5** (agency name classifier) | No corpus run needed. Produces agency reconciliation table that unblocks AIM2 and CCP5. Cheapest possible first result. |
-| 1 | **CCP1** (GL baseline + permutation table) | Establishes status-quo cost and produces posted substrates for AIM1/3/4 comparison. |
-| 2 | **AIM1 against CCP1** | Run non-injectivity count against GL output and permutation table — both expected to show high collapse. |
-| 3 | **CCP2** (Instrument Ledger) | Left anchor of the minimum cost curve. |
-| 4 | **AIM1 against CCP2** | Non-injectivity now measurable with full fidelity. Compare gap to CCP1 result. |
-| 5 | **CCP3** (IL + Step 5v views) | Step 5v views are the AIM3/AIM4 feature tables. Delta CCP2→CCP3 = cost of producing all illustration substrate. |
-| 6 | **AIM4** (ordering seasonality) | Cheapest AIM on CCP3 views — no join required. |
-| 7 | **AIM3** (vendor survival) | PO-only survival model against CCP3 view. |
-| 8 | **AIM2** (commodity forecasting) | Secondary. Requires AIM5 reconciliation table. |
-| 9 | **CCP4, CCP5** | Revaluation + allocation cost points. AIM5 prerequisite for CCP5. |
-| 10 | **Three-model experiment** | Primary Paper 2 Part 2 evidence. Posted-FineTune / IL-FineTune / IL-Native on downstream tasks. Owner approval required before writing Python training scripts. |
-
----
-
-## Going deeper — the papers
-
-If you want the full argument behind these tests:
-
-| Paper | What it argues | Read for... |
-|-------|---------------|-------------|
-| **Paper 1: The Minimum Cost Curve** ([`org-members/research/01-minimum-cost-curve.md`](https://github.com/sharealedger-org/org-members/blob/main/research/01-minimum-cost-curve.md)) | Most enterprises are maintaining far too many pre-computed balance tables. The cost of those tables (storage, updates, reconciliation) now exceeds the cost of recomputing from raw events. There is a mathematically identifiable optimal point, and virtually every major enterprise has drifted past it. | *Why the architecture problem exists and how to measure it.* |
-| **Paper 2: Business Event Repositories** ([`org-members/research/02-business-event-repositories.md`](https://github.com/sharealedger-org/org-members/blob/main/research/02-business-event-repositories.md)) | The same information that balance-posting discards is exactly what AI models need. A model trained on raw events before posting is provably capable of learning things that no model trained on posted balances can learn — regardless of algorithm quality. Ledger Lab is the reproducible test of how large that gap is. | *Why the AI consequence follows from the architecture problem, and what the experiment is designed to show.* |
-
-The VA corpus tests (this document) are the **Track B** open-data implementation of the experimental design in Paper 2 §5. Track A (the P&C insurer's 25.5-billion-row event repository) is the primary corpus; Track B is the publicly verifiable version. A result that holds on both tracks is materially stronger than either alone.
-
----
-
-## Technical details and open decisions
-
-Full test specifications, data paths, acceptance thresholds, and the Test 0 feasibility findings (what cross-file joins are and aren't possible in the public corpus) are in:
-
-- **[`docs/TEST_DESIGN.md`](./docs/TEST_DESIGN.md)** — unified CCP cost-point and AIM model evidence test design (authoritative)
-- **[`docs/RESEARCH_OBJECTIVES.md`](./docs/RESEARCH_OBJECTIVES.md)** — master map of all experiments across both papers, run order, and open decisions
-- **[`ckb-analysis.md`](./ckb-analysis.md)** — code-to-paper mapping for the GenevaERS pipeline implementation
-
----
-
-*This document is part of the Ledger Lab repository. Last updated: 2026-11-05 — three-model experiment replaces AIM-centric Paper 2 framing; model names Posted-FineTune / IL-FineTune / IL-Native introduced.*
+The [original overview](docs/archive/collaborator_review_2026-11-15/LEDGER_LAB_OVERVIEW.md)
+is retained as research history. It stated several expected results as findings;
+this overview distinguishes the motivating claims from evidence collected so far.

@@ -37,7 +37,7 @@ Three complete 14-year executions were performed at the **Monthly** point ($X=30
 | **Run 4 (`20261111_064052`)** | 2-chain parallel, `caffeinate` active | 8,544 s | 11,207 s | 1.36 GB | 42 / 42 PASS (`verified`) |
 
 ### Deterministic Output Equivalence (`verified`)
-* **Data File Identity:** All 74 data files across 14 fiscal years listed in [`gold/MANIFEST.csv`](../../data/test_evidence/corpus_runs/run_20261111_014229/gold/MANIFEST.csv) (`LDGR*`, `GL*`, `PERM_TBL*`, `PERM_SUMMARY*`, `POQuarantineFY*`, and 4 summary views) are **100% byte-identical (0 diffs, 0 missing)** across Run 3 and Run 4.
+* **Data File Identity:** All 74 data files across 14 fiscal years listed in [`gold/MANIFEST.csv`](../../../data/test_evidence/corpus_runs/run_20261111_014229/gold/MANIFEST.csv) (`LDGR*`, `GL*`, `PERM_TBL*`, `PERM_SUMMARY*`, `POQuarantineFY*`, and 4 summary views) are **100% byte-identical (0 diffs, 0 missing)** across Run 3 and Run 4.
 * **Merged SJE Hash Identity:** All 14 merged SJE files produced in Run 3 and Run 4 share identical SHA-256 digests (`MANIFEST_SJE.csv`).
 
 ---

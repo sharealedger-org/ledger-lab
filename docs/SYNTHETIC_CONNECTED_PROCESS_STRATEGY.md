@@ -11,7 +11,7 @@ phase introduction before Papers 01/02, another before 03/04, and introductions
 at subsequent phase boundaries. Each frames the papers that follow and can
 summarize prior papers' conclusions, preserving their limitations and separating
 results from proposed experiments. See the
-[member writing handoff](../tracks/D-control/MEMBER_REPO_EDITING_PLAN_2026-11-14.md#phase-introduction-requirement--owner-update-2026-11-15).
+[member writing handoff](../tracks/D-experiment/MEMBER_REPO_EDITING_PLAN_2026-11-14.md#phase-introduction-requirement--owner-update-2026-11-15).
 Writing remains in separate paper sessions; exact later paper groupings are open.
 
 **Current transition, owner clarification 2026-11-15:** We are closing Phase 1 by
