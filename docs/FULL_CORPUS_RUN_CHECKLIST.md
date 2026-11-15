@@ -22,26 +22,32 @@ historical result and identify the new workload separately.
 Before any future launch, complete this current checklist; the dated sections
 below are historical troubleshooting guidance, not an unfinished baseline queue.
 
-- [ ] Name the selected workload: historical-baseline reproduction, synthetic-reference
+- [x] Name the selected workload: historical-baseline reproduction, synthetic-reference
       exploration, or versioned generated-component scenario. State its purpose and
       frozen code/input/rule/reference hashes; do not substitute one for another.
-- [ ] Identify prior evidence being reused, its measured population and limits.
+- [x] Identify prior evidence being reused, its measured population and limits.
       A new workload does not require repeating a valid baseline merely because
       synthetic preparation is underway; changed measured behavior needs its own checks.
-- [ ] For synthetic-reference exploration, declare real raw inputs versus simulated
+- [x] For synthetic-reference exploration, declare real raw inputs versus simulated
       references/histories, source-family policy, zero/placeholder identity behavior,
       assignment provenance and actual downstream consumers. Excluded older assignment
       drafts and their generated artifacts are not accepted inputs by default.
-- [ ] Confirm the selected generation/assignment path is accepted and ready. The
+- [x] Confirm the selected generation/assignment path is accepted and ready. The
       bounded FY2003/04 pilot and prepared FY2012 anchors do not establish corpus
       readiness. Apply the current strategy, pilot contract and Track D gates.
-- [ ] Run unchanged focused controls and the named new workload checks. Profile a
+- [x] Run unchanged focused controls and the named new workload checks. Profile a
       representative year under the selected current policies: zero movement and
       balance rows, bytes/widths, posting-key and report-output cardinalities.
       Historical zero-only projections are conditional, not whole-run guarantees.
-- [ ] Admit live time, retained output, simultaneous scratch and per-process memory;
+- [x] Admit live time, retained output, simultaneous scratch and per-process memory;
       distinguish cumulative writes from peak occupancy. Confirm power and competing
       processes, isolated attempt paths, fail-stop behavior and sufficient run window.
+      **2026-11-15 current receipt:**
+      [synthetic-reference v2 admission](../data/test_evidence/synthetic_reference_corpus_v2_20261115/README.md).
+      These completed marks apply to this selected version only. Three identical
+      monthly both-family executions are authorized, each with expanded reporting;
+      225-GiB/live-first-run allocation gates and a 20-GiB stop remain active.
+      Conditional all-three plan is one to two days, not a same-day guarantee.
 - [ ] Only after admission, launch locally in the background with caffeinate and
       monitoring; record command, PIDs, logs and completion/control markers.
 - [ ] Verify successful outputs and hashes before optional OneDrive archival;

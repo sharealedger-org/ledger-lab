@@ -1,0 +1,34 @@
+[info] welcome to sbt 1.10.11 (Eclipse Adoptium Java 21.0.8)
+[info] loading settings for project global-plugins from idea.sbt...
+[info] loading global plugins from /Users/ktwitchell001/.sbt/1.0/plugins
+[info] loading settings for project va_pipeline-build from assembly.sbt, plugins.sbt...
+[info] loading project definition from /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/project
+[info] loading settings for project root from build.sbt...
+[info] set current project to va_pipeline (in build file:/Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/)
+[info] running org.universalledger.foundation.va.corpus.ConnectedViewsCheck --report /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/corpus_admission_20261115_receipts_v2/fy12/report_literal_v3
+PASS reconciliation.csv rows=1031381
+PASS synthetic_validation.csv rows=20
+PASS synthetic_conservation.csv rows=548608
+PASS financial_rows=23292369 vendors=17144 attributed_input_rows=4930046 unattributed_input_rows=18362323
+PASS vendor_temporal_summary.csv rows=278
+PASS vendor_attribute_summary.csv rows=676
+[success] Total time: 11 s, completed Nov 15, 2026, 1:45:49 PM
+[info] running org.universalledger.foundation.va.corpus.CorpusAdmissionSummary --report /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/corpus_admission_20261115_receipts_v2/fy12/report_literal_v3 --out /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/corpus_admission_20261115_receipts_v2/fy12/admission_summary_literal_v3
+[error] java.lang.IllegalArgumentException: requirement failed
+[error] 	at scala.Predef$.require(Predef.scala:268)
+[error] 	at org.universalledger.foundation.va.corpus.CorpusAdmissionSummary$.$anonfun$inspect$1(CorpusAdmissionSummary.scala:18)
+[error] 	at org.universalledger.foundation.va.corpus.CorpusAdmissionSummary$.$anonfun$inspect$1$adapted(CorpusAdmissionSummary.scala:14)
+[error] 	at scala.collection.Iterator.foreach(Iterator.scala:943)
+[error] 	at scala.collection.Iterator.foreach$(Iterator.scala:943)
+[error] 	at scala.collection.AbstractIterator.foreach(Iterator.scala:1431)
+[error] 	at scala.collection.IterableLike.foreach(IterableLike.scala:74)
+[error] 	at scala.collection.IterableLike.foreach$(IterableLike.scala:73)
+[error] 	at scala.collection.AbstractIterable.foreach(Iterable.scala:56)
+[error] 	at org.universalledger.foundation.va.corpus.CorpusAdmissionSummary$.inspect(CorpusAdmissionSummary.scala:14)
+[error] 	at org.universalledger.foundation.va.corpus.CorpusAdmissionSummary$.main(CorpusAdmissionSummary.scala:29)
+[error] 	at org.universalledger.foundation.va.corpus.CorpusAdmissionSummary.main(CorpusAdmissionSummary.scala)
+[error] 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+[error] 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+[error] stack trace is suppressed; run 'last Compile / runMain' for the full output
+[error] (Compile / runMain) java.lang.IllegalArgumentException: requirement failed
+[error] Total time: 16 s, completed Nov 15, 2026, 1:46:05 PM

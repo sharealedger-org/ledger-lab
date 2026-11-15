@@ -1,0 +1,8 @@
+file,rows,bytes,zero_rows,zero_bytes,max_record_bytes
+movement_history.csv,1031381,118244211,335103,33383952,158
+balance_history.csv,1031381,120145412,335103,33960644,160
+reconciliation.csv,1031381,156631686,335103,46035932,208
+relationships.csv,274992,41522397,47919,8474555,237
+vendor_temporal_cuts.csv,6194991,2646476195,2017323,396726009,666
+vendor_attribute_totals.csv,1063374,126975472,45032,5988024,206
+synthetic_vendor_coverage.csv,17144,1301808,1,76,80

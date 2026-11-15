@@ -11,7 +11,7 @@ object CorpusAdmissionSummary {
     val manifest=ReportingSupport.writer(out,"input_manifest.csv",Seq("path","bytes","physical_lines","sha256"))
     val result=ReportingSupport.writer(out,"report_profile.csv",Seq("file","rows","bytes","zero_rows","zero_bytes","max_record_bytes"))
     try Vector("movement_history.csv","balance_history.csv","reconciliation.csv","relationships.csv",
-      "vendor_temporal_cuts.csv","vendor_attribute_summary.csv","synthetic_vendor_coverage.csv").foreach { name=>
+      "vendor_temporal_cuts.csv","vendor_attribute_totals.csv","synthetic_vendor_coverage.csv").foreach { name=>
       val file=new File(report,name); val in=new IdentityAudit.Read(file,manifest)
       var rows=0L; var zero=0L; var bytes=0L; var max=0
       try {

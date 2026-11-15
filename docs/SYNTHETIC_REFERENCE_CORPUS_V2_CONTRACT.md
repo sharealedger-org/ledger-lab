@@ -88,3 +88,14 @@ before/after this post-measurement storage operation separately; it is not an
 engine optimization or a change to logical retention. No historical data is
 selected and no differing file is replaced. Archive copies remain independent.
 Do not delete local results without separate authority.
+
+Admission completed on the corrected FY2012 actual report; compact receipt:
+`data/test_evidence/synthetic_reference_corpus_v2_20261115/README.md`.
+Optional --shareProfiles permits post-evaluation sharing of byte-identical files
+between the first full run and these task-created admission profiles, including
+the explicitly rejected first profile. Each file requires SHA-256 plus byte
+comparison; every path/content and rejected status remain intact. This is storage
+sharing only, not equivalence or acceptance of different populations. Independent
+full executions still require complete product equality. Before later runs,
+require at least the measured first-run allocation plus a 20-GiB reserve, and
+retain a separate 20-GiB low-scratch stop during execution.

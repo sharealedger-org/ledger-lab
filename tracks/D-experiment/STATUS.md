@@ -42,6 +42,17 @@ in AGENTS and the contributor guide. Runtime checkpoints and next gates are unch
 
 ## Current plans and evidence
 
+**2026-11-15 corrected real-year admission passed:** All financial/source-policy,
+actual report and cardinality checks pass; [receipt](../../data/test_evidence/synthetic_reference_corpus_v2_20261115/README.md).
+FY2012 has 17,592,858 zero movements and 335,103 zero posted keys; all receipt
+legs remain zero and GL is unchanged. Report checks: 1,031,381 reconciliation,
+20 history, 548,608 conservation PASS; 23,292,369 financial rows covered. Extract
+and reduce 24.7 minutes, 3.2 GiB retained, peak RSS 1.25 GiB. Ready to launch three
+identical full executions plus reports with live 225-GiB/first-run-allocation
+admission and a 20-GiB low-disk stop. One-to-two-day planning sensitivity; no
+same-day guarantee or new formal cost point. Verified sharing preserves every
+result/profile path and byte; no local result deletion. Archival follows success.
+
 **2026-11-15 canonical quote boundary:** Corrected FY2012 financial/source-policy
 checks pass: all 2,745,656 receipt legs zero; GL byte-identical across the identity
 policy change. Reporting exposed literal quotes in canonical SJE fields being

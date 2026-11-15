@@ -1937,3 +1937,32 @@ suffixed until publication), using the unchanged committed financial snapshot an
 same prepared assignments. Latest retry marker is LITERAL_RETRY_FAILED, with
 PREFLIGHT_COMPLETE written only after report validation and cardinality census.
 Admission and all three full runs remain pending. No Control read or cloud copy.
+
+### Corrected real-year admission passed; three-run preparation frozen
+
+47-test baseline/quote checks and the actual real-year report pass. Report
+reconciliation 1,031,381/1,031,381 PASS; history 20/20; conservation 548,608/548,608;
+all 23,292,369 financial rows covered. Final bounded row/byte census passes in
+admission_summary_v4. An initial census-only header assumption selected the global
+attribute summary; corrected it to the actual vendor_attribute_totals table.
+The financial/report outputs were already complete and were not changed by that
+post-engine diagnostic correction. Compact metrics, counts, test/failure logs and
+planning limits are in data/test_evidence/synthetic_reference_corpus_v2_20261115/.
+
+Extract/reduce engine time 1,481.527 seconds, including 549.667 seconds of order
+preparation. Two report input passes, fixed 1-GiB heap/four logical CPUs; OS peak
+RSS 1,347,203,072 bytes. Retained report allocation 3,342,428 KiB; 7.160GB synthetic
+spill writes are cumulative, not simultaneous scratch. Actual temporal output
+6,194,991 rows, including 2,017,323 zero-ID rows; posted zero keys 335,103.
+All 385 raw hashes pass; current source/reference/master/rules/history hashes
+pass; source tree has no .part files. Host on AC, 16 GiB, i7-5557U, 2/4 CPUs.
+
+Admit the first full execution with roughly 418 GiB live free space, 225-GiB
+minimum before each run, additional subsequent gate of actual first-run retained
+allocation +20 GiB, and a scoped 20-GiB low-disk stop. Three-run runtime/storage
+projections remain conditional (~one to two days, ~200–220 GiB per retained run
+before post-evaluation sharing); real measurements/guards supersede them. Tested
+matching-files-only storage sharing preserves differing files and failed-profile
+status while sharing only SHA-256/byte-identical files from an evaluated full run.
+No local result deletion authorized/performed. Whole-product equality remains
+mandatory across full executions. No new formal cost point or GERS closure.

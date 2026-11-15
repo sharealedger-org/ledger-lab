@@ -1,0 +1,9 @@
+metric,value
+financial_rows,23292369
+output_rows,7258365
+conservation_checks,548608
+missing_transaction_date_rows,0
+partial_spill_bytes,7159567051
+partial_merge_passes,53
+peak_partial_keys,10000
+partial_capacity_keys,10000

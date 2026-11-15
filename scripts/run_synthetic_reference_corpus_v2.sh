@@ -4,19 +4,27 @@ set -euo pipefail
 repo="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 export PATH="/Users/ktwitchell001/.local/sbt/bin:$PATH"
 inputs=""; out=""; years=03,04,05,06,07,08,09,10,11,12,13,14,15,16
-minimum=160
+minimum=225; profiles=""
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --inputs) inputs="$2"; shift 2 ;;
     --out) out="$2"; shift 2 ;;
     --years) years="$2"; shift 2 ;;
     --minFreeGiB) minimum="$2"; shift 2 ;;
+    --shareProfiles) profiles="$2"; shift 2 ;;
     *) echo "Unknown option: $1" >&2; exit 2 ;;
   esac
 done
 [[ -s "$inputs/INPUTS_COMPLETE" && "$out" = /* && ! -e "$out" && "$minimum" =~ ^[0-9]+$ ]] || exit 2
 [[ -s "$inputs/receipt_policy/SOURCE_POLICY_COMPLETE" ]] || { echo "Receipt-safe source policy required" >&2; exit 2; }
 for path in "$inputs" "$out"; do [[ "$path" != *[[:space:]]* ]] || exit 2; done
+profile_list=()
+if [[ -n "$profiles" ]]; then
+  IFS=, read -ra profile_list <<< "$profiles"
+  for profile in "${profile_list[@]}"; do
+    [[ "$profile" = /* && "$profile" != *[[:space:]]* && ( -s "$profile/EVALUATED" || -s "$profile/PROFILE_NOT_ADMITTED" ) ]] || exit 2
+  done
+fi
 [[ "$years" =~ ^[0-9][0-9](,[0-9][0-9])*$ ]] || exit 2
 git -C "$repo" diff --quiet -- scripts 02-foundation/va_pipeline || exit 2
 git -C "$repo" diff --cached --quiet -- scripts 02-foundation/va_pipeline || exit 2
@@ -36,7 +44,13 @@ for current in monthly_a monthly_b monthly_c; do
   [[ ! -e "$out/STOP" && "$(git -C "$repo" rev-parse HEAD)" == "$revision" ]] || exit 2
   git -C "$repo" diff --quiet -- scripts 02-foundation/va_pipeline || exit 2
   available="$(df -Pk "$out" | awk 'END {print $4}')"
-  ((available >= minimum * 1024 * 1024)) || { echo "Scratch admission failed before $current" >&2; exit 2; }
+  required=$((minimum * 1024 * 1024))
+  if [[ -s "$out/monthly_a/EVALUATED" ]]; then
+    first_kib="$(du -sk "$out/monthly_a" | awk '{print $1}')"
+    observed_required=$((first_kib + 20 * 1024 * 1024))
+    ((observed_required <= required)) || required="$observed_required"
+  fi
+  ((available >= required)) || { echo "Scratch admission failed before $current: available_kib=$available required_kib=$required" >&2; exit 2; }
   LC_ALL=C shasum -a 256 -c "$inputs/prepared_input_sha256.txt" > "$out/$current.input_check.log"
   run="$out/$current"; mkdir -p "$run/logs"
   printf '%s,RUNNING,%s\n' "$current" "$(date -u +%FT%TZ)" >> "$out/status.csv"
@@ -77,6 +91,10 @@ for current in monthly_a monthly_b monthly_c; do
   printf '%s,EVALUATED,%s\n' "$current" "$(date -u +%FT%TZ)" >> "$out/status.csv"
   if [[ "$current" != monthly_a ]]; then
     bash "$repo/scripts/deduplicate_verified_run_storage.sh" "$out/monthly_a" "$run" > "$run/storage_deduplication.log" 2>&1
+  elif (( ${#profile_list[@]} )); then
+    for profile in "${profile_list[@]}"; do
+      bash "$repo/scripts/deduplicate_verified_run_storage.sh" "$run" "$profile" --matching-files-only >> "$run/profile_storage_sharing.log" 2>&1
+    done
   fi
 done
 date -u +%FT%TZ > "$out/THREE_EXECUTIONS_EVALUATED"
