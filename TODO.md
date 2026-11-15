@@ -40,6 +40,8 @@ Seeded 2026-11-11 from the handoff entries. On the same day the handoff was trim
 
 ## Three-model experiment (Track B2, on hold 2026-11-12)
 
+- **Phase 1b native-AI redesign (owner, 2026-11-14):** Design reusable conditional exploration of corpus dimensions, measures and learned concepts; define exact versus estimated answers, held-out question combinations and a bounded Intel pilot. Keep prior task-specific tests as limited evidence. See `tracks/D-control/CODEX_REFLECTIONS.md`, 2026-11-14 entry. Do not select a runtime/model or claim capacity without investigation.
+
 - [ ] **Track B review prerequisite:** resolve `00YY/MM` payment-period handling in `fit_vendor_survival_balance.py` and `fit_vendor_survival_combined.py` against `three_model_core.py`, then rerun affected comparisons with old evidence preserved. Codex source finding, 2026-11-12 22:37 AZT; score impact unknown. Before LLM training, distinguish a practical model comparison from a language-prior ablation and fix input/inference contracts ([assessment](tracks/D-control/PAPER2_ASSESSMENT_2026-11-12.md)). No new Python authorized by this note.
 
 - [ ] **Owner:** decide D9, net income (proposed: net expenditure per agency and fiscal year, `EXP*` debits only; `docs/THREE_MODEL_EXPERIMENT_PLAN.md`). Reopened 2026-11-12: raw `apa_revenue` exists (17.75M rows) and the TTL has a revenue path with no real-corpus run, so "no revenue" is a Gold limit, not a corpus limit. Candidates: reserves per fund (cash or encumbrance basis) or the statement tie-out (plan section 8).
@@ -62,6 +64,11 @@ Seeded 2026-11-11 from the handoff entries. On the same day the handoff was trim
 
 ## Track D: control comparison (Track D)
 
+Current direction is the 2026-11-15 [strategy](docs/SYNTHETIC_CONNECTED_PROCESS_STRATEGY.md)
+and [Phase 2 proposal](docs/PHASE_TWO_GENERATION_CKB_PROPOSAL.md). Older Phase 1b
+sequencing and reclass-in-Phase-2 tasks below are historical backlog; papers are
+revised separately and broader allocation/reclass work belongs to Phase 3.
+
 - Build the Phase 2 scenario matrix and confirm monograph paper mapping before revising generation; see [connected-process strategy](docs/SYNTHETIC_CONNECTED_PROCESS_STRATEGY.md) for Phase 3 ideas and bias controls.
 
 - [ ] **Pre-question foundation (owner, 2026-11-15):** connect/scale synthetic inputs; add date/coverage/hierarchy validation views; complete multidimensional vendor CKB reporting; verify the connected fixture; then run and inspect one new full corpus execution before defining Phase 2 questions. Reclass engine creation/extension is deferred to the Q2 response.
@@ -80,6 +87,10 @@ Seeded 2026-11-11 from the handoff entries. On the same day the handoff was trim
 - [ ] **PO quote-aware recovery (2026-11-14):** CKB quarantines ~24,700 PO records that the control recovers via two-pass parsing (RFC-4180 boundary detection + strict `csv.reader` first, literal-tab fallback). Root cause in [`VERIFICATION_AUDIT_REGISTER.md`](docs/VERIFICATION_AUDIT_REGISTER.md) (bottom entry). **Owner decision:** fix `PORecordReader.scala` before or after Phase 2 synthetic data work. Impact on vendor survival / AI features unknown until per-year breakdown is run.
 
 - [ ] **Phase 2 plan (2026-11-14):** [`docs/PHASE2_SYNTHETIC_DATA_PLAN.md`](docs/PHASE2_SYNTHETIC_DATA_PLAN.md) drafted — awaits owner review. Six strands: (A) SAL enrichment; (B) ACFR two-sided tie-out closing to $571,136K fund balance change FY2012; (C) six engine demonstrations; (D) four expenditure subledgers; (E) three revenue/tax subledgers; (F) multi-currency and virtual asset investment subledger. Strand F is grounded in Virginia's real investment structure: VRS $57B pension fund holds international equities (EUR/GBP/JPY) — `INTEREST ON VRS INVESTMENTS` source 07114 already in corpus; three simulation levels: Level 1 VRS international equity (fully grounded), Level 2 university endowment foreign notes (partly grounded), Level 3 declared virtual asset simulation (BTC from FY2014, ETH from FY2016). Key property: adding BTC/USD to the `FX_RATES.csv` rate table requires zero engine code changes — demonstrates architecture handles virtual currencies identically to traditional FX. 41 owner decisions listed. No implementation begins until owner approves sub-tracks.
+- [ ] **Current editing handoff (2026-11-14):** Execute `tracks/D-control/MEMBER_REPO_EDITING_PLAN_2026-11-14.md` in the authoritative member repository: revise monograph 00 plus Papers 1/2 for Denna review. Generation and expanded-view repair do not block this package.
+- [ ] **Independent Bob handoff (2026-11-14):** Execute `docs/PHASE_1B_SYNTHETIC_DATA_INTEL_PLAN.md` in a dedicated Intel generation role; preserve original data, measure enhancement costs separately, and maintain the Control disclosure boundary. No run launched by this planning session.
+
+- **Phase 1b sequencing and separation (owner, 2026-11-14):** Complete Phase 1b before paper revision. Prepare a separate generated-data design and reusable generation materials for Intel; log provenance and enhancement costs for documentation only. Keep companion views/native-AI design separate from any later Control requirements package. Control may use supplied generated data without rerunning generation.
 
 - [ ] **Interim Papers 1 and 2 (2026-11-13):** follow `tracks/D-control/PAPER_VERSION_2_RESEARCH_PLAN.md`: evidence table, coherent revised papers, cross-paper claim review, and owner handoff. No formal Track B closure is implied; Phase 2 foundation work and Q2 remain distinct from this writing task.
 
