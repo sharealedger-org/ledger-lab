@@ -21,6 +21,7 @@ for path in "$inputs" "$out"; do [[ "$path" != *[[:space:]]* ]] || exit 2; done
 git -C "$repo" diff --quiet -- scripts 02-foundation/va_pipeline || exit 2
 git -C "$repo" diff --cached --quiet -- scripts 02-foundation/va_pipeline || exit 2
 mkdir "$out"
+printf '%s\n' "$$" > "$out/driver.pid"
 revision="$(git -C "$repo" rev-parse HEAD)"
 printf 'revision=%s\ninputs=%s\nyears=%s\nminimum_free_GiB=%s\n' "$revision" "$inputs" "$years" "$minimum" > "$out/config.txt"
 printf 'run,status,utc\n' > "$out/status.csv"
