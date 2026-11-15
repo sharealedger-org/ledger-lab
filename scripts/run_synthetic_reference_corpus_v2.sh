@@ -25,7 +25,8 @@ printf 'run,status,utc\n' > "$out/status.csv"
 current=initialization
 trap 'rc=$?; if ((rc)); then printf "%s,FAILED_%s,%s\n" "$current" "$rc" "$(date -u +%FT%TZ)" >> "$out/status.csv"; fi' EXIT
 if command -v caffeinate >/dev/null; then caffeinate -i -s -w $$ & fi
-export JVM_OPTS='-Xms256m -Xmx1024m -XX:ActiveProcessorCount=4'
+# The installed sbt launcher reads JAVA_OPTS (not JVM_OPTS).
+export JAVA_OPTS='-Dfile.encoding=UTF-8 -Xms1024m -Xmx1024m -XX:ActiveProcessorCount=4'
 scala() { (cd "$repo/02-foundation/va_pipeline" && /usr/bin/time -l sbt -batch "$1") > "$2" 2>&1; }
 IFS=, read -ra year_list <<< "$years"
 for current in monthly_a monthly_b monthly_c; do
