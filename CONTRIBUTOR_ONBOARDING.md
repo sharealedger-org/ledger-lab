@@ -96,7 +96,11 @@ questions or revised papers without the established owner-directed process.
 
 At session end, update the relevant status, place open actions in TODO, and leave
 a short handoff with evidence, limitations and next step. Keep detailed receipts
-with their evidence, and attributed reasoning in its journal. Retain superseded
+with their evidence, and attributed reasoning in its journal. Before appending a
+reflection, read the current Phoenix clock and include its full date, time and
+zone in the heading, even for another entry in the same session; see
+[the reflection timestamp rule](AGENTS.md#reflection-timestamps). Never infer a
+missing historical writing time. Retain superseded
 plans and failed approaches in clearly labeled archives; link them when their
 reasoning matters. Archive retention supports scrutiny without making old
 instructions part of the default reading path.

@@ -33,7 +33,15 @@ Redundant pointer files have been removed; current links go directly to retained
 documents. The archive keeps their reasoning and unfinished ideas without making
 those old assignments part of the active reading path. No runtime evidence changes.
 
+**2026-11-15 reflection on the transition:** [From establishing the laboratory to carrying an experiment forward](CODEX_REFLECTIONS.md#2026-11-15-091542-azt-utc0700--from-establishing-the-laboratory-to-carrying-an-experiment-forward)
+considers the end of startup and approaching Phase 1 conclusion, with CCP/AIM as
+parts of one inquiry. Qualitative interpretation, not formal phase closure or new
+evidence. The journal moved intact from `D-control` to `D-experiment` at `9cab0c0`;
+`484925d` removed only the old-path pointer. Timestamp requirements are now explicit
+in AGENTS and the contributor guide. Runtime checkpoints and next gates are unchanged.
+
 ## Current plans and evidence
+
 
 **2026-11-15 zero-key practicality measured:** [Receipt](../../data/test_evidence/component_pilot_0304_20261115/zero_key_projection/README.md).
 Three actual report probes passed under fixed 1-GiB heap/four logical CPUs.

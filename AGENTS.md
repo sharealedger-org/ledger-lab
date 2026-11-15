@@ -98,6 +98,13 @@ Engines read and generate SJE partitions. Perspectives aggregate only; they do n
 - Keep public paths and agent interfaces stable unless the task explicitly changes them.
 - Add or update focused control-total tests for changes to financial behavior.
 
+## Reflection Timestamps
+
+- Before writing a reflection, read the current clock in `America/Phoenix` and put the full timestamp in its heading: `YYYY-MM-DD HH:MM:SS AZT (UTC−07:00) — Title`.
+- Timestamp every entry separately, including multiple entries in one session. A date-only heading is insufficient. Identify the author and distinguish direct observations from inherited records.
+- Do not invent missing historical writing times. If a time is added later, label it as the annotation time and state that the original writing time was not recorded. Preserve earlier entries and add corrections separately.
+- Read the journal's authorship and information-boundary conventions before appending. A reflection records interpretation; it does not upgrade audit evidence or close a research phase.
+
 ## Review Gate
 
 Before accepting a change, verify:

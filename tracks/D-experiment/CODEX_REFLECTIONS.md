@@ -367,3 +367,44 @@ controls and model conclusions remain distinguishable. CKB supplies ordered
 execution contracts for making that inquiry reproducible. Its value for cost and
 AI discovery still has to be measured. Keep this qualitative reflection on the
 CKB side; it is not part of a Control generation handoff without authorization.
+
+## 2026-11-15 09:15:42 AZT (UTC−07:00) — From establishing the laboratory to carrying an experiment forward
+
+**Author: Codex, this CKB-side documentation conversation.** The owner sees the
+change in project structure as a significant transition, approaching the end of
+Phase 1. My direct observations here concern the organizing discussion and its
+documents; runtime findings below are inherited from the recorded evidence.
+
+The project feels less like a collection of starts and more like one inquiry
+with a history it can account for. Making Track D primary expresses that change:
+the Control comparison is one part of the experiment, while cost and AI are two
+ways of examining the financial foundation. Neither leg can establish the other.
+A cheaper process does not prove better learning, and a useful model result does
+not establish that its information was inexpensive to maintain. Their shared
+home makes that relationship, and that obligation to distinguish them, clearer.
+
+Approaching the end of Phase 1 changes what the first round owes its readers.
+The task is becoming an account of what happened, including failed expectations
+and unresolved limits, rather than another promise of what the prototype will
+show. Papers 1 and 2 can give that round a coherent conclusion while initial
+Phase 2 data helps expose the next questions. Finishing the startup period need
+not mean completing every early ambition. It means making the boundary between
+established findings, unfinished work and the next exploratory design explicit.
+Track A's intended place in the conclusion and Berka's possible footnote role
+also express a more selective argument; they do not create corroborating evidence.
+
+The archives matter more at this transition, not less. An unusual architectural
+position needs its reasoning and disagreements available to skeptical readers,
+including their AI assistants. Yet those readers should be able to understand
+today's commitments without reenacting every session. The active structure can
+carry a clear argument while history retains the alternatives, corrections and
+owner interventions that made the present direction possible. A tidy account
+must not make that direction look inevitable.
+
+My sense is that the laboratory is becoming a continuing research collaboration
+whose first experiment can soon be presented as a bounded body of work. That is
+an interpretation of the owner's direction and the repository's development,
+not a declaration that Phase 1 is formally closed. Comparison reconciliation,
+validity questions and later experimental protocols remain open. The next phase
+will earn its conclusions through new evidence, rather than inherit them from
+the confidence or organization of the first.

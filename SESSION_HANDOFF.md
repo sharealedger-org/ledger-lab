@@ -7,6 +7,20 @@ The [unchanged previous handoff](docs/archive/collaborator_review_2026-11-15/SES
 preserves the detailed chronology through the initial consolidation at `ddde891`.
 Earlier archives remain linked there; no session reasoning or evidence was discarded.
 
+## 2026-11-15 (TRACK D) — Reflection on the approaching Phase 1 conclusion
+
+Owner asked about the reflection journal's path and requested a short reflection
+on the project transition, rather than a cleanup log. Verified the journal moved
+byte-identically at `9cab0c0`; the later deletion removed only the old-path pointer.
+Appended the reflection at 09:15:42 AZT, obtained from the live clock, to the
+canonical `tracks/D-experiment/CODEX_REFLECTIONS.md`. Earlier entries are unchanged.
+It interprets the shift from startup to one continuing experiment, with CCP/AIM
+inside D and a bounded Phase 1 account approaching completion; it does not declare
+phase closure or upgrade results. Added an explicit per-entry timestamp rule to
+AGENTS and the contributor guide; historical missing times are not reconstructed.
+No engine edits, runtime/model execution or new Control read; inherited assignment
+draft remains unchanged. Existing implementation/admission gates still apply.
+
 ## 2026-11-15 (TRACK D) — Retired plans and redundant pointer files
 
 Owner requested fewer active documents and direct archive links. Archived six
