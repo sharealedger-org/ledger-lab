@@ -122,3 +122,96 @@ The prose and historical architecture establish intended patterns and useful com
 - that any reported cost curve is comparable until metric production is independently verified.
 
 Those remain executable audit claims in [VERIFICATION_AUDIT_REGISTER.md](VERIFICATION_AUDIT_REGISTER.md).
+
+## 2026-11-14 clarification: GenevaERS effective dates for reclassification
+
+Research/design guidance, not an implementation or measured capability claim.
+Owner clarified that effective dating applies to individual reference versions
+and hierarchy relationships, without requiring whole-database snapshots.
+
+[Balancing Act chapter 41](https://ledgerlearning.com/books/balancing-act-financial-systems-textbook/on-line-balancing-act-text-book/chapter-41-look-ups/)
+describes date operands from constants (LKDC), event fields (LKDE), and previously
+looked-up fields (LKDL). RUNDATE resolves to a run-specific date constant. Thus the
+three user-facing choices discussed here are fixed as-of date, run date, and an
+explicitly selected event date. Run date is a supplied processing parameter, not
+necessarily the machine clock. Reference selection falls back to the matching
+business key's latest effective start not later than the requested date.
+
+[Chapter 34](https://ledgerlearning.com/books/balancing-act-financial-systems-textbook/on-line-balancing-act-text-book/chapter-34-consider-complex-joins/)
+identifies start date as special lookup metadata, separate from ordinary equality
+keys and last in reference sort order. Later starts delimit earlier versions when
+no end date is supplied; optional end dates can express gaps. It describes dated
+hierarchies and future-date reorganization analysis. Exact explicit-end boundary
+and gap behavior require executable target-runtime checks before implementation.
+
+Recommended two table families: (1) dated reference attributes and entity/party
+relationships, keyed by stable business/entity/relationship identity; (2) dated
+hierarchy child-to-parent relationships, keyed by hierarchy and child (plus any
+explicit relationship/role discriminator). Store change identity/provenance with
+each version. A new parent can have its own dated ancestors; every lookup hop must
+receive an explicit date policy. Do not date only a leaf label and treat all
+ancestor links as current. Synthetic histories must be labeled as synthetic;
+adding dates does not establish which of the 371 ambiguous real names is correct.
+
+Keep Switch (event-date classification), Recast (selected-date classification of
+history), and Reclass (explicit balance-transfer journals) distinct. Reclass is
+04-engine work emitting balanced SJE records consumed by existing CKB posting;
+Switch/Recast are aggregation-only 05 perspectives. Reference-only changes must
+be able to trigger evaluation even if the affected instrument has no new event.
+Report reclass transfers separately from business activity; retain event date,
+reference effective date, posting date, and arrival/provenance information.
+
+Primary local corroboration: org-members/content/conversations-with-kip/Video
+Slides, E66 Effective Date Joins (same dated table produces Switch and Recast),
+E67 Reclass View (explicit old/new department transfers), E69 Reclass Data Model
+(normalized customer-contract balances with a dated descriptive join).
+The corresponding local E066/E067/E068/E069 transcript bodies discuss estimating
+and do not reliably match their reclass titles. Do not cite those bodies as
+reclass transcripts until corrected. GenevaERS Module 16 page retried twice but
+not retrieved through web access; do not claim its content was read.
+
+Minimum proposed falsifiers: change one attribute only; change one parent only;
+change an ancestor without changing the leaf; join before/on/after the change
+using all date modes; test a missing prior version, optional-end gap, duplicate
+start and dated cycle/orphan; process a backdated change; rerun without duplicate
+transfers; verify no-activity instruments and conservation by currency/book.
+These remain proposed checks, not completed tests.
+
+## 2026-11-14 Virginia released-reference research
+
+Official released structures and notices were found and preserved in
+[`data/reference_history_research_20261115/`](../data/reference_history_research_20261115/).
+The directory uses the UTC retrieval date. `source_manifest.csv` pins nine fetched
+PDF/HTML sources; `documented_change_candidates.csv` records five examples with
+separate effective, reported-action and document-revision dates. These are research
+candidates, not implemented reference tables. No canonical lookup was changed.
+
+The [DPB archive](https://dpb.virginia.gov/forms/Forms.cfm?Search=Expenditure+Structure)
+contains older program, agency and expenditure structures and annual COA notices.
+A [2014 notice revised in 2018](https://dpb.virginia.gov/forms/20140717-1/CHARTOFACCOUNTSCHANGES6-6-13through6-25-14-updated2018-07-12.pdf)
+provides an agency 405 parent move with an explicit 2014-06-23 business-effective
+date, added to the notice on 2018-07-12. It also distinguishes entry dates from
+explicitly different legal-effective dates for secretarial names. This supports
+real hierarchy and attribute examples plus a late-discovered reference correction.
+A [2015 notice](https://dpb.virginia.gov/forms/20140717-1/FINAL--CHARTOFACCOUNTSCHANGES6-26-2014through6-30-2015.pdf)
+has a responsible-agency move (748, parent 792 to 793), but its listed action date
+must not automatically become a business-effective date. FY2012 expenditure
+release explicitly reports no changes since a prior revision; publication alone
+must not create a reference version. Older source versions and change notices
+supply provenance for per-row histories, not a whole-database snapshot contract.
+
+The [official fund report](https://reports.dpb.virginia.gov/coa40) specifies agency
+context for fund identification; the old four-digit fund detail alone need not
+identify a fund uniquely. Thus repeated mappings can expose missing compound-key
+context as well as possible history. Local bounded inspection partitions the 371
+nonunique name groups: 203 have identical supplied non-surrogate attributes, 145
+span multiple business codes, 23 share a code but differ in supplied attributes.
+Agency 912's two surrogate IDs have identical supplied values. None of these
+patterns establishes chronology by itself. Audit fields not retained in our
+extract could still distinguish versions; obtain dated releases rather than date
+rows by ID order. The diagnostics preserve all candidates and source hashes.
+
+Next proposed workload: real dated agency 405 hierarchy change plus a dated
+secretarial attribute change; validate stable business-code/surrogate crosswalks
+before joining existing canonical keys. Keep exact published effective dates,
+release observations, unknown dates and synthetic test dates explicitly distinct.

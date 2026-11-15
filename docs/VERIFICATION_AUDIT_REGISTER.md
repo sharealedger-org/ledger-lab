@@ -1559,3 +1559,25 @@ admission (~128 GiB prior footprint plus scratch). No full new corpus run, no
 invented ambiguity resolution, no prior output/Gold deletion, no new Control read,
 no Python or Bash financial substitute. GERS-002/003 remain open. Next: explicit
 reference/date/key resolution contract and disk admission before a new corpus run.
+
+## 2026-11-14 - Released Virginia reference-history research (Track D)
+
+**Claim:** released VA reference structures/change notices can ground per-row
+history and hierarchy examples without inventing effective dates. **Verified
+source availability:** seven official PDFs and two current-report HTML documents
+retrieved and hashed in `data/reference_history_research_20261115/`. FY2013 agency
+and program structures, FY2012/13 expenditure structures, and 2014/15/16 changes
+provide actual published evidence. Agency 405's hierarchy move has an explicit
+2014-06-23 effective date and a 2018 correction/publication context; other notices
+sometimes give entry dates only. Five candidate rows preserve this distinction.
+No complete canonical dated crosswalk or engine implementation is verified.
+
+Bounded CSV inspection of the hash-pinned existing five tables partitions all
+371 nonunique name groups: 203 identical non-surrogate payloads, 145 multiple
+business codes, 23 same-code differing attributes. Official fund documentation
+requires agency context, so repeated names/codes cannot all be classified as
+successive historical versions. Increasing surrogate IDs do not establish dates.
+Local Git history inspected has one reference import, not released histories.
+Source hashes/sizes, group counts, candidate source paths/date formats verified.
+Methods and qualifications retained in research_method.txt. No financial producer,
+lookup policy, corpus output, Gold, Python logic or Control access changed.

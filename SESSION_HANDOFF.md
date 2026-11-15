@@ -1,5 +1,15 @@
 # Ledger Lab Handoff
 
+## 2026-11-14 (TRACK D) - Released Virginia reference versions
+
+2026-11-14 - Real VA reference versions found: retained FY2013 agency/program structures, FY2012/13 expenditure structures and 2014-16 COA notices plus current agency/fund reports, with URL/hash manifest. Explicit agency 405 hierarchy move effective 2014-06-23 was added to the notice in 2018; dated secretarial changes provide an attribute case. Local 371 nonunique names split into 203 identical non-ID payloads, 145 multiple business codes, and 23 same-code differing payloads. DPB confirms agency context is required for some funds. These are history/context candidates, not automatic dated versions. No engine, reference selection, canonical state or Control access changed. Next: real dated hierarchy/attribute fixture and explicit business-code/surrogate crosswalks; unknown historical dates stay unknown.
+
+[Source manifest and change candidates](data/reference_history_research_20261115/); methods and qualifications in research_method.txt. Source files are about 4.4 MiB, independent of the measured corpus and Gold.
+
+## 2026-11-14 (TRACK D) - GenevaERS effective-date research
+
+Found the third join-date choice: event-record date, alongside fixed date and supplied RUNDATE. Chapters 34/41 and original local reclass slides support per-reference-version and per-hierarchy-edge histories, with Switch/Recast reporting separate from balanced reclass transfers. [Research notes](docs/REFERENCE_ARCHITECTURE_MAP.md). Local E066-E069 transcript bodies are mismatched to titles; do not rely on them. Module 16 retried but not read. No implementation or financial/data changes. Next: small dated attribute/relationship and hierarchy fixtures, without inventing historical dates for ambiguous real reference rows. No new Control read.
+
 ## 2026-11-14 (TRACK D/B1) - Identity recovery fixture; corpus admission blocked
 
 2026-11-14 - Identity recovery fixes/pilot: quoted APA parsing, schema/reject lineage, ambiguous-lookup rejection, literal-ID reporting index and bounded local aggregates are fixture-verified. Baseline 28 tests passed; 56 focused tests, 12 overlapping reporting/connected checks and 11 final APA checks passed. Three simulated identities/two years completed the real pipeline and separate reporting with zero reconciliation failures. Full new corpus NOT launched: 371 reference names have multiple keys, and only 75 GiB is free versus about 128 GiB prior footprint plus scratch. Prior generations/Gold unchanged. Next: explicit reference key/date contract, then disk admission. GERS-002/003 and independent architecture review remain open. No new Control access.

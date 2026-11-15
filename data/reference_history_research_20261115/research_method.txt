@@ -1,0 +1,46 @@
+Scope: read-only reference-data research, November 14 Arizona / November 15 UTC.
+No engine, lookup policy, canonical financial state, or effective date was changed.
+
+Official PDFs/HTML are retained under sources/. source_urls.tsv gives URLs;
+source_manifest.csv records retrieval timestamps, byte counts and SHA-256. The
+archive HTML is separately hashed. PDF types and page counts were checked with
+file; text was inspected through the web PDF reader. Screenshot retrieval failed;
+no visual-table extraction or OCR result is claimed.
+
+Local duplicate diagnostic (bounded CSV inspection, not mainline accounting):
+Decode CSV as UTF-8 with BOM handling. Group on trimmed uppercase name. Keep groups
+with more than one distinct surrogate key. Compare whole original row payloads
+excluding only that surrogate column, and count distinct business-code columns.
+Zero-based field positions (surrogate, business code, name): agency (1,0,2),
+fund (0,1,2), object (0,3,4), program (0,5,7), source (0,3,5).
+1 distinct payload => same supplied attributes, multiple surrogate IDs, no observed
+change. Otherwise >1 business code => same-name multiple-code context/history not
+resolved. Otherwise => same-code different attributes, possible history but undated
+(and funds may lack necessary agency context). Do not infer chronology from row
+position or increasing surrogate ID. local_reference_manifest.csv pins all inputs.
+Git history inspected for agency/fund/program has one import commit 3fbdcb2;
+that local history does not provide multiple dated released versions.
+
+Counts by name group: 203 identical non-surrogate payloads, 145 multiple business
+codes, 23 same-code differing payloads; total 371. Agency 912 duplicates (keys
+160 and 360) have identical supplied attributes; agency 232 likewise (258/361).
+These remain candidates, not confirmed temporal versions or approved crosswalks.
+
+Published report action date, report publication/revision date and explicitly
+stated business-effective date are kept distinct in documented_change_candidates.csv.
+All five rows are research candidates, not an engine-ready reference/history table.
+Blank effective_start means unknown. Prior-version start dates and completeness of
+all intermediate releases are not established. FY2012 expenditure structure says
+it has no changes since the September 15, 2010 third revision: a newer release is
+not by itself a new business-effective version. The 2014 notice file was corrected
+in 2018 and distinguishes some PB entry dates from legal effective dates. Current
+PB agency active flags may persist beyond official closure for closeout processing.
+
+Next: seed a dated agency/secretarial hierarchy example with agency 405's explicit
+2014-06-23 move (notice added 2018-07-12), plus a dated attribute example using the
+187 secretarial title change explicitly effective 2014-03-03. Preserve published
+baseline observations separately from unknown actual starts. Use stable business
+codes and declared role/context; use agency+fund context where required. Resolve
+and version surrogate crosswalks separately before connecting these to existing
+canonical SJE keys. Use clearly labeled synthetic dates only for remaining tests
+without dated published evidence. No full corpus execution is justified yet.

@@ -1,0 +1,6 @@
+entity_type,business_key,change_type,old_value,new_value,effective_start,reported_action_date,document_revision_date,date_quality,source_file,pdf_page,engine_ready
+agency,405,secretarial_parent,Commerce and Trade,Agriculture and Forestry,2014-06-23,2014-06-23,2018-07-12,explicit_business_effective,coa_changes_2014_revised2018.pdf,1,no_research_candidate
+secretarial_area,187,title,Secretary of Public Safety,Secretary of Public Safety and Homeland Security,2014-03-03,2014-04-23,2018-07-12,explicit_business_effective_differs_from_entry,coa_changes_2014_revised2018.pdf,1,no_research_candidate
+subobject,1166,new_code,"",Employer Defined Contribution Match - VRS Hybrid Retirement Plan,2014-01-01,2013-11-22,2018-07-12,explicit_business_effective,coa_changes_2014_revised2018.pdf,3,no_research_candidate
+agency,748,responsible_parent,792,793,"",2015-06-26,"",reported_action_only_effective_not_proven,coa_changes_2015_final.pdf,2,no_research_candidate
+agency,132,title,State Board of Elections,Department of Elections,"",2015-10-09,"",reported_action_only_effective_not_proven,coa_changes_2016_final.pdf,1,no_research_candidate
