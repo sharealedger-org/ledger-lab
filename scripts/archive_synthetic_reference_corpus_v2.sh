@@ -60,3 +60,21 @@ This receipt alone does not certify completion of the provider's remote upload.
 EOF
 date -u +%FT%TZ > "$root/ONEDRIVE_LOCAL_COPY_VERIFIED"
 cp "$root/ONEDRIVE_LOCAL_COPY_VERIFIED" "$destination/"
+# File Provider exposes OneDrive's upload completion separately from local copy integrity.
+if command -v fileproviderctl >/dev/null; then
+  mkdir -p "$root/archives/upload_status"
+  while :; do
+    pending=0; failed=0
+    while IFS= read -r -d '' file; do
+      name="${file##*/}"
+      fileproviderctl attributes "$file" > "$root/archives/upload_status/$name.txt" 2>&1 || { pending=1; continue; }
+      grep -q '^NSURLUbiquitousItemIsUploadedKey: 1$' "$root/archives/upload_status/$name.txt" || pending=1
+      if grep '^NSURLUbiquitousItemUploadingErrorKey:' "$root/archives/upload_status/$name.txt" | grep -qv ': nil$'; then failed=1; fi
+    done < <(find "$destination" -maxdepth 1 -type f -print0)
+    ((failed == 0)) || { echo "OneDrive reports an upload error; see archives/upload_status" >&2; exit 3; }
+    ((pending)) || break
+    printf '%s Waiting for OneDrive upload confirmation\n' "$(date -u +%FT%TZ)"
+    sleep 60
+  done
+  date -u +%FT%TZ > "$root/ONEDRIVE_UPLOAD_CONFIRMED"
+fi
