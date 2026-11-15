@@ -1,0 +1,74 @@
+# Ledger Lab: Status (read this first)
+
+**2026-11-15 bounded Phase 2 pilot:** FY2003–FY2004 synthetic component test passed
+through generation, sorted assignment, posting and expanded reporting; see
+[evidence](data/test_evidence/component_pilot_0304_20261115/README.md). Limits remain
+explicit. Next checkpoint is a separate repository consolidation session before
+larger Phase 2 execution; paper revisions proceed independently.
+
+**Experiment phases, owner clarification 2026-11-15:** Phase 1 = direct VA corpus;
+Phase 2 = current vendor-centered synthetic work, likely Papers 3 and 4 on improved
+cost curves and AI models; Phase 3 = broader CKB topology from tentative allocations
+to reclass. Data generation follows this same numbering. See
+[strategy](docs/SYNTHETIC_CONNECTED_PROCESS_STRATEGY.md).
+
+Updated 2026-11-12. One page. A session starts here, then reads only the `STATUS.md` of the track it works on. Do not read the whole `SESSION_HANDOFF.md` or the audit register unless a track page points to an entry. If this page and the register disagree, the register wins.
+
+**2026-11-15 execution/scope update:** Owner-authorized retirement of generated data
+from the three expanded runs completed; 452 GiB free, logs/evidence/Gold retained.
+Reclass engine work belongs to the Q2 response. Pre-question work is synthetic
+input integration, validation/multidimensional views, connected fixture and a new
+full corpus run. See track pages and [cleanup receipt](data/test_evidence/corpus_cleanup_20261115/README.txt).
+
+## Tracks
+
+**Current handoffs, 2026-11-14:** Owner requested two independent plans: [Bob's Intel synthetic generation](docs/PHASE_1B_SYNTHETIC_DATA_INTEL_PLAN.md) and [member-repository editing of 00 and Papers 1/2](tracks/D-control/MEMBER_REPO_EDITING_PLAN_2026-11-14.md). Generation may proceed separately; it does not block the Denna review package. These plans supersede earlier wording requiring all Phase 1b engineering before revision. Plans written only; no generation, member-repository edit or disclosure performed.
+
+**Owner direction, 2026-11-14:** Complete Phase 1b before paper revision and formal Phase 2. Separate generated-data enhancement from companion reporting/view work; broaden native AI to reusable corpus exploration with associated measures and learned concepts. See [B2 status](tracks/B2-models/STATUS.md) and [the attributed reflection](tracks/D-control/CODEX_REFLECTIONS.md#2026-11-14--native-ai-for-financial-exploration-owners-correction-and-codex-reflection). No new execution result or Control disclosure.
+
+**Paper revision planning, 2026-11-13:** Prepare new Papers 1 and 2 reflecting Phase 1 for interim circulation. See the [revision plan](tracks/D-control/PAPER_VERSION_2_RESEARCH_PLAN.md). The earlier statement declaring Track B closed and the track reorganization approved was an assistant misinterpretation of a suggestion, corrected at the owner’s request. It does not change evidence or authorize stopping ongoing work.
+
+| Track | What | State | Page |
+|---|---|---|---|
+| **A** | Private P&C insurer corpus (25.5 billion rows). Protected data. | Progresses in another repository. Results come back here in synthesised form when a result is complete. **No status page in this repo (owner, 2026-11-12).** | none |
+| **B1** | Virginia public data, Paper 1: cost curve (CCP1 to CCP5) | Baseline measured and tagged. CCP4/CCP5 corpus runs and replicates not done. | [`tracks/B1-cost/STATUS.md`](tracks/B1-cost/STATUS.md) |
+| **B2** | Virginia public data, Paper 2: AIM tests and the three-model experiment | Field-label training pilot authorized and in preparation. Three-model steps 1 to 4 done; D9 decision open. | [`tracks/B2-models/STATUS.md`](tracks/B2-models/STATUS.md) |
+| **C** | Berka bank data | Stalled. Illustrative only; not Paper 2 evidence. | [`tracks/C-berka/STATUS.md`](tracks/C-berka/STATUS.md) |
+| **D** | Overall paper experiment design, control interpretation, and Phase 2 | Active. Control success informs hypothesis refinement; comparison and population reconciliation remain open. | [`tracks/D-control/STATUS.md`](tracks/D-control/STATUS.md) |
+
+## Where things are
+
+- **Working copy:** the Dropbox folder, on branch `main`. There are no long-lived feature branches; `aim-three-model` was merged into `main` on 2026-11-12 and is kept only as history. `trackC` and `trackD` branches are old; their content is on `main` or is stalled.
+- **Baseline for the control comparison:** annotated tag `companion-measured-baseline-20261111` on `c3667e4`. Record: [`docs/COMPANION_BASELINE_RECORD_2026-11-12.md`](docs/COMPANION_BASELINE_RECORD_2026-11-12.md).
+- **Open work:** [`TODO.md`](TODO.md), grouped by track. **Dated log:** [`SESSION_HANDOFF.md`](SESSION_HANDOFF.md) (newest first; older entries in `docs/archive/`). **Evidence:** [`docs/VERIFICATION_AUDIT_REGISTER.md`](docs/VERIFICATION_AUDIT_REGISTER.md). **Results for a newcomer:** [`docs/CURRENT_RESULTS.md`](docs/CURRENT_RESULTS.md). **All documents:** [`docs/README.md`](docs/README.md).
+- **Rules:** [`AGENTS.md`](AGENTS.md). Scala is the engine, Bash orchestrates, Python only after owner approval for post-engine analysis.
+
+## Ground rules for sessions
+
+1. Read this page and one track page. Open other files only when a track page points to them.
+2. Before ending a session, update that track's `STATUS.md`: last evidence commit, next action, decisions waiting. Add a short handoff entry titled with the track id (for example `(TRACK B1)`).
+3. New to-dos go in `TODO.md` under the track heading, not in the handoff.
+4. Track D material from the control repository is read as a digest from the last recorded revision (see its page), and every reading is logged.
+
+## Waiting on the owner (all tracks)
+
+- ~~Push `main` and the baseline tag~~ Done 2026-11-12 (`main` at `ef78576`; tag pushed; `aim-three-model` deleted, local and remote).
+- Pointer in the control repository's `SESSION_HANDOFF.md`: repository name, baseline tag, and the SHA of the results-evaluation commit once it exists. Codex's first CKB access has occurred; the exposure is logged in the baseline record.
+- ~~`AGENTS.md` line pointing here~~ Done 2026-11-12.
+- Track decisions are listed on each track page.
+
+**2026-11-14 identity recovery:** Parser/key/bounded-reporting fixes and two-year simulated pilot verified; full corpus gated by 371 ambiguous reference names and disk capacity. See [evidence](data/test_evidence/identity_recovery_20261114/README.md) and track pages. Existing corpus/Gold preserved.
+
+## Next session (updated 2026-11-12)
+
+**Identity audit complete, 2026-11-14:** Read-only Scala counts reconcile across all 14 years. Attribute enrichment changes no identity lookups; 23,021,103 accepted expense rows have different vendor-name fields under quote-aware parsing; 41 observed reporting groups exceed the guard; 214 literal key-order decreases also require a reporting contract decision. [Findings](docs/IDENTITY_AUDIT_FINDINGS_2026-11-14.md), [evidence](data/test_evidence/identity_audit_20261114/). Next: CSV/schema semantics and key/order/bounded-reporting contracts before selecting a full generated vendor population. No vendors or financial outputs changed.
+
+**Intel execution complete, 2026-11-14:** Three FY2003–FY2016 monthly combined-source runs validated; all 46 compared final products match across runs. Separate expanded reporting failed its existing 250,000-row vendor guard for unattributed `0000000000`, with diagnostics preserved and no completed reporting output. See [B1 status](tracks/B1-cost/STATUS.md), [queue receipts](data/test_evidence/intel_preflight_20261113/), and [reporting failure](data/test_evidence/reporting_corpus_20261114/). Dashboard startup and automatic post-queue reporting gate are integrated. No financial job remains active; next execution work is bounded reporting for large groups, not another corpus replay.
+
+**Intel handoff, 2026-11-13:** Expanded revenue/vendor-attribute rerun and unattended execution preparation: [run handoff](docs/CKB_REVENUE_RERUN_2026-11-13.md). Revenue adapter fix and connected tiny fixture verified; full-corpus launch and actual vendor-name linkage await Intel preparation. Current cost-profile discussion is a proposal, not a measured curve or selected queue plan.
+
+**Paper revision 2 evidence folder complete** for TDS (`docs/tds-evidence/paper-1-rev2-ledger-lab/`: index and naming key, measured results, the Mix curve, spreadsheet with formulas for the CKB Cost Model, one-page explainer, refreshed `CURRENT_RESULTS.md`, limits, Phase 2 list). Revision 2 leaves out the control's results and the Part B questions. Owner review and copy to TDS (`01-evidence/practitioner/Sharealedger/`) remain open. **Track D is active by owner direction (2026-11-12):** Codex has first read access to the CKB for Phase 2 collaboration; comparison and population reconciliation remain open.
+
+Phase 2 replicate runs and revenue TTL also remain open.
+
+**Names (owner, 2026-11-12).** Graph points: Events, Annual, Monthly, Cubes, Posted, Permuted. Process points: Posted GL, Ledger, Views, Revaluation, Allocation (CCP tags kept for finding material). The three complete corpus runs are three measurements at the Monthly point; stop numbering runs.

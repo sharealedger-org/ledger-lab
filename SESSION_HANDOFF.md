@@ -1,5 +1,22 @@
 # Ledger Lab Handoff
 
+## 2026-11-15 (TRACK D) - Repository consolidation after `213b20f`
+
+Documentation-only consolidation: root/D statuses and document map now identify
+current strategy, generation proposal, pilot contract/evidence and member writing
+handoff. Superseded broad strand, Intel Phase 1b and early paper plans are stable
+pointers to unchanged snapshots; prior statuses/TODO retained with conflicting
+sequencing intact. Current TODO uses integrated phase numbering and independent
+writing sessions. [Receipt](docs/archive/consolidation_2026-11-15/README.md).
+
+No engine changes, corpus execution, paper edits, new Control reading or evidence
+upgrade. Reflections and runtime evidence remain untouched. Older assignment source
+and launcher draft remain uncommitted with hashes recorded. Next implementation
+session: review bounded pilot limits and declare the next versioned slice/admission
+checks; writing proceeds separately. Wider scale, VA anchors and full source/rule
+lineage remain unverified or partial. Last evidence checkpoint `213b20f`; latest
+Control digest `ab0f7f0` unchanged.
+
 ## 2026-11-15 (TRACK D) - Phase introductions in the paper plan
 
 Owner requested an introduction before Papers 01/02, another before 03/04 and further introductions as later phases begin. These frame following papers and may summarize prior conclusions. Recorded in `tracks/D-control/PAPER_VERSION_2_RESEARCH_PLAN.md`, strategy and TODO. Separate paper sessions implement them in the established private-source workflow; later paper groupings/section filenames remain open. No paper source edits or new execution.

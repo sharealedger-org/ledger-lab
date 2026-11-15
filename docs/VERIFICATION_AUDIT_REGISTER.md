@@ -1692,3 +1692,14 @@ make the fixture pass; new code prepares/inspects inputs in Scala and orchestrat
 is Bash. Generation process RSS/time is retained separately from financial metrics.
 No verified VA 2003/04 anchors, payroll, model result, allocation/reclass engine or
 comparable new cost point. Repository consolidation is next, before larger Phase 2.
+
+## 2026-11-15 — Documentation consolidation from `213b20f` (Track D)
+
+Housekeeping only; no verification maturity change. Current strategy, generation
+proposal, bounded contract/evidence and member writing handoff are indexed in
+`docs/README.md`. Superseded plans and prior status/TODO preserved unchanged under
+`docs/archive/consolidation_2026-11-15/`; old entry paths retain pointers. Receipt
+records snapshot equality, maintained-link scope and excluded draft hashes.
+Pilot remains `partially_verified` overall with source/rule lineage limits;
+VA anchors, larger scale and AI effectiveness remain unverified/untested.
+No engine change, financial execution, new Control read or capability-gap closure.

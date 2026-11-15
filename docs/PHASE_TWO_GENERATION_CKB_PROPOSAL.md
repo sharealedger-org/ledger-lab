@@ -5,10 +5,11 @@
 ran successfully with an additional determining-key assignment sort/merge between
 context and entity order. Its bounded contract is in
 [COMPONENT_PILOT_0304_CONTRACT.md](COMPONENT_PILOT_0304_CONTRACT.md). The wider design
-below remains a proposal beyond that evidence. Consolidate repository documents
-in a separate session before larger execution.
+below remains a proposal beyond that evidence. Repository consolidation is
+recorded in the [receipt](archive/consolidation_2026-11-15/README.md); larger
+execution remains a separate session with explicit admission checks.
 
-2026-11-15. Design proposal only, before test code. This generator supports
+2026-11-15. Wider design proposal; bounded implementation is qualified above. This generator supports
 integrated experiment Phase 2: initial vendor-centered synthetic work, likely
 informing Papers 3 and 4 on improved cost curves and AI models. Phase 1 is direct
 VA corpus work; Phase 3 broadens the topology from allocations to reclass. See the

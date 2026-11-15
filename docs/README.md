@@ -1,6 +1,30 @@
 # Documents map
 
-Updated 2026-11-12. Start at [`../STATUS.md`](../STATUS.md). This page sorts every file in `docs/` by what it is for. "Needs refresh" means the content is known to be behind the repo; it is not a judgement that the file is wrong. Files were classified from their titles and first lines, not re-read in full.
+Updated 2026-11-15. Start at [`../STATUS.md`](../STATUS.md), then the relevant
+track status. The map below identifies current authority; older results and plans
+remain dated records rather than current run instructions.
+
+## Current plan and contract authority
+
+| Role | Current entry point | Boundary |
+|---|---|---|
+| Roadmap / phase scope | [Connected-process strategy](SYNTHETIC_CONNECTED_PROCESS_STRATEGY.md) | Phase 1 direct VA; Phase 2 vendor-centered synthetic; Phase 3 broader topology |
+| Generation design | [Phase 2 CKB proposal](PHASE_TWO_GENERATION_CKB_PROPOSAL.md) | Wider proposal; implementation bounded by pilot below |
+| Implemented pilot contract | [FY2003/04 component contract](COMPONENT_PILOT_0304_CONTRACT.md) | Tiny synthetic envelopes, no verified VA anchors or scale claim |
+| Pilot result at `213b20f` | [Evidence receipt](../data/test_evidence/component_pilot_0304_20261115/README.md) | Actual downstream flow; partial source/rule lineage, no AI result |
+| Paper writing | [Member editing handoff](../tracks/D-control/MEMBER_REPO_EDITING_PLAN_2026-11-14.md) | Private source workflow, phase introductions; independent writing sessions |
+| Comparison / exposure | [Comparison plan](../tracks/D-control/COMPARISON_PLAN.md), [baseline record](COMPANION_BASELINE_RECORD_2026-11-12.md) | Reconciliation/Q2 decisions open, one-way Control boundary |
+| Identity / reference contracts | [Identity recovery](IDENTITY_RECOVERY_V1_DESIGN.md), [reference architecture](REFERENCE_ARCHITECTURE_MAP.md) | Workload-specific limits remain; not a replacement roadmap |
+| Qualitative design history | [Reflections](../tracks/D-control/CODEX_REFLECTIONS.md), [working list](../tracks/D-control/CODEX_PHASE2_WORKING_LIST.md), [handoff](../SESSION_HANDOFF.md) | Attributed, dated, CKB-side; not Control delivery or runtime evidence |
+
+Superseded entry paths remain as pointers: [broad strand plan](PHASE2_SYNTHETIC_DATA_PLAN.md),
+[Intel Phase 1b handoff](PHASE_1B_SYNTHETIC_DATA_INTEL_PLAN.md),
+[earlier paper plan](../tracks/D-control/PAPER_VERSION_2_RESEARCH_PLAN.md), and
+[old generation proposal name](PHASE_ONE_GENERATION_CKB_PROPOSAL.md).
+Their uncompleted ideas remain historical backlog, not newly authorized work.
+[Consolidation snapshots and receipt](archive/consolidation_2026-11-15/README.md)
+preserve original wording; evidence, negative results and reflections remain in place.
+The older uncommitted assignment producer/launcher draft remains excluded.
 
 ## Results and evidence (read when a track page points to them)
 

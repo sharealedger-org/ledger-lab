@@ -11,7 +11,7 @@ phase introduction before Papers 01/02, another before 03/04, and introductions
 at subsequent phase boundaries. Each frames the papers that follow and can
 summarize prior papers' conclusions, preserving their limitations and separating
 results from proposed experiments. See the
-[paper revision plan](../tracks/D-control/PAPER_VERSION_2_RESEARCH_PLAN.md#phase-introductions-owner-direction-2026-11-15).
+[member writing handoff](../tracks/D-control/MEMBER_REPO_EDITING_PLAN_2026-11-14.md#phase-introduction-requirement--owner-update-2026-11-15).
 Writing remains in separate paper sessions; exact later paper groupings are open.
 
 **Current transition, owner clarification 2026-11-15:** We are closing Phase 1 by
@@ -177,6 +177,11 @@ outputs are conditional scenarios, not forecasts established by execution alone.
 
 ### Repository consolidation checkpoint
 
+Completed after bounded pilot checkpoint `213b20f`; see the
+[document map](README.md) and [receipt](archive/consolidation_2026-11-15/README.md).
+The following paragraph preserves the requested scope; it is no longer a pending
+prerequisite. Larger execution and paper edits remain separate sessions.
+
 Owner agreed 2026-11-15: finish the authorized bounded FY2003–FY2004 test, then
 perform a separate infrastructure session before larger Phase 2 execution. Paper
 revisions may proceed independently. Consolidation should establish one current
@@ -193,9 +198,11 @@ Declare stream/partition boundaries, memory limits and required sorts. Apply the
 architecture gates and record target GenevaERS capability gaps before claiming
 measured support for a new workload.
 
-Checkpoint `e5b78e8` preserves reporting views, fixtures, preparation and plans.
+Historical checkpoint `e5b78e8` preserves reporting views, fixtures, preparation and plans.
 Its 32 focused tests passed; the two-year financial fixture completed, but latest
 streamed-assignment reporting still needs end-to-end validation. The corpus-wide
 assignment producer remains an uncommitted draft, not the accepted wider topology.
-No new generator implementation, allocation/reclass engine or full corpus run is
-authorized by this documentation update alone.
+Checkpoint `213b20f` subsequently completed the bounded component pilot through
+expanded reporting ([evidence](../data/test_evidence/component_pilot_0304_20261115/README.md)).
+That result does not validate the excluded corpus draft or wider scale. No new
+allocation/reclass engine or full corpus run is authorized by consolidation.
