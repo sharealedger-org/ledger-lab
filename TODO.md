@@ -23,7 +23,7 @@ Seeded 2026-11-11 from the handoff entries. On the same day the handoff was trim
 
 - [ ] **Owner clarification, 2026-11-13:** Produce matched AIM3 movement and balance feature inputs in Scala at the SJE and final-reporting boundaries respectively; fix fiscal periods, expose unmatched vendors, and compare three models on identical rows. This is the selected next AI use, not the assistant's financial-pressure suggestion. Add immutable-input reuse for reporting-only queue stages.
 
-- [ ] **Next corpus workload admission:** the expanded Intel runs and cleanup completed; verify source/master coverage, downstream name linkage and current capacity for the next explicitly selected workload. Revenue adapter and connected synthetic smoke are fixed/verified; see [handoff](docs/CKB_REVENUE_RERUN_2026-11-13.md).
+- [ ] **Next corpus workload admission:** the expanded Intel runs and cleanup completed; verify source/master coverage, downstream name linkage and current capacity for the next explicitly selected workload. Revenue adapter and connected synthetic smoke are fixed/verified; see [handoff](docs/archive/retired_plans_2026-11-15/CKB_REVENUE_RERUN_2026-11-13.md).
 - [ ] **New cost-profile design:** define genuinely different retained outputs and expanded `5v` financial/AIM views over the same canonical SJEs. Measure incremental work/output, not an assumed zero cost. Freeze the resulting foundation before Phase 2 questions.
 
 - [x] 2026-11-12: **Refresh `docs/CURRENT_RESULTS.md`** with completed Run 4 evidence, baseline tag, standardized naming, and "measured, shows, does not show" table per cost point.
@@ -103,7 +103,7 @@ revised separately and broader allocation/reclass work belongs to Phase 3.
 
 - [ ] **PO quote-aware recovery (2026-11-14):** CKB quarantines ~24,700 PO records that the control recovers via two-pass parsing (RFC-4180 boundary detection + strict `csv.reader` first, literal-tab fallback). Root cause in [`VERIFICATION_AUDIT_REGISTER.md`](docs/VERIFICATION_AUDIT_REGISTER.md) (bottom entry). **Owner decision:** fix `PORecordReader.scala` before or after Phase 2 synthetic data work. Impact on vendor survival / AI features unknown until per-year breakdown is run.
 
-- Historical broad-strand backlog is [preserved](docs/PHASE2_SYNTHETIC_DATA_PLAN.md); select future slices under the current strategy rather than executing the old plan.
+- Historical broad-strand backlog is [preserved](docs/archive/consolidation_2026-11-15/docs/PHASE2_SYNTHETIC_DATA_PLAN.md); select future slices under the current strategy rather than executing the old plan.
 - [ ] **Current editing handoff (2026-11-14):** Execute `tracks/D-experiment/MEMBER_REPO_EDITING_PLAN_2026-11-14.md` in the authoritative member repository: revise monograph 00 plus Papers 1/2 for Denna review. Generation and expanded-view repair do not block this package.
 
 - [ ] **Codex:** develop Phase 2 proposals using the owner-requested [temporary working list](tracks/D-experiment/CODEX_PHASE2_WORKING_LIST.md) and [reflection journal](tracks/D-experiment/CODEX_REFLECTIONS.md). Only CKB-side Codex updates these files. They remain in this repository and are not a control-side handoff or finalized question set.

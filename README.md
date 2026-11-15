@@ -25,7 +25,7 @@ Berka/Track C is retained as a footnote candidate, outside the main work path.
 For new readers, use the overview once between root status and Track D; returning
 contributors can go directly to the selected workstream.
 
-The old [project brief](PROJECT_BRIEF.md) now points to its unchanged historical archive.
+The old [project brief](docs/archive/PROJECT_BRIEF_PRE_READABILITY_2026-11-15.md) is retained directly in the archive; the current overview provides the short project explanation.
 
 Current statuses point to the relevant evidence and limitations. Older experiment
 plans preserve IDs and locked protocols; their dated queues and expected outcomes

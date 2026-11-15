@@ -1484,7 +1484,7 @@ Not done: STL for AIM4, AIM2, a combined-feature AIM3 model, SHA-256 and `run_ti
 
 ## 2026-11-12 22:01:26 AZT — Track D CKB model/source trace (Codex)
 
-Scope: static review for Phase 2 design at HEAD `08bedfd`; no source changes or runtime tests. Detailed trace: [`CKB review`](../tracks/D-control/CKB_REVIEW_2026-11-12.md).
+Scope: static review for Phase 2 design at HEAD `08bedfd`; no source changes or runtime tests. Detailed trace: [`CKB review`](../tracks/D-experiment/CKB_REVIEW_2026-11-12.md).
 
 | Claim | Evidence state | Cheapest check and result | Next falsifier |
 |---|---|---|---|
@@ -1498,7 +1498,7 @@ Additional source-derived risk, not reproduced: Step 9 rewrites old/new balances
 
 Claim checked: balance/combined model fiscal-year normalization agrees with the corrected Gold period contract. **Contradicted by source inspection:** both local `fiscal_year_of` helpers add a July shift after normalizing a short numeric year; `three_model_core.py` explicitly returns `2000+YY` for `00YY/MM` without that shift. The existing core tests include `0003/07 → 2003`; `python3 -m unittest scripts/test_three_model_core.py` passed 28 tests. The affected helper branches imply 2004 for that input. No analysis rerun or new Python was written; score impact remains `unknown`. Next: use the agreed period contract and reproduce affected balance/combined comparisons, preserving prior evidence. No prior numeric result was overwritten.
 
-The combined CSV reports +0.0078 C on one split. Its permutation p tests the combined score against relabeling, not the incremental gain; the latter uses paired row resampling, not vendor-cluster resampling. Planned IL-Native inputs include views absent from IL-FineTune; the proposed gap cannot isolate language prior with different inputs/model families. Full scope and sources: [`Paper 2 assessment`](../tracks/D-control/PAPER2_ASSESSMENT_2026-11-12.md).
+The combined CSV reports +0.0078 C on one split. Its permutation p tests the combined score against relabeling, not the incremental gain; the latter uses paired row resampling, not vendor-cluster resampling. Planned IL-Native inputs include views absent from IL-FineTune; the proposed gap cannot isolate language prior with different inputs/model families. Full scope and sources: [`Paper 2 assessment`](../tracks/D-experiment/PAPER2_ASSESSMENT_2026-11-12.md).
 
 ## 2026-11-14 — Control PO ingestion comparison: quote-aware boundary detection (Bob)
 
@@ -1839,3 +1839,13 @@ archival of the old project brief. Current overview supplies the short project
 explanation. Historical v1 lineage wording now refers to existing v2 evidence;
 no runtime result recomputed or maturity upgraded. No financial code, Control
 reading or corpus execution. Editorial receipt: `docs/COLLABORATOR_REVIEW_2026-11-15.md`.
+
+## 2026-11-15 — Superseded plans archived; pointer paths retired
+
+Documentation-only continuation from `3085967`: six historical plans/predictions
+moved under `docs/archive/retired_plans_2026-11-15/`, sixteen redundant pointer files
+removed, maintained links rewritten directly and the catalog refreshed. New archive
+prose/code remains intact, with Markdown links rebased. Previous frozen snapshots,
+evidence and attributed reflections retained; only navigation links in maintained
+records changed. Current protocols, open tasks and implementation/admission gates
+remain. No runtime test, engine change, new Control read or evidence-maturity change.

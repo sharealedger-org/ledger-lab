@@ -77,7 +77,7 @@ and read later scoped corrections. It is not a next-task list.
 
 ## Historical plans and archives
 
-The [original project brief](../PROJECT_BRIEF.md) is now an archive pointer. Its
+The [original project brief](archive/PROJECT_BRIEF_PRE_READABILITY_2026-11-15.md) is retained directly in the archive. Its
 rationale and original process map remain available unchanged; the
 [current overview](../LEDGER_LAB_OVERVIEW.md) serves as the short project explanation.
 Use the [core terms](../STATUS.md#terms-used-on-this-path) before technical status details.
@@ -89,24 +89,23 @@ path. Current documents should explain the decision well enough to use without
 reconstructing the whole chronology. If reasoning is disputed, follow the specific
 history link and preserve attribution when recording a correction.
 
-[Phase 1 objectives](RESEARCH_OBJECTIVES.md), [test design](TEST_DESIGN.md),
-[early strategy](RESEARCH_STRATEGY.md), [implementation plan](ENGINE_IMPLEMENTATION_PLAN.md),
-[enhancement plan](DATA_ENHANCEMENT_PLAN.md), [organization proposal](PROJECT_ORGANIZATION_PLAN.md),
-[full-corpus runbook](FULL_CORPUS_RUN_CHECKLIST.md), [rerun handoff](CKB_REVENUE_RERUN_2026-11-13.md)
-and [Control projections](TRACK_D_NOTES.md) have dated roles. Their historical
-queues, branch paths and expected outcomes do not override current status/evidence.
-[Original VA specifications](VA_Data_Layouts_and_Specs.md) remain source design history,
-including historical technology choices, rather than a current runtime mandate.
+[Phase 1 objectives](RESEARCH_OBJECTIVES.md) and [test design](TEST_DESIGN.md)
+remain protocol references for test IDs, locked criteria and deviations. The
+[full-corpus runbook](FULL_CORPUS_RUN_CHECKLIST.md) remains operational experience;
+select the current workload and recheck admission before using it.
+[Original VA specifications](VA_Data_Layouts_and_Specs.md) remain source design history.
 
-Superseded pointer paths: [broad strand plan](PHASE2_SYNTHETIC_DATA_PLAN.md),
-[Intel Phase 1b handoff](PHASE_1B_SYNTHETIC_DATA_INTEL_PLAN.md),
-[old proposal name](PHASE_ONE_GENERATION_CKB_PROPOSAL.md),
-[earlier paper plan](../tracks/D-experiment/PAPER_VERSION_2_RESEARCH_PLAN.md).
-Old track paths likewise point to the current experiment/workstreams.
+Six superseded planning/prediction documents now live together in the
+[retired-plans archive](archive/retired_plans_2026-11-15/README.md), including the
+pre-measurement Track D notes. This archive retains the reasoning and backlog,
+with a map to current work. Redundant brief/plan/track pointer files were removed;
+current links go directly to the retained document. Existing frozen snapshots keep
+their original contents and recorded link-base conventions.
 
 Preserved archives: [2026-11-12 cleanup](archive/document_cleanup_2026-11-12/README.md),
 [initial Track D consolidation](archive/consolidation_2026-11-15/README.md),
-[broader collaborator review](archive/collaborator_review_2026-11-15/README.md).
+[broader collaborator review](archive/collaborator_review_2026-11-15/README.md), and
+[retired plans](archive/retired_plans_2026-11-15/README.md).
 The [review receipt](COLLABORATOR_REVIEW_2026-11-15.md) states coverage and remaining
 limitations. Evidence and reflections retain their contents; documentation cleanup
 never upgrades a result or authorizes a financial run.

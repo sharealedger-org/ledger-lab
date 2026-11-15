@@ -38,7 +38,7 @@ Also measured: timing test 1 (FY12 post-pipeline tail), timing test 2 (FY12 chai
 | Per-run evidence | `data/test_evidence/corpus_runs/run_20261110_210721/`, `run_20261111_014229/`, `run_20261111_064052/` (cost surfaces, process metrics, wall-clock, `corpus_totals.csv`, logs as `run_logs_*.tar.gz`) |
 | Gold reference outputs | `data/test_evidence/corpus_runs/run_20261111_014229/gold/` (`MANIFEST.csv`, 104 files, SHA-256; `MANIFEST_SJE.csv`). The data files are on OneDrive `LedgerLabOutputs-Gold`, outside git. |
 | Analysis and status per claim | [`VERIFICATION_AUDIT_REGISTER.md`](VERIFICATION_AUDIT_REGISTER.md), entries from "Full corpus run FY2003-FY2016 (`20261110_210721`)" to "Merged SJE hash comparison, run 3 against run 4"; [`CURRENT_RESULTS.md`](CURRENT_RESULTS.md) |
-| Prediction made before any control measurement | [`TRACK_D_NOTES.md`](TRACK_D_NOTES.md), section 2 (commit `7981964`, 2026-11-10 22:16): the 5 to 15 times ingestion penalty and the shape of the Curve 3 bowl are projections, not measurements |
+| Prediction made before any control measurement | [`TRACK_D_NOTES.md`](archive/retired_plans_2026-11-15/TRACK_D_NOTES.md), section 2 (commit `7981964`, 2026-11-10 22:16): the 5 to 15 times ingestion penalty and the shape of the Curve 3 bowl are projections, not measurements |
 
 Not on `main`: `docs/EXPERIMENT_STATE_2026-11-11.md` and the cost-graph model run exist only on branch `aim-three-model`, committed after Intel began (`e17da96`). They are later analysis of the same measurements, not part of the baseline.
 

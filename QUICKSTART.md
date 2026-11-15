@@ -288,5 +288,5 @@ and the relevant CCP/AIM status. For implementation, continue with:
 4. [Measurement and logging contract](docs/MEASUREMENT_AND_LOGGING.md)
 5. [99 interpretation boundary](99-interpretation/README.md)
 
-`PROJECT_BRIEF.md` preserves historical design material. Use the current layer READMEs and the
+[The archived project brief](docs/archive/PROJECT_BRIEF_PRE_READABILITY_2026-11-15.md) preserves historical design material. Use the current layer READMEs and the
 status statements above for the repository's present design and implementation state.

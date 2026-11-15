@@ -1,6 +1,6 @@
 # Project organization plan (proposal, not yet adopted)
 
-**Historical organization proposal:** Current structure is recorded in [root STATUS](../STATUS.md) and [Track D](../tracks/D-experiment/STATUS.md). Track D is now primary, with CCP/AIM inside it; Track A is intended conclusion material and C a footnote candidate. Earlier approval questions, branch locations and work order below are preserved as history, not new approval requirements or current assignments.
+**Historical organization proposal:** Current structure is recorded in [root STATUS](../../../STATUS.md) and [Track D](../../../tracks/D-experiment/STATUS.md). Track D is now primary, with CCP/AIM inside it; Track A is intended conclusion material and C a footnote candidate. Earlier approval questions, branch locations and work order below are preserved as history, not new approval requirements or current assignments.
 
 Drafted 2026-11-12 by Bob at the owner's request. Purpose: let a session start in a few thousand tokens instead of reading a 3,718-line handoff, and make the baseline results approachable. Nothing below is done except where marked. Each step needs the owner's yes before it is built; changes to `AGENTS.md` and any new Python need explicit approval.
 

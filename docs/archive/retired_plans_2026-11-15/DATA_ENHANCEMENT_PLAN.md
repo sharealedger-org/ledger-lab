@@ -1,6 +1,6 @@
 # Data Enhancement Plan — VA Dataset for Risk/Finance Demonstration
 
-**Superseded roadmap, 2026-11-15 navigation update:** Retained for the original risk/finance rationale and alternatives. Earlier source-schema claims conflict with [measured corpus schemas](CORPUS_SCHEMAS.md); earlier phases and implementation assumptions are not current instructions. Use the [current strategy](SYNTHETIC_CONNECTED_PROCESS_STRATEGY.md) and [generation proposal](PHASE_TWO_GENERATION_CKB_PROPOSAL.md). Existing work is not newly verified by this label.
+**Superseded roadmap, 2026-11-15 navigation update:** Retained for the original risk/finance rationale and alternatives. Earlier source-schema claims conflict with [measured corpus schemas](../../CORPUS_SCHEMAS.md); earlier phases and implementation assumptions are not current instructions. Use the [current strategy](../../SYNTHETIC_CONNECTED_PROCESS_STRATEGY.md) and [generation proposal](../../PHASE_TWO_GENERATION_CKB_PROPOSAL.md). Existing work is not newly verified by this label.
 
 > **Parent:** `PROJECT_BRIEF.md` — Universal Ledger POC  
 > **Purpose:** Plan for extending the VA government expenditure data to support a GL vs. source-system reconciliation demonstration, the Basel/risk attribute gap analysis, and a phased enrichment roadmap that unlocks progressively richer risk/finance use cases.  

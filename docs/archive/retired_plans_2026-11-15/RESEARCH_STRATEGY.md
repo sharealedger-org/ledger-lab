@@ -1,15 +1,15 @@
 # Research Strategy — Ledger Lab
 
-**Historical strategy, 2026-11-15 navigation update:** Preserve this rationale and earlier paper mapping as research history. Its run order, vendor assumptions, permutation-row argument and predicted proofs are not current directions or measured conclusions. The [connected-process strategy](SYNTHETIC_CONNECTED_PROCESS_STRATEGY.md) owns current phases; [Track D](../tracks/D-experiment/STATUS.md) is the primary experiment. Later paper assignments remain qualified, and [CCP evidence](../tracks/D-experiment/ccp/STATUS.md) distinguishes capacity bounds from measured costs.
+**Historical strategy, 2026-11-15 navigation update:** Preserve this rationale and earlier paper mapping as research history. Its run order, vendor assumptions, permutation-row argument and predicted proofs are not current directions or measured conclusions. The [connected-process strategy](../../SYNTHETIC_CONNECTED_PROCESS_STRATEGY.md) owns current phases; [Track D](../../../tracks/D-experiment/STATUS.md) is the primary experiment. Later paper assignments remain qualified, and [CCP evidence](../../../tracks/D-experiment/ccp/STATUS.md) distinguishes capacity bounds from measured costs.
 
 **Status:** Working strategy document. Updated 2026-11-04.
 **Audience:** Project owner, coauthors, and AI agents working in this repository.
-**Companion:** [`RESEARCH_OBJECTIVES.md`](RESEARCH_OBJECTIVES.md) — operational spec: CCP/AIM
+**Companion:** [`RESEARCH_OBJECTIVES.md`](../../RESEARCH_OBJECTIVES.md) — operational spec: CCP/AIM
 tables, acceptance thresholds, run order, locked decisions. Read that first for *what to do*.
 This document explains *why the program is structured this way* — the proof sequence, corpus
 commitment rationale, AIM interaction architecture, and the drill-down thesis. It is not an
 implementation spec; for that see [`ENGINE_IMPLEMENTATION_PLAN.md`](ENGINE_IMPLEMENTATION_PLAN.md),
-[`TEST_DESIGN.md`](TEST_DESIGN.md), and [`SESSION_HANDOFF.md`](../SESSION_HANDOFF.md).
+[`TEST_DESIGN.md`](../../TEST_DESIGN.md), and [`SESSION_HANDOFF.md`](../../../SESSION_HANDOFF.md).
 
 ---
 

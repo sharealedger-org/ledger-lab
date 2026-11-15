@@ -37,10 +37,10 @@ edits remain uncommitted and excluded.
 
 ## Current direction
 
-The zero key is a placeholder for records without a resolved vendor identity;\nmany such
-records can form one large reporting group. Zero-key report practicality\nis now measured on
-bounded probes; conditional
-zero-only runtime is hours, with strong distinct-key sensitivity. See
+The zero key is a placeholder for records without a resolved vendor identity;
+many such records can form one large reporting group. Bounded probes measured
+reporting practicality for that group. Conditional zero-only runtime is hours,
+with strong distinct-key sensitivity. See
 [receipt](data/test_evidence/component_pilot_0304_20261115/zero_key_projection/README.md).
 A representative current-year profile of zero rows/keys/bytes is required before
 full-corpus admission; spill capability alone is insufficient.
@@ -73,8 +73,9 @@ OneDrive is only a potential verified post-success archive.
 | C — footnote candidate | Berka exploratory record, outside the active experiment | [Historical C status](tracks/C-berka/STATUS.md) |
 
 Owner direction, 2026-11-15. This reorganizes ongoing work; it does not close
-unfinished CCP/AIM tasks or claim Track A corroboration. Old B1/B2 and `D-control`
-paths are compatibility pointers. Evidence locations and protocol IDs remain stable.
+unfinished CCP/AIM tasks or claim Track A corroboration. Former B1/B2 and
+`D-control` labels are historical; current links use the canonical Track D paths.
+Evidence locations and protocol IDs remain stable.
 The [contributor guide](CONTRIBUTOR_ONBOARDING.md) provides a bounded reading path;
 the [catalog](docs/DOCUMENT_CATALOG.md) helps find a particular document.
 

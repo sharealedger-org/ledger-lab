@@ -9,8 +9,10 @@ Subsequent bounded work is recorded below; no paper edits or new Control read.
 
 Owner direction, 2026-11-15: Track D is the main research path. Former B1/B2 now
 sit inside it as [CCP cost/capability](ccp/STATUS.md) and
-[AIM / financial exploration](aim/STATUS.md). The Control is the separately implemented comparison system; its comparison is one component of Track D. `D-control` and B1/B2 paths remain
-compatibility pointers; research IDs CCP/AIM and evidence paths stay unchanged.
+[AIM / financial exploration](aim/STATUS.md). The Control is the separately
+implemented comparison system; its comparison is one component of Track D.
+Redundant `D-control` and B1/B2 pointer paths are retired; research IDs CCP/AIM
+and evidence paths stay unchanged.
 
 Track A's external insurer material is intended for the paper's conclusion;
 its results are not local evidence until supplied and qualified. Track C/Berka
@@ -21,11 +23,15 @@ or conclusion is written by this reorganization.
 For a new collaborator, start with the [core terms in root status](../../STATUS.md#terms-used-on-this-path),
 read [the research overview](../../LEDGER_LAB_OVERVIEW.md) once, then this page and
 only the relevant workstream. Returning contributors can skip the overview. The
-[old project brief](../../PROJECT_BRIEF.md) is now an archive pointer, not another
-required orientation document. The
-[contributor guide](../../CONTRIBUTOR_ONBOARDING.md) explains the architecture's
+[old project brief](../../docs/archive/PROJECT_BRIEF_PRE_READABILITY_2026-11-15.md) is archived directly; the overview supplies current orientation. The [contributor guide](../../CONTRIBUTOR_ONBOARDING.md) explains the architecture's
 rationale and routes implementation work to its contracts. Read history when a
 specific decision needs explanation; do not reconstruct the current plan from it.
+
+Superseded plans and the pre-measurement Track D notes now live in the
+[retired-plans archive](../../docs/archive/retired_plans_2026-11-15/README.md).
+Redundant pointer files have been removed; current links go directly to retained
+documents. The archive keeps their reasoning and unfinished ideas without making
+those old assignments part of the active reading path. No runtime evidence changes.
 
 ## Current plans and evidence
 
@@ -75,7 +81,8 @@ and [evidence](../../data/test_evidence/component_pilot_0304_20261115/README.md)
 bound the implementation claims. The following describes v1 at `213b20f`;
 the v2 lineage checks are recorded above. Context order → determining-key assignment
 sort/merge → entity temporal order reached the Technical Transform Layer (TTL), which
-standardizes source records,\npurchase-order (PO) processing, posting/GL/permutation
+standardizes source records,
+purchase-order (PO) processing, posting/GL/permutation
 and expanded reporting. 32 unchanged baseline and four generator tests passed;
 36 events, 30 financial, 60 balanced SJE rows, 96 conservation checks and 20 history
 oracles passed. At v1, Virginia Auditor of Public Accounts (APA) event-ID lineage and PO

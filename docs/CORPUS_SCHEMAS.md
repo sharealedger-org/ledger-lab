@@ -7,7 +7,7 @@ files themselves and `data/aRef*.txt`. Counts and definitions of reason codes ar
 Four distinct header schemas exist across the 367 profiled files. Within each family the header is
 identical in every file (one `schema_id` per family), so there is no column-order drift to handle
 **inside the files on this machine**. This contradicts
-[DATA_ENHANCEMENT_PLAN.md](DATA_ENHANCEMENT_PLAN.md) section 1.1, which describes FY2003–FY2013 as
+[DATA_ENHANCEMENT_PLAN.md](archive/retired_plans_2026-11-15/DATA_ENHANCEMENT_PLAN.md) section 1.1, which describes FY2003–FY2013 as
 tab-delimited with Agency / Fund Detail / Sub-Program columns and FY2014–FY2016 as a different
 column order. No file here matches that description. All 336 APA transaction files are
 comma-delimited with the same 9 (expenditure) or 7 (revenue) columns. If an older format existed,

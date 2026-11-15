@@ -1,39 +1,20 @@
 # Non-archived document catalog
 
-Inventory date: 2026-11-15, following `ddde891`. Start at [the document map](README.md)
-for a short reading path. This catalog covers tracked/non-ignored repository prose:
-Markdown, HTML explainers and README/method text. It does not include raw `.txt`
-data, log/hash/config outputs, code, spreadsheets, images, ignored runtime trees,
-external/private sources or archive contents. Those are not implied reviewed.
+Updated 2026-11-15 after `3085967`. Start at [the document map](README.md) for a
+short reading path. This catalog covers tracked/non-ignored repository prose:
+Markdown, HTML explainers and README/method text. It excludes raw `.txt` data,
+logs/hashes/configuration, code, binary workbooks, ignored runtime trees, external
+sources and archives. The [retired-plans index](archive/retired_plans_2026-11-15/README.md)
+locates superseded plans and records the removed pointer paths.
 
-**147 documents inventoried.** Review depth is explicit:
-**content** = read/revised for navigation and authority; **sections** = opening,
-structure and selected relevant passages; **inventory** = location/type only.
-None means independent verification of every claim, external citation or command.
-Long evidence bundles, journals and protocol bodies were not all read end to end.
-The [review receipt](COLLABORATOR_REVIEW_2026-11-15.md) records findings and limits.
+**129 current prose documents inventoried.** Review depth carries forward the
+previous review: **content** = read/revised for navigation and authority;
+**sections** = opening, structure and selected passages; **inventory** = location/type
+only. Newly added receipts are inventory-only here. No level implies independent
+verification of all claims, external citations or commands. Long evidence bundles,
+journals and protocol bodies were not all read end to end. The
+[review receipt](COLLABORATOR_REVIEW_2026-11-15.md) records scope and limitations.
 Preserving a document does not make its task list current.
-
-## Compatibility pointers
-
-| Document | Review depth |
-|---|---|
-| [PROJECT_BRIEF.md](../PROJECT_BRIEF.md) | content |
-| [docs/PHASE2_SYNTHETIC_DATA_PLAN.md](PHASE2_SYNTHETIC_DATA_PLAN.md) | content |
-| [docs/PHASE_1B_SYNTHETIC_DATA_INTEL_PLAN.md](PHASE_1B_SYNTHETIC_DATA_INTEL_PLAN.md) | content |
-| [docs/PHASE_ONE_GENERATION_CKB_PROPOSAL.md](PHASE_ONE_GENERATION_CKB_PROPOSAL.md) | content |
-| [tracks/B1-cost/STATUS.md](../tracks/B1-cost/STATUS.md) | content |
-| [tracks/B2-models/STATUS.md](../tracks/B2-models/STATUS.md) | content |
-| [tracks/D-control/CKB_REVIEW_2026-11-12.md](../tracks/D-control/CKB_REVIEW_2026-11-12.md) | content |
-| [tracks/D-control/CODEX_PHASE2_WORKING_LIST.md](../tracks/D-control/CODEX_PHASE2_WORKING_LIST.md) | content |
-| [tracks/D-control/CODEX_REFLECTIONS.md](../tracks/D-control/CODEX_REFLECTIONS.md) | content |
-| [tracks/D-control/COMPARISON_PLAN.md](../tracks/D-control/COMPARISON_PLAN.md) | content |
-| [tracks/D-control/MEMBER_REPO_EDITING_PLAN_2026-11-14.md](../tracks/D-control/MEMBER_REPO_EDITING_PLAN_2026-11-14.md) | content |
-| [tracks/D-control/MONOGRAPH_READING_2026-11-13.md](../tracks/D-control/MONOGRAPH_READING_2026-11-13.md) | content |
-| [tracks/D-control/PAPER2_ASSESSMENT_2026-11-12.md](../tracks/D-control/PAPER2_ASSESSMENT_2026-11-12.md) | content |
-| [tracks/D-control/PAPER_VERSION_2_RESEARCH_PLAN.md](../tracks/D-control/PAPER_VERSION_2_RESEARCH_PLAN.md) | content |
-| [tracks/D-control/STATUS.md](../tracks/D-control/STATUS.md) | content |
-| [tracks/D-experiment/PAPER_VERSION_2_RESEARCH_PLAN.md](../tracks/D-experiment/PAPER_VERSION_2_RESEARCH_PLAN.md) | content |
 
 ## Current plans, contracts and method
 
@@ -74,11 +55,14 @@ Preserving a document does not make its task list current.
 | [data/acfr_anchors/ACFR_FIXTURE_MANIFEST.md](../data/acfr_anchors/ACFR_FIXTURE_MANIFEST.md) | sections |
 | [data/reference_history_research_20261115/research_method.txt](../data/reference_history_research_20261115/research_method.txt) | inventory |
 | [data/synthetic/README.md](../data/synthetic/README.md) | sections |
+| [data/synthetic/component_anchor_2012_v1/README.md](../data/synthetic/component_anchor_2012_v1/README.md) | inventory |
 | [data/synthetic/component_pilot_0304_v1/README.md](../data/synthetic/component_pilot_0304_v1/README.md) | sections |
 | [data/synthetic/connected_reporting_v1/README.txt](../data/synthetic/connected_reporting_v1/README.txt) | inventory |
 | [data/synthetic/identity_recovery_v1/README.md](../data/synthetic/identity_recovery_v1/README.md) | sections |
 | [data/synthetic/reclass_history_v1/README.txt](../data/synthetic/reclass_history_v1/README.txt) | inventory |
 | [data/test_evidence/component_pilot_0304_20261115/README.md](../data/test_evidence/component_pilot_0304_20261115/README.md) | sections |
+| [data/test_evidence/component_pilot_0304_20261115/anchor_preparation_2012/README.md](../data/test_evidence/component_pilot_0304_20261115/anchor_preparation_2012/README.md) | inventory |
+| [data/test_evidence/component_pilot_0304_20261115/zero_key_projection/README.md](../data/test_evidence/component_pilot_0304_20261115/zero_key_projection/README.md) | inventory |
 | [data/test_evidence/connected_views_checkpoint_20261115/README.md](../data/test_evidence/connected_views_checkpoint_20261115/README.md) | sections |
 | [data/test_evidence/corpus_cleanup_20261115/README.txt](../data/test_evidence/corpus_cleanup_20261115/README.txt) | inventory |
 | [data/test_evidence/corpus_runs/run_20261110_123303/RUN_SUMMARY.md](../data/test_evidence/corpus_runs/run_20261110_123303/RUN_SUMMARY.md) | sections |
@@ -98,6 +82,7 @@ Preserving a document does not make its task list current.
 | [data/test_evidence/corpus_runs/run_20261114_204428/RUN_SUMMARY.md](../data/test_evidence/corpus_runs/run_20261114_204428/RUN_SUMMARY.md) | sections |
 | [data/test_evidence/corpus_runs/run_20261115_004220/RUN_SUMMARY.md](../data/test_evidence/corpus_runs/run_20261115_004220/RUN_SUMMARY.md) | sections |
 | [data/test_evidence/corpus_runs/run_20261115_021550/RUN_SUMMARY.md](../data/test_evidence/corpus_runs/run_20261115_021550/RUN_SUMMARY.md) | sections |
+| [data/test_evidence/corpus_runs/run_20261115_031604/RUN_SUMMARY.md](../data/test_evidence/corpus_runs/run_20261115_031604/RUN_SUMMARY.md) | inventory |
 | [data/test_evidence/gold_copy_20261114/README.md](../data/test_evidence/gold_copy_20261114/README.md) | sections |
 | [data/test_evidence/identity_audit_20261114/README.md](../data/test_evidence/identity_audit_20261114/README.md) | sections |
 | [data/test_evidence/identity_recovery_20261114/README.md](../data/test_evidence/identity_recovery_20261114/README.md) | sections |
@@ -158,16 +143,10 @@ Preserving a document does not make its task list current.
 
 | Document | Review depth |
 |---|---|
-| [docs/CKB_REVENUE_RERUN_2026-11-13.md](CKB_REVENUE_RERUN_2026-11-13.md) | sections |
-| [docs/DATA_ENHANCEMENT_PLAN.md](DATA_ENHANCEMENT_PLAN.md) | sections |
-| [docs/ENGINE_IMPLEMENTATION_PLAN.md](ENGINE_IMPLEMENTATION_PLAN.md) | sections |
 | [docs/FULL_CORPUS_RUN_CHECKLIST.md](FULL_CORPUS_RUN_CHECKLIST.md) | sections |
 | [docs/LEDGER_LAB_ONE_PAGE_EXPLAINER.html](LEDGER_LAB_ONE_PAGE_EXPLAINER.html) | inventory |
-| [docs/PROJECT_ORGANIZATION_PLAN.md](PROJECT_ORGANIZATION_PLAN.md) | content |
 | [docs/RESEARCH_OBJECTIVES.md](RESEARCH_OBJECTIVES.md) | sections |
-| [docs/RESEARCH_STRATEGY.md](RESEARCH_STRATEGY.md) | sections |
 | [docs/TDS_vs_IL_architecture.md](TDS_vs_IL_architecture.md) | content |
-| [docs/TRACK_D_NOTES.md](TRACK_D_NOTES.md) | sections |
 | [docs/VA_Data_Layouts_and_Specs.md](VA_Data_Layouts_and_Specs.md) | sections |
 | [docs/ZENODO_ARCHIVE_PLAN.md](ZENODO_ARCHIVE_PLAN.md) | sections |
 

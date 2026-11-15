@@ -145,4 +145,4 @@ The overlap of CCP4 and CCP5 on the cost surface is the empirical proof that the
 ---
 
 *Captured from session discussion. For inclusion in the monograph — relevant to Papers 1 §§3.2–3.4, 4 §4, 5 §3.3.*
-*See also: `PROJECT_BRIEF.md`, `BOB_WORK_LOG.md`*
+*See also: [the archived project brief](archive/PROJECT_BRIEF_PRE_READABILITY_2026-11-15.md) and [session history](../SESSION_HANDOFF.md)*

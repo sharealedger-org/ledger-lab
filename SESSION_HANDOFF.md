@@ -7,6 +7,23 @@ The [unchanged previous handoff](docs/archive/collaborator_review_2026-11-15/SES
 preserves the detailed chronology through the initial consolidation at `ddde891`.
 Earlier archives remain linked there; no session reasoning or evidence was discarded.
 
+## 2026-11-15 (TRACK D) — Retired plans and redundant pointer files
+
+Owner requested fewer active documents and direct archive links. Archived six
+superseded documents: Track D's pre-measurement predictions, organization proposal,
+early strategy, enhancement plan, engine implementation plan and expanded-source
+rerun handoff. Their prose/code remain intact; only relative Markdown link targets
+were rebased. [Archive index](docs/archive/retired_plans_2026-11-15/README.md) maps
+old paths and current work. Removed sixteen compatibility pointer files, including
+the root brief and old track/plan aliases, and rewrote maintained links directly.
+
+Kept current protocols, workload contracts, attributed reflections, evidence and
+open TODO work. Earlier frozen snapshots and historical exposure/source-comment
+path mentions remain unchanged as provenance. Refreshed the catalog to the actual
+active document set. No engine changes, runtime execution, new Control read or
+evidence upgrade; inherited older assignment draft remains unchanged/uncommitted.
+Existing Track D implementation/admission gates still govern next execution.
+
 ## 2026-11-15 (TRACK D) — First-use terminology and project-brief reading review
 
 Owner flagged undefined SJE/CKB on the suggested reading path. Walked the root

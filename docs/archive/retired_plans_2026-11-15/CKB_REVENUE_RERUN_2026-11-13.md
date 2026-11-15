@@ -23,7 +23,7 @@ dimension. Existing reporting guards remain active; the large unattributed group
 can still exceed the default row allowance. Such a failure retains diagnostics
 and is not evidence that corpus reporting succeeded.
 
-**Scope clarification, 2026-11-13 14:54:05 AZT:** Later owner discussion supersedes the narrower experimental proposals below. Three runs through FY2016 retain Phase 1 measurement boundaries with revenue/fiscal-date changes; one expanded reporting execution follows separately. Reporting combines canonical SJEs, posted balances, vendor/IP and available contract dimensions, and VA references, producing movement, balance and enriched output families. Larger cross-vendor cuts require bounded spills and explicit post-processing. These are exploratory runs before Phase 2, with refinement expected. See the [pre-design reflection](../tracks/D-control/CODEX_REFLECTIONS.md). Existing implementation/evidence statements below remain unchanged; the expanded reporting pass has not yet been designed or built.
+**Scope clarification, 2026-11-13 14:54:05 AZT:** Later owner discussion supersedes the narrower experimental proposals below. Three runs through FY2016 retain Phase 1 measurement boundaries with revenue/fiscal-date changes; one expanded reporting execution follows separately. Reporting combines canonical SJEs, posted balances, vendor/IP and available contract dimensions, and VA references, producing movement, balance and enriched output families. Larger cross-vendor cuts require bounded spills and explicit post-processing. These are exploratory runs before Phase 2, with refinement expected. See the [pre-design reflection](../../../tracks/D-experiment/CODEX_REFLECTIONS.md). Existing implementation/evidence statements below remain unchanged; the expanded reporting pass has not yet been designed or built.
 
 Owner direction, 2026-11-13: proceed with a richer CKB corpus; matching control's scope is not a constraint. Run on the Intel machine. Its generated control outputs may be removed to recover space, after identifying exact paths and retaining code and compact evidence. No deletion has occurred in this session.
 
@@ -99,8 +99,8 @@ Storage follow-up: the current queue retains independent full outputs/SJEs for e
 ## Implemented reporting handoff — 2026-11-13 15:28 AZT (supersedes pending statements above)
 
 Expanded Scala reporting and its standalone Bash launcher are now fixture-tested;
-see [design](REPORTING_PASS_DESIGN.md) and
-[evidence](../data/test_evidence/reporting_20261113/README.md).
+see [design](../../REPORTING_PASS_DESIGN.md) and
+[evidence](../../../data/test_evidence/reporting_20261113/README.md).
 The three full runs through 2016 remain comparable measurements with revenue and
 fiscal corrections. Run expanded reporting **once afterward**, separately measured,
 against one successful run's fiscal-year directories. Do not combine three replicated

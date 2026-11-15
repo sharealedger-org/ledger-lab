@@ -118,3 +118,36 @@ The archived project brief matches `6b6a561:PROJECT_BRIEF.md` byte for byte;
 both excluded assignment draft hashes are unchanged. Whitespace checks passed.
 These checks support navigation/terminology; they are not a substitute for human
 feedback about comprehension. No engine tests were rerun for prose-only changes.
+
+## Retiring redundant documents after `3085967`
+
+Owner requested direct archive links instead of accumulating compatibility pointer
+files. Archived six historical planning/prediction documents, including Track D's
+pre-measurement notes; removed sixteen small root/plan/track pointer files. The
+[archive index](archive/retired_plans_2026-11-15/README.md) records every destination
+and the current starting point for each subject. Current links were rewritten;
+newly archived documents have rebased Markdown destinations so they remain usable.
+Their prose, code examples, predictions and original open questions are preserved.
+
+The earlier frozen archive snapshots stay unchanged, with their recorded original
+path/commit link conventions. Dated exposure records and source-code comments may
+still name their historical paths. This is provenance, not a current reading route;
+removing the aliases intentionally retires old external URLs. Git history retains
+the pre-retirement paths at `3085967`.
+
+Protocols and locked criteria remain in RESEARCH_OBJECTIVES/TEST_DESIGN; the current
+execution model, workload contracts, runbook and measurement rules remain active.
+Evidence, reflections and open tasks are retained. The dated plans were not needed
+to choose today's work, but remain useful when evaluating its unusual rationale.
+No unfinished task is closed by archiving, no engine code is changed, and no new
+financial/model/Control execution or evidence upgrade occurs here.
+
+Retirement-pass checks: 129 active prose documents remain in the refreshed catalog,
+a reduction of 22 (six archived originals and sixteen removed pointer files).
+All 588 local destinations/fragments across 122 non-archived Markdown files and
+43 destinations/fragments in the new archive resolve. Normalized comparison proves
+that only Markdown destinations changed in the six archived originals; their prose
+and fenced code examples are identical to the pre-move documents. Existing frozen
+archives are untouched. Both inherited assignment draft hashes are unchanged.
+Whitespace checks passed. Only Markdown is committed; no engine tests or runtime
+jobs were run for document relocation.

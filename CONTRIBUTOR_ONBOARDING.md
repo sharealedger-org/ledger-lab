@@ -4,7 +4,7 @@ Start with [STATUS.md](STATUS.md), then [Track D](tracks/D-experiment/STATUS.md)
 and its [CCP](tracks/D-experiment/ccp/STATUS.md) or
 [AIM](tracks/D-experiment/aim/STATUS.md) workstream. Read the
 [plain-English overview](LEDGER_LAB_OVERVIEW.md) once for the research rationale.
-[QUICKSTART.md](QUICKSTART.md) supplies technical setup; it is not the research queue. The [core terms](STATUS.md#terms-used-on-this-path) are introduced before status details; the obsolete [project brief](PROJECT_BRIEF.md) is retained as a historical pointer.
+[QUICKSTART.md](QUICKSTART.md) supplies technical setup; it is not the research queue. The [core terms](STATUS.md#terms-used-on-this-path) are introduced before status details; the obsolete [project brief](docs/archive/PROJECT_BRIEF_PRE_READABILITY_2026-11-15.md) is retained directly in the archive.
 
 ## Why this architecture is being studied
 

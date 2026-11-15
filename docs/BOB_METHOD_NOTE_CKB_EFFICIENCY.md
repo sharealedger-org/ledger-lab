@@ -255,7 +255,7 @@ The existing scripts follow this pattern exactly:
 - `scripts/run_pipeline.sh` — runs the full Scala pipeline across
   all steps; Bob reads only `pipeline_results.log` and `cost_surface.csv`
 
-**The agentic loop design in `PROJECT_BRIEF.md` is built on this principle:**
+**The agentic loop design in [the original project brief](archive/PROJECT_BRIEF_PRE_READABILITY_2026-11-15.md) is built on this principle:**
 Bob edits two CSV files (`ViewSpec.csv`, `AllocationRules.csv`), runs one shell script
 (`run_pipeline.sh`), reads two log files (`pipeline_results.log`, `cost_surface.csv`).
 The entire 80M-record pipeline runs inside a single `execute_command` call. This is
@@ -557,6 +557,6 @@ produces the same ratio of efficiency over naive agentic file exploration.
 *Source papers: Paper 4 (GenevaERS Architecture), Paper 2 (Business Event Repositories),*
 *Paper 5 (Enterprise Financial Transformation Engines) — from the monograph*
 *"The Architecture of Economic State" (Twitchell). Link will be added upon publication.*
-*Companion documents: `PROJECT_BRIEF.md` (experiment design),
-`docs/DATA_ENHANCEMENT_PLAN.md` (data enrichment roadmap),
+*Companion documents: [the original project brief](archive/PROJECT_BRIEF_PRE_READABILITY_2026-11-15.md) (experiment design),
+[the historical enhancement plan](archive/retired_plans_2026-11-15/DATA_ENHANCEMENT_PLAN.md) (data enrichment roadmap),
 `scripts/run_pipeline.sh` (agentic interface).*
