@@ -88,3 +88,33 @@ Completed checks:
 - Whitespace checks pass for maintained documents. The unchanged archived handoff retains its original extra blank line at EOF; snapshot equality takes precedence over reformatting that historical record. Only Markdown is included in this checkpoint;
   inherited Scala/Bash draft changes are excluded. No engine tests rerun because
   executable behavior is unchanged.
+
+## Readability continuation after `6b6a561`
+
+Owner flagged undefined SJE and CKB on the primary reading path and asked whether
+the project brief still belonged in current orientation. Performed a manual,
+ordered reading walkthrough: README entry route → root STATUS → overview (once
+for new readers) → Track D → each CCP/AIM branch, plus the contributor guide.
+This is an editorial walkthrough, not an independent-reader usability study.
+
+| Reading obstacle | Change |
+|---|---|
+| SJE and CKB used before explanation | Core terms precede status detail; standalone README/overview/contributor pages expand their first use. SJE is Standard Journal Entry; a journal group balances, not necessarily each row |
+| Assumed financial/data vocabulary | Explain instrument, balance grain, fiscal year, lineage, Control, Gold and the large unattributed zero-key group; expand relevant source/processing abbreviations |
+| Branch result notation lacked context | Define CCP/AIM IDs, C and p; replace unexplained Q4/STL shorthand with descriptive wording |
+| Setup details preceded orientation | Move README's Start here section ahead of archive/download setup; make optional first-time overview reading explicit |
+| Old project brief duplicated and contradicted current guidance | Archive original bytes at `archive/PROJECT_BRIEF_PRE_READABILITY_2026-11-15.md`; retain PROJECT_BRIEF.md as a stable pointer. Overview supplies the current short explanation |
+| Historical v1 lineage limitation read as current after newer work | Label v1 scope and refer to the already-recorded v2 fixture checks; no result rerun or new verification claim |
+
+The archived brief retains its original author, rationale, alternatives, corrections,
+relative links and work queue. Relative links use its original repository-root base.
+The prior verified financial anchors and bounded probes remain as recorded; no
+engine changes, full run, private-paper edit or new Control reading in this pass.
+
+Readability-pass validation: first-use SJE/CKB expansion checks passed for README,
+overview and contributor guide; root definitions precede the checkpoint. All 659
+local destinations/fragments across 144 non-archived Markdown files resolve.
+The archived project brief matches `6b6a561:PROJECT_BRIEF.md` byte for byte;
+both excluded assignment draft hashes are unchanged. Whitespace checks passed.
+These checks support navigation/terminology; they are not a substitute for human
+feedback about comprehension. No engine tests were rerun for prose-only changes.

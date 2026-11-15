@@ -9,6 +9,29 @@ Full historical inputs are external to Git and must be supplied separately. A su
 run demonstrates behavior on that fixture; it does not by itself establish scale, cost, or the
 general validity of the research claims.
 
+## Start here
+
+Start with [STATUS.md](STATUS.md), then the [primary Track D experiment](tracks/D-experiment/STATUS.md).
+Its two workstreams are [Cost Curve Points (CCP)](tracks/D-experiment/ccp/STATUS.md)
+and [AI/model evidence tests (AIM)](tracks/D-experiment/aim/STATUS.md), formerly B1/B2.
+Track A supplies possible conclusion material from outside this repository;
+Berka/Track C is retained as a footnote candidate, outside the main work path.
+
+- New to the argument: [plain-English overview](LEDGER_LAB_OVERVIEW.md); [core terms](STATUS.md#terms-used-on-this-path) are defined before the checkpoint details.
+- Contributing with or without AI: [contributor guide](CONTRIBUTOR_ONBOARDING.md).
+- Building/running a small fixture: [quickstart](QUICKSTART.md).
+- Finding a contract, evidence receipt or historical rationale: [document map](docs/README.md).
+
+For new readers, use the overview once between root status and Track D; returning
+contributors can go directly to the selected workstream.
+
+The old [project brief](PROJECT_BRIEF.md) now points to its unchanged historical archive.
+
+Current statuses point to the relevant evidence and limitations. Older experiment
+plans preserve IDs and locked protocols; their dated queues and expected outcomes
+are not today's priorities or established findings. Archives preserve the research
+reasoning, including failed approaches and disagreements, for targeted reading.
+
 ## Clean repo / canonical archive start state
 
 New users should start from a clean repository checkout and a clean external data root. Do not mix
@@ -17,31 +40,14 @@ workspace with a fresh clone. The historical source archive is deliberately exte
 repository is a reproducible measurement environment, not a place where downloaded raw files are
 stored as project content.
 
-The corpus is archived on Zenodo in five records: the parent
-[10.5281/zenodo.23846362](https://doi.org/10.5281/zenodo.23846362) (eVA PO, budget, metadata; 47
-files) and four APA records (expenditure and revenue, FY2003–FY2009 and FY2010–FY2016; 84 files
+In dataset names, FY means fiscal year. The corpus is archived on Zenodo in five records: the parent
+[10.5281/zenodo.23846362](https://doi.org/10.5281/zenodo.23846362) (eVA purchase orders (PO), budget, metadata; 47
+files) and four Virginia Auditor of Public Accounts (APA) records (expenditure and revenue,
+FY2003–FY2009 and FY2010–FY2016; 84 files
 each). The parent alone lacks the monthly APA files. To restore a clean external data root with
 SHA-256 verification, run `bash scripts/download_corpus_zenodo.sh --data-root <dir outside the
 repo>`; record IDs and test status are in
 [`docs/RUNTIME_DATA_LAYOUT.md`](docs/RUNTIME_DATA_LAYOUT.md).
-
-## Start here
-
-Start with [STATUS.md](STATUS.md), then the [primary Track D experiment](tracks/D-experiment/STATUS.md).
-Its two workstreams are [CCP cost/capability](tracks/D-experiment/ccp/STATUS.md)
-and [AIM / financial exploration](tracks/D-experiment/aim/STATUS.md), formerly B1/B2.
-Track A supplies possible conclusion material from outside this repository;
-Berka/Track C is retained as a footnote candidate, outside the main work path.
-
-- New to the argument: [plain-English overview](LEDGER_LAB_OVERVIEW.md).
-- Contributing with or without AI: [contributor guide](CONTRIBUTOR_ONBOARDING.md).
-- Building/running a small fixture: [quickstart](QUICKSTART.md).
-- Finding a contract, evidence receipt or historical rationale: [document map](docs/README.md).
-
-Current statuses point to the relevant evidence and limitations. Older experiment
-plans preserve IDs and locked protocols; their dated queues and expected outcomes
-are not today's priorities or established findings. Archives preserve the research
-reasoning, including failed approaches and disagreements, for targeted reading.
 
 ## Research Questions
 
@@ -54,7 +60,7 @@ These are hypotheses to evaluate with comparable workloads, explicit controls, a
 measurements. See [99-interpretation](99-interpretation/README.md) for how results should be
 interpreted and what the evidence must contain.
 
-The current VA source-model contract is documented in
+The current Virginia (VA) source-model contract is documented in
 [docs/VA_DATA_MODEL_CONTRACT.md](docs/VA_DATA_MODEL_CONTRACT.md). It is derived from the VA
 source workbook preserved in the Sharealedger conceptual-model repository. For current research sequencing use [Track D](tracks/D-experiment/STATUS.md);
 [the Phase 1 objectives](docs/RESEARCH_OBJECTIVES.md) preserve test IDs, thresholds
@@ -68,12 +74,14 @@ The Scala VA implementation is a domain prototype and historical baseline used t
 contracts, materialization choices, controls, and cost hypotheses.
 
 The GenevaERS organization owns the generalized execution substrate: Workbench metadata authoring,
-Run-Control Apps, the Java/Performance Engine, CKB read/lookup/write extensions, DevOps, demos, and
+Run-Control Apps, the Java/Performance Engine, Common Key Buffer (CKB) read/lookup/write
+extensions, DevOps, demos, and
 documentation. Future Ledger Lab workloads may be translated into GenevaERS metadata and run
 through those repositories, but engine implementation belongs there.
 
 Sharealedger is the intended future home for open ERP financial metadata and configuration: event
-definitions, ARE rules, instrument/CAR structures, effective-dated references, calculation-engine
+definitions, Accounting Rules Engine (ARE) rules, instrument/Contract Attributes Record
+(CAR) structures, effective-dated references, calculation-engine
 definitions, perspectives, and workload manifests. Ledger Lab supplies measured research fixtures
 and evidence for those configurations; it does not become the ERP runtime.
 
@@ -94,7 +102,7 @@ process that resembles a target layer does not mean that layer's generalized imp
 
 | Area | Intended responsibility | Current status |
 |---|---|---|
-| [01 Transformation](01-transformation/README.md) | Normalize source records and emit balanced, traceable SJE partitions. | Contract documented; the VA transform is combined with sorting in the existing Scala path. |
+| [01 Transformation](01-transformation/README.md) | Normalize source records and emit traceable Standard Journal Entry (SJE) partitions, whose journal groups balance. | Contract documented; the VA transform is combined with sorting in the existing Scala path. |
 | [02 Foundation](02-foundation/README.md) | Sort contracts, CKB mechanics, state application, and controls. | Current physical VA engine and orchestration live under `02-foundation/va_pipeline/` and `scripts/`. |
 | [03 Instrument Ledger](03-instrument-ledger/README.md) | Preserve canonical journal history and instrument-level state. | Represented by the current VA journal and LDGR files; not a separate processing application. |
 | [04 Engines](04-engines/calculation_engines/README.md) | Read SJE structures and emit balanced, traceable SJE structures. | Target boundary is documented; generalized engine implementation is not complete. |

@@ -77,6 +77,11 @@ and read later scoped corrections. It is not a next-task list.
 
 ## Historical plans and archives
 
+The [original project brief](../PROJECT_BRIEF.md) is now an archive pointer. Its
+rationale and original process map remain available unchanged; the
+[current overview](../LEDGER_LAB_OVERVIEW.md) serves as the short project explanation.
+Use the [core terms](../STATUS.md#terms-used-on-this-path) before technical status details.
+
 Retain the unusual approach's rationale, rejected alternatives, failed approaches,
 original thresholds and corrections so collaborators can scrutinize the research.
 Archive material is available on demand; it is outside the default session reading

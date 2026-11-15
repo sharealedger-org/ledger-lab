@@ -1,19 +1,22 @@
 # Track D / CCP: Cost and capability measurements
 
+CCP means Cost Curve Point. It identifies a measured or proposed workload/capability
+configuration, not a guaranteed cost minimum.
+
 Updated 2026-11-15. Former Track B1 is a workstream inside the
 [primary experiment](../STATUS.md). This is a navigation change, not track closure,
 a new measurement or a claim that a cost minimum has been demonstrated.
 
 ## Evidence to use
 
-- Original expense/PO baseline: tag `companion-measured-baseline-20261111`
+- Original expense/purchase-order (PO) baseline: tag `companion-measured-baseline-20261111`
   (`c3667e4`); [baseline record](../../../docs/COMPANION_BASELINE_RECORD_2026-11-12.md).
-  The 74 named final files and 14 merged-SJE hashes matched between the two
+  The 74 named final files and 14 merged Standard Journal Entry (SJE) file hashes matched between the two
   compared Monthly executions. Earlier layouts are not isolated CCP replicates.
 - Expanded expenditure/revenue/PO runs: evidence checkpoint `17bd5e7`;
   [queue receipt](../../../data/test_evidence/intel_preflight_20261113/README.md).
   All three validated; 46 compared final-product hashes matched. This is one
-  workload at Monthly, not three different cost points. Combined TTL totals
+  workload at Monthly, not three different cost points. Combined source-transformation (TTL) totals
   have legacy expenditure labels; verify source families independently.
 - Separate expanded reporting failed on the zero-vendor row guard:
   [failure](../../../data/test_evidence/reporting_corpus_20261114/README.md).
@@ -23,7 +26,7 @@ a new measurement or a claim that a cost minimum has been demonstrated.
 - The [Mix design](../../../docs/COST_GRAPH_DESIGN.md) combines measured constants
   with assumed rates/query volumes. Annual sizing and dense permutation capacity
   are not measured implementations of alternative systems. CCP4/CCP5 have fixture
-  evidence, not comparable corpus cost points. GERS target-runtime gaps stay open.
+  evidence, not comparable corpus cost points. The target GenevaERS runtime gaps stay open.
 
 ## Next work and decisions
 

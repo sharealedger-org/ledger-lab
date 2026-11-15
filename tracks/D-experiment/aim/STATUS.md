@@ -1,5 +1,9 @@
 # Track D / AIM: AI and financial exploration
 
+AIM is the identifier prefix for the AI/model evidence tests. C below denotes
+the reported concordance/discrimination score; p denotes the statistical test
+p-value. Gold refers to verified reference outputs used for comparison.
+
 Updated 2026-11-15. Former Track B2 is a workstream inside the
 [primary experiment](../STATUS.md). The owner's broader objective is reusable
 conditional exploration of dimensions, measures and learned concepts; earlier
@@ -14,7 +18,7 @@ Earlier "Phase 1b" wording is historical; current synthetic work is Phase 2.
 | AIM1 | Non-zero count gap across 14 years; partially verified for the specified key/count comparison, not predictive superiority |
 | AIM3 | Commitment hold-out C = 0.7527, p = 0.001; walk-forward mean C = 0.7629 |
 | AIM3 balance / combined | Matched-split balance C = 0.7683; combined C = 0.7761. Provisional: unresolved fiscal-period handling, one split, no stability check. The old overlapping-split 0.7783 is superseded |
-| AIM4 | FAIL under the implemented Q4-ratio method (2/5); the locked STL method was not run |
+| AIM4 | FAIL under the implemented fourth-quarter-ratio method (2/5); the predeclared seasonal-decomposition method was not run |
 | AIM5 | Precision 1.0 for its stated agency-name test; data-quality evidence |
 | Three-model experiment | Plan/preparation/Gold checks completed; no trained-model comparison or language-prior effect established |
 | Field-label pilot | 512/128/256 examples prepared; 43 preparation tests passed. Training not run after download/training permission was declined |

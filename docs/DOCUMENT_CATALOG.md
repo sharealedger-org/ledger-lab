@@ -18,6 +18,7 @@ Preserving a document does not make its task list current.
 
 | Document | Review depth |
 |---|---|
+| [PROJECT_BRIEF.md](../PROJECT_BRIEF.md) | content |
 | [docs/PHASE2_SYNTHETIC_DATA_PLAN.md](PHASE2_SYNTHETIC_DATA_PLAN.md) | content |
 | [docs/PHASE_1B_SYNTHETIC_DATA_INTEL_PLAN.md](PHASE_1B_SYNTHETIC_DATA_INTEL_PLAN.md) | content |
 | [docs/PHASE_ONE_GENERATION_CKB_PROPOSAL.md](PHASE_ONE_GENERATION_CKB_PROPOSAL.md) | content |
@@ -124,7 +125,6 @@ Preserving a document does not make its task list current.
 | [AGENTS.md](../AGENTS.md) | content |
 | [CONTRIBUTOR_ONBOARDING.md](../CONTRIBUTOR_ONBOARDING.md) | content |
 | [LEDGER_LAB_OVERVIEW.md](../LEDGER_LAB_OVERVIEW.md) | content |
-| [PROJECT_BRIEF.md](../PROJECT_BRIEF.md) | sections |
 | [PUBLICATION_AUDIT_SCOPE.md](../PUBLICATION_AUDIT_SCOPE.md) | content |
 | [QUICKSTART.md](../QUICKSTART.md) | content |
 | [README.md](../README.md) | content |

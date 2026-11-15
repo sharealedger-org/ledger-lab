@@ -3,6 +3,19 @@
 Updated 2026-11-15 (Arizona). Start here, then read the relevant track status.
 The audit register wins any evidence disagreement.
 
+## Terms used on this path
+
+| Term | Meaning here |
+|---|---|
+| SJE | Standard Journal Entry: the common record format for accounting lines. A journal group contains debit/credit lines that balance; an individual row need not balance by itself. |
+| CKB | Common Key Buffer processing (also called common key buffering): bring sorted input streams together by a shared key and process the current key's records and state together. |
+| GL / FY / VA | General ledger / fiscal year / Virginia. |
+| CCP / AIM | Cost Curve Point identifiers / AI-model evidence test identifiers; the two workstreams inside Track D. |
+| Fixture / lineage | A small declared test dataset / the recorded links from an output back to its source records and rules. |
+| Control / Gold | The separately implemented comparison system / verified reference outputs retained for comparison. |
+
+## Current checkpoint
+
 **Latest bounded continuation:** lineage-v2 verifies exact source/document/rule
 provenance on the FY2003/04 pilot, with unchanged ledger/GL and 48 passing tests.
 [Receipt](data/test_evidence/component_pilot_0304_20261115/README.md#lineage-v2-continuation-after-consolidation-2026-11-15).
@@ -12,8 +25,9 @@ Corpus-scale generation and VA financial anchors remain open; no new cost point.
 pilot completed generation, sorted assignment, posting and expanded reporting.
 [Evidence and limits](data/test_evidence/component_pilot_0304_20261115/README.md):
 32 baseline tests and four generator tests passed; 30 financial events produced
-60 balanced SJE rows. Source/rule lineage remains partial, VA anchors unverified,
-and scale/AI effectiveness untested. This is fixture evidence, not a cost point.
+60 SJE rows in balanced journal groups. At that v1 checkpoint, source/rule lineage
+was partial; the bounded v2 checks above subsequently passed. VA anchors remained
+unverified, and scale/AI effectiveness untested. This is fixture evidence, not a cost point.
 
 Initial Track D consolidation: `ddde891` ([receipt](docs/archive/consolidation_2026-11-15/README.md)).
 The broader collaborator review/path reorganization is recorded in its
@@ -23,7 +37,9 @@ edits remain uncommitted and excluded.
 
 ## Current direction
 
-Zero-key report practicality is now measured on bounded probes; conditional
+The zero key is a placeholder for records without a resolved vendor identity;\nmany such
+records can form one large reporting group. Zero-key report practicality\nis now measured on
+bounded probes; conditional
 zero-only runtime is hours, with strong distinct-key sensitivity. See
 [receipt](data/test_evidence/component_pilot_0304_20261115/zero_key_projection/README.md).
 A representative current-year profile of zero rows/keys/bytes is required before

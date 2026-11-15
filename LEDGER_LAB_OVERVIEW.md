@@ -3,13 +3,16 @@
 Ledger Lab studies whether a financial architecture can preserve useful business
 detail, support new accounting/reporting questions and reduce the total cost of
 maintaining and using that information. The central proposal is an instrument
-ledger with effective-dated attributes and reusable, ordered financial processing.
+ledger with attributes that carry the dates when they apply, and reusable, ordered financial
+processing. An instrument is the identified business entity whose state is carried
+forward—for example, a vendor or contract in a declared workload.
 The experiment must establish where this helps, where it costs more and what it
 cannot answer. [STATUS.md](STATUS.md) gives the current checkpoint.
 
 ## The distinction behind the research
 
-Posting accumulates detailed events into balances at a chosen grain. A balance
+Posting accumulates detailed events into balances at a chosen grain: the dimensions that
+identify one balance record, such as vendor, account and period. A balance
 can omit vendor identity, timing, event sequence or other distinctions needed by
 later questions. That does not establish that an institution deleted its raw
 history: the question is which retained representation answers a request, and
@@ -19,12 +22,15 @@ An instrument ledger carries identity and declared balance dimensions forward,
 then resolves attributes under an explicit date policy. Detailed events remain
 available for audit and questions that the balance grain cannot answer. A joined
 attribute does not restore an event sequence already absent from that balance.
-Quiet instruments, changed hierarchies and late information are part of the
+Instruments with no new activity, changed hierarchies and late information are part of the
 research problem, not incidental edge cases.
 
-The execution proposal is Common Key Buffer (CKB) processing: bring compatible
+The execution proposal is Common Key Buffer (CKB) processing, also called common key
+buffering: bring compatible
 sorted records, state and reference data together, execute dependent process
-sections and let downstream sections consume generated SJEs in the declared flow.
+sections and let downstream sections consume generated Standard Journal Entry (SJE) records
+in the declared flow. These are accounting lines in a common format; the debit/credit lines
+in each journal group must balance.
 A key need not be vendor ID. Multiple business processes may need their own keys,
 CKB flows and connecting sorts. A logical capability need not add a physical scan;
 its compute, state, output and any new sort/materialization still have a cost.
@@ -36,8 +42,7 @@ measurements and independent controls must test it.
 
 ## Two workstreams inside one experiment
 
-[Track D](tracks/D-experiment/STATUS.md) is the main path. CCP and AIM are its
-complementary workstreams, formerly B1 and B2.
+[Track D](tracks/D-experiment/STATUS.md) is the main path. Cost Curve Points (CCP) and AI/model evidence tests (AIM) are its complementary workstreams, formerly B1 and B2.
 
 | Workstream | Question | Evidence required |
 |---|---|---|
@@ -52,8 +57,8 @@ The old CCP/AIM IDs remain useful protocol/evidence identifiers.
 
 ## What the recorded work currently supports
 
-- Monthly VA pipelines completed at corpus scale, including a later expanded
-  expenditure/revenue/PO workload. Named output sets matched across selected
+- Monthly Virginia (VA) pipelines completed at corpus scale, including a later expanded
+  expenditure/revenue/purchase-order workload. Named output sets matched across selected
   executions. Scope, implementation and timing differ between checkpoints.
 - The separate expanded reporting corpus attempt failed. Later bounded fixtures
   exercise revised reporting and synthetic connections; they do not establish
@@ -61,10 +66,10 @@ The old CCP/AIM IDs remain useful protocol/evidence identifiers.
 - AIM3 has task-specific predictive signal. Posted-total/instrument-balance
   baselines and combined features complicate any broad advantage claim; a fiscal-
   period discrepancy leaves the reported incremental gain provisional.
-- AIM4 failed its implemented Q4-ratio test; the locked STL method was not run.
+- AIM4 failed its implemented fourth-quarter-ratio test; the predeclared seasonal-decomposition method was not run.
   A three-model training comparison and a language-prior effect are not established.
-- The FY2003/04 component pilot completed through real downstream reporting with
-  controls, while explicit source/rule lineage remains partial. Its amounts are
+- The fiscal-year (FY) 2003/04 component pilot completed through real downstream reporting with
+  controls. The later lineage-v2 continuation verified exact source/document/rule links at fixture scale ([receipt](data/test_evidence/component_pilot_0304_20261115/README.md#lineage-v2-continuation-after-consolidation-2026-11-15)); this does not establish corpus-scale lineage. Its amounts are
   synthetic envelopes, not verified VA financial anchors. No payroll or AI result
   follows from the employee responsibility records.
 

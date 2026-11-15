@@ -1830,3 +1830,12 @@ are separate. No rekeying to evade work and no new Control access/cloud transfer
 Admission remains unverified: profile a representative current year with real
 byte widths and zero/key distributions, then reconcile projected time/output/
 scratch to a practical run window. Bounded memory alone does not admit full scale.
+
+## 2026-11-15 — Primary reading-path terminology review
+
+Documentation-only continuation from `6b6a561`: ordered newcomer reading walkthrough,
+first-use SJE/CKB definitions, clearer vocabulary/branch notation and unchanged
+archival of the old project brief. Current overview supplies the short project
+explanation. Historical v1 lineage wording now refers to existing v2 evidence;
+no runtime result recomputed or maturity upgraded. No financial code, Control
+reading or corpus execution. Editorial receipt: `docs/COLLABORATOR_REVIEW_2026-11-15.md`.

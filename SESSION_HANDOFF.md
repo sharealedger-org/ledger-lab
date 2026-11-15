@@ -7,6 +7,23 @@ The [unchanged previous handoff](docs/archive/collaborator_review_2026-11-15/SES
 preserves the detailed chronology through the initial consolidation at `ddde891`.
 Earlier archives remain linked there; no session reasoning or evidence was discarded.
 
+## 2026-11-15 (TRACK D) — First-use terminology and project-brief reading review
+
+Owner flagged undefined SJE/CKB on the suggested reading path. Walked the root
+status → overview → Track D → CCP/AIM branches and contributor guide, also checking
+the README entry route. Added definitions before checkpoint detail and local
+first-use explanations in standalone entry pages; clarified grain, instruments,
+Control/Gold and result notation. README orientation now precedes download setup.
+The overview serves as the current short project explanation. Archived the full
+old PROJECT_BRIEF unchanged and left its public path as a historical pointer.
+
+Preserved the latest lineage/anchor/probe evidence at `6b6a561`; clarified historical
+v1 wording where it conflicted with the already-recorded v2 continuation. No new
+engine changes, model fit, corpus execution, Control access or evidence upgrade.
+Older assignment draft remains unchanged/uncommitted. Reading scope and validation
+are appended to `docs/COLLABORATOR_REVIEW_2026-11-15.md`. Existing next implementation
+and admission gates remain in Track D status.
+
 ## 2026-11-15 (TRACK D) — Collaborator review and primary experiment paths
 
 Owner clarified that Track D is the primary research path, with CCP/AIM (formerly

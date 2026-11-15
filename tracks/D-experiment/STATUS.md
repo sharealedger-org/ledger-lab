@@ -9,8 +9,7 @@ Subsequent bounded work is recorded below; no paper edits or new Control read.
 
 Owner direction, 2026-11-15: Track D is the main research path. Former B1/B2 now
 sit inside it as [CCP cost/capability](ccp/STATUS.md) and
-[AIM / financial exploration](aim/STATUS.md). The Control comparison is one
-component, not the definition of Track D. `D-control` and B1/B2 paths remain
+[AIM / financial exploration](aim/STATUS.md). The Control is the separately implemented comparison system; its comparison is one component of Track D. `D-control` and B1/B2 paths remain
 compatibility pointers; research IDs CCP/AIM and evidence paths stay unchanged.
 
 Track A's external insurer material is intended for the paper's conclusion;
@@ -19,8 +18,11 @@ is retained as an exploratory footnote candidate, outside the active work path;
 its source-lineage limits and failed locked protocol remain explicit. No footnote
 or conclusion is written by this reorganization.
 
-For a new collaborator, read [the research overview](../../LEDGER_LAB_OVERVIEW.md)
-once, then this page and only the relevant workstream. The
+For a new collaborator, start with the [core terms in root status](../../STATUS.md#terms-used-on-this-path),
+read [the research overview](../../LEDGER_LAB_OVERVIEW.md) once, then this page and
+only the relevant workstream. Returning contributors can skip the overview. The
+[old project brief](../../PROJECT_BRIEF.md) is now an archive pointer, not another
+required orientation document. The
 [contributor guide](../../CONTRIBUTOR_ONBOARDING.md) explains the architecture's
 rationale and routes implementation work to its contracts. Read history when a
 specific decision needs explanation; do not reconstruct the current plan from it.
@@ -37,8 +39,8 @@ scratch must be profiled on a representative current real year before full run.
 Do not fabricate vendor IDs to evade the hot group. No full-corpus/cloud run.
 
 **2026-11-15 next test prepared, not executed:** Official FY2012 General Fund
-anchors and six signed closing-balance bridge items verified from G p50 and L
-p174/177; three offline Scala checks pass. [Receipt](../../data/test_evidence/component_pilot_0304_20261115/anchor_preparation_2012/README.md).
+anchors and six signed closing-balance bridge items verified from published
+statement sections G (page 50) and L (pages 174/177); three offline Scala checks pass. [Receipt](../../data/test_evidence/component_pilot_0304_20261115/anchor_preparation_2012/README.md).
 Food-stamp estimate excluded as Federal Trust scope. Prepared a 1% synthetic-only
 panel and 90/3,000/30,000-event ladder; see the existing pilot contract and
 `data/synthetic/component_anchor_2012_v1/`. Before launch implement calendar,
@@ -70,17 +72,21 @@ Papers 3/4, Phase 3 broader topology from tentative allocations to reclass.
 The [generation proposal](../../docs/PHASE_TWO_GENERATION_CKB_PROPOSAL.md) owns
 wider design; the [pilot contract](../../docs/COMPONENT_PILOT_0304_CONTRACT.md)
 and [evidence](../../data/test_evidence/component_pilot_0304_20261115/README.md)
-bound the implementation claims. Context order → determining-key assignment
-sort/merge → entity temporal order reached actual TTL/PO, posting/GL/permutation
+bound the implementation claims. The following describes v1 at `213b20f`;
+the v2 lineage checks are recorded above. Context order → determining-key assignment
+sort/merge → entity temporal order reached the Technical Transform Layer (TTL), which
+standardizes source records,\npurchase-order (PO) processing, posting/GL/permutation
 and expanded reporting. 32 unchanged baseline and four generator tests passed;
 36 events, 30 financial, 60 balanced SJE rows, 96 conservation checks and 20 history
-oracles passed. APA event-ID lineage and PO rule lineage remain partial; FY2003/04
+oracles passed. At v1, Virginia Auditor of Public Accounts (APA) event-ID lineage and PO
+rule lineage were partial; FY2003/04
 VA financial anchors are unverified. No payroll, scale, AI or new cost point proved.
 
 Paper revision proceeds independently in separate sessions under the
 [member editing handoff](MEMBER_REPO_EDITING_PLAN_2026-11-14.md), including phase
 introductions before 01/02, 03/04 and subsequent boundaries. Moving B1/B2 into
-CCP/AIM reorganizes ongoing work; it does not close unresolved research. Private chapters stay outside this repository.
+CCP/AIM reorganizes ongoing work; it does not close unresolved research. Private chapters
+stay outside this repository.
 
 [Document map](../../docs/README.md) classifies plans, contracts, evidence,
 reflections and superseded proposals. [Consolidation receipt](../../docs/archive/consolidation_2026-11-15/README.md)
@@ -103,7 +109,7 @@ remain CKB-side qualitative context, outside the Control package; no evidence up
 3. Continue independent writing sessions from the member handoff. Paper mapping,
    later introduction filenames and experimental questions remain open.
 4. Develop questions/evaluation criteria after versioned data inspection and
-   foundation work; consult Bob before Q2-draft. No Q2-final package has been
+   foundation work; consult Bob before Q2-draft (the first recorded version of the next question set). No Q2-final package has been
    approved or sent. Reclass engine work is outside current preparation.
 5. Phase 1 comparison remains open under [COMPARISON_PLAN.md](COMPARISON_PLAN.md):
    reconcile revenue, PO quarantine populations, eligible years and timing scope
