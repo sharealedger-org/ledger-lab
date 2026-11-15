@@ -30,5 +30,6 @@ class CorpusReportingPreparationSpec extends AnyFunSuite {
     intercept[IllegalArgumentException](new CorpusReportingPreparation.IdSort(dir, 2, 17))
     val sorter = new CorpusReportingPreparation.IdSort(dir, 2, 2)
     intercept[IllegalArgumentException](sorter.add("broken,id"))
+    intercept[IllegalArgumentException](sorter.add("x" * 257))
   }
 }

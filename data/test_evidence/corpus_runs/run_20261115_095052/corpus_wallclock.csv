@@ -1,0 +1,15 @@
+event,epoch_s,local_time
+corpus_start,1794761452,2026-11-15 09:50:52
+# years=12 lanes=1 periodGranularity=monthly
+# ttl_type=B vendor_master=/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/corpus_admission_20261115/inputs_v2/VendorMaster.csv
+# chain_width=1 views_early=Y caffeinate=on
+# git=7494e0f dirty_files=6
+# host=Kips-MBP cpus=4
+prep_all_done,1794762440,2026-11-15 10:07:20
+views_start,1794762442,2026-11-15 10:07:22
+chain_start_fy12,1794762442,2026-11-15 10:07:22
+views_end,1794762574,2026-11-15 10:09:34
+chain_end_fy12,1794763173,2026-11-15 10:19:33
+chain_all_done,1794763173,2026-11-15 10:19:33
+views_all_done,1794763173,2026-11-15 10:19:33
+corpus_end,1794763173,2026-11-15 10:19:33

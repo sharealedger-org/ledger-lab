@@ -42,6 +42,17 @@ in AGENTS and the contributor guide. Runtime checkpoints and next gates are unch
 
 ## Current plans and evidence
 
+**2026-11-15 source-policy correction during admission:** First FY2012 profile
+passed monetary controls but exposed legacy REV master aliases attributing
+2,452,576 agency-grain receipt SJE rows. It is not admitted; financial/profile
+evidence and stopped report scratch remain intact. New receipt-safe preparation
+preserves the original master, excludes typed REV aliases with lineage, rejects
+remaining agency-key/name collisions and requires actual receipt SJE IDs to stay
+zero. No financial engine code changed. 46 regression tests and four focused
+preparation checks pass. Corrected fresh FY2012 replay is now under
+`session-run.tmp/corpus_admission_20261115_receipts_v2/`, with caffeinate and
+minute-by-minute passive monitoring. Full queue admission is still pending.
+
 **2026-11-15 autonomous execution preparation:** Owner authorized three executions
 of the synthetic-reference corpus with expanded reports, evaluation and verified
 OneDrive archival, and explicitly authorized a new preparation path after the

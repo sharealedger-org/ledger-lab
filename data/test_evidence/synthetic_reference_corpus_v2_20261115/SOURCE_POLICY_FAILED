@@ -1,0 +1,1 @@
+NOT_ADMITTED: legacy REV agency aliases mapped 2452576 of 2745656 FY2012 receipt SJE rows to vendor IDs. Preserve this population as source-policy failure evidence; rerun with receipt-safe master.

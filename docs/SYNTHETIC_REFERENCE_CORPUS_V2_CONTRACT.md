@@ -21,6 +21,19 @@ reference lookups and malformed records retain existing adapter policies and
 reject evidence; FY2009's absent PO is explicitly represented by an empty local
 placeholder. Historical results remain separate. No new financial rules.
 
+Source-policy falsifier, FY2012: the original master contains numeric agency-name
+aliases with instTypeID=REV. Only 293,080 of 2,745,656 receipt SJE rows remained
+zero under that snapshot; 2,452,576 were assigned agency aliases. This financial
+profile is retained as a failed admission attempt, not the selected population.
+New receipt-safe input preparation excludes REV alias rows from the TTL/report
+master, records every exclusion and preserves the original master. It checks
+that no remaining normalized holder name collides with any prepared agency key,
+so the unchanged APA receipt adapter's name lookup must miss. Preserve existing
+vendor and PO IDs; do not fabricate receipt parties or rewrite source receipts.
+Require all actual APA receipt rows to retain the original zero ID in the new
+preparation profile. This is a versioned input-policy change, not a historical
+baseline correction. Use a fresh root and replay the entire financial process.
+
 New Scala post-financial preparation scans exactly the merged SJE and actual
 ledger selected by the committed run. It records full hashes, row/zero counts,
 UTF-8 byte widths and source-family zero counts. It writes ID candidates only at

@@ -2,6 +2,7 @@
 # Three controlled local executions. Scala owns financial work and report preparation.
 set -euo pipefail
 repo="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+export PATH="/Users/ktwitchell001/.local/sbt/bin:$PATH"
 inputs=""; out=""; years=03,04,05,06,07,08,09,10,11,12,13,14,15,16
 minimum=160
 while [[ $# -gt 0 ]]; do
@@ -14,6 +15,7 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 [[ -s "$inputs/INPUTS_COMPLETE" && "$out" = /* && ! -e "$out" && "$minimum" =~ ^[0-9]+$ ]] || exit 2
+[[ -s "$inputs/receipt_policy/SOURCE_POLICY_COMPLETE" ]] || { echo "Receipt-safe source policy required" >&2; exit 2; }
 for path in "$inputs" "$out"; do [[ "$path" != *[[:space:]]* ]] || exit 2; done
 [[ "$years" =~ ^[0-9][0-9](,[0-9][0-9])*$ ]] || exit 2
 git -C "$repo" diff --quiet -- scripts 02-foundation/va_pipeline || exit 2
@@ -54,6 +56,7 @@ for current in monthly_a monthly_b monthly_c; do
     --syntheticAssignments "$assignments" --syntheticAsOf 2012-06-30 --syntheticRunDate 2016-07-01 \
     --aggregateKeys 50000 --syntheticAggregateKeys 10000 --spillRows 50000 --mergeFanIn 16 > "$run/reporting.log" 2>&1
   scala "runMain org.universalledger.foundation.va.corpus.ConnectedViewsCheck --report $run/report" "$run/report_validation.log"
+  scala "runMain org.universalledger.foundation.va.corpus.CorpusAdmissionSummary --report $run/report --out $run/admission_summary" "$run/admission_summary.log"
   : > "$run/products.sha256"
   for year in "${year_list[@]}"; do
     (cd "$run/output" && LC_ALL=C shasum -a 256 "FY$year/SortedJEFY${year}merged.csv" "FY$year/LDGR20${year}.csv" "FY$year/GL20${year}.csv" "FY$year/PERM_TBL20${year}.csv") >> "$run/products.sha256"

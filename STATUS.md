@@ -16,6 +16,16 @@ The audit register wins any evidence disagreement.
 
 ## Current checkpoint
 
+**Autonomous synthetic-reference preparation, 2026-11-15:** The downloaded VA
+corpus results are already complete and retained for their frozen scope. Owner
+authorized three new synthetic-reference executions with expanded reporting,
+evaluation and verified OneDrive archival, including a new preparation path to
+avoid the excluded older assignments. New bounded preparation and actual connected
+report controls pass; FY2012 current-policy time/scratch admission is running.
+See [Track D](tracks/D-experiment/STATUS.md) and the
+[v2 contract](docs/SYNTHETIC_REFERENCE_CORPUS_V2_CONTRACT.md). Full queue admission
+is pending; this is not the wider component generator or a new cost-point claim.
+
 **Latest bounded continuation:** lineage-v2 verifies exact source/document/rule
 provenance on the FY2003/04 pilot, with unchanged ledger/GL and 48 passing tests.
 [Receipt](data/test_evidence/component_pilot_0304_20261115/README.md#lineage-v2-continuation-after-consolidation-2026-11-15).

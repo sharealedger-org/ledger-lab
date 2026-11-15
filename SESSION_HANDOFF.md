@@ -7,6 +7,54 @@ The [unchanged previous handoff](docs/archive/collaborator_review_2026-11-15/SES
 preserves the detailed chronology through the initial consolidation at `ddde891`.
 Earlier archives remain linked there; no session reasoning or evidence was discarded.
 
+## 2026-11-15 (TRACK D) - Autonomous synthetic-reference v2 work in progress
+
+Latest continuation: first FY2012 financial run completed at 10:19:33 AZT,
+but its fresh profile falsified receipt source policy: 2,452,576/2,745,656 receipt
+SJE rows mapped to legacy REV agency-name aliases. SOURCE_POLICY_FAILED marks
+the first admission root; only its process group was stopped, retaining financial
+outputs and partial report evidence. This is not an accepted future population.
+New ReceiptSafeMaster excludes typed REV aliases in a versioned snapshot, checks
+remaining names against agency keys/zero fallback, and records original/exclusion
+lineage. No financial engine change. The new preparation requires all actual
+receipts zero and caps IDs at 256 characters; new post-engine summary scans actual
+report row/byte/zero cardinalities. 46 tests passed, followed by 4 focused checks.
+Corrected replay: runtime `preflight_receipts_v2.sh`, exec session 2592, under
+`session-run.tmp/corpus_admission_20261115_receipts_v2/`; PID is in preflight.pid.
+Its monitor is exec session 89368. First profile sessions 93557/26250 are stopped.
+Wait for corrected PREFLIGHT_COMPLETE, then evaluate live time/scratch before
+launching all three runs. All 385 raw hashes passed in the first admission root.
+
+Owner authorized three synthetic-reference executions, new reports, evaluation
+and verified OneDrive archival, remaining active until complete or input is
+required. After discovering the only old assignment CSV came from the excluded
+producer, owner explicitly chose "Implement and verify the new preparation path."
+The new contract and producer are committed; latest execution-support revision
+`b98581b`. New assignments derive from actual committed financial IDs with bounded
+literal-ID sorting/deduplication and explicit synthetic template cycling, never
+from the old draft/candidate inventory. Excluded artifacts remain untouched.
+
+Unchanged baseline 42 tests passed (one environment-dependent case canceled),
+two new preparation tests passed. Actual lineage-v2 fixture outputs were consumed
+by new preparation and existing separate reporting; 26 reconciliation, 20 history,
+96 conservation checks passed. All 385 raw catalog hashes now pass freshly.
+Fresh input snapshot: `session-run.tmp/corpus_admission_20261115/inputs_v2/`.
+FY2012 profile started 09:50:52 AZT via runtime `preflight.sh` under that admission
+root; PID 72162, exec session 93557. It will automatically finish financial
+validation, new preparation, actual report and ConnectedViewsCheck. Passive
+monitor exec session 26250 logs storage/process samples every minute. Full queue
+must wait for PREFLIGHT_COMPLETE and measured time/scratch admission. Preflight
+financial launch predates code commits; financial engine bytes were not changed.
+
+Prepared tracked wrappers: `run_synthetic_reference_corpus_v2.sh` runs three
+isolated monthly both-family executions plus reports and comparisons; verified
+post-evaluation hard links retain every path/byte while conserving local storage.
+`archive_synthetic_reference_corpus_v2.sh` packages only evaluated results and
+checks copied hashes in a fresh OneDrive destination. Small storage/archive
+exercises passed. Local sync-folder integrity is distinct from remote upload
+confirmation. No corpus queue or OneDrive copy has started yet. Do not commit
+new revisions while the full three-run wrapper is active; it pins HEAD.
+
 ## 2026-11-15 09:26:41 AZT (UTC-0700) (TRACK D) - Clarified next workload
 
 Owner confirms the downloaded VA corpus execution is complete, with evidence

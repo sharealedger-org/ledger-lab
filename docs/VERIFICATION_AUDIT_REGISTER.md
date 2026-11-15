@@ -1878,3 +1878,29 @@ running locally with caffeinate; full three-run admission, time/scratch and remo
 archive verification remain pending. No excluded-draft assignments consumed and
 no Control access. GERS-002/003 remain open; no new target-runtime or cost-point
 claim. Earlier recorded source runs remain valid for their own frozen scope.
+
+### FY2012 source-policy falsifier and correction, 2026-11-15
+
+The first fresh financial profile passed existing monetary controls but failed
+source-policy admission: 2,745,656 receipt SJE rows, only 293,080 zero. The current
+master includes numeric agency-name aliases with instTypeID=REV, so the unchanged
+receipt adapter attached vendor-like IDs to 2,452,576 agency-grain rows. This is
+not evidence of taxpayer identities. Preserved first financial/profile evidence
+under `session-run.tmp/corpus_admission_20261115/`; SOURCE_POLICY_FAILED records
+its ineligibility. Stopped only that attempt's report process group, before full
+corpus admission; failed report scratch is retained. No excluded draft was used.
+
+ReceiptSafeMaster now prepares a new snapshot excluding explicitly typed REV
+aliases, preserves all original rows and exclusion/inclusion lineage, and fails
+if any remaining name matches a prepared agency key or the zero fallback. Actual
+SJE preparation also requires every receipt row to retain zero identity. Existing
+TTL/ARE/post/report financial code is unchanged. Input policy is a new version,
+not a correction to historical measured evidence. New ID sorting rejects IDs
+above 256 characters to make its 50,000-ID byte allowance explicit.
+
+46 regression tests passed (0 failed/canceled), including receipt exclusions,
+original snapshot retention, remaining-name collision rejection, bounded sort
+and unchanged APA/PO/report behavior. Log: `receipt_policy_tests.log`. Corrected
+fresh FY2012 replay now running under
+`session-run.tmp/corpus_admission_20261115_receipts_v2/`. Full admission remains
+pending actual zero/key/byte/report cardinalities and time/scratch evaluation.

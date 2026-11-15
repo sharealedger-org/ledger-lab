@@ -19,7 +19,7 @@ object CorpusReportingPreparation {
     private val runs = mutable.ArrayBuffer[String]()
     var spills = 0; var levels = 0; var peak = 0
     def add(id: String): Unit = {
-      require(id.nonEmpty && !id.exists(c => c == ',' || c == '"' || c.isWhitespace), "Invalid canonical ID")
+      require(id.nonEmpty && id.length <= 256 && !id.exists(c => c == ',' || c == '"' || c.isWhitespace), "Invalid canonical ID")
       buffer += id; peak = peak.max(buffer.size)
       if (buffer.size == capacity) flush()
     }
@@ -109,6 +109,7 @@ object CorpusReportingPreparation {
           }
         } finally in.close()
         row(profiles, file.getCanonicalPath, kind, rows, file.length(), zero, zeroBytes, maxBytes, zeroMax, expense, expenseZero, revenue, revenueZero)
+        require(revenue == revenueZero, s"Agency receipts must remain unattributed: $revenue rows, $revenueZero zero rows in $file")
         allRows += rows
       }
       sort.finish { id =>
