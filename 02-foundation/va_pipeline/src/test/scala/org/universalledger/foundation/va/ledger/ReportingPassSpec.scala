@@ -229,6 +229,61 @@ class ReportingPassSpec extends AnyFunSuite {
       assert(metrics("aggregate_capacity_keys") == "1")
     }
   }
+  test("synthetic date cuts and master dimensions conserve actual posted inputs with bounded spill equivalence") {
+    withFixture { (dir, params) =>
+      val input = Files.createDirectory(dir.resolve("dated-input"))
+      def dated(amount: String, day: String): Seq[String] = pair("0000000001", "2014/06", amount, "EXP1", "PAYMENT").map { line =>
+        val r = line.split(",", -1); r(24) = day; r.mkString(",")
+      }
+      val rows = dated("100", "2014/06/22") ++ dated("25", "06-23-14") ++ dated("-10", "2014-06-24") ++
+        pair("0000000002", "2013/07", "40", "EXP1", "PAYMENT") ++ pair("0000000000", "2014/06", "300", "REV1", "REVENUE_RECEIPT")
+      write(input.resolve("SortedJEFY14merged.csv"), SortEngine.sortChunk(rows, spec))
+      post(input.toString + "/", input.toString + "/", "14")
+      write(dir.resolve("assignments.csv"), Seq("vendor_id,template_instrument_id", "0000000001,SIM_I000001", "0000000002,SIM_I000002"))
+      write(dir.resolve("enriched.csv"), Seq("instID,instHolderName,instEffectDate,instEffectEndDate,instSizeTier,instCounterpartySector", "0000000001,Simulated Acme,2000-01-01,9999-99-99,LARGE,COMMERCIAL"))
+      val p = params ++ Map("inPaths" -> input.toString, "vendorMaster" -> dir.resolve("enriched.csv").toString,
+        "syntheticHistories" -> "../../data/synthetic/reclass_history_v1", "syntheticRunDate" -> "2015-07-01", "syntheticAsOf" -> "2014-06-30", "syntheticAssignments" -> dir.resolve("assignments.csv").toString)
+      val small = run(dir, p + ("syntheticAggregateKeys" -> "1"), "dated-small", 1, 2)
+      val large = run(dir, p + ("syntheticAggregateKeys" -> "1000"), "dated-large", 1000, 16)
+      Seq("vendor_temporal_cuts.csv", "vendor_attribute_totals.csv", "synthetic_conservation.csv", "synthetic_vendor_coverage.csv", "vendor_temporal_summary.csv", "vendor_attribute_summary.csv").foreach { name =>
+        assert(java.util.Arrays.equals(Files.readAllBytes(small.resolve(name)), Files.readAllBytes(large.resolve(name))), name)
+      }
+      assert(table(small.resolve("synthetic_validation.csv")).size == 20)
+      assert(table(small.resolve("synthetic_validation.csv")).forall(_("status") == "PASS"))
+      assert(table(small.resolve("synthetic_conservation.csv")).forall(_("status") == "PASS"))
+      val cuts = table(small.resolve("vendor_temporal_cuts.csv")).filter(r => r("vendor_id") == "0000000001" && r("side") == "movement" && r("direction") == "D")
+      def sum(rs: Vector[Map[String, String]]) = rs.map(r => BigDecimal(r("amount"))).sum
+      val switch = cuts.filter(_("date_mode") == "EVENT_DATE")
+      assert(sum(switch.filter(_("synthetic_hierarchy_path").contains("SIM_S01"))) == 100)
+      assert(sum(switch.filter(_("synthetic_hierarchy_path").contains("SIM_S02"))) == 15)
+      Seq("AS_OF", "RUN_DATE").foreach { mode =>
+        val recast = cuts.filter(_("date_mode") == mode)
+        assert(sum(recast) == 115 && recast.forall(_("synthetic_hierarchy_path").contains("SIM_S02")))
+      }
+      val coverage = table(small.resolve("synthetic_vendor_coverage.csv"))
+      assert(coverage.find(_("vendor_id") == "0000000000").get("template_instrument_id").isEmpty)
+      assert(coverage.forall(_("identity_rekeyed") == "false"))
+      val attributes = table(small.resolve("vendor_attribute_totals.csv"))
+      assert(attributes.exists(r => r("vendor_id") == "0000000001" && r("attribute") == "instSizeTier" && r("attribute_value") == "LARGE"))
+      assert(attributes.exists(r => r("vendor_id") == "0000000002" && r("attribute_status") == "missing_vendor"))
+      val m = table(small.resolve("synthetic_metrics.csv")).map(r => r("metric") -> r("value")).toMap
+      assert(m("financial_rows").toLong == rows.size + table(input.resolve("LDGR2014.csv")).size)
+      assert(m("peak_partial_keys") == "1")
+    }
+  }
+  test("synthetic reporting rejects incorrect history expectations instead of publishing") {
+    withFixture { (dir, params) =>
+      val pack = Files.createDirectory(dir.resolve("bad-pack"))
+      val source = new File("../../data/synthetic/reclass_history_v1")
+      source.listFiles().filter(_.isFile).foreach(f => Files.copy(f.toPath, pack.resolve(f.getName)))
+      val file = pack.resolve("lookup_cases.csv")
+      val text = new String(Files.readAllBytes(file), StandardCharsets.UTF_8)
+      Files.write(file, text.replace("REF-agency-SIM_A405-v2", "WRONG_VERSION").getBytes(StandardCharsets.UTF_8))
+      val out = dir.resolve("bad-synthetic")
+      intercept[IllegalArgumentException] { CKBViews(params ++ Map("outPath" -> out.toString, "syntheticHistories" -> pack.toString, "syntheticRunDate" -> "2015-07-01")) }
+      assert(!Files.exists(out.resolve("EXTRACT_COMPLETE")))
+    }
+  }
   test("export connected fixture for separate-process orchestration when requested") {
     sys.env.get("CKB_REPORT_FIXTURE_EXPORT").foreach { path =>
       val root = Paths.get(path); require(!Files.exists(root)); Files.createDirectories(root)

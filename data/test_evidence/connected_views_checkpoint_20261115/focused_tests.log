@@ -1,0 +1,838 @@
+[info] welcome to sbt 1.10.11 (Eclipse Adoptium Java 21.0.8)
+[info] loading settings for project global-plugins from idea.sbt...
+[info] loading global plugins from /Users/ktwitchell001/.sbt/1.0/plugins
+[info] loading settings for project va_pipeline-build from assembly.sbt, plugins.sbt...
+[info] loading project definition from /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/project
+[info] loading settings for project root from build.sbt...
+[info] set current project to va_pipeline (in build file:/Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/)
+[info] compiling 4 Scala sources to /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/target/scala-2.12/classes ...
+[info] done compiling
+****************************************************************************************************
+                                Post Module
+Start Time: Sun Nov 15 01:00:49 MST 2026
+****************************************************************************************************
+****************************************************************************************************
+                   Step ttl — APA Technical Transform Layer (standardizeAndSort.applyAPA)
+Start Time: Sun Nov 15 01:00:49 MST 2026
+****************************************************************************************************
+processing file: ../../session-run.tmp/reporting-4389378254279283201/inputs/SortedJEFY14merged.csv
+No existing ledger file.  File will be created: LDGR2014.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          12
+Ledger Records Read:           0
+Ledger Records Written:        10
+Process End Time:      Sun Nov 15 01:00:49 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2014 rc=0 records_read=12 records_written=10 elapsed_s=1 input_bytes=0 output_bytes=1715
+RESOURCE step=3 year=2014 jvm_heap_bytes=1073741824
+****************************************************************************************************
+                                Post Module
+Start Time: Sun Nov 15 01:00:49 MST 2026
+****************************************************************************************************
+processing file: ../../session-run.tmp/reporting-4389378254279283201/inputs/SortedJEFY15merged.csv
+No existing ledger file.  File will be created: LDGR2015.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          4
+Ledger Records Read:           0
+Ledger Records Written:        4
+Process End Time:      Sun Nov 15 01:00:49 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2015 rc=0 records_read=4 records_written=4 elapsed_s=1 input_bytes=0 output_bytes=1016
+RESOURCE step=3 year=2015 jvm_heap_bytes=1073741824
+  inPath      : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-strict-9429594046932837665/raw
+  refPath     : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-strict-9429594046932837665/refs
+  outPath     : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-strict-9429594046932837665/out
+  year        : 2003  types: E
+  SortSpec    : ../sort_specs/SortedJE.sortspec  (15 fields)
+  VendorMaster: /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-strict-9429594046932837665/master.csv  (1 entries)
+  ChunkSize   : 200000
+  Reference   : agency=2 fund=2 object=2 program=2 source=2
+  Source folder (Expenditure FY2003): /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-strict-9429594046932837665/raw/FY 2003 Expenditure
+  Discovered 1 E files for FY2003
+
+  Processing E Q1 → /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-strict-9429594046932837665/out/SortedJEFY03q1exp.csv  (1 file(s))
+
+  File Expenditures Jul 2003.csv: data_lines=5 source=1 unresolved_ref=3 blank=1
+  Spilled chunk 1  (2 SJE rows so far)
+  Q1: source=1 sje=2 unresolved_ref=3 spills=1
+  Merging 1 spill(s) → /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-strict-9429594046932837665/out/SortedJEFY03q1exp.csv ...
+  Written: /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-strict-9429594046932837665/out/SortedJEFY03q1exp.csv (2 rows)
+
+Control totals:
+  Source rows processed : 1
+  SJE rows produced     : 2  (= ~2 × source rows)
+  Unresolved ref lookups: 3
+
+RESULT step=ttl year=2003 rc=0 records_read=1 records_written=2 elapsed_s=1 input_bytes=532 output_bytes=479
+RESOURCE step=ttl year=2003 jvm_heap_bytes=1073741824
+STATUS: COMPLETE
+****************************************************************************************************
+Process End Time: Sun Nov 15 01:00:49 MST 2026
+****************************************************************************************************
+PASS synthetic_reference_history rows=67 lookup_cases=14 hierarchy_cases=6
+****************************************************************************************************
+                   Step ttl — APA Technical Transform Layer (standardizeAndSort.applyAPA)
+Start Time: Sun Nov 15 01:00:49 MST 2026
+****************************************************************************************************
+  inPath      : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-strict-9429594046932837665/raw
+  refPath     : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-strict-9429594046932837665/refs
+  outPath     : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-strict-9429594046932837665/out
+  year        : 2003  types: E
+  SortSpec    : ../sort_specs/SortedJE.sortspec  (15 fields)
+  VendorMaster: /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-strict-9429594046932837665/master.csv  (1 entries)
+  ChunkSize   : 200000
+  Reference   : agency=2 fund=2 object=2 program=2 source=2
+  Source folder (Expenditure FY2003): /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-strict-9429594046932837665/raw/FY 2003 Expenditure
+  Discovered 1 E files for FY2003
+
+  Processing E Q1 → /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-strict-9429594046932837665/out/SortedJEFY03q1exp.csv  (1 file(s))
+RESULT synthetic_reference_history version=reclass_history_v1.0 instruments=4 files=18 external_sources_required=false
+****************************************************************************************************
+                   Step ttl — APA Technical Transform Layer (standardizeAndSort.applyAPA)
+Start Time: Sun Nov 15 01:00:49 MST 2026
+****************************************************************************************************
+****************************************************************************************************
+                   Step ttl — APA Technical Transform Layer (standardizeAndSort.applyAPA)
+Start Time: Sun Nov 15 01:00:49 MST 2026
+****************************************************************************************************
+WARNING: VendorMaster not found at data/VendorMaster_full.csv — instIDs will be 0000000000
+  inPath      : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-cols-14648589410901877065/VARawFiles
+  refPath     : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-cols-14648589410901877065/data
+  outPath     : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-cols-14648589410901877065/out
+  year        : 2003  types: E
+  SortSpec    : ../sort_specs/SortedJE.sortspec  (15 fields)
+  VendorMaster: data/VendorMaster_full.csv  (0 entries)
+  ChunkSize   : 200000
+  Reference   : agency=2 fund=2 object=2 program=2 source=2
+  Source folder (Expenditure FY2003): /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-cols-14648589410901877065/VARawFiles/FY 2003 Expenditure
+  Discovered 1 E files for FY2003
+
+  Processing E Q1 → /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-cols-14648589410901877065/out/SortedJEFY03q1exp.csv  (1 file(s))
+
+  File Expenditures Jul 2002 2003.csv: data_lines=1 source=1 unresolved_ref=0 blank=0
+  Spilled chunk 1  (2 SJE rows so far)
+  Q1: source=1 sje=2 unresolved_ref=0 spills=1
+  Merging 1 spill(s) → /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-cols-14648589410901877065/out/SortedJEFY03q1exp.csv ...
+  Written: /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-cols-14648589410901877065/out/SortedJEFY03q1exp.csv (2 rows)
+
+Control totals:
+  Source rows processed : 1
+  SJE rows produced     : 2  (= ~2 × source rows)
+  Unresolved ref lookups: 0
+
+RESULT step=ttl year=2003 rc=0 records_read=1 records_written=2 elapsed_s=1 input_bytes=294 output_bytes=479
+RESOURCE step=ttl year=2003 jvm_heap_bytes=1073741824
+STATUS: COMPLETE
+****************************************************************************************************
+Process End Time: Sun Nov 15 01:00:49 MST 2026
+****************************************************************************************************
+****************************************************************************************************
+                   Step ttl — APA Technical Transform Layer (standardizeAndSort.applyAPA)
+Start Time: Sun Nov 15 01:00:49 MST 2026
+****************************************************************************************************
+WARNING: VendorMaster not found at data/VendorMaster_full.csv — instIDs will be 0000000000
+  inPath      : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-balance-8487689521210466951/VARawFiles
+  refPath     : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-balance-8487689521210466951/data
+  outPath     : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-balance-8487689521210466951/out
+  year        : 2003  types: E
+  SortSpec    : ../sort_specs/SortedJE.sortspec  (15 fields)
+  VendorMaster: data/VendorMaster_full.csv  (0 entries)
+  ChunkSize   : 200000
+  Reference   : agency=2 fund=2 object=2 program=2 source=2
+  Source folder (Expenditure FY2003): /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-balance-8487689521210466951/VARawFiles/FY 2003 Expenditure
+  Discovered 1 E files for FY2003
+
+  Processing E Q1 → /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-balance-8487689521210466951/out/SortedJEFY03q1exp.csv  (1 file(s))
+PASS synthetic_reference_history rows=67 lookup_cases=14 hierarchy_cases=6
+
+  File Expenditures Jul 2002 2003.csv: data_lines=1 source=1 unresolved_ref=0 blank=0
+  Spilled chunk 1  (2 SJE rows so far)
+  Q1: source=1 sje=2 unresolved_ref=0 spills=1
+  Merging 1 spill(s) → /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-balance-8487689521210466951/out/SortedJEFY03q1exp.csv ...
+RESULT synthetic_reference_history version=reclass_history_v1.0 instruments=4 files=18 external_sources_required=false
+  Written: /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-balance-8487689521210466951/out/SortedJEFY03q1exp.csv (2 rows)
+
+Control totals:
+  Source rows processed : 1
+  SJE rows produced     : 2  (= ~2 × source rows)
+  Unresolved ref lookups: 0
+
+RESULT step=ttl year=2003 rc=0 records_read=1 records_written=2 elapsed_s=1 input_bytes=294 output_bytes=479
+RESOURCE step=ttl year=2003 jvm_heap_bytes=1073741824
+STATUS: COMPLETE
+****************************************************************************************************
+Process End Time: Sun Nov 15 01:00:50 MST 2026
+****************************************************************************************************
+****************************************************************************************************
+                   Step ttl — APA Technical Transform Layer (standardizeAndSort.applyAPA)
+Start Time: Sun Nov 15 01:00:50 MST 2026
+****************************************************************************************************
+WARNING: VendorMaster not found at data/VendorMaster_full.csv — instIDs will be 0000000000
+  inPath      : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-agencykey-14552824072812870708/VARawFiles
+  refPath     : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-agencykey-14552824072812870708/data
+  outPath     : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-agencykey-14552824072812870708/out
+  year        : 2003  types: E
+  SortSpec    : ../sort_specs/SortedJE.sortspec  (15 fields)
+  VendorMaster: data/VendorMaster_full.csv  (0 entries)
+  ChunkSize   : 200000
+  Reference   : agency=2 fund=2 object=2 program=2 source=2
+  Source folder (Expenditure FY2003): /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-agencykey-14552824072812870708/VARawFiles/FY 2003 Expenditure
+  Discovered 1 E files for FY2003
+
+  Processing E Q1 → /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-agencykey-14552824072812870708/out/SortedJEFY03q1exp.csv  (1 file(s))
+
+  File Expenditures Jul 2002 2003.csv: data_lines=1 source=1 unresolved_ref=0 blank=0
+  Spilled chunk 1  (2 SJE rows so far)
+  Q1: source=1 sje=2 unresolved_ref=0 spills=1
+  Merging 1 spill(s) → /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-agencykey-14552824072812870708/out/SortedJEFY03q1exp.csv ...
+  Written: /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-agencykey-14552824072812870708/out/SortedJEFY03q1exp.csv (2 rows)
+
+Control totals:
+  Source rows processed : 1
+  SJE rows produced     : 2  (= ~2 × source rows)
+  Unresolved ref lookups: 0
+
+RESULT step=ttl year=2003 rc=0 records_read=1 records_written=2 elapsed_s=1 input_bytes=294 output_bytes=479
+RESOURCE step=ttl year=2003 jvm_heap_bytes=1073741824
+STATUS: COMPLETE
+****************************************************************************************************
+Process End Time: Sun Nov 15 01:00:50 MST 2026
+****************************************************************************************************
+****************************************************************************************************
+                   Step ttl — APA Technical Transform Layer (standardizeAndSort.applyAPA)
+Start Time: Sun Nov 15 01:00:50 MST 2026
+****************************************************************************************************
+WARNING: VendorMaster not found at data/VendorMaster_full.csv — instIDs will be 0000000000
+  inPath      : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-quarters-4946527384756783270/VARawFiles
+  refPath     : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-quarters-4946527384756783270/data
+  outPath     : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-quarters-4946527384756783270/out
+  year        : 2003  types: E
+  SortSpec    : ../sort_specs/SortedJE.sortspec  (15 fields)
+  VendorMaster: data/VendorMaster_full.csv  (0 entries)
+  ChunkSize   : 200000
+  Reference   : agency=2 fund=2 object=2 program=2 source=2
+  Source folder (Expenditure FY2003): /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-quarters-4946527384756783270/VARawFiles/FY 2003 Expenditure
+  Discovered 2 E files for FY2003
+
+  Processing E Q1 → /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-quarters-4946527384756783270/out/SortedJEFY03q1exp.csv  (1 file(s))
+
+  File Expenditures Jul 2002 2003.csv: data_lines=1 source=1 unresolved_ref=0 blank=0
+PASS synthetic_reference_history rows=67 lookup_cases=14 hierarchy_cases=6
+  Spilled chunk 1  (2 SJE rows so far)
+  Q1: source=1 sje=2 unresolved_ref=0 spills=1
+  Merging 1 spill(s) → /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-quarters-4946527384756783270/out/SortedJEFY03q1exp.csv ...
+  Written: /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-quarters-4946527384756783270/out/SortedJEFY03q1exp.csv (2 rows)
+
+  Processing E Q4 → /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-quarters-4946527384756783270/out/SortedJEFY03q4exp.csv  (1 file(s))
+
+  File Expenditures Apr 2003 2003.csv: data_lines=1 source=1 unresolved_ref=0 blank=0
+  Spilled chunk 1  (2 SJE rows so far)
+  Q4: source=1 sje=2 unresolved_ref=0 spills=1
+  Merging 1 spill(s) → /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-quarters-4946527384756783270/out/SortedJEFY03q4exp.csv ...
+  Written: /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-quarters-4946527384756783270/out/SortedJEFY03q4exp.csv (2 rows)
+
+Control totals:
+  Source rows processed : 2
+  SJE rows produced     : 4  (= ~2 × source rows)
+  Unresolved ref lookups: 0
+
+RESULT step=ttl year=2003 rc=0 records_read=2 records_written=4 elapsed_s=1 input_bytes=582 output_bytes=479
+RESOURCE step=ttl year=2003 jvm_heap_bytes=1073741824
+STATUS: COMPLETE
+****************************************************************************************************
+Process End Time: Sun Nov 15 01:00:50 MST 2026
+****************************************************************************************************
+****************************************************************************************************
+                   Step ttl — APA Technical Transform Layer (standardizeAndSort.applyAPA)
+Start Time: Sun Nov 15 01:00:50 MST 2026
+****************************************************************************************************
+WARNING: VendorMaster not found at data/VendorMaster_full.csv — instIDs will be 0000000000
+  inPath      : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-revenue-2925614000173684712/VARawFiles
+  refPath     : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-revenue-2925614000173684712/data
+  outPath     : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-revenue-2925614000173684712/out
+  year        : 2003  types: R
+  SortSpec    : ../sort_specs/SortedJE.sortspec  (15 fields)
+  VendorMaster: data/VendorMaster_full.csv  (0 entries)
+  ChunkSize   : 200000
+  Reference   : agency=2 fund=2 object=2 program=2 source=2
+  Source folder (Revenue FY2003): /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-revenue-2925614000173684712/VARawFiles/FY 2003 Revenue
+  Discovered 1 R files for FY2003
+
+  Processing R rev → /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-revenue-2925614000173684712/out/SortedJEFY03rev.csv  (1 file(s))
+
+  File Revenues Jul 2002.csv: data_lines=1 source=1 unresolved_ref=0 blank=0
+  Spilled chunk 1  (2 SJE rows so far)
+  rev: source=1 sje=2 unresolved_ref=0 spills=1
+  Merging 1 spill(s) → /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-revenue-2925614000173684712/out/SortedJEFY03rev.csv ...
+  Written: /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-revenue-2925614000173684712/out/SortedJEFY03rev.csv (2 rows)
+
+RESULT step=ttl year=2003 rc=0 records_read=1 records_written=2 elapsed_s=1 input_bytes=222 output_bytes=490
+RESOURCE step=ttl year=2003 jvm_heap_bytes=1073741824
+****************************************************************************************************
+Process End Time: Sun Nov 15 01:00:50 MST 2026
+****************************************************************************************************
+****************************************************************************************************
+                   Step ttl — APA Technical Transform Layer (standardizeAndSort.applyAPA)
+Start Time: Sun Nov 15 01:00:50 MST 2026
+****************************************************************************************************
+WARNING: VendorMaster not found at data/VendorMaster_full.csv — instIDs will be 0000000000
+  inPath      : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-both-post-17969541045509527765/VARawFiles
+  refPath     : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-both-post-17969541045509527765/refs
+  outPath     : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-both-post-17969541045509527765/out
+  year        : 03  types: E,R
+  SortSpec    : ../sort_specs/SortedJE.sortspec  (15 fields)
+  VendorMaster: data/VendorMaster_full.csv  (0 entries)
+  ChunkSize   : 200000
+  Reference   : agency=2 fund=2 object=2 program=2 source=2
+  Source folder (Expenditure FY2003): /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-both-post-17969541045509527765/VARawFiles/FY 2003 Expenditure
+  Discovered 1 E files for FY3
+RESULT step=5v profile=expanded rc=0 records_read=34 vendors=3 spills=10
+
+  Processing E 0003/07 → /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-both-post-17969541045509527765/out/SortedJEFY03_0003_07_exp.csv  (1 file(s))
+
+  File Expenditures Jul 2003.csv: data_lines=1 source=1 unresolved_ref=0 blank=0
+  Spilled chunk 1  (2 SJE rows so far)
+  0003/07: source=1 sje=2 unresolved_ref=0 spills=1
+  Merging 1 spill(s) → /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-both-post-17969541045509527765/out/SortedJEFY03_0003_07_exp.csv ...
+  Written: /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-both-post-17969541045509527765/out/SortedJEFY03_0003_07_exp.csv (2 rows)
+
+Control totals:
+  Source rows processed : 1
+  SJE rows produced     : 2  (= ~2 × source rows)
+  Unresolved ref lookups: 0
+
+RESULT step=ttl year=03 rc=0 records_read=1 records_written=2 elapsed_s=1 input_bytes=294 output_bytes=0
+RESOURCE step=ttl year=03 jvm_heap_bytes=1073741824
+STATUS: COMPLETE
+  Source folder (Revenue FY2003): /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-both-post-17969541045509527765/VARawFiles/FY 2003 Revenue
+  Discovered 1 R files for FY3
+
+  Processing R rev → /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-both-post-17969541045509527765/out/SortedJEFY03rev.csv  (1 file(s))
+
+  File Revenues Jul 2002.csv: data_lines=1 source=1 unresolved_ref=0 blank=0
+  Spilled chunk 1  (2 SJE rows so far)
+  rev: source=1 sje=2 unresolved_ref=0 spills=1
+  Merging 1 spill(s) → /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-both-post-17969541045509527765/out/SortedJEFY03rev.csv ...
+PASS synthetic_reference_history rows=67 lookup_cases=14 hierarchy_cases=6
+  Written: /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-both-post-17969541045509527765/out/SortedJEFY03rev.csv (2 rows)
+
+RESULT step=ttl year=03 rc=0 records_read=2 records_written=4 elapsed_s=1 input_bytes=207 output_bytes=491
+RESOURCE step=ttl year=03 jvm_heap_bytes=1073741824
+****************************************************************************************************
+Process End Time: Sun Nov 15 01:00:50 MST 2026
+****************************************************************************************************
+RESULT synthetic_reference_history version=reclass_history_v1.0 instruments=4 files=18 external_sources_required=false
+****************************************************************************************************
+                                Post Module
+Start Time: Sun Nov 15 01:00:50 MST 2026
+****************************************************************************************************
+processing file: /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-both-post-17969541045509527765/out/SortedJEFY03_0003_07_exp.csv
+No existing ledger file.  File will be created: LDGR2003.csv
+----------------------------------
+processing file: /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-both-post-17969541045509527765/out/SortedJEFY03rev.csv
+****************************************************************************************************
+Files Processed:               2
+Journal Records Read:          4
+Ledger Records Read:           2
+Ledger Records Written:        4
+Process End Time:      Sun Nov 15 01:00:50 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2003 rc=0 records_read=4 records_written=4 elapsed_s=1 input_bytes=0 output_bytes=1095
+RESOURCE step=3 year=2003 jvm_heap_bytes=1073741824
+WARNING: VendorMaster not found at data/VendorMaster_full.csv — instIDs will be 0000000000
+RESULT step=5r rc=0 records_written=14 merge_passes=4
+****************************************************************************************************
+                   Step ttl — APA Technical Transform Layer (standardizeAndSort.applyAPA)
+Start Time: Sun Nov 15 01:00:50 MST 2026
+****************************************************************************************************
+WARNING: VendorMaster not found at data/VendorMaster_full.csv — instIDs will be 0000000000
+  inPath      : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-unresolved-1625159278166765573/VARawFiles
+  refPath     : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-unresolved-1625159278166765573/data
+  outPath     : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-unresolved-1625159278166765573/out
+  year        : 2003  types: E
+  SortSpec    : ../sort_specs/SortedJE.sortspec  (15 fields)
+  VendorMaster: data/VendorMaster_full.csv  (0 entries)
+  ChunkSize   : 200000
+  Reference   : agency=2 fund=2 object=2 program=2 source=2
+  Source folder (Expenditure FY2003): /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-unresolved-1625159278166765573/VARawFiles/FY 2003 Expenditure
+  Discovered 1 E files for FY2003
+
+  Processing E Q1 → /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-unresolved-1625159278166765573/out/SortedJEFY03q1exp.csv  (1 file(s))
+
+  File Expenditures Jul 2002 2003.csv: data_lines=1 source=1 unresolved_ref=0 blank=0
+  Spilled chunk 1  (2 SJE rows so far)
+  Q1: source=1 sje=2 unresolved_ref=0 spills=1
+  Merging 1 spill(s) → /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-unresolved-1625159278166765573/out/SortedJEFY03q1exp.csv ...
+  Written: /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-unresolved-1625159278166765573/out/SortedJEFY03q1exp.csv (2 rows)
+
+Control totals:
+  Source rows processed : 1
+  SJE rows produced     : 2  (= ~2 × source rows)
+  Unresolved ref lookups: 0
+
+RESULT step=ttl year=2003 rc=0 records_read=1 records_written=2 elapsed_s=1 input_bytes=268 output_bytes=476
+RESOURCE step=ttl year=2003 jvm_heap_bytes=1073741824
+STATUS: COMPLETE
+****************************************************************************************************
+Process End Time: Sun Nov 15 01:00:50 MST 2026
+****************************************************************************************************
+WARNING: VendorMaster not found at data/VendorMaster_full.csv — instIDs will be 0000000000
+PASS synthetic_reference_history rows=67 lookup_cases=14 hierarchy_cases=6
+[info] ApaTtlSpec:
+[info] - APA malformed records are isolated, headers are validated, and ambiguous names fail
+[info] - loadApaReferenceData loads four reference tables with correct entry counts
+[info] - Step ttl: applyAPA produces 2 SJE rows per source row with 39 columns
+[info] - Step ttl: debit and credit amounts cancel within each journal group
+[info] - Step ttl: AGENCY_NAME is resolved to AGY_AGENCY_KEY in transLegalEntityID (col 12)
+[info] - Step ttl: monthly files are routed to correct fiscal quarters
+[info] - Step ttl: revenue files produce SortedJEFY03rev.csv with correct schema
+[info] - combined monthly TTL preserves revenue and expenditure through posting
+[info] - Step ttl: RESULT step=ttl and RESOURCE step=ttl are emitted to stdout
+[info] - Step ttl: source rows with unknown agency name still produce SJE rows with key '0'
+[info] - Step ttl: year '03' reads FY 2003 and not FY 2013 (folders share the digit 3)
+RESULT synthetic_reference_history version=reclass_history_v1.0 instruments=4 files=18 external_sources_required=false
+****************************************************************************************************
+                                Post Module
+Start Time: Sun Nov 15 01:00:50 MST 2026
+****************************************************************************************************
+processing file: ../../session-run.tmp/reporting-8375365669171834972/inputs/SortedJEFY14merged.csv
+No existing ledger file.  File will be created: LDGR2014.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          12
+Ledger Records Read:           0
+Ledger Records Written:        10
+Process End Time:      Sun Nov 15 01:00:50 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2014 rc=0 records_read=12 records_written=10 elapsed_s=1 input_bytes=0 output_bytes=1715
+RESOURCE step=3 year=2014 jvm_heap_bytes=1073741824
+****************************************************************************************************
+                                Post Module
+Start Time: Sun Nov 15 01:00:50 MST 2026
+****************************************************************************************************
+processing file: ../../session-run.tmp/reporting-8375365669171834972/inputs/SortedJEFY15merged.csv
+No existing ledger file.  File will be created: LDGR2015.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          4
+Ledger Records Read:           0
+Ledger Records Written:        4
+Process End Time:      Sun Nov 15 01:00:50 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2015 rc=0 records_read=4 records_written=4 elapsed_s=1 input_bytes=0 output_bytes=1016
+RESOURCE step=3 year=2015 jvm_heap_bytes=1073741824
+PASS synthetic_reference_history rows=67 lookup_cases=14 hierarchy_cases=6
+RESULT synthetic_reference_history version=reclass_history_v1.0 instruments=4 files=18 external_sources_required=false
+PASS synthetic_reference_history rows=67 lookup_cases=14 hierarchy_cases=6
+RESULT synthetic_reference_history version=reclass_history_v1.0 instruments=4 files=18 external_sources_required=false
+PASS synthetic_reference_history rows=67 lookup_cases=14 hierarchy_cases=6
+RESULT step=5v profile=expanded rc=0 records_read=34 vendors=3 spills=20
+PASS synthetic_reference_history rows=207 lookup_cases=14 hierarchy_cases=6
+RESULT synthetic_reference_history version=reclass_history_v1.0 instruments=32 files=18 external_sources_required=false
+PASS synthetic_reference_history rows=67 lookup_cases=14 hierarchy_cases=6
+RESULT step=5r rc=0 records_written=14 merge_passes=5
+RESULT synthetic_reference_history version=reclass_history_v1.0 instruments=4 files=18 external_sources_required=false
+RESULT step=5v profile=expanded rc=0 records_read=34 vendors=3 spills=1
+RESULT step=5r rc=0 records_written=14 merge_passes=0
+****************************************************************************************************
+                                Post Module
+Start Time: Sun Nov 15 01:00:51 MST 2026
+****************************************************************************************************
+processing file: ../../session-run.tmp/reporting-9725145585713988883/inputs/SortedJEFY14merged.csv
+No existing ledger file.  File will be created: LDGR2014.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          12
+Ledger Records Read:           0
+Ledger Records Written:        10
+Process End Time:      Sun Nov 15 01:00:51 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2014 rc=0 records_read=12 records_written=10 elapsed_s=1 input_bytes=0 output_bytes=1715
+RESOURCE step=3 year=2014 jvm_heap_bytes=1073741824
+****************************************************************************************************
+                                Post Module
+Start Time: Sun Nov 15 01:00:51 MST 2026
+****************************************************************************************************
+processing file: ../../session-run.tmp/reporting-9725145585713988883/inputs/SortedJEFY15merged.csv
+No existing ledger file.  File will be created: LDGR2015.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          4
+Ledger Records Read:           0
+Ledger Records Written:        4
+Process End Time:      Sun Nov 15 01:00:51 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2015 rc=0 records_read=4 records_written=4 elapsed_s=1 input_bytes=0 output_bytes=1016
+RESOURCE step=3 year=2015 jvm_heap_bytes=1073741824
+****************************************************************************************************
+                                Post Module
+Start Time: Sun Nov 15 01:00:51 MST 2026
+****************************************************************************************************
+processing file: ../../session-run.tmp/reporting-16942285785604775776/inputs/SortedJEFY14merged.csv
+No existing ledger file.  File will be created: LDGR2014.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          12
+Ledger Records Read:           0
+Ledger Records Written:        10
+Process End Time:      Sun Nov 15 01:00:51 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2014 rc=0 records_read=12 records_written=10 elapsed_s=1 input_bytes=0 output_bytes=1715
+RESOURCE step=3 year=2014 jvm_heap_bytes=1073741824
+****************************************************************************************************
+                                Post Module
+Start Time: Sun Nov 15 01:00:51 MST 2026
+****************************************************************************************************
+processing file: ../../session-run.tmp/reporting-16942285785604775776/inputs/SortedJEFY15merged.csv
+No existing ledger file.  File will be created: LDGR2015.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          4
+Ledger Records Read:           0
+Ledger Records Written:        4
+Process End Time:      Sun Nov 15 01:00:51 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2015 rc=0 records_read=4 records_written=4 elapsed_s=1 input_bytes=0 output_bytes=1016
+RESOURCE step=3 year=2015 jvm_heap_bytes=1073741824
+RESULT step=5v profile=expanded rc=0 records_read=34 vendors=3 spills=10
+RESULT step=5r rc=0 records_written=14 merge_passes=4
+****************************************************************************************************
+                                Post Module
+Start Time: Sun Nov 15 01:00:51 MST 2026
+****************************************************************************************************
+processing file: ../../session-run.tmp/reporting-12254207119908998341/inputs/SortedJEFY14merged.csv
+No existing ledger file.  File will be created: LDGR2014.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          12
+Ledger Records Read:           0
+Ledger Records Written:        10
+Process End Time:      Sun Nov 15 01:00:51 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2014 rc=0 records_read=12 records_written=10 elapsed_s=1 input_bytes=0 output_bytes=1715
+RESOURCE step=3 year=2014 jvm_heap_bytes=1073741824
+****************************************************************************************************
+                                Post Module
+Start Time: Sun Nov 15 01:00:51 MST 2026
+****************************************************************************************************
+processing file: ../../session-run.tmp/reporting-12254207119908998341/inputs/SortedJEFY15merged.csv
+No existing ledger file.  File will be created: LDGR2015.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          4
+Ledger Records Read:           0
+Ledger Records Written:        4
+Process End Time:      Sun Nov 15 01:00:51 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2015 rc=0 records_read=4 records_written=4 elapsed_s=1 input_bytes=0 output_bytes=1016
+RESOURCE step=3 year=2015 jvm_heap_bytes=1073741824
+RESULT step=5v profile=expanded rc=0 records_read=34 vendors=3 spills=10
+RESULT step=5r rc=0 records_written=14 merge_passes=4
+****************************************************************************************************
+                                Post Module
+Start Time: Sun Nov 15 01:00:52 MST 2026
+****************************************************************************************************
+processing file: ../../session-run.tmp/reporting-2155098059306780047/inputs/SortedJEFY14merged.csv
+No existing ledger file.  File will be created: LDGR2014.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          12
+Ledger Records Read:           0
+Ledger Records Written:        10
+Process End Time:      Sun Nov 15 01:00:52 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2014 rc=0 records_read=12 records_written=10 elapsed_s=1 input_bytes=0 output_bytes=1715
+RESOURCE step=3 year=2014 jvm_heap_bytes=1073741824
+****************************************************************************************************
+                                Post Module
+Start Time: Sun Nov 15 01:00:52 MST 2026
+****************************************************************************************************
+processing file: ../../session-run.tmp/reporting-2155098059306780047/inputs/SortedJEFY15merged.csv
+No existing ledger file.  File will be created: LDGR2015.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          4
+Ledger Records Read:           0
+Ledger Records Written:        4
+Process End Time:      Sun Nov 15 01:00:52 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2015 rc=0 records_read=4 records_written=4 elapsed_s=1 input_bytes=0 output_bytes=1016
+RESOURCE step=3 year=2015 jvm_heap_bytes=1073741824
+[info] SyntheticReferenceHistorySpec:
+[info] - self-contained generation is byte-identical including manifests and covers all date/path oracles
+[info] - negative hierarchy variants reject duplicate starts, orphan parents and temporal cycles
+[info] - the exact change day selects the new version; an incorrect oracle cannot pass
+[info] - hierarchy ancestors are selected at the lookup date, independently of unchanged leaf links
+[info] - repeated labels preserve context and late-recorded dates do not become effective starts
+[info] - scale is explicit and bounded; regeneration cannot overwrite an existing output
+[info] - SAL agency and the instrument hierarchy cannot contradict one another
+[info] SyntheticReferenceBundleSpec:
+[info] - synthetic normalized-name references are deterministic, unique and retain every conflicting source
+RESULT step=5v profile=expanded rc=0 records_read=35 vendors=3 spills=10
+RESULT step=5r rc=0 records_written=14 merge_passes=4
+****************************************************************************************************
+                                Post Module
+Start Time: Sun Nov 15 01:00:52 MST 2026
+****************************************************************************************************
+processing file: ../../session-run.tmp/reporting-5115376408758876623/inputs/SortedJEFY14merged.csv
+No existing ledger file.  File will be created: LDGR2014.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          12
+Ledger Records Read:           0
+Ledger Records Written:        10
+Process End Time:      Sun Nov 15 01:00:52 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2014 rc=0 records_read=12 records_written=10 elapsed_s=1 input_bytes=0 output_bytes=1715
+RESOURCE step=3 year=2014 jvm_heap_bytes=1073741824
+****************************************************************************************************
+                                Post Module
+Start Time: Sun Nov 15 01:00:52 MST 2026
+****************************************************************************************************
+processing file: ../../session-run.tmp/reporting-5115376408758876623/inputs/SortedJEFY15merged.csv
+No existing ledger file.  File will be created: LDGR2015.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          4
+Ledger Records Read:           0
+Ledger Records Written:        4
+Process End Time:      Sun Nov 15 01:00:52 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2015 rc=0 records_read=4 records_written=4 elapsed_s=1 input_bytes=0 output_bytes=1016
+RESOURCE step=3 year=2015 jvm_heap_bytes=1073741824
+****************************************************************************************************
+                                Post Module
+Start Time: Sun Nov 15 01:00:52 MST 2026
+****************************************************************************************************
+processing file: ../../session-run.tmp/reporting-5115376408758876623/literal-input/SortedJEFY14merged.csv
+No existing ledger file.  File will be created: LDGR2014.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          6
+Ledger Records Read:           0
+Ledger Records Written:        6
+Process End Time:      Sun Nov 15 01:00:52 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2014 rc=0 records_read=6 records_written=6 elapsed_s=1 input_bytes=0 output_bytes=1226
+RESOURCE step=3 year=2014 jvm_heap_bytes=1073741824
+RESULT step=5v profile=expanded rc=0 records_read=16 vendors=4 spills=6
+RESULT step=5r rc=0 records_written=4 merge_passes=3
+****************************************************************************************************
+                                Post Module
+Start Time: Sun Nov 15 01:00:52 MST 2026
+****************************************************************************************************
+processing file: ../../session-run.tmp/reporting-12566356876093409723/inputs/SortedJEFY14merged.csv
+No existing ledger file.  File will be created: LDGR2014.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          12
+Ledger Records Read:           0
+Ledger Records Written:        10
+Process End Time:      Sun Nov 15 01:00:52 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2014 rc=0 records_read=12 records_written=10 elapsed_s=1 input_bytes=0 output_bytes=1715
+RESOURCE step=3 year=2014 jvm_heap_bytes=1073741824
+****************************************************************************************************
+                                Post Module
+Start Time: Sun Nov 15 01:00:52 MST 2026
+****************************************************************************************************
+processing file: ../../session-run.tmp/reporting-12566356876093409723/inputs/SortedJEFY15merged.csv
+No existing ledger file.  File will be created: LDGR2015.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          4
+Ledger Records Read:           0
+Ledger Records Written:        4
+Process End Time:      Sun Nov 15 01:00:52 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2015 rc=0 records_read=4 records_written=4 elapsed_s=1 input_bytes=0 output_bytes=1016
+RESOURCE step=3 year=2015 jvm_heap_bytes=1073741824
+****************************************************************************************************
+                                Post Module
+Start Time: Sun Nov 15 01:00:52 MST 2026
+****************************************************************************************************
+processing file: ../../session-run.tmp/reporting-12566356876093409723/currency-input/SortedJEFY14merged.csv
+No existing ledger file.  File will be created: LDGR2014.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          4
+Ledger Records Read:           0
+Ledger Records Written:        4
+Process End Time:      Sun Nov 15 01:00:52 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2014 rc=0 records_read=4 records_written=4 elapsed_s=1 input_bytes=0 output_bytes=1012
+RESOURCE step=3 year=2014 jvm_heap_bytes=1073741824
+****************************************************************************************************
+                                Post Module
+Start Time: Sun Nov 15 01:00:52 MST 2026
+****************************************************************************************************
+processing file: ../../session-run.tmp/reporting-6601333443216462438/inputs/SortedJEFY14merged.csv
+No existing ledger file.  File will be created: LDGR2014.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          12
+Ledger Records Read:           0
+Ledger Records Written:        10
+Process End Time:      Sun Nov 15 01:00:52 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2014 rc=0 records_read=12 records_written=10 elapsed_s=1 input_bytes=0 output_bytes=1715
+RESOURCE step=3 year=2014 jvm_heap_bytes=1073741824
+****************************************************************************************************
+                                Post Module
+Start Time: Sun Nov 15 01:00:52 MST 2026
+****************************************************************************************************
+processing file: ../../session-run.tmp/reporting-6601333443216462438/inputs/SortedJEFY15merged.csv
+No existing ledger file.  File will be created: LDGR2015.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          4
+Ledger Records Read:           0
+Ledger Records Written:        4
+Process End Time:      Sun Nov 15 01:00:52 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2015 rc=0 records_read=4 records_written=4 elapsed_s=1 input_bytes=0 output_bytes=1016
+RESOURCE step=3 year=2015 jvm_heap_bytes=1073741824
+****************************************************************************************************
+                                Post Module
+Start Time: Sun Nov 15 01:00:57 MST 2026
+****************************************************************************************************
+processing file: ../../session-run.tmp/reporting-6601333443216462438/large-input/SortedJEFY14merged.csv
+No existing ledger file.  File will be created: LDGR2014.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          500004
+Ledger Records Read:           0
+Ledger Records Written:        4
+Process End Time:      Sun Nov 15 01:00:59 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2014 rc=0 records_read=500004 records_written=4 elapsed_s=2 input_bytes=0 output_bytes=1050
+RESOURCE step=3 year=2014 jvm_heap_bytes=1073741824
+RESULT step=5v profile=expanded rc=0 records_read=500012 vendors=3 spills=4
+RESULT step=5r rc=0 records_written=4 merge_passes=2
+****************************************************************************************************
+                                Post Module
+Start Time: Sun Nov 15 01:01:30 MST 2026
+****************************************************************************************************
+processing file: ../../session-run.tmp/reporting-4154024478676132322/inputs/SortedJEFY14merged.csv
+No existing ledger file.  File will be created: LDGR2014.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          12
+Ledger Records Read:           0
+Ledger Records Written:        10
+Process End Time:      Sun Nov 15 01:01:30 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2014 rc=0 records_read=12 records_written=10 elapsed_s=1 input_bytes=0 output_bytes=1715
+RESOURCE step=3 year=2014 jvm_heap_bytes=1073741824
+****************************************************************************************************
+                                Post Module
+Start Time: Sun Nov 15 01:01:30 MST 2026
+****************************************************************************************************
+processing file: ../../session-run.tmp/reporting-4154024478676132322/inputs/SortedJEFY15merged.csv
+No existing ledger file.  File will be created: LDGR2015.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          4
+Ledger Records Read:           0
+Ledger Records Written:        4
+Process End Time:      Sun Nov 15 01:01:30 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2015 rc=0 records_read=4 records_written=4 elapsed_s=1 input_bytes=0 output_bytes=1016
+RESOURCE step=3 year=2015 jvm_heap_bytes=1073741824
+****************************************************************************************************
+                                Post Module
+Start Time: Sun Nov 15 01:01:30 MST 2026
+****************************************************************************************************
+processing file: ../../session-run.tmp/reporting-4154024478676132322/dated-input/SortedJEFY14merged.csv
+No existing ledger file.  File will be created: LDGR2014.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          10
+Ledger Records Read:           0
+Ledger Records Written:        6
+Process End Time:      Sun Nov 15 01:01:30 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2014 rc=0 records_read=10 records_written=6 elapsed_s=1 input_bytes=0 output_bytes=1246
+RESOURCE step=3 year=2014 jvm_heap_bytes=1073741824
+RESULT step=5v profile=expanded rc=0 records_read=21 vendors=3 spills=12
+RESULT step=5r rc=0 records_written=6 merge_passes=4
+RESULT step=5v profile=expanded rc=0 records_read=21 vendors=3 spills=1
+RESULT step=5r rc=0 records_written=6 merge_passes=0
+****************************************************************************************************
+                                Post Module
+Start Time: Sun Nov 15 01:01:31 MST 2026
+****************************************************************************************************
+processing file: ../../session-run.tmp/reporting-17411911772910822738/inputs/SortedJEFY14merged.csv
+No existing ledger file.  File will be created: LDGR2014.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          12
+Ledger Records Read:           0
+Ledger Records Written:        10
+Process End Time:      Sun Nov 15 01:01:32 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2014 rc=0 records_read=12 records_written=10 elapsed_s=1 input_bytes=0 output_bytes=1715
+RESOURCE step=3 year=2014 jvm_heap_bytes=1073741824
+****************************************************************************************************
+                                Post Module
+Start Time: Sun Nov 15 01:01:32 MST 2026
+****************************************************************************************************
+processing file: ../../session-run.tmp/reporting-17411911772910822738/inputs/SortedJEFY15merged.csv
+No existing ledger file.  File will be created: LDGR2015.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          4
+Ledger Records Read:           0
+Ledger Records Written:        4
+Process End Time:      Sun Nov 15 01:01:32 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2015 rc=0 records_read=4 records_written=4 elapsed_s=1 input_bytes=0 output_bytes=1016
+RESOURCE step=3 year=2015 jvm_heap_bytes=1073741824
+[info] ReportingPassSpec:
+[info] - real posting output reconciles; features and effective dimensions remain aligned
+[info] - tiny spills and bounded multi-level merge equal a large-buffer execution
+[info] - a corrupted actual posted balance blocks publication and downstream reduction
+[info] - feature bounds, reference bounds and duplicate inputs fail closed; disorder is indexed
+[info] - fiscal-year contract distinguishes payment fiscal labels from calendar PO dates
+[info] - missing balance side, invalid amount and overlapping dimensions remain explicit
+[info] - opening plus movements is a distinct explicit reconciliation basis
+[info] - literal variable-width IDs retain identity across arbitrary physical order and dimension joins
+[info] - source currencies cannot mix merely because their currency types match
+[info] - a legitimate and an unattributed group exceed the old row guard with bounded aggregation
+[info] - synthetic date cuts and master dimensions conserve actual posted inputs with bounded spill equivalence
+[info] - synthetic reporting rejects incorrect history expectations instead of publishing
+[info] - export connected fixture for separate-process orchestration when requested
+[info] Run completed in 42 seconds, 763 milliseconds.
+[info] Total number of tests run: 32
+[info] Suites: completed 4, aborted 0
+[info] Tests: succeeded 32, failed 0, canceled 0, ignored 0, pending 0
+[info] All tests passed.
+[success] Total time: 67 s (0:01:07.0), completed Nov 15, 2026, 1:01:32 AM

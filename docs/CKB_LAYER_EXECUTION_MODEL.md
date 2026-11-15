@@ -4,6 +4,36 @@ The numbered repository layers are logical ownership boundaries. They are not a 
 
 ## Core Rule
 
+### Business-process topology clarification (owner, 2026-11-15)
+
+A common key can be any declared set of attributes. Vendor/Instrument ID is one
+workload's boundary, not the definition of CKB. A solution spanning multiple
+business processes requires an explicit multi-CKB topology: each business process
+declares its input grains, keys, temporal state, rules, outputs and consumers.
+Vendor, employee and taxpayer flows are examples, not claims that this repository
+currently implements all of them. Agency-grain revenue must retain that grain
+unless an explicitly synthetic taxpayer-level source is generated.
+
+Reclassification journal generation remains inside the CKB passes for the
+relevant vendor, employee, taxpayer or other entity: it is temporal processing
+of that entity's state. Do not create a detached financial reclass process as the
+default topology. Dated reference/hierarchy changes can be prepared or routed by
+other processes; the affected entity's CKB evaluates the temporal change and
+generates its balanced journals when that capability is implemented.
+
+Distinguish business processes from physical passes. A different output grouping
+does not automatically create another business process. A required order change
+can add a physical sort/pass within a business process; compatible ordering may
+allow multiple logical sections/process interfaces to share a stream. Conversely,
+sharing a JVM or an entity-like key does not establish that distinct business
+processes have been modeled correctly. Define the business processes first, then
+justify their CKB keys, sort/materialization boundaries and process composition.
+
+Synthetic data generation must supply consistent inputs/contracts across this
+topology, rather than forcing all synthetic entities and reporting workloads into
+one vendor-centric process. A scalar scenario mapping plus vendor reporting is
+not, by itself, evidence of a complete multi-business-process CKB implementation.
+
 A CKB process continues as one ordered execution flow until an operation requires a new sort order that the current stream no longer provides.
 
 ```text

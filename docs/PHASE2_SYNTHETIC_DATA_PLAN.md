@@ -38,6 +38,13 @@ accounting entries or runs financial logic in place of Scala.
 
 ---
 
+**Owner CKB clarification, 2026-11-15:** Multiple business processes require an
+explicit multi-CKB topology, not a universally vendor-keyed flow. Temporal reclass
+logic stays within each relevant entity's CKB passes; its implementation remains
+a Q2 response. Define process/grain/key/state/output contracts before selecting
+sorts, physical passes or corpus-generation topology. See
+[execution model](CKB_LAYER_EXECUTION_MODEL.md).
+
 ## 1. The Three-Strand Architecture
 
 ```

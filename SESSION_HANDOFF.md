@@ -1,5 +1,13 @@
 # Ledger Lab Handoff
 
+**2026-11-15 reporting checkpoint:** Owner requested a selective commit before corpus-wide generation. Reporting views, bounded reference preparation, fixture and plans are checkpointed; the corpus assignment producer and its launcher additions remain an uncommitted draft. Latest focused suite: 32 passed. Two-year financial fixture completed; latest streamed-assignment reporting still needs end-to-end validation. Evidence: `data/test_evidence/connected_views_checkpoint_20261115/`. Next: discuss the larger business-process topology, then revise the generation plan. No new full run launched.
+
+## 2026-11-15 (TRACK D/B1) - Multi-business-process CKB clarification
+
+2026-11-15 - Owner clarified multi-CKB topology: distinct business processes require their own declared CKB flows; a common key may be any attribute set. Reclass journal generation stays within the relevant entity temporal passes, never a detached financial reclass stage, and remains Q2-response work. The in-progress vendor scenario/reporting prototype is narrower than the required corpus-wide multi-process generation. Define the business-process graph and record/key/temporal/consumer contracts before full-corpus admission. No new full run launched. Existing focused prototype suite: 32 passed; two-year financial fixture completed. All 349 raw hashes matched. Prepared 81,304 candidate assignment IDs are not a legal-party census or proof of completed multi-process generation. No Control read.
+
+Working-copy changes from Go are uncommitted prototypes. Connected fixture: `session-run.tmp/connected_reporting_20261115_v1/`; raw/source preparation: `/Users/ktwitchell001/workspace/ckb_synthetic_20261115/`. INPUTS_COMPLETE was removed while assignments were added; do not treat this root as admitted to a full run. Reconstruct process topology before continuing implementation.
+
 ## 2026-11-15 (TRACK B1/D) - Retired prior run data; reclass engine deferred to Q2 response
 
 2026-11-15 - Owner retired the three prior expanded execution datasets and clarified Q2 scope. Deleted 1,398 generated financial files from monthly_a/b/c (all physical generations); 376.43 GiB additional free space measured, now 452 GiB. All 1,050 retained evidence files passed pre/post size/SHA verification; logs, metrics, controls, quarantines, hashes and Gold preserved. Historical financial reruns/audit rescans require rebuilding the deleted outputs. Reclass engine creation/extension is Q2-response work, not a pre-question prerequisite. Next: synthetic-input integration and validation views, completed multidimensional vendor reporting, connected fixture, then one new full corpus run and inspection before defining Phase 2 questions. No new Control read.

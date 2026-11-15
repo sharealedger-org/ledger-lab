@@ -18,7 +18,7 @@ while [[ $# -gt 0 ]]; do
     --outPath) out="$value" ;;
     --inPaths) inputs="$value" ;;
     --mergeFanIn) fan_in="$value" ;;
-    --vendorMaster|--contractDimensions|--refPath|--packetVendors|--spillRows|--aggregateKeys|--maxFeatureKeys|--maxIndexedBlocks|--maxRecordBytes|--maxReferenceBytes|--maxInputs|--balanceBasis|--openingFiles)
+    --vendorMaster|--contractDimensions|--refPath|--packetVendors|--spillRows|--aggregateKeys|--maxFeatureKeys|--maxIndexedBlocks|--maxRecordBytes|--maxReferenceBytes|--maxInputs|--balanceBasis|--openingFiles|--syntheticHistories|--syntheticAsOf|--syntheticRunDate|--syntheticAssignments|--syntheticAggregateKeys)
       options+=" $key $(quote "$value")" ;;
     *) echo "Unknown option: $key" >&2; exit 1 ;;
   esac
@@ -46,7 +46,9 @@ shasum -a 256 "$repo/scripts/run_reporting.sh" \
   "$repo/02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/ledger/ReportingPass.scala" \
   "$repo/02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/ledger/ReportingSupport.scala" \
   "$repo/02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/ledger/ReportingSums.scala" \
-  "$repo/02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/ledger/ReportingOrder.scala" > "$attempt/reporting_source_sha256.txt"
+  "$repo/02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/ledger/ReportingOrder.scala" \
+  "$repo/02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/ledger/DatedSyntheticInputs.scala" \
+  "$repo/02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/ledger/SyntheticReporting.scala" > "$attempt/reporting_source_sha256.txt"
 if command -v caffeinate >/dev/null 2>&1; then caffeinate -i -s -w $$ & fi
 run_stage() {
   local stage="$1" command="$2"

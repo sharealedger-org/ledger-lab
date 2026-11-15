@@ -74,7 +74,7 @@ object ReportingPass {
     require(sjes.nonEmpty && balances.nonEmpty, "Both SJE and posted-balance streams required")
     val opening = params.getOrElse("openingFiles", "").split(",").filter(_.nonEmpty).map(new File(_)).toVector
     require((basis == "opening_plus_movements") == opening.nonEmpty, "Opening basis requires explicit openingFiles, and vice versa")
-    val dimensions = Seq("vendorMaster" -> "vendor", "contractDimensions" -> "contract").flatMap {
+    val dimensions = Seq("vendorMaster" -> "vendor", "contractDimensions" -> "contract", "syntheticAssignments" -> "synthetic_assignment").flatMap {
       case (arg, kind) => params.get(arg).filter(_.nonEmpty).map(p => new File(p) -> kind)
     }
     val selected = (sjes.map(_ -> "movement") ++ balances.map(_ -> "balance") ++ opening.map(_ -> "opening") ++ dimensions)
@@ -102,6 +102,7 @@ object ReportingPass {
     val moveFeatures = output("aim_movements.csv", featureKey ++ movementNames)
     val balFeatures = output("aim_balances.csv", featureKey ++ balanceNames)
     val combined = output("aim_combined.csv", featureKey ++ movementNames ++ balanceNames ++ Seq("has_movements", "has_balances", "eligible_matched_vendor", "vendor_name", "name_status"))
+    val synthetic = params.get("syntheticHistories").map(_ => new SyntheticReporting(params, out, manifest))
     val refs = mutable.HashMap[(String, String), Vector[String]]()
     val refHeaders = mutable.HashMap[String, Vector[String]]()
     val refFiles = params.get("refPath").toVector.flatMap { p =>
@@ -148,6 +149,12 @@ object ReportingPass {
         (d.values.getOrElse(if (kind == "vendor") "instHolderName" else "contract_id", ""), if (dated) "matched_asof" else "undated")
       }
     }
+    def masterAttribute(fy: Int, field: String): (String, String) = {
+      val candidates = dims.filter(d => d.kind == "vendor" && active(d, LocalDate.of(fy, 6, 30)))
+      if (candidates.isEmpty) ("", "missing_vendor")
+      else if (candidates.size > 1) ("", "ambiguous_vendor")
+      else candidates.head.values.get(field).filter(_.nonEmpty).map(v => (v, "matched_fy_cutoff")).getOrElse(("", "missing_attribute"))
+    }
     def closeVendor(): Unit = if (current.nonEmpty) {
       vendorCount += 1
       peakVendorKeys = peakVendorKeys.max(buckets.peak + relationships.peak + mf.size + bf.size + dims.size)
@@ -193,6 +200,9 @@ object ReportingPass {
           case (label, (table, value)) => row(coverage, current, k(0), label, value, lookup(table, value)._2)
         }
       }
+      val assignments = dims.filter(_.kind == "synthetic_assignment")
+      require(assignments.size <= 1, s"Ambiguous synthetic assignment: $current")
+      synthetic.foreach(_.finishVendor(current, masterAttribute, assignments.headOption.map(_.values("template_instrument_id"))))
       mf.clear(); bf.clear(); dims.clear(); eventAbs.clear(); currencies.clear(); vendorRows = 0
     }
     try {
@@ -221,6 +231,7 @@ object ReportingPass {
         if (Set("balance", "opening")(kind)) require(in.header == ledgerHeader, s"Ledger schema mismatch: $f")
         if (kind == "vendor") require(in.header.contains("instID"), "Vendor dimension requires instID")
         if (kind == "contract") require(Set("vendor_id", "contract_id").subsetOf(in.header.toSet), "Contract dimension requires vendor_id,contract_id")
+        if (kind == "synthetic_assignment") require(in.header == Vector("vendor_id", "template_instrument_id"), "Synthetic assignment schema mismatch")
       }
       case class Head(vendor: String, index: Int, values: Vector[String], ordinal: Long)
       val queue = mutable.PriorityQueue[Head]()(Ordering.by[Head, (String, Int)](h => (h.vendor, h.index)).reverse)
@@ -239,7 +250,8 @@ object ReportingPass {
         val h = queue.dequeue(); val in = inputs(h.index); val r = h.values
         if (h.vendor != current) { closeVendor(); current = h.vendor }
         vendorRows += 1; readRows += 1; peakVendorRows = peakVendorRows.max(vendorRows)
-        if (Set("vendor", "contract")(in.kind)) {
+        if (Set("vendor", "contract", "synthetic_assignment")(in.kind)) {
+          if (in.kind == "synthetic_assignment") require(attributed(current), "No assignment permitted for an unattributed key")
           val d = Dimension(in.kind, in.header.zip(r).toMap, in.file.getPath, h.ordinal)
           // Validate dates even when no financial row later matches this dimension.
           Seq("instEffectDate", "instEffectEndDate", "effective_from", "effective_to").foreach { field =>
@@ -253,6 +265,7 @@ object ReportingPass {
           val amount = BigDecimal(r(if (movement) 25 else 19))
           val flag = r(if (movement) 31 else 22); require(Set("D", "O")(flag), s"Invalid direction $flag")
           val record = Financial(current, dimsKey, amount, flag, if (movement) r(5) else "POSTED", r(1), in, h.ordinal, r)
+          synthetic.foreach(_.add(record, in.kind))
           require(!currencies.contains(record.fy) || currencies(record.fy) == dimsKey(9), "AIM vendor-year mixes currencies; partition inference features by currency before running")
           currencies(record.fy) = dimsKey(9)
           in.kind match {
@@ -273,7 +286,7 @@ object ReportingPass {
         require(featureKeys <= maxFeatureKeys, s"Reporting feature/dimension key allowance exceeded: $current")
         advance(h.index)
       }
-      closeVendor(); buckets.close(); relationships.close(); spills.flush()
+      closeVendor(); buckets.close(); relationships.close(); spills.flush(); synthetic.foreach(_.close())
       inputs.foreach(in => row(manifest, in.kind, in.file.getPath, in.count, in.file.length(), in.hash))
       val metrics = output("extract_metrics.csv", Seq("metric", "value"))
       Seq("records_read" -> readRows, "vendors" -> vendorCount, "peak_vendor_rows" -> peakVendorRows,
@@ -293,7 +306,7 @@ object ReportingPass {
       require(failed == 0, s"Reporting reconciliation failed at $failed posting keys")
       Files.write(new File(out, "EXTRACT_COMPLETE").toPath, s"${spills.chunks}\n".getBytes(StandardCharsets.UTF_8))
       println(s"RESULT step=5v profile=expanded rc=0 records_read=$readRows vendors=$vendorCount spills=${spills.chunks}")
-    } finally { inputs.foreach(_.close()); writers.foreach(_.close()) }
+    } finally { inputs.foreach(_.close()); synthetic.foreach(_.abort()); writers.foreach(_.close()) }
     } finally writers.foreach(_.close())
   }
 }
