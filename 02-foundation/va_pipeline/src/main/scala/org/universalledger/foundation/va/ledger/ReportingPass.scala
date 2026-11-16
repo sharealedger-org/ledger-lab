@@ -65,6 +65,9 @@ object ReportingPass {
     val aggregateKeys = params.getOrElse("aggregateKeys", "50000").toInt
     val mergeFanIn = params.getOrElse("mergeFanIn", "16").toInt
     val maxInputs = params.getOrElse("maxInputs", "128").toInt
+    val inputOrder = params.getOrElse("inputOrder","indexed")
+    require(Set("indexed","presorted")(inputOrder),"Unknown reporting input order")
+    val presorted = inputOrder == "presorted"
     require(maxFeatureKeys > 0 && maxInputs > 0)
     val dirs = params.getOrElse("inPaths", "").split(",").filter(_.nonEmpty).map(p => new File(p).getCanonicalFile).toVector
     require(dirs.nonEmpty && dirs.forall(_.isDirectory), "Committed input directories required")
@@ -224,7 +227,7 @@ object ReportingPass {
       }
       selected.foreach { case (f, kind) =>
         val orderStart = System.nanoTime()
-        val in = new OrderedInput(f, kind, new File(out, s"order_index_${inputs.size}.csv"),
+        val in = if(presorted) new Input(f,kind,kind != "movement",Set("movement","balance","opening")(kind)) else new OrderedInput(f, kind, new File(out, s"order_index_${inputs.size}.csv"),
           params.getOrElse("maxIndexedBlocks", "100000").toInt,
           params.getOrElse("maxRecordBytes", "1048576").toInt); inputs += in
         orderPreparationNanos += System.nanoTime() - orderStart
@@ -233,8 +236,8 @@ object ReportingPass {
         if (kind == "contract") require(Set("vendor_id", "contract_id").subsetOf(in.header.toSet), "Contract dimension requires vendor_id,contract_id")
         if (kind == "synthetic_assignment") require(in.header == Vector("vendor_id", "template_instrument_id"), "Synthetic assignment schema mismatch")
       }
-      case class Head(vendor: String, index: Int, values: Vector[String], ordinal: Long)
-      val queue = mutable.PriorityQueue[Head]()(Ordering.by[Head, (String, Int)](h => (h.vendor, h.index)).reverse)
+      case class Head(vendor: String, index: Int, values: Vector[String], ordinal: Long, key: String)
+      val queue = mutable.PriorityQueue[Head]()(Ordering.by[Head, (String, Int)](h => (h.key, h.index)).reverse)
       def advance(i: Int): Unit = inputs(i).next().foreach { raw =>
         val in = inputs(i)
         val values = if (Set("balance", "opening")(in.kind) && raw.size == 31 && raw.last.isEmpty) raw.dropRight(1) else raw
@@ -243,7 +246,10 @@ object ReportingPass {
         val idIndex = if (in.kind == "vendor") in.header.indexOf("instID") else if (in.kind == "contract") in.header.indexOf("vendor_id") else 0
         val id = values(idIndex)
         require(id.nonEmpty, s"Empty instrument key ${in.file}:${in.count}; use explicit unattributed sentinel")
-        in.checkVendor(id); queue.enqueue(Head(id, i, values, in.ordinal))
+        in.checkVendor(id)
+        val k=if(presorted && Set("movement","balance","opening")(in.kind)) reportingKey(values,in.kind) else id+"\u0000"
+        if(presorted) { require(k >= in.previousReportingKey,s"Unsorted reporting common key: ${in.file}:${in.count}"); in.previousReportingKey=k }
+        queue.enqueue(Head(id, i, values, in.ordinal, k))
       }
       inputs.indices.foreach(advance)
       while (queue.nonEmpty) {
@@ -295,7 +301,7 @@ object ReportingPass {
         "aggregate_spill_bytes" -> (buckets.bytes + relationships.bytes + vendorCrossBytes),
         "peak_feature_keys" -> peakFeatureKeys, "feature_capacity_keys" -> maxFeatureKeys,
         "order_preparation_seconds" -> (orderPreparationNanos / 1e9),
-        "reporting_input_passes" -> 2,
+        "reporting_input_passes" -> (if(presorted) 1 else 2),
         "order_index_blocks" -> inputs.collect { case in: OrderedInput => in.indexedBlocks.toLong }.sum,
         "order_index_bytes" -> out.listFiles().filter(_.getName.startsWith("order_index_")).map(_.length()).sum,
         "aggregate_merge_passes" -> (buckets.passes + relationships.passes + vendorCrossPasses), "peak_buffer_keys" -> spills.peak,

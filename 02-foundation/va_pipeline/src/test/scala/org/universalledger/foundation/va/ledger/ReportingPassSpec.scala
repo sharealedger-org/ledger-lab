@@ -91,6 +91,38 @@ class ReportingPassSpec extends AnyFunSuite {
     assert(packets.exists(r=>r("kind")=="balance" && field(r,2)==commitment))
     assert(table(out.resolve("input_manifest.csv")).filter(r=>Set("movement","balance")(r("kind"))).map(_("rows").toLong).sum==4)
   }
+  test("external common-key sort and one sequential CKB pass equal indexed reporting") {
+    withFixture { (dir,params) =>
+      val source=Files.createDirectories(dir.resolve("quote-prefix-source"))
+      val rows=(pair("c1246","0014/07","17.25","EXP1","EXPENSE_PAYMENT") ++
+        pair("c12464","0014/08","29.50","EXP1","EXPENSE_PAYMENT") ++
+        pair("0000000000","0014/07","100","REV1","REVENUE_RECEIPT")).map { line=>
+        val r=line.split(",",-1);r(8)="\"LITERAL\" description";r.mkString(",")
+      }
+      write(source.resolve("SortedJEFY14merged.csv"),SortEngine.sortChunk(rows,spec))
+      post(source.toString+"/",source.toString+"/","14")
+      val meta=Files.createDirectories(source.resolve("metrics"))
+      write(meta.resolve("run_manifest.csv"),Seq("run_id,experiment_id,status","fixture,actual_post_fixture,complete"))
+      val assignments=dir.resolve("assignments.csv")
+      write(assignments,Seq("vendor_id,template_instrument_id","c1246,SIM_I000001","c12464,SIM_I000002"))
+      val options=Map("reportProfile"->"expanded","inPaths"->source.toString,"refPath"->params("refPath"),
+        "syntheticHistories"->new File("../../data/synthetic/reclass_history_v1").getCanonicalPath,
+        "syntheticAssignments"->assignments.toString,"syntheticAsOf"->"2012-06-30","syntheticRunDate"->"2016-07-01")
+      val indexed=run(dir,options,"indexed")
+      val sorted=dir.resolve("sorted")
+      org.universalledger.foundation.va.corpus.ReportingSort.prepare(Vector(source.toFile),sorted.toFile,1,2)
+      val sequential=run(dir,options ++ Map("inPaths"->sorted.resolve("FY14").toString,"inputOrder"->"presorted"),"sequential")
+      Seq("movement_history.csv","balance_history.csv","reconciliation.csv","relationships.csv","vendor_activity.csv",
+        "aim_movements.csv","aim_balances.csv","aim_combined.csv","cross_vendor_totals.csv","vendor_temporal_cuts.csv",
+        "vendor_temporal_summary.csv","vendor_attribute_totals.csv","vendor_attribute_summary.csv","synthetic_conservation.csv",
+        "synthetic_vendor_coverage.csv","synthetic_validation.csv").foreach { name=>
+          assert(Files.readAllBytes(indexed.resolve(name)).toVector==Files.readAllBytes(sequential.resolve(name)).toVector,name)
+        }
+      assert(table(sequential.resolve("extract_metrics.csv")).find(_("metric")=="reporting_input_passes").get("value")=="1")
+      assert(!sequential.toFile.listFiles().exists(_.getName.startsWith("order_index_")))
+      intercept[IllegalArgumentException](run(dir,options + ("inputOrder"->"presorted"),"wrong-order"))
+    }
+  }
   test("real posting output reconciles; features and effective dimensions remain aligned") {
     withFixture { (dir, params) =>
       val out = run(dir, params, "report")

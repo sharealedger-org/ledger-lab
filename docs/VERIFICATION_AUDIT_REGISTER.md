@@ -1966,3 +1966,53 @@ matching-files-only storage sharing preserves differing files and failed-profile
 status while sharing only SHA-256/byte-identical files from an evaluated full run.
 No local result deletion authorized/performed. Whole-product equality remains
 mandatory across full executions. No new formal cost point or GERS closure.
+
+## 2026-11-15 post-reboot sorted reporting continuation
+
+Status: `partially_verified`. Actual retained Run 1 SJE/ledger -> separate bounded
+Scala ReportingSort materialization -> presorted sequential expanded 5v -> spill
+5r -> ConnectedViewsCheck. Equivalence fixture passes, including literal quotes,
+variable-width IDs, byte/row sort conservation and wrong-order rejection. Previous
+fixture failure selected legacy profile; fixed its missing expanded selection.
+18 focused tests pass in reboot_tests.log under
+session-run.tmp/report_sorted_v3_20261115/. FY2012 real-year execution now gates
+corpus continuation; scale, runtime projection and completed corpus controls remain
+pending. No target-engine gap closure or measured cost-point upgrade.
+
+### Post-reboot real-year gate and corpus-sort progress
+
+FY2012 sorted/sequential reporting passed actual ConnectedViewsCheck: 1,031,381
+reconciliation rows, 20 history validation rows, 548,608 conservation rows;
+23,292,369 financial rows covered (4,930,046 attributed, 18,362,323 unattributed),
+17,144 vendors; 274 temporal-summary and 676 attribute-summary rows. Evidence:
+session-run.tmp/report_sorted_v3_20261115/reboot_attempt/fy12_checks.log.
+This qualifies the real-year gate only; sleep-interrupted elapsed time is not an
+uninterrupted benchmark. Automatic corpus sorting started 2026-11-15 23:52:30 AZT.
+FY03–FY09 movement/ledger sorts have emitted passing row/byte conservation results;
+full-corpus sort/report/control completion remains pending (`partially_verified`).
+
+## 2026-11-16 completed reporting evidence for paper revision
+
+Overall status remains `partially_verified`; completed workload checks are verified
+for their scope. Permanent receipt `data/test_evidence/report_sorted_v3_20261116/`
+contains CORPUS_EVALUATED and driver rc=0 at 04:46:40 AZT. Sort manifest totals:
+261,529,946 journal rows plus 11,850,542 ledger rows = 273,380,488 financial rows;
+94,710,620,118 bytes. Connected checker passes all financial-row coverage,
+11,835,781 reconciliation rows, 20 history cases and 2,102,912 conservation rows.
+Extract: one presorted financial input traversal, zero order index, zero
+reconciliation failures; largest group 217,406,124 rows, 1,400,717,312 bytes process
+peak RSS. Distinct sort, spill reduction and validation remain physical work.
+Paper revision addendum `docs/tds-evidence/reporting-20261116-paper-updates/README.md`
+maps claims to original artifacts and states timing, population and source-policy
+bounds. No new cost-point/AI/discovery/target-runtime-gap closure is inferred.
+
+## 2026-11-16 Q2 component lifecycle and risk requirements
+
+Status: `design_only`. docs/PHASE_TWO_AIM_CORPUS_REQUIREMENTS.md declares proposed
+component/process evidence, tentative-output resolution, historical knowledge
+cutoffs, conditional future-reference recasts and probabilistic forecasting/risk
+comparisons. No new engine schema, parser, CKB consumer or model runtime is
+implemented or verified. Existing reporting completion does not establish these
+capabilities. Each implementation slice must reconstruct producers/consumers and
+run the cheapest falsifier under the architecture gates; target-runtime gap
+assessment remains required before any measured-capability claim.

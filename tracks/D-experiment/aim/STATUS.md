@@ -33,6 +33,25 @@ retains detailed result paths, decisions and corrections.
 
 ## Next work and decisions
 
+**Owner scope clarification, 2026-11-16:** Current preparation imagines source-data
+conditions that might support envisioned AIM functionality. Extensive design of
+these new models and their features has not occurred; their eventual architectures
+and feature representations remain unknown. The capability matrix is a set of
+functional hypotheses, not a completed model/feature design. This qualification
+applies to the new work, not a retraction of the separately scoped historical
+tests above.
+
+**2026-11-16 owner extension:** New synthetic/AIM design proceeds in parallel
+with independent Paper 1/2 editing sessions. See the
+[capability and corpus requirements](../../../docs/PHASE_TWO_AIM_CORPUS_REQUIREMENTS.md):
+component outputs across historically disconnected sources; later evidence
+resolving tentative outputs; temporal recasts, forecasting and risk under temporary
+future reference versions; matched source-quality comparisons. Later AIM work is
+placed by owner in Papers 5/6, Phase 3, with a possible Paper 5 engine extension.
+Status is design_only; no new model, training permission or performance result.
+Corpus/model co-design must be disclosed and independently held-out mechanisms
+reserved before formal evaluation. Earlier AIM findings above are unchanged.
+
 1. Resolve the `00YY/MM` fiscal-period discrepancy in balance/combined analyses
    before relying on the reported gain; preserve prior evidence. No new Python
    approval is conferred here.

@@ -1,5 +1,18 @@
 # Proposed Phase 2 synthetic generation CKB
 
+**2026-11-16 design extension:** Use the
+[AIM corpus requirements](PHASE_TWO_AIM_CORPUS_REQUIREMENTS.md) for the new
+self-contained fictional population, disconnected process evidence, tentative
+outputs and later resolutions, and future-reference forecasting/risk cases.
+This updates the earlier companion/mixed-population recommendation below for
+the next design slice; preserve observed VA inputs separately. Initial generation
+must prepare these evidence families without claiming future engines already
+exist or making all Phase 3 engines prerequisites for inspecting Phase 2 inputs.
+The AIM requirements describe envisioned functionality and possible supporting
+source conditions. Extensive design of the new AIM models and their features
+has not occurred; their eventual form and the sufficiency of those conditions
+remain open research questions.
+
 **Bounded implementation evidence, 2026-11-15:** The
 [FY2003–FY2004 pilot](../data/test_evidence/component_pilot_0304_20261115/README.md)
 ran successfully with an additional determining-key assignment sort/merge between

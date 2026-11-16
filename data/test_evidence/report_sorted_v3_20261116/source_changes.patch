@@ -1,0 +1,273 @@
+diff --git a/02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/ledger/ReportingPass.scala b/02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/ledger/ReportingPass.scala
+index ab21e28..aea88a6 100644
+--- a/02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/ledger/ReportingPass.scala
++++ b/02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/ledger/ReportingPass.scala
+@@ -65,6 +65,9 @@ object ReportingPass {
+     val aggregateKeys = params.getOrElse("aggregateKeys", "50000").toInt
+     val mergeFanIn = params.getOrElse("mergeFanIn", "16").toInt
+     val maxInputs = params.getOrElse("maxInputs", "128").toInt
++    val inputOrder = params.getOrElse("inputOrder","indexed")
++    require(Set("indexed","presorted")(inputOrder),"Unknown reporting input order")
++    val presorted = inputOrder == "presorted"
+     require(maxFeatureKeys > 0 && maxInputs > 0)
+     val dirs = params.getOrElse("inPaths", "").split(",").filter(_.nonEmpty).map(p => new File(p).getCanonicalFile).toVector
+     require(dirs.nonEmpty && dirs.forall(_.isDirectory), "Committed input directories required")
+@@ -224,7 +227,7 @@ object ReportingPass {
+       }
+       selected.foreach { case (f, kind) =>
+         val orderStart = System.nanoTime()
+-        val in = new OrderedInput(f, kind, new File(out, s"order_index_${inputs.size}.csv"),
++        val in = if(presorted) new Input(f,kind,kind != "movement",Set("movement","balance","opening")(kind)) else new OrderedInput(f, kind, new File(out, s"order_index_${inputs.size}.csv"),
+           params.getOrElse("maxIndexedBlocks", "100000").toInt,
+           params.getOrElse("maxRecordBytes", "1048576").toInt); inputs += in
+         orderPreparationNanos += System.nanoTime() - orderStart
+@@ -233,8 +236,8 @@ object ReportingPass {
+         if (kind == "contract") require(Set("vendor_id", "contract_id").subsetOf(in.header.toSet), "Contract dimension requires vendor_id,contract_id")
+         if (kind == "synthetic_assignment") require(in.header == Vector("vendor_id", "template_instrument_id"), "Synthetic assignment schema mismatch")
+       }
+-      case class Head(vendor: String, index: Int, values: Vector[String], ordinal: Long)
+-      val queue = mutable.PriorityQueue[Head]()(Ordering.by[Head, (String, Int)](h => (h.vendor, h.index)).reverse)
++      case class Head(vendor: String, index: Int, values: Vector[String], ordinal: Long, key: String)
++      val queue = mutable.PriorityQueue[Head]()(Ordering.by[Head, (String, Int)](h => (h.key, h.index)).reverse)
+       def advance(i: Int): Unit = inputs(i).next().foreach { raw =>
+         val in = inputs(i)
+         val values = if (Set("balance", "opening")(in.kind) && raw.size == 31 && raw.last.isEmpty) raw.dropRight(1) else raw
+@@ -243,7 +246,10 @@ object ReportingPass {
+         val idIndex = if (in.kind == "vendor") in.header.indexOf("instID") else if (in.kind == "contract") in.header.indexOf("vendor_id") else 0
+         val id = values(idIndex)
+         require(id.nonEmpty, s"Empty instrument key ${in.file}:${in.count}; use explicit unattributed sentinel")
+-        in.checkVendor(id); queue.enqueue(Head(id, i, values, in.ordinal))
++        in.checkVendor(id)
++        val k=if(presorted && Set("movement","balance","opening")(in.kind)) reportingKey(values,in.kind) else id+"\u0000"
++        if(presorted) { require(k >= in.previousReportingKey,s"Unsorted reporting common key: ${in.file}:${in.count}"); in.previousReportingKey=k }
++        queue.enqueue(Head(id, i, values, in.ordinal, k))
+       }
+       inputs.indices.foreach(advance)
+       while (queue.nonEmpty) {
+@@ -295,7 +301,7 @@ object ReportingPass {
+         "aggregate_spill_bytes" -> (buckets.bytes + relationships.bytes + vendorCrossBytes),
+         "peak_feature_keys" -> peakFeatureKeys, "feature_capacity_keys" -> maxFeatureKeys,
+         "order_preparation_seconds" -> (orderPreparationNanos / 1e9),
+-        "reporting_input_passes" -> 2,
++        "reporting_input_passes" -> (if(presorted) 1 else 2),
+         "order_index_blocks" -> inputs.collect { case in: OrderedInput => in.indexedBlocks.toLong }.sum,
+         "order_index_bytes" -> out.listFiles().filter(_.getName.startsWith("order_index_")).map(_.length()).sum,
+         "aggregate_merge_passes" -> (buckets.passes + relationships.passes + vendorCrossPasses), "peak_buffer_keys" -> spills.peak,
+diff --git a/02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/ledger/ReportingSupport.scala b/02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/ledger/ReportingSupport.scala
+index add0265..3dd0e11 100644
+--- a/02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/ledger/ReportingSupport.scala
++++ b/02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/ledger/ReportingSupport.scala
+@@ -40,28 +40,43 @@ object ReportingSupport {
+   def date(s: String): LocalDate = LocalDate.parse(s.replace('/', '-'))
+   def attributed(v: String): Boolean = v.nonEmpty && !v.forall(_ == '0') && v != "999999999999" && !v.startsWith("UNMATCHED_")
+ 
+-  class Input(val file: File, val kind: String, headerRequired: Boolean) extends AutoCloseable {
++  def reportingKey(r: Vector[String], kind: String): String = {
++    val fields = Vector(r(0)) ++ (if(kind == "movement") r.slice(9,23) else r.slice(5,19))
++    require(fields.size == 15 && fields.forall(!_.contains('\u0000')), "Invalid reporting sort key")
++    fields.mkString("\u0000") + "\u0000"
++  }
++  class Input(val file: File, val kind: String, headerRequired: Boolean,
++      literalCanonical: Boolean = false) extends AutoCloseable {
+     val sha = MessageDigest.getInstance("SHA-256")
+-    private val stream = new DigestInputStream(new FileInputStream(file), sha)
+-    private val parser = new CSVParser(new InputStreamReader(stream, StandardCharsets.UTF_8), CSVFormat.DEFAULT)
+-    private val records = parser.iterator()
++    private val stream = new DigestInputStream(new BufferedInputStream(new FileInputStream(file),1048576), sha)
++    private val literalReader = if(literalCanonical) new BufferedReader(new InputStreamReader(stream,StandardCharsets.UTF_8),1048576) else null
++    private val parser = if(literalCanonical) null else new CSVParser(new InputStreamReader(stream, StandardCharsets.UTF_8), CSVFormat.DEFAULT)
++    private val records = if(parser == null) null else parser.iterator()
++    private def readLiteral(): Option[Vector[String]] = {
++      var line=literalReader.readLine()
++      while(line != null && line.isEmpty) line=literalReader.readLine()
++      if(line == null) None else { require(line.length <= 1048576,"Canonical record allowance exceeded"); Some(line.split(",",-1).toVector) }
++    }
+     val header: Vector[String] = if (headerRequired) {
+-      if (!records.hasNext) { parser.close(); throw new IllegalArgumentException(s"Empty header file: $file") }
+-      records.next().iterator().asScala.toVector.reverse.dropWhile(_.isEmpty).reverse.map(_.stripPrefix("\uFEFF"))
++      val first = if(literalCanonical) readLiteral() else if(records.hasNext) Some(records.next().iterator().asScala.toVector) else None
++      if(first.isEmpty) { stream.close(); throw new IllegalArgumentException(s"Empty header file: $file") }
++      first.get.reverse.dropWhile(_.isEmpty).reverse.map(_.stripPrefix("\uFEFF"))
+     } else Vector.empty
+     var count = 0L
+     def ordinal: Long = count
+     var previous = ""
+-    def next(): Option[Vector[String]] = if (!records.hasNext) None else {
+-      count += 1
+-      Some(records.next().iterator().asScala.toVector)
++    var previousReportingKey = ""
++    def next(): Option[Vector[String]] = {
++      val result=if(literalCanonical) readLiteral() else if(records.hasNext) Some(records.next().iterator().asScala.toVector) else None
++      if(result.nonEmpty) count += 1
++      result
+     }
+     def checkVendor(v: String): Unit = {
+       require(v >= previous, s"Unsorted vendor stream $file record $count: $v follows $previous")
+       previous = v
+     }
+     def hash: String = sha.digest().map(b => f"${b & 255}%02x").mkString
+-    def close(): Unit = parser.close()
++    def close(): Unit = if(literalReader != null) literalReader.close() else parser.close()
+   }
+ 
+   final class OrderedInput(file: File, kind: String, index: File, maxBlocks: Int, maxRecordBytes: Int)
+diff --git a/02-foundation/va_pipeline/src/test/scala/org/universalledger/foundation/va/ledger/ReportingPassSpec.scala b/02-foundation/va_pipeline/src/test/scala/org/universalledger/foundation/va/ledger/ReportingPassSpec.scala
+index dd2e83f..83e28bb 100644
+--- a/02-foundation/va_pipeline/src/test/scala/org/universalledger/foundation/va/ledger/ReportingPassSpec.scala
++++ b/02-foundation/va_pipeline/src/test/scala/org/universalledger/foundation/va/ledger/ReportingPassSpec.scala
+@@ -91,6 +91,38 @@ class ReportingPassSpec extends AnyFunSuite {
+     assert(packets.exists(r=>r("kind")=="balance" && field(r,2)==commitment))
+     assert(table(out.resolve("input_manifest.csv")).filter(r=>Set("movement","balance")(r("kind"))).map(_("rows").toLong).sum==4)
+   }
++  test("external common-key sort and one sequential CKB pass equal indexed reporting") {
++    withFixture { (dir,params) =>
++      val source=Files.createDirectories(dir.resolve("quote-prefix-source"))
++      val rows=(pair("c1246","0014/07","17.25","EXP1","EXPENSE_PAYMENT") ++
++        pair("c12464","0014/08","29.50","EXP1","EXPENSE_PAYMENT") ++
++        pair("0000000000","0014/07","100","REV1","REVENUE_RECEIPT")).map { line=>
++        val r=line.split(",",-1);r(8)="\"LITERAL\" description";r.mkString(",")
++      }
++      write(source.resolve("SortedJEFY14merged.csv"),SortEngine.sortChunk(rows,spec))
++      post(source.toString+"/",source.toString+"/","14")
++      val meta=Files.createDirectories(source.resolve("metrics"))
++      write(meta.resolve("run_manifest.csv"),Seq("run_id,experiment_id,status","fixture,actual_post_fixture,complete"))
++      val assignments=dir.resolve("assignments.csv")
++      write(assignments,Seq("vendor_id,template_instrument_id","c1246,SIM_I000001","c12464,SIM_I000002"))
++      val options=Map("reportProfile"->"expanded","inPaths"->source.toString,"refPath"->params("refPath"),
++        "syntheticHistories"->new File("../../data/synthetic/reclass_history_v1").getCanonicalPath,
++        "syntheticAssignments"->assignments.toString,"syntheticAsOf"->"2012-06-30","syntheticRunDate"->"2016-07-01")
++      val indexed=run(dir,options,"indexed")
++      val sorted=dir.resolve("sorted")
++      org.universalledger.foundation.va.corpus.ReportingSort.prepare(Vector(source.toFile),sorted.toFile,1,2)
++      val sequential=run(dir,options ++ Map("inPaths"->sorted.resolve("FY14").toString,"inputOrder"->"presorted"),"sequential")
++      Seq("movement_history.csv","balance_history.csv","reconciliation.csv","relationships.csv","vendor_activity.csv",
++        "aim_movements.csv","aim_balances.csv","aim_combined.csv","cross_vendor_totals.csv","vendor_temporal_cuts.csv",
++        "vendor_temporal_summary.csv","vendor_attribute_totals.csv","vendor_attribute_summary.csv","synthetic_conservation.csv",
++        "synthetic_vendor_coverage.csv","synthetic_validation.csv").foreach { name=>
++          assert(Files.readAllBytes(indexed.resolve(name)).toVector==Files.readAllBytes(sequential.resolve(name)).toVector,name)
++        }
++      assert(table(sequential.resolve("extract_metrics.csv")).find(_("metric")=="reporting_input_passes").get("value")=="1")
++      assert(!sequential.toFile.listFiles().exists(_.getName.startsWith("order_index_")))
++      intercept[IllegalArgumentException](run(dir,options + ("inputOrder"->"presorted"),"wrong-order"))
++    }
++  }
+   test("real posting output reconciles; features and effective dimensions remain aligned") {
+     withFixture { (dir, params) =>
+       val out = run(dir, params, "report")
+diff --git a/SESSION_HANDOFF.md b/SESSION_HANDOFF.md
+index 1a5389e..69ef40e 100644
+--- a/SESSION_HANDOFF.md
++++ b/SESSION_HANDOFF.md
+@@ -9,6 +9,25 @@ Earlier archives remain linked there; no session reasoning or evidence was disca
+ 
+ ## 2026-11-15 (TRACK D) - Autonomous synthetic-reference v2 work in progress
+ 
++**Full queue launched 13:53:10 AZT:** revision b540e5e72f2ecf02f0e39e4966dc80be5d081044,
++driver PID 86722, exec session 56032; monitor exec session 36070 with a 20-GiB
++free-space stop, own driver group 86722. Root:
++`session-run.tmp/synthetic_reference_corpus_v2_20261115/`; monthly_a/b/c are three
++identical financial + expanded-report executions. Config/status/driver.pid and
++minute monitoring are there. Source snapshot is corrected admission inputs.
++All gates passed for first launch; 225-GiB plus first-run-allocation/reserve
++checks precede subsequent runs. Conditional all-three plan is one to two days.
++After evaluation, storage sharing preserves all paths/bytes across repeats and
++the two own admission profiles (rejected profile stays rejected).
++
++Archival supervisor runtime `archive_after_queue.sh` waits for
++THREE_EXECUTIONS_EVALUATED and then calls the verified archival/upload checker.
++Destination: OneDrive-Personal/LedgerLabOutputs-SyntheticReference-v2-20261115,
++separate from historical Gold. See archive_supervisor.pid/log and archive_console.log.
++Do not change HEAD or engine/orchestration files while this queue runs. Documentation
++updates may remain uncommitted until all executions finish. Do not send a final
++response until evaluation/upload complete or a blocker requires owner input.
++
+ Latest: corrected FY2012 financial/source checks passed; 2,745,656 receipt legs
+ all zero, GL byte-identical to the first financial profile. The report failed on
+ valid literal quotes in canonical SJE fields at 11:30:33 AZT. ReportingOrder's
+diff --git a/STATUS.md b/STATUS.md
+index 61c743d..f665df5 100644
+--- a/STATUS.md
++++ b/STATUS.md
+@@ -16,6 +16,12 @@ The audit register wins any evidence disagreement.
+ 
+ ## Current checkpoint
+ 
++**Running 2026-11-15 13:53 AZT:** Three admitted synthetic-reference v2 executions
++with expanded reports are active on frozen b540e5e, caffeinate and monitored
++scratch. [Track D](tracks/D-experiment/STATUS.md) has the root/status pointers and
++source-policy/quote-boundary fixes. Historical VA results remain separate. Planned
++OneDrive archival waits for successful evaluation of all three; nothing copied yet.
++
+ **Autonomous synthetic-reference preparation, 2026-11-15:** The downloaded VA
+ corpus results are already complete and retained for their frozen scope. Owner
+ authorized three new synthetic-reference executions with expanded reporting,
+diff --git a/docs/SYNTHETIC_REFERENCE_CORPUS_V2_CONTRACT.md b/docs/SYNTHETIC_REFERENCE_CORPUS_V2_CONTRACT.md
+index 00472e6..e4fd549 100644
+--- a/docs/SYNTHETIC_REFERENCE_CORPUS_V2_CONTRACT.md
++++ b/docs/SYNTHETIC_REFERENCE_CORPUS_V2_CONTRACT.md
+@@ -1,5 +1,33 @@
+ # Synthetic-reference corpus v2: execution contract
+ 
++## Owner topology correction: sort, then sequential reporting CKB
++
++2026-11-15: owner stopped the indexed-report approach before it completed and
++authorized changing reporting only, reusing Run 1's validated FY03–FY16 financial
++outputs. A separate declared Scala external sort orders each canonical SJE and
++actual ledger stream by literal Instrument ID with bounded chunks/fan-in. It
++preserves every record/field and ledger header, original financial files, hashes,
++source/rule lineage and zero identities. Sort materializations are analytical
++inputs, not replacement canonical state. Then one sequential CKB read consumes
++all ordered streams and produces all existing expanded views together; no index
++pre-scan and no seek-based input reader. Spill reduction remains a separate
++analytical summary process and is measured separately.
++
++Cheapest falsifier before implementation: unchanged 47-test baseline and existing
++variable-width-ID, literal-quote, actual-posting and small/large-spill fixtures.
++New fixture must prove indexed versus sorted/sequential analytical equivalence,
++all input rows/bytes/hash lineage, reject wrong order and preserve quote-bearing
++canonical fields. Run FY2012 real data through sort plus sequential report to
++measure sorting, CKB compute/output and reduction independently before updating
++the full projection. Two hours is a hypothesis, not an accepted runtime promise.
++
++Owner authorizes overlapping the next financial execution with revised reporting
++if memory/scratch admission permits. All actual timings remain recorded, labeled
++contended exploratory work rather than comparable timing replicates. Do not
++discard validated financial results or silently alter report capability. Preserve
++superseded report scratch and disable the old queue/archival supervisor before
++starting the revised topology. Final archival still follows successful evaluation.
++
+ Owner authorization, 2026-11-15: implement and verify a new preparation path,
+ then three local executions with expanded reporting, evaluation and verified
+ OneDrive archival. This is exploratory preparation for Q2, not Q2 evaluation or
+diff --git a/scripts/run_reporting.sh b/scripts/run_reporting.sh
+index fb9580a..8166f8b 100644
+--- a/scripts/run_reporting.sh
++++ b/scripts/run_reporting.sh
+@@ -18,7 +18,7 @@ while [[ $# -gt 0 ]]; do
+     --outPath) out="$value" ;;
+     --inPaths) inputs="$value" ;;
+     --mergeFanIn) fan_in="$value" ;;
+-    --vendorMaster|--contractDimensions|--refPath|--packetVendors|--spillRows|--aggregateKeys|--maxFeatureKeys|--maxIndexedBlocks|--maxRecordBytes|--maxReferenceBytes|--maxInputs|--balanceBasis|--openingFiles|--syntheticHistories|--syntheticAsOf|--syntheticRunDate|--syntheticAssignments|--syntheticAggregateKeys)
++    --inputOrder|--vendorMaster|--contractDimensions|--refPath|--packetVendors|--spillRows|--aggregateKeys|--maxFeatureKeys|--maxIndexedBlocks|--maxRecordBytes|--maxReferenceBytes|--maxInputs|--balanceBasis|--openingFiles|--syntheticHistories|--syntheticAsOf|--syntheticRunDate|--syntheticAssignments|--syntheticAggregateKeys)
+       options+=" $key $(quote "$value")" ;;
+     *) echo "Unknown option: $key" >&2; exit 1 ;;
+   esac
+diff --git a/tracks/D-experiment/STATUS.md b/tracks/D-experiment/STATUS.md
+index df5e46c..6265f6f 100644
+--- a/tracks/D-experiment/STATUS.md
++++ b/tracks/D-experiment/STATUS.md
+@@ -42,6 +42,14 @@ in AGENTS and the contributor guide. Runtime checkpoints and next gates are unch
+ 
+ ## Current plans and evidence
+ 
++**Running, 2026-11-15 13:53 AZT:** Three synthetic-reference v2 executions plus
++expanded reports launched locally on frozen b540e5e, PID 86722, with caffeinate
++and minute monitoring/20-GiB scratch stop. Root
++`session-run.tmp/synthetic_reference_corpus_v2_20261115/` holds status, logs and
++live storage/process samples. OneDrive archival is armed only after all three
++evaluations and comparisons pass. No archival copy started yet. Preserve HEAD
++and code while the queue runs; completion/results remain pending.
++
+ **2026-11-15 corrected real-year admission passed:** All financial/source-policy,
+ actual report and cardinality checks pass; [receipt](../../data/test_evidence/synthetic_reference_corpus_v2_20261115/README.md).
+ FY2012 has 17,592,858 zero movements and 335,103 zero posted keys; all receipt

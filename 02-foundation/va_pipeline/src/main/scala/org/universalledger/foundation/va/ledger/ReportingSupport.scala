@@ -40,28 +40,43 @@ object ReportingSupport {
   def date(s: String): LocalDate = LocalDate.parse(s.replace('/', '-'))
   def attributed(v: String): Boolean = v.nonEmpty && !v.forall(_ == '0') && v != "999999999999" && !v.startsWith("UNMATCHED_")
 
-  class Input(val file: File, val kind: String, headerRequired: Boolean) extends AutoCloseable {
+  def reportingKey(r: Vector[String], kind: String): String = {
+    val fields = Vector(r(0)) ++ (if(kind == "movement") r.slice(9,23) else r.slice(5,19))
+    require(fields.size == 15 && fields.forall(!_.contains('\u0000')), "Invalid reporting sort key")
+    fields.mkString("\u0000") + "\u0000"
+  }
+  class Input(val file: File, val kind: String, headerRequired: Boolean,
+      literalCanonical: Boolean = false) extends AutoCloseable {
     val sha = MessageDigest.getInstance("SHA-256")
-    private val stream = new DigestInputStream(new FileInputStream(file), sha)
-    private val parser = new CSVParser(new InputStreamReader(stream, StandardCharsets.UTF_8), CSVFormat.DEFAULT)
-    private val records = parser.iterator()
+    private val stream = new DigestInputStream(new BufferedInputStream(new FileInputStream(file),1048576), sha)
+    private val literalReader = if(literalCanonical) new BufferedReader(new InputStreamReader(stream,StandardCharsets.UTF_8),1048576) else null
+    private val parser = if(literalCanonical) null else new CSVParser(new InputStreamReader(stream, StandardCharsets.UTF_8), CSVFormat.DEFAULT)
+    private val records = if(parser == null) null else parser.iterator()
+    private def readLiteral(): Option[Vector[String]] = {
+      var line=literalReader.readLine()
+      while(line != null && line.isEmpty) line=literalReader.readLine()
+      if(line == null) None else { require(line.length <= 1048576,"Canonical record allowance exceeded"); Some(line.split(",",-1).toVector) }
+    }
     val header: Vector[String] = if (headerRequired) {
-      if (!records.hasNext) { parser.close(); throw new IllegalArgumentException(s"Empty header file: $file") }
-      records.next().iterator().asScala.toVector.reverse.dropWhile(_.isEmpty).reverse.map(_.stripPrefix("\uFEFF"))
+      val first = if(literalCanonical) readLiteral() else if(records.hasNext) Some(records.next().iterator().asScala.toVector) else None
+      if(first.isEmpty) { stream.close(); throw new IllegalArgumentException(s"Empty header file: $file") }
+      first.get.reverse.dropWhile(_.isEmpty).reverse.map(_.stripPrefix("\uFEFF"))
     } else Vector.empty
     var count = 0L
     def ordinal: Long = count
     var previous = ""
-    def next(): Option[Vector[String]] = if (!records.hasNext) None else {
-      count += 1
-      Some(records.next().iterator().asScala.toVector)
+    var previousReportingKey = ""
+    def next(): Option[Vector[String]] = {
+      val result=if(literalCanonical) readLiteral() else if(records.hasNext) Some(records.next().iterator().asScala.toVector) else None
+      if(result.nonEmpty) count += 1
+      result
     }
     def checkVendor(v: String): Unit = {
       require(v >= previous, s"Unsorted vendor stream $file record $count: $v follows $previous")
       previous = v
     }
     def hash: String = sha.digest().map(b => f"${b & 255}%02x").mkString
-    def close(): Unit = parser.close()
+    def close(): Unit = if(literalReader != null) literalReader.close() else parser.close()
   }
 
   final class OrderedInput(file: File, kind: String, index: File, maxBlocks: Int, maxRecordBytes: Int)

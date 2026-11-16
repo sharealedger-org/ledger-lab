@@ -1,6 +1,6 @@
 # Track D: Primary research experiment
 
-Updated 2026-11-15 (Arizona). Latest bounded financial-lineage checkpoint:
+Updated 2026-11-16 (Arizona). Latest bounded financial-lineage checkpoint:
 **`5e44a8e`** (lineage-v2, pushed). Initial Track D consolidation: `ddde891`; broader collaborator review and path reorganization follow here;
 those infrastructure commits made no engine changes or financial executions.
 Subsequent bounded work is recorded below; no paper edits or new Control read.
@@ -41,6 +41,25 @@ evidence. The journal moved intact from `D-control` to `D-experiment` at `9cab0c
 in AGENTS and the contributor guide. Runtime checkpoints and next gates are unchanged.
 
 ## Current plans and evidence
+
+**Post-reboot restart, owner requested:** 18 verification tests pass across three
+matched suites, including indexed versus sorted/sequential report equivalence.
+Corrected the new fixture's missing `reportProfile=expanded` (previously selected
+legacy views before reduction). Detached driver PID 1984 is active under
+`session-run.tmp/report_sorted_v3_20261115/reboot_attempt/`, with caffeinate,
+minute process/storage samples and a 20-GiB low-scratch stop. FY2012 sort/report
+and connected checks gate automatic FY03–FY16 sort/report over retained Run 1
+financial outputs. No financial replay or archival yet. AC attached; prior
+battery throttling is an owner hypothesis. Completion remains pending.
+The older three-execution driver below remains stopped.
+
+**Running, 2026-11-15 13:53 AZT:** Three synthetic-reference v2 executions plus
+expanded reports launched locally on frozen b540e5e, PID 86722, with caffeinate
+and minute monitoring/20-GiB scratch stop. Root
+`session-run.tmp/synthetic_reference_corpus_v2_20261115/` holds status, logs and
+live storage/process samples. OneDrive archival is armed only after all three
+evaluations and comparisons pass. No archival copy started yet. Preserve HEAD
+and code while the queue runs; completion/results remain pending.
 
 **2026-11-15 corrected real-year admission passed:** All financial/source-policy,
 actual report and cardinality checks pass; [receipt](../../data/test_evidence/synthetic_reference_corpus_v2_20261115/README.md).
@@ -240,3 +259,110 @@ withheld; this CKB-informed session must not become the Control builder.
   reflections/private plans outside its delivery package.
 - Owner pointer to the baseline and future results-evaluation commit in Control's
   handoff remains open; do not imply that evaluation commit exists.
+
+**Restart timing qualification:** owner reported sleep during battery-symbol
+troubleshooting. Post-wake driver 1984 and Java 2510 remain active (95.7% CPU);
+caffeinate assertions remain present. Monitor gap 06:39:27Z–06:41:06Z; exact sleep
+duration unverified. Run continues; elapsed timing is sleep-interrupted exploratory
+evidence rather than an uninterrupted timing replicate. Attempt operator_events.log
+records the observation.
+
+**Full-corpus reporting released:** FY2012 sorted/sequential extract, reduction
+and ConnectedViewsCheck passed. Driver entered CORPUS_SORT at
+2026-11-16T06:52:30Z (2026-11-15 23:52:30 AZT), over retained FY03–FY16 Run 1
+financial outputs. Corpus analytical completion/controls remain pending. Live
+status/logs remain under report_sorted_v3_20261115/reboot_attempt.
+
+**2026-11-16 monitoring:** FY03–FY09 reporting sorts completed (seven of fourteen
+years); corpus analytical pass remains pending all sorts. Requested live Terminal
+dashboard opened using `session-run.tmp/report_sorted_v3_20261115/dashboard.sh`
+(30-second refresh, reads only logs/storage samples). Run remains active; no
+financial replay or archive. Owner requested an open monitoring turn.
+
+**2026-11-16 01:12:15 AZT — corpus report active:** All fourteen years completed
+ReportingSort with 28 source files, 273,380,488 rows and 94,710,620,118 bytes;
+row/byte conservation passed for every sort. Sort stage 2026-11-15 23:52:30 to
+2026-11-16 01:12:15 AZT (79m45s wall, exploratory host conditions). Driver has
+started corpus sequential expanded 5v, followed automatically by 5r, connected
+checks and summary. ~143 GiB free at transition; 20-GiB monitor stop remains.
+Final controls/completion, further independent executions and archive remain open.
+
+**2026-11-16 04:41 AZT:** Full-corpus sequential 5v completed: 273,447,217 input
+rows including dimensions, 65,716 vendor groups, zero reconciliation failures;
+one financial input pass, zero index blocks/bytes, bounded spill and 1,400,717,312
+bytes peak RSS. Extract elapsed 12,541.5 seconds (~3h29m); 5r reduction active.
+217,406,124-row largest group processed without inventing identities. Final
+ConnectedViewsCheck/summary remain pending. Monitor's last sample 04:38:32 AZT
+preceded a du-versus-spill-cleanup race; restarted around 04:42 with samples
+preserved and unknown allocation on transient du errors, keeping independent disk
+stop active. Engine source unchanged. Sampler PID 35208, driver 1984.
+
+**2026-11-16 04:46:40 AZT — corpus reporting complete:** CORPUS_EVALUATED published,
+driver rc=0. Connected checks pass for all 273,380,488 financial rows, 11,835,781
+reconciliation rows, 20 history oracles and 2,102,912 conservation rows. Final
+census includes 71,119,226 temporal-cut and 12,985,882 attribute-total rows.
+Permanent receipt: data/test_evidence/report_sorted_v3_20261116/ (repository root).
+This completes expanded reporting for retained Run 1, not three independent
+executions. Runs 2/3 and OneDrive archival have not started; about 109 GiB free
+at completion. Prior monitor restart PID was 35362 (35208 did not survive launch);
+samples resumed 04:43:20 AZT. All prior timing/host qualifications remain.
+
+**Owner priority clarification, 2026-11-16:** Further identical executions are
+not the next useful step. Owner wants newly generated synthetic inputs inspected
+before starting Q2 development. Completed reporting establishes corpus-scale
+analytical execution/conservation over existing VA-derived financial outputs and
+synthetic reference assignments; it does not establish a newly generated economic
+scenario corpus. Defer runs 2/3; focus next on the component generator and an
+inspectable versioned synthetic sample. Existing FY2012 anchor/scale preparation
+still requires the calendar, calibration, registry, bounded merge and manifest
+checks declared in COMPONENT_PILOT_0304_CONTRACT.md before enlargement. No new
+synthetic corpus generated by this clarification; Q2 remains unopened.
+
+**Paper revision input prepared, 2026-11-16:** Owner requested using the completed
+reporting execution in the Paper 1/2 updates. Added
+`docs/tds-evidence/reporting-20261116-paper-updates/README.md` with suggested
+passages, exact population and stage boundaries, output/control table,
+claim–evidence mapping and qualifications. Linked it at the top of the member
+editing handoff. No private chapter edit, circulation, new model result or engine
+change. Full-corpus completion is evidence for this reporting workload only;
+new synthetic generation/inspection remains the next execution priority.
+
+**Q2 preparation discussion, 2026-11-16:** Owner proposes a complete, self-contained
+new synthetic corpus for Phase 2, using the completed reporting results to guide
+generation, replacing most unresolved parties within the fictional population,
+and considering a later Zenodo release. This revises the earlier companion/mixed
+population proposal as a design direction under discussion; no generation or
+publication launched. Keep original VA evidence immutable. Separate aggregate
+calibration evidence from invented entity connections, distinguish vendor,
+employee and revenue-party roles, and retain deliberate missing-identity cases.
+The reported 220,909,208 unattributed input rows are not a count of unidentified
+vendors. Next useful preparation: versioned calibration/scenario contracts and a
+self-contained inspection sample before full-scale generation and Q2 freeze.
+
+**Q2 corpus and AIM design extension, 2026-11-16:** Owner adds component business
+model outputs across historically disconnected process systems, later evidence
+completing tentative outcomes, and forecasting/risk under projected recasts and
+temporary future-dated references. Added docs/PHASE_TWO_AIM_CORPUS_REQUIREMENTS.md
+and linked the strategy/generation proposal and AIM status. Includes candidate
+source-system improvements, matched source-quality experiments, historical versus
+later-known views, outcome lineage, conditional-versus-probabilistic evaluation
+and accounting boundaries. Owner maps later AIM work to Papers 5/6, Phase 3, with
+possible new Paper 5 engine outcome-reconciliation work. Explicitly design_only;
+no implementation, new corpus, training or target-runtime support claim. Paper
+1/2 edits proceed in independent sessions; no private manuscript or Control read.
+
+**AIM design scope clarified by owner, 2026-11-16:** Preparation has not included
+extensive design of the envisioned AIM models or their features; their eventual
+form remains unknown. The focus is imagining source-data conditions that might
+support possible functionality. Updated the corpus requirements, strategy,
+generation proposal and AIM status so functional hypotheses and suggested
+comparisons are not presented as completed model/feature design. No model or
+corpus execution; existing historical AIM evidence unchanged.
+
+**Shared checkpoint for ARM writing, 2026-11-16:** Owner requested commit/push of
+reporting code/evidence, Paper 1/2 revision input and current Q2 source-condition
+design. Reporting source hashes and retained sorter match; recorded 18 tests and
+corpus controls pass, Bash syntax/whitespace checks pass. Compact cited logs are
+included despite the generic log ignore. ARM can follow MEMBER_REPO_EDITING_PLAN
+and the reporting addendum without copying the large execution datasets. Synthetic
+preparation remains the local next work; new AIM model/feature design is still open.

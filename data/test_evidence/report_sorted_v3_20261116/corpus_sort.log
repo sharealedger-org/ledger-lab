@@ -1,0 +1,55 @@
+[info] welcome to sbt 1.10.11 (Eclipse Adoptium Java 21.0.8)
+[info] loading settings for project global-plugins from idea.sbt...
+[info] loading global plugins from /Users/ktwitchell001/.sbt/1.0/plugins
+[info] loading settings for project va_pipeline-build from assembly.sbt, plugins.sbt...
+[info] loading project definition from /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/project
+[info] loading settings for project root from build.sbt...
+[info] set current project to va_pipeline (in build file:/Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/)
+[info] running org.universalledger.foundation.va.corpus.ReportingSort --inPaths /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/synthetic_reference_corpus_v2_20261115/monthly_a/output/FY03,/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/synthetic_reference_corpus_v2_20261115/monthly_a/output/FY04,/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/synthetic_reference_corpus_v2_20261115/monthly_a/output/FY05,/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/synthetic_reference_corpus_v2_20261115/monthly_a/output/FY06,/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/synthetic_reference_corpus_v2_20261115/monthly_a/output/FY07,/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/synthetic_reference_corpus_v2_20261115/monthly_a/output/FY08,/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/synthetic_reference_corpus_v2_20261115/monthly_a/output/FY09,/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/synthetic_reference_corpus_v2_20261115/monthly_a/output/FY10,/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/synthetic_reference_corpus_v2_20261115/monthly_a/output/FY11,/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/synthetic_reference_corpus_v2_20261115/monthly_a/output/FY12,/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/synthetic_reference_corpus_v2_20261115/monthly_a/output/FY13,/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/synthetic_reference_corpus_v2_20261115/monthly_a/output/FY14,/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/synthetic_reference_corpus_v2_20261115/monthly_a/output/FY15,/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/synthetic_reference_corpus_v2_20261115/monthly_a/output/FY16 --out /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/report_sorted_v3_20261115/reboot_attempt/corpus_sorted
+RESULT reporting_sort kind=movement rows=13508560 spills=136 levels=2 bytes=4676798217 file=SortedJEFY03merged.csv
+RESULT reporting_sort kind=balance rows=482008 spills=5 levels=1 bytes=70069963 file=LDGR2003.csv
+RESULT reporting_sort kind=movement rows=12937896 spills=130 levels=2 bytes=4480402087 file=SortedJEFY04merged.csv
+RESULT reporting_sort kind=balance rows=458825 spills=5 levels=1 bytes=65952692 file=LDGR2004.csv
+RESULT reporting_sort kind=movement rows=11277546 spills=113 levels=2 bytes=3909578531 file=SortedJEFY05merged.csv
+RESULT reporting_sort kind=balance rows=451657 spills=5 levels=1 bytes=64965991 file=LDGR2005.csv
+RESULT reporting_sort kind=movement rows=15897118 spills=159 levels=2 bytes=5577125367 file=SortedJEFY06merged.csv
+RESULT reporting_sort kind=balance rows=910386 spills=10 levels=1 bytes=145779892 file=LDGR2006.csv
+RESULT reporting_sort kind=movement rows=18178698 spills=182 levels=2 bytes=6357809788 file=SortedJEFY07merged.csv
+RESULT reporting_sort kind=balance rows=930253 spills=10 levels=1 bytes=149278232 file=LDGR2007.csv
+RESULT reporting_sort kind=movement rows=21975494 spills=220 levels=2 bytes=7687504269 file=SortedJEFY08merged.csv
+RESULT reporting_sort kind=balance rows=959788 spills=10 levels=1 bytes=155009255 file=LDGR2008.csv
+RESULT reporting_sort kind=movement rows=16669674 spills=167 levels=2 bytes=5777972875 file=SortedJEFY09merged.csv
+RESULT reporting_sort kind=balance rows=430376 spills=5 levels=1 bytes=61948603 file=LDGR2009.csv
+RESULT reporting_sort kind=movement rows=20439088 spills=205 levels=2 bytes=7162967182 file=SortedJEFY10merged.csv
+RESULT reporting_sort kind=balance rows=968803 spills=10 levels=1 bytes=156294016 file=LDGR2010.csv
+RESULT reporting_sort kind=movement rows=21537358 spills=216 levels=2 bytes=7549036169 file=SortedJEFY11merged.csv
+RESULT reporting_sort kind=balance rows=1024135 spills=11 levels=1 bytes=165511498 file=LDGR2011.csv
+RESULT reporting_sort kind=movement rows=22260988 spills=223 levels=2 bytes=7803983748 file=SortedJEFY12merged.csv
+RESULT reporting_sort kind=balance rows=1031381 spills=11 levels=1 bytes=167561274 file=LDGR2012.csv
+RESULT reporting_sort kind=movement rows=21949456 spills=220 levels=2 bytes=7702152713 file=SortedJEFY13merged.csv
+RESULT reporting_sort kind=balance rows=1051533 spills=11 levels=1 bytes=171333344 file=LDGR2013.csv
+RESULT reporting_sort kind=movement rows=22995238 spills=230 levels=2 bytes=8550254724 file=SortedJEFY14merged.csv
+RESULT reporting_sort kind=balance rows=1060199 spills=11 levels=1 bytes=173074411 file=LDGR2014.csv
+RESULT reporting_sort kind=movement rows=21390438 spills=214 levels=2 bytes=7958963816 file=SortedJEFY15merged.csv
+RESULT reporting_sort kind=balance rows=1045277 spills=11 levels=1 bytes=170402980 file=LDGR2015.csv
+RESULT reporting_sort kind=movement rows=20512394 spills=206 levels=2 bytes=7627609116 file=SortedJEFY16merged.csv
+RESULT reporting_sort kind=balance rows=1045921 spills=11 levels=1 bytes=171279365 file=LDGR2016.csv
+[success] Total time: 4775 s (01:19:35.0), completed Nov 16, 2026, 1:12:15 AM
+     4784.58 real      3466.63 user       918.62 sys
+          1119121408  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              576775  page reclaims
+                  61  page faults
+                   0  swaps
+                   0  block input operations
+                   2  block output operations
+                   8  messages sent
+                   8  messages received
+                  44  signals received
+              339339  voluntary context switches
+            11664732  involuntary context switches
+      33084207460265  instructions retired
+      14770214552551  cycles elapsed
+          1101979648  peak memory footprint

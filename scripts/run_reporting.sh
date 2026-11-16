@@ -18,7 +18,7 @@ while [[ $# -gt 0 ]]; do
     --outPath) out="$value" ;;
     --inPaths) inputs="$value" ;;
     --mergeFanIn) fan_in="$value" ;;
-    --vendorMaster|--contractDimensions|--refPath|--packetVendors|--spillRows|--aggregateKeys|--maxFeatureKeys|--maxIndexedBlocks|--maxRecordBytes|--maxReferenceBytes|--maxInputs|--balanceBasis|--openingFiles|--syntheticHistories|--syntheticAsOf|--syntheticRunDate|--syntheticAssignments|--syntheticAggregateKeys)
+    --inputOrder|--vendorMaster|--contractDimensions|--refPath|--packetVendors|--spillRows|--aggregateKeys|--maxFeatureKeys|--maxIndexedBlocks|--maxRecordBytes|--maxReferenceBytes|--maxInputs|--balanceBasis|--openingFiles|--syntheticHistories|--syntheticAsOf|--syntheticRunDate|--syntheticAssignments|--syntheticAggregateKeys)
       options+=" $key $(quote "$value")" ;;
     *) echo "Unknown option: $key" >&2; exit 1 ;;
   esac

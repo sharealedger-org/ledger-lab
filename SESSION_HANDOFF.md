@@ -9,6 +9,25 @@ Earlier archives remain linked there; no session reasoning or evidence was disca
 
 ## 2026-11-15 (TRACK D) - Autonomous synthetic-reference v2 work in progress
 
+**Full queue launched 13:53:10 AZT:** revision b540e5e72f2ecf02f0e39e4966dc80be5d081044,
+driver PID 86722, exec session 56032; monitor exec session 36070 with a 20-GiB
+free-space stop, own driver group 86722. Root:
+`session-run.tmp/synthetic_reference_corpus_v2_20261115/`; monthly_a/b/c are three
+identical financial + expanded-report executions. Config/status/driver.pid and
+minute monitoring are there. Source snapshot is corrected admission inputs.
+All gates passed for first launch; 225-GiB plus first-run-allocation/reserve
+checks precede subsequent runs. Conditional all-three plan is one to two days.
+After evaluation, storage sharing preserves all paths/bytes across repeats and
+the two own admission profiles (rejected profile stays rejected).
+
+Archival supervisor runtime `archive_after_queue.sh` waits for
+THREE_EXECUTIONS_EVALUATED and then calls the verified archival/upload checker.
+Destination: OneDrive-Personal/LedgerLabOutputs-SyntheticReference-v2-20261115,
+separate from historical Gold. See archive_supervisor.pid/log and archive_console.log.
+Do not change HEAD or engine/orchestration files while this queue runs. Documentation
+updates may remain uncommitted until all executions finish. Do not send a final
+response until evaluation/upload complete or a blocker requires owner input.
+
 Latest: corrected FY2012 financial/source checks passed; 2,745,656 receipt legs
 all zero, GL byte-identical to the first financial profile. The report failed on
 valid literal quotes in canonical SJE fields at 11:30:33 AZT. ReportingOrder's
@@ -272,3 +291,90 @@ fake vendors, or silently reduce output. True GL-grain/common-key/materializatio
 alternatives need declared semantics and controls if projections are impractical.
 No full-corpus run, paper edit or Control access/disclosure. Older assignment draft
 remains excluded and unchanged.
+
+## 2026-11-15 (TRACK D) — Owner-requested post-reboot corpus continuation
+
+Owner rebooted after suspected battery throttling and requested the corpus run.
+Observed AC attached and 244 GiB free; throttling cause remains unverified.
+Inherited sequential-report implementation and interrupted verification. Cheapest
+falsifier exposed a fixture selecting legacy views because reportProfile was
+missing; added expanded profile in that test only. 18 tests across three matched
+suites pass, including external-sort/sequential versus indexed equivalence.
+Evidence: session-run.tmp/report_sorted_v3_20261115/reboot_tests.log.
+
+Detached driver PID/process group 1984 started with caffeinate and minute storage/
+process monitoring (20-GiB stop). Root:
+session-run.tmp/report_sorted_v3_20261115/reboot_attempt/.
+Launcher: parent reboot_run.sh. FY2012 sort, sequential extract/reduce and actual
+ConnectedViewsCheck gate automatic corpus sorting/reporting for FY03–FY16 using
+retained monthly_a financial outputs and original assignments. Stages are timed
+separately, fixed 1-GiB heap/four logical CPUs; source patch/untracked sorter copied
+into the attempt. Financial outputs and stopped report scratch preserved. Old
+queue/archival remain stopped. No new financial execution, completed corpus
+report, archival, or cost-point claim. Further independent executions/evaluation
+and verified archival remain outstanding after this reporting continuation.
+
+Post-reboot continuation update: FY2012 sequential report and ConnectedViewsCheck
+passed. At 2026-11-15 23:52:30 AZT driver automatically started full FY03–FY16
+ReportingSort. Owner requested keeping the turn open for periodic progress checks;
+monitoring continues. Corpus analytical controls/completion remain pending.
+
+2026-11-16 01:12:15 AZT: All fourteen report sorts passed (28 files, 273,380,488
+rows, 94,710,620,118 bytes). Driver entered CORPUS_REPORT; sequential expanded
+extract now active. Sort stage wall interval 79m45s; no cost-point claim. Monitoring
+continues with requested Terminal dashboard. Completion/controls remain pending.
+
+2026-11-16 04:46:40 AZT: corpus reporting continuation completed with rc=0 and
+CORPUS_EVALUATED. All connected checks and final census pass; permanent receipt
+in data/test_evidence/report_sorted_v3_20261116/. Owner asked status; reported
+Run 1 reporting complete, further executions/OneDrive archival not started.
+
+## 2026-11-16 (TRACK D) — Reporting evidence input to Papers 1 and 2
+
+Owner requested concrete input to the paper revision process. Created
+`docs/tds-evidence/reporting-20261116-paper-updates/README.md`, linked from the
+member editing plan. Includes paste-ready paragraphs for Papers 1/2 and a phase
+introduction sentence, exact process wall/CPU/RSS versus internal compute table,
+financial population breakdown, output/control counts and claim–evidence map.
+Separates journal/ledger input rows from distinct source transactions and report
+aggregation rows; qualifies simulated references, identity gaps, comparison scope
+and monitor coverage. No private manuscripts read/edited or external delivery.
+
+## 2026-11-16 (TRACK D) — Component outcomes and risk in Q2 corpus preparation
+
+Owner extended the self-contained corpus/AIM design to historically disconnected
+component/process systems, tentative outputs later completed by evidence, and
+forecasting/risk using projected recasts and temporary future references. Recorded
+requirements and candidate experiments in docs/PHASE_TWO_AIM_CORPUS_REQUIREMENTS.md;
+linked the canonical strategy, generation proposal, AIM and root/track status.
+Distinguishes effective/availability/forecast/outcome dates, inferred linkage from
+private generation truth, conditional engine arithmetic from calibrated risk,
+and analytical recasts from policy-required balanced reclass journals. Proposed
+source-system improvements are compared on matched underlying synthetic activity.
+Owner places later AIM work in Phase 3/Papers 5–6; potential Paper 5 engine slice
+reconciles tentative outputs with later outcomes. Data/model co-design is explicit;
+independent mechanisms and historical cutoffs remain evaluation requirements.
+Documentation only: no financial code, Python, new corpus/model execution,
+private-paper edit or Control disclosure. Phase 1 writing proceeds independently.
+
+## 2026-11-16 (TRACK D) — Source conditions precede detailed AIM design
+
+Owner clarified that we have envisioned functionality, not extensively designed
+the new AIM models/features. Updated PHASE_TWO_AIM_CORPUS_REQUIREMENTS.md,
+SYNTHETIC_CONNECTED_PROCESS_STRATEGY.md, PHASE_TWO_GENERATION_CKB_PROPOSAL.md and
+AIM/Track D status. The corpus explores conditions that might support future
+capabilities; sufficiency remains unproven. Renamed the prototype matrix to
+“Envisioned AIM functionality and possible evaluation” and qualified prior
+co-development language. Documentation only; no change to historical AIM results.
+
+## 2026-11-16 (TRACK D) — Commit and push for ARM writing handoff
+
+Owner requested a shared checkpoint so Paper 1/2 editing can proceed on ARM while
+synthetic preparation continues here. Reviewed the pending reporting implementation,
+compact financial/reporting evidence and Q2 design documents. Reporting source
+hashes match the completed execution; sorter equals the retained source. Existing
+18-test fixture evidence and full-corpus controls pass; Bash syntax and whitespace
+checks pass. Explicitly include ignored compact evidence logs so the paper
+addendum's citations survive a fresh checkout. Large runtime datasets stay local.
+ARM entry is the member editing handoff plus reporting addendum, then the separate
+members/research review protocol. No private manuscript edit or model execution.

@@ -1,0 +1,42 @@
+[info] welcome to sbt 1.10.11 (Eclipse Adoptium Java 21.0.8)
+[info] loading settings for project global-plugins from idea.sbt...
+[info] loading global plugins from /Users/ktwitchell001/.sbt/1.0/plugins
+[info] loading settings for project va_pipeline-build from assembly.sbt, plugins.sbt...
+[info] loading project definition from /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/project
+[info] loading settings for project root from build.sbt...
+[info] set current project to va_pipeline (in build file:/Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/)
+[info] running org.universalledger.foundation.va.ledger.LedgerApp --step 5v --reportProfile expanded --inPaths /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/report_sorted_v3_20261115/reboot_attempt/corpus_sorted/FY03,/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/report_sorted_v3_20261115/reboot_attempt/corpus_sorted/FY04,/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/report_sorted_v3_20261115/reboot_attempt/corpus_sorted/FY05,/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/report_sorted_v3_20261115/reboot_attempt/corpus_sorted/FY06,/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/report_sorted_v3_20261115/reboot_attempt/corpus_sorted/FY07,/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/report_sorted_v3_20261115/reboot_attempt/corpus_sorted/FY08,/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/report_sorted_v3_20261115/reboot_attempt/corpus_sorted/FY09,/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/report_sorted_v3_20261115/reboot_attempt/corpus_sorted/FY10,/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/report_sorted_v3_20261115/reboot_attempt/corpus_sorted/FY11,/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/report_sorted_v3_20261115/reboot_attempt/corpus_sorted/FY12,/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/report_sorted_v3_20261115/reboot_attempt/corpus_sorted/FY13,/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/report_sorted_v3_20261115/reboot_attempt/corpus_sorted/FY14,/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/report_sorted_v3_20261115/reboot_attempt/corpus_sorted/FY15,/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/report_sorted_v3_20261115/reboot_attempt/corpus_sorted/FY16 --outPath /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/report_sorted_v3_20261115/reboot_attempt/corpus_report.attempt --mergeFanIn 16 --inputOrder presorted --vendorMaster /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/corpus_admission_20261115_receipts_v2/inputs/VendorMaster.csv --refPath /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/corpus_admission_20261115_receipts_v2/inputs --syntheticHistories /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/corpus_admission_20261115_receipts_v2/inputs/synthetic_histories --syntheticAssignments /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/synthetic_reference_corpus_v2_20261115/monthly_a/preparation/synthetic_assignments.csv --syntheticAsOf 2012-06-30 --syntheticRunDate 2016-07-01 --aggregateKeys 50000 --syntheticAggregateKeys 10000 --spillRows 50000
+****************************************************************************************************
+                                    Ledger Lab
+                                    VA Corpus
+                  Using State of Virginia Public Financial Data
+                  step=5v - Views (CKB)  all years (14 input directories)  quarter=01
+                  started 2026-11-16T01:12:26
+****************************************************************************************************
+[CLI] step=5v  inPath=/VAdata/data/  outPath=/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/report_sorted_v3_20261115/reboot_attempt/corpus_report.attempt  year=03  quarter=01
+-----------------------------------
+RESULT step=5v profile=expanded rc=0 records_read=273447217 vendors=65716 spills=44
+****************************************************************************************************
+                                  End of Ledger Lab step
+                  step=5v - Views (CKB)  all years (14 input directories)  quarter=01
+                  status=ok  elapsed=3:29:01
+****************************************************************************************************
+[success] Total time: 12543 s (03:29:03.0), completed Nov 16, 2026, 4:41:27 AM
+    12552.42 real     11963.67 user       605.00 sys
+          1400717312  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              840980  page reclaims
+                 950  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                  10  messages sent
+                  12  messages received
+                 249  signals received
+              298749  voluntary context switches
+            11378172  involuntary context switches
+      92991944013389  instructions retired
+      42343057629735  cycles elapsed
+          1319985152  peak memory footprint

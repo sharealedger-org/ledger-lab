@@ -1,5 +1,26 @@
 # Synthetic connected-process strategy
 
+**Owner extension, 2026-11-16:** Phase 2 preparation proceeds alongside independent
+Phase 1/Papers 1–2 editing sessions. The working direction is a self-contained
+fictional corpus, calibrated using the completed reporting results, rather than
+requiring old observed and new synthetic inputs to be mixed for Phase 2 execution.
+Original VA evidence remains separate. The new
+[AIM corpus requirements](PHASE_TWO_AIM_CORPUS_REQUIREMENTS.md) add disconnected
+component/process histories, later evidence completing tentative outputs,
+conditional recasts with temporary future references, forecasting and risk.
+They also propose matched source-quality comparisons to identify useful business
+source-system changes. Owner places later AIM work in Papers 5/6, Phase 3, with a
+possible outcome-reconciliation engine addition to Paper 5. These are design
+requirements, not new implementation or model results; earlier paper mapping
+below remains historical context where it differs.
+
+**Scope clarification, 2026-11-16:** This preparation envisions possible AIM
+functionality and explores the source-data conditions that might support it.
+It has not extensively designed those models or their features; their eventual
+form remains unknown. Descriptions of data/model co-development refer at this
+stage to that functional vision influencing corpus design, not completed model
+architectures, feature specifications or demonstrated sufficiency of the data.
+
 2026-11-15. Planning record from the owner discussion following checkpoint
 `e5b78e8`. This records direction and proposed deliverables, not implemented
 capabilities or new experimental results.

@@ -1,6 +1,6 @@
 # Ledger Lab: Status (read this first)
 
-Updated 2026-11-15 (Arizona). Start here, then read the relevant track status.
+Updated 2026-11-16 (Arizona). Start here, then read the relevant track status.
 The audit register wins any evidence disagreement.
 
 ## Terms used on this path
@@ -15,6 +15,38 @@ The audit register wins any evidence disagreement.
 | Control / Gold | The separately implemented comparison system / verified reference outputs retained for comparison. |
 
 ## Current checkpoint
+
+**Q2 preparation, 2026-11-16:** The working design is a complete fictional
+Phase 2 corpus, calibrated using the reporting evidence and inspected before
+experimental freeze. [AIM corpus requirements](docs/PHASE_TWO_AIM_CORPUS_REQUIREMENTS.md)
+cover disconnected component/process records, later completion of tentative
+outputs, and future-reference forecasting/risk. Phase 1 paper edits proceed in
+separate sessions. These requirements are design_only; no new corpus/model run.
+
+**2026-11-16 04:46 AZT — completed:** Full FY03–FY16 sorted/sequential reporting
+for retained Run 1 finished with rc=0; all checks pass for 273,380,488 financial
+rows. [Receipt](data/test_evidence/report_sorted_v3_20261116/README.md).
+Further independent executions and OneDrive archival have not started. This
+supersedes the active/pending reporting entries below; no new cost-point claim.
+
+**2026-11-16 01:12 AZT:** All FY03–FY16 reporting sorts passed: 28 files,
+273,380,488 rows, 94,710,620,118 bytes. Full-corpus sequential expanded reporting
+is now active under `session-run.tmp/report_sorted_v3_20261115/reboot_attempt/`
+(driver 1984). FY2012 admission checks passed. Corpus report/reduction/controls
+remain pending; sleep-interrupted exploratory timing, not a clean replicate.
+
+**Post-reboot restart:** owner requested corpus continuation. Detached sorted/
+sequential reporting driver 1984 runs the FY2012 control gate, then automatically
+FY03–FY16 reporting from retained Run 1 financial outputs. 18 verification tests
+pass. Live root: `session-run.tmp/report_sorted_v3_20261115/reboot_attempt/`.
+Caffeinate and 20-GiB scratch stop enabled; AC attached. Completion pending;
+the historical queue below remains stopped and is not the active driver.
+
+**Running 2026-11-15 13:53 AZT:** Three admitted synthetic-reference v2 executions
+with expanded reports are active on frozen b540e5e, caffeinate and monitored
+scratch. [Track D](tracks/D-experiment/STATUS.md) has the root/status pointers and
+source-policy/quote-boundary fixes. Historical VA results remain separate. Planned
+OneDrive archival waits for successful evaluation of all three; nothing copied yet.
 
 **Autonomous synthetic-reference preparation, 2026-11-15:** The downloaded VA
 corpus results are already complete and retained for their frozen scope. Owner

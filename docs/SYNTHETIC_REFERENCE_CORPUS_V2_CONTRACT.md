@@ -1,5 +1,33 @@
 # Synthetic-reference corpus v2: execution contract
 
+## Owner topology correction: sort, then sequential reporting CKB
+
+2026-11-15: owner stopped the indexed-report approach before it completed and
+authorized changing reporting only, reusing Run 1's validated FY03–FY16 financial
+outputs. A separate declared Scala external sort orders each canonical SJE and
+actual ledger stream by literal Instrument ID with bounded chunks/fan-in. It
+preserves every record/field and ledger header, original financial files, hashes,
+source/rule lineage and zero identities. Sort materializations are analytical
+inputs, not replacement canonical state. Then one sequential CKB read consumes
+all ordered streams and produces all existing expanded views together; no index
+pre-scan and no seek-based input reader. Spill reduction remains a separate
+analytical summary process and is measured separately.
+
+Cheapest falsifier before implementation: unchanged 47-test baseline and existing
+variable-width-ID, literal-quote, actual-posting and small/large-spill fixtures.
+New fixture must prove indexed versus sorted/sequential analytical equivalence,
+all input rows/bytes/hash lineage, reject wrong order and preserve quote-bearing
+canonical fields. Run FY2012 real data through sort plus sequential report to
+measure sorting, CKB compute/output and reduction independently before updating
+the full projection. Two hours is a hypothesis, not an accepted runtime promise.
+
+Owner authorizes overlapping the next financial execution with revised reporting
+if memory/scratch admission permits. All actual timings remain recorded, labeled
+contended exploratory work rather than comparable timing replicates. Do not
+discard validated financial results or silently alter report capability. Preserve
+superseded report scratch and disable the old queue/archival supervisor before
+starting the revised topology. Final archival still follows successful evaluation.
+
 Owner authorization, 2026-11-15: implement and verify a new preparation path,
 then three local executions with expanded reporting, evaluation and verified
 OneDrive archival. This is exploratory preparation for Q2, not Q2 evaluation or

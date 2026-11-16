@@ -1,0 +1,33 @@
+[info] welcome to sbt 1.10.11 (Eclipse Adoptium Java 21.0.8)
+[info] loading settings for project global-plugins from idea.sbt...
+[info] loading global plugins from /Users/ktwitchell001/.sbt/1.0/plugins
+[info] loading settings for project va_pipeline-build from assembly.sbt, plugins.sbt...
+[info] loading project definition from /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/project
+[info] loading settings for project root from build.sbt...
+[info] set current project to va_pipeline (in build file:/Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/)
+[info] running org.universalledger.foundation.va.corpus.ConnectedViewsCheck --report /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/report_sorted_v3_20261115/reboot_attempt/fy12_report
+PASS reconciliation.csv rows=1031381
+PASS synthetic_validation.csv rows=20
+PASS synthetic_conservation.csv rows=548608
+PASS financial_rows=23292369 vendors=17144 attributed_input_rows=4930046 unattributed_input_rows=18362323
+PASS vendor_temporal_summary.csv rows=274
+PASS vendor_attribute_summary.csv rows=676
+[success] Total time: 13 s, completed Nov 15, 2026, 11:52:30 PM
+       22.11 real        36.40 user         1.84 sys
+          1020706816  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              379844  page reclaims
+                   2  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   8  messages sent
+                   8  messages received
+                  39  signals received
+                 123  voluntary context switches
+               65932  involuntary context switches
+        148343836495  instructions retired
+        124011322414  cycles elapsed
+           994582528  peak memory footprint

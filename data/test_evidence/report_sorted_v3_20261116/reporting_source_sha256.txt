@@ -1,0 +1,7 @@
+1eed6d2a71be6717e56f419ed760c4f8efa84aaa915cf4c100160e48441f9353  /Users/ktwitchell001/workspace/sharealedger/ledger-lab/scripts/run_reporting.sh
+0919b4cdfd230f371bc8bb009226355d31b3de0a43f8a1d535273de5af36d68f  /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/ledger/ReportingPass.scala
+fed0be1e27aa3cf9d71474c652b883fd240204931a917c648093a49ca04d298d  /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/ledger/ReportingSupport.scala
+72f40ce9b7f8ceb9653a629edabdb8cf5bee4761f68575c8ab70f099dffc9d4c  /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/ledger/ReportingSums.scala
+58c1c8377042154953dde6c4e0657f55bd7e211d3c39e251570c7c9905103929  /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/ledger/ReportingOrder.scala
+054fbd87930e20d14aeea56ab1f021f2775af0720daedab74c84736f5f3f3c22  /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/ledger/DatedSyntheticInputs.scala
+60a715dfbf9df604cc77dc771a768eb2145cf16287d49fa22629a6dd6cce2f14  /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/ledger/SyntheticReporting.scala

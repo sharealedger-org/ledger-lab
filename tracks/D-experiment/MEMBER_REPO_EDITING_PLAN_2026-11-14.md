@@ -1,3 +1,25 @@
+# Reporting evidence update for the 00–02 revision — 2026-11-16
+
+**ARM editing entry:** Pull the latest `ledger-lab` main, read this handoff and the
+linked reporting addendum, then follow the `members/research` review protocol
+below. The compact cited execution logs and metrics are versioned here; the large
+financial/report datasets remain local to the Intel execution host. Paper 1/2
+editing can proceed independently of the synthetic-corpus preparation. The new
+AIM functionality remains envisioned; extensive model/feature design has not
+occurred. Keep future corpus/AIM proposals separate from Phase 1 measured results.
+
+Owner requested execution-backed input for the paper revision process. Use the
+[reporting evidence addendum](../../docs/tds-evidence/reporting-20261116-paper-updates/README.md)
+for proposed Paper 1/2 passages, process measurements, output/control counts,
+claim–evidence mapping and revision qualifications. The full FY03–FY16 expanded
+report completed at 2026-11-16 04:46:40 AZT. This supersedes the current-status
+statement below that full expanded reporting remains unmeasured; retain the
+earlier failed attempt as history. Adopt a new evidence cutoff explicitly if
+including the result. Existing financial baselines and AIM scores keep their
+original populations/revisions; synthetic histories are simulated and no new
+synthetic transaction population or AI evaluation was produced. This addendum
+does not edit or circulate the private manuscripts.
+
 # Phase introduction requirement — owner update, 2026-11-15
 
 Include a contextual phase introduction before Papers 01/02, another before
