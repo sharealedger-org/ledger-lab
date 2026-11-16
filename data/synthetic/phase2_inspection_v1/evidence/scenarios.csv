@@ -1,0 +1,3 @@
+scenario,parent,issued_at,status,reference_id,reference_version,delivery_assumption,receipt_assumption,weight_source
+baseline,,2032-01-01T00:00:00Z,accepted,ORG1,1,full-by-March,full-by-March,none
+future-view,baseline,2032-02-01T09:00:00Z,temporary,ORG1,2,partial-by-April,partial-by-June,none

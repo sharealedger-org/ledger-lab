@@ -1,0 +1,12 @@
+data/synthetic/phase2_inspection_v1/evidence/modernization.csv: rows=5, columns=4, consistent_width=1
+data/synthetic/phase2_inspection_v1/evidence/openings.csv: rows=1, columns=6, consistent_width=1
+data/synthetic/phase2_inspection_v1/evidence/parties.csv: rows=7, columns=6, consistent_width=1
+data/synthetic/phase2_inspection_v1/evidence/proposals.csv: rows=3, columns=11, consistent_width=1
+data/synthetic/phase2_inspection_v1/evidence/records.csv: rows=15, columns=15, consistent_width=1
+data/synthetic/phase2_inspection_v1/evidence/references.csv: rows=2, columns=9, consistent_width=1
+data/synthetic/phase2_inspection_v1/evidence/scenarios.csv: rows=2, columns=9, consistent_width=1
+data/synthetic/phase2_inspection_v1/private/outcomes.csv: rows=5, columns=11, consistent_width=1
+data/synthetic/phase2_inspection_v1/private/relationships.csv: rows=5, columns=7, consistent_width=1
+record local_ref and supersedes references: PASS
+parties system/local_party uniqueness: PASS
+reference ID/version uniqueness: PASS

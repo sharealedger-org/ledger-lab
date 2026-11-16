@@ -1,0 +1,7 @@
+2026-11-16 07:49:43 AZT: existing reporting summary read by compiled Scala PhaseTwoCalibration.
+report_rows=1556150 selected_movement_nominal_groups=769052 annual_envelopes=28
+source_sha256=cbeae50bc0715da7bab82dbc707136e12027c5d43dbbce7b1783b70423f5015e
+all movement currencies balance; EXP/REV selected only for FY2003-2016 USD.
+No financial replay, actor linkage or official-statement tie-out.
+Table: data/synthetic/phase2_generation_v1/reported_annual_calibration.csv
+Invented share 0.01; fictional year offset +28; explicit rounded-cent residuals.

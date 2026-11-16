@@ -1,0 +1,25 @@
+[info] welcome to sbt 1.10.11 (Eclipse Adoptium Java 21.0.8)
+[info] loading settings for project global-plugins from idea.sbt...
+[info] loading global plugins from /Users/ktwitchell001/.sbt/1.0/plugins
+[info] loading settings for project va_pipeline-build from assembly.sbt, plugins.sbt...
+[info] loading project definition from /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/project
+[info] loading settings for project root from build.sbt...
+[info] set current project to va_pipeline (in build file:/Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/)
+[info] compiling 1 Scala source to /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/target/scala-2.12/classes ...
+[info] done compiling
+[info] compiling 1 Scala source to /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/target/scala-2.12/test-classes ...
+[info] done compiling
+PASS eligible_reused rows=1
+RESULT phase2_generation components=4 years=2 financial_sources=228 output=/var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/combined-corpus-1522500704732171425/out
+RESULT phase2_generation components=4 years=2 financial_sources=113 output=/var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/combined-corpus-18027848264772574167/out
+[info] CombinedCorpusSpec:
+[info] - supplier eligibility excludes personal summary and financing activity without refilling the sample
+[info] - reassigned and recipe activity conserve joint annual budgets and recur across years and funds
+[info] - bounded variable recipes preserve totals while changing sizes counts and dates
+[info] - SY labels round trip fiscal-boundary and leap-day dates without lexical date assumptions
+[info] Run completed in 4 seconds, 251 milliseconds.
+[info] Total number of tests run: 4
+[info] Suites: completed 1, aborted 0
+[info] Tests: succeeded 4, failed 0, canceled 0, ignored 0, pending 0
+[info] All tests passed.
+[success] Total time: 18 s, completed Nov 16, 2026, 10:06:41 AM

@@ -1,0 +1,6 @@
+truth_id,left_id,right_id,predicate,truth,inferability,mechanism
+T1,B101,H201,same_service_activity,true,unsupported_in_disconnected,independent_system_ids
+T2,B101,R301,same_service_activity,true,unsupported_in_disconnected,independent_system_ids
+T3,B101,F401,same_service_activity,false,ambiguous_location,independent_background
+T4,B101,B501,same_obligation,false,distinct_business_reference,similar_vendor_name
+T5,H201,H202,responsibility_successor,true,partial_role_evidence,late_staff_change

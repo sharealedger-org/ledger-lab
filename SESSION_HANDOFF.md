@@ -1,5 +1,28 @@
 # Ledger Lab Handoff
 
+## 2026-11-16 preparation checkpoint before owner reboot
+
+Latest owner sequence supersedes earlier pre-commit-run notes: preparation commit,
+owner reboot, fresh full raw transformation/posting/reporting, validation and a
+separate final-results commit; Zenodo upload script after validation. Authorized
+derived-corpus retirement completed. Raw VA, v6, historical reports/GL/control
+summaries remain; original report path resolves into
+`session-run.tmp/retained_phase1_evidence_v1`. About 345 GiB remains after prep.
+
+Wholly-only subset complete: 2,394,936 retained, 49,091 reused copies excluded.
+New Scala normalizer assigns suppliers once per paired source, rekeys known IDs,
+shifts historical clock +28 years, restores financial order. Metadata/report and
+GL/row controls implemented. 25 focused tests and unchanged 22-test baseline pass;
+actual raw-to-sequential-reporting fixture passes. Driver defaults to check-only;
+large replay NOT launched. Evidence and resume commands:
+`data/test_evidence/phase2_derived_preparation_20261116/README.md`.
+
+Conditional journal count 266,319,818; ledger/report count unknown. The old
+280,369,115 append estimate is withdrawn. V6 is addition-only evidence. After
+reboot verify code/input integrity, AC/free space and materialization admission,
+then one integrated workflow with passive storage monitoring. No Q2 model,
+Control access, Paper 1/2 editing, cloud copy or publication. Preserve failures.
+
 Start with [STATUS](STATUS.md), then [Track D](tracks/D-experiment/STATUS.md) and
 its [CCP](tracks/D-experiment/ccp/STATUS.md) or [AIM](tracks/D-experiment/aim/STATUS.md)
 workstream. This file records recent transitions, not current authority or the task list.
@@ -378,3 +401,130 @@ checks pass. Explicitly include ignored compact evidence logs so the paper
 addendum's citations survive a fresh checkout. Large runtime datasets stay local.
 ARM entry is the member editing handoff plus reporting addendum, then the separate
 members/research review protocol. No private manuscript edit or model execution.
+
+## 2026-11-16 (TRACK D) — Phase 2 specification and inspectable sample
+
+Continued from `38a41c6`; read root/Track D status, AIM requirements, linked
+generation proposal, architecture gates and verification protocol. Added
+PHASE_TWO_CORPUS_SPEC_V1.md, PHASE_TWO_CALIBRATION_MAP_V1.md and static fictional
+CSV package data/synthetic/phase2_inspection_v1/ with capability matrix and hashes.
+Checked CSV widths, internal local/supersession links, composite party/reference
+uniqueness and SHA-256 verification. No production code changed, so no engine
+baseline replay was needed. Reporting aggregates support workload calibration,
+not missing-party recovery or empirical probabilities. Source adapters, generator,
+cutoff-safe export and outcome consumers remain absent; full-scale generation
+requires subsequent fixture/coverage and disk/time admission. Next session should
+inspect this slice before implementing Scala source generation and actual adapters.
+Keep private truth excluded from any historical evidence export. No Python, Q2
+model evaluation, further reporting repeat, Control read or private manuscript edit.
+
+## 2026-11-16 (TRACK D) — Discussion pause and vendor-ID correction
+
+Owner paused execution to discuss early non-bunching requirement. Sequential
+canonical vendor IDs and adjacent-component supplier assignment do not satisfy it;
+add explicit replacement/validation gate before full generation. Owner proposes
+artificial IDs plus a map to VA vendor IDs for real actors; do not infer permission
+to mix fictional behavior with real identities. FY2031 envelope means fictional
+annual family total calibrated from FY2003 reporting, not bond maturity. Calendar
+shift and 1% scale are draft choices. Discussion continues; no new calibrated/full
+run launched. Inspect previously started admission/reporting state before resuming.
+
+## 2026-11-16 (TRACK D) — Owner clarification of Phase 1 identity scope
+
+Bounded operating/cash/simple-funding scope accepted. Refund variety optional,
+not a new gate. Owner asks to fix stable vendor identity as a separately versioned
+Phase 1 upgrade and preserve it in synthetic preparation. Audit current guarantees
+before implementation; distinguish recoding from real-identity inference and from
+fictional attribution of unresolved records. Keep original baseline/evidence and
+assess affected AIM/Phase 1 claims before any targeted re-evaluation. Discussed
+proportionate ancestry: frozen dataset/hashes suffice for rerunning that dataset;
+seed/rules/maps aid debugging and controlled regeneration, copied blocks need
+source-family lineage for future split integrity. No per-random-draw audit needed.
+Execution remains paused for discussion; no new full run or identity change.
+
+## 2026-11-16 (TRACK D) — Autonomous two-class preparation resumed
+
+Owner explicitly resumed execution; earlier pause statements are historical.
+Current execution plan covers combined 100-component pilot, 10,000-component
+two-year admission, complete SY01–SY14 generation and one new-corpus financial/
+report pass, then source/results/storage assessment and Paper 3 handoff. Phase 1
+opaque identity upgrade has its own registry/evidence (65,716 source keys, three
+special/unresolved keys preserved, bounded actual post/GL equivalence); no old
+financial replay. Variable calibrated source pilot passed actual financial/report
+controls. Combined source tests also reject unsupported supplier categories and
+missing contractual schedules. Full read-only source selection is active under
+session-run.tmp/reassigned_activity_selection_v1; its .attempt must never be
+consumed. Once complete, conservative eligibility filtering produces v2 input.
+No Python, Q2 model evaluation, old reporting repeats, retained deletion or private
+manuscript edits. Root/Track D statuses and execution plan now carry current links.
+
+Full v6 is now active at session-run.tmp/phase2_full_v6 (tool session 37392).
+Freeze main code/config/driver. Corrected cross-seed population identity passed
+15 focused tests and actual two-year pilot; FY31/FY32 GL and cross-vendor totals
+byte-identical to v5. Resource admission v5 finished at 4,301,916 KiB, 350,326
+sources / 700,652 SJE / 1,020,536 report financial rows, zero reconciliation errors.
+Full admitted with ~100 GiB free, 35.9-GiB conservative budget, 40-GiB floor.
+Monitor until full controls complete, then update Paper 3 methods/results receipt
+and actual Phase 3 disk budget. New full/model completion is not yet claimed.
+
+Full generation finished: 2,444,027 financial sources plus 280,000 responsibility
+records, 832.23 s process wall, 1,234,575,360-byte maximum RSS, ~6.9 GiB inputs.
+Both cutoff inspections passed all 475 hashes; source assessment completed.
+Full financial years are now processing sequentially. After the frozen workflow
+finishes, implement/run the read-only audit in
+docs/PHASE_TWO_REASSIGNED_AUDIT_CONTRACT.md to close reused AFO preservation and
+measure actual supplier multi-year/context recurrence. Existing checker lacks
+explicit AFO assertions. Cheap FY31 spot check passed; do not promote that to full
+closure. No main code edits until full driver ends. Then finish compact receipts,
+Paper 3 results, disk/Phase 3 admission, Track D/root status and final validation.
+
+All fourteen financial years completed successfully; whole-corpus exact financial
+lineage check is active (then reporting sort/report/control/census). Keep waiting
+on tool session 37392 or inspect STATUS; do not replay financial years. Full source
+conditions: 140,000 operating context-years, 7,475 reassigned AFO contexts,
+420,000 outcomes (344,819 observed / 25,181 partial / 17,500 canceled / 32,500
+unobserved). Registry coalesces 49,091 reused rows into 5,744 fictional suppliers.
+After full workflow, the new audit can select actual reused SJEs with the
+actor-ordered R registry and vendor-ordered canonical streams per FY, then sort
+only the 49,091 reused debits by locator. Avoid sorting all actual debits or a global
+party map. SourceLineage and financial_events share event order, enabling a bounded
+zip bridge to original selected source rows in event-ID order. Explicit AFO audit
+and recurrence counts remain to be implemented only after frozen driver ends.
+
+## 2026-11-16 (TRACK D) — Full v6 complete; owner validation next
+
+Full driver and read-only audit finished successfully. No jobs need resuming and
+no financial replay is needed. Root session-run.tmp/phase2_full_v6 contains the
+immutable inputs, actual fourteen-year outputs, complete report and audit.
+2,444,027 sources / 4,888,054 SJEs / 6,988,627 reporting financial rows; zero
+reconciliation failures. Both cutoffs verify 475 package hashes. All 49,091 reused
+original/public/posted nominal classifications match; 5,744 fictional suppliers,
+2,966 multi-year and 2,670 multi-context. Fifteen frozen source/identity tests and
+two adversarial audit tests pass; original completed source hashes still match.
+
+Permanent receipt: data/test_evidence/phase2_generation_20261116/full_v6/README.md.
+Paper 3 copy-ready methods/parameter/results addition:
+docs/tds-evidence/phase2-generation-paper3/README.md. Execution plan has a current
+completion table above the retained discussion history. Owner validation can
+motivate a scoped new version; no present integrity defect requires another full
+generation or pass. Broad model/feature design and Q2 evaluation remain future.
+
+Retained root 27.93 GiB; reusable inputs 6.83 GiB; free 73.16 GiB. Additional
+comparable same-input pass budget 26.37 GiB with 25% margin leaves 46.79 GiB free,
+above 40 GiB. No offloading/deletion needed; re-admit newly designed Phase 3
+engines/models separately. Old corpora, observed Phase 1 results and Papers 1/2
+remain intact. Phase 1 identity registry/utility prepared, not historically replayed.
+Scala remains source/financial/control substrate; Bash orchestrates; no Python.
+
+## Owner correction — combined historical plus synthetic run still required
+
+The agent interpreted “full” as the whole synthetic addition. Owner clarifies
+historical plus synthetic, over 100M records. Historical reporting input
+273,380,488 + v6 6,988,627 = 280,369,115 financial journal/ledger rows. Synthetic
+source count 2,444,027 is a different grain. Preserve v6 as successful addition-
+only evidence; do not claim integrated validation or commit readiness. Root/Track
+status, plan and Paper 3 draft now carry this correction. No new execution started.
+Combined producer/consumer, identity/calendar/provenance contracts, bounded fixture,
+storage admission/offload plan and actual reporting evaluation remain required.
+Current ~73 GiB free; prior 26.37-GiB next-pass forecast applies only to v6 and must
+not be reused for historical+synthetic. No Q2 model evaluation or deletion approval.

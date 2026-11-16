@@ -1,5 +1,30 @@
 # Verification Audit Register
 
+## 2026-11-16 resumed derived-baseline preparation
+
+Owner authorized retirement of prior derived corpora and a preparation commit
+before reboot; full raw transformation/posting/reporting follows reboot, then a
+separate validated-results commit. Cleanup is completed with exact removals,
+retained controls/report alias and free-space receipts in
+`data/test_evidence/derived_corpus_retirement_20261116`. Raw VA and v6 preserved.
+
+Integration claim under test: full historical source representation occurs once,
+eligible zero suppliers change consistently on paired SJE legs, and only wholly
+generated events are additive. Producer trace: v6 source_lineage -> original raw
+APA/PO physical rows -> new Scala source subset -> existing native TTL/ARE;
+historical native TTL/ARE -> source-locator order -> structural normalization ->
+existing financial order -> post/GL -> sorted sequential reporting. Normalizer
+current group cap two; external sort 100,000 rows/32 MiB/fan-in 16. Source and
+financial wrapper materializations are explicit; full storage admission pending.
+Cheapest selector falsifiers pass: interleaved reused copies are removed with
+new-to-original locators; an extra untracked raw record prevents publication.
+New paired-normalization/actual posting and integrated raw-to-sequential-reporting
+fixtures pass. Final focused set: 25 tests; unchanged baseline: 22 tests. A
+balanced-but-duplicated addition fails independent GL conservation as required.
+Full source subset completed with 2,394,936 retained / 49,091 excluded and per-file
+hashes. See `data/test_evidence/phase2_derived_preparation_20261116`. Full integration
+remains **partially_verified**, not a measured baseline or Q2 result.
+
 ## 2026-11-14 — completed identity/concentration audit
 
 Status: verified diagnostic counts within the declared scope; production identity
@@ -2016,3 +2041,136 @@ implemented or verified. Existing reporting completion does not establish these
 capabilities. Each implementation slice must reconstruct producers/consumers and
 run the cheapest falsifier under the architecture gates; target-runtime gap
 assessment remains required before any measured-capability claim.
+
+## 2026-11-16 Phase 2 specification and static inspection slice
+
+Status: `design_only` for generation/consumption; hand-authored fixture present.
+`docs/PHASE_TWO_CORPUS_SPEC_V1.md` and `PHASE_TWO_CALIBRATION_MAP_V1.md` separate
+reporting workload anchors from invented economics and unknown distributions.
+`data/synthetic/phase2_inspection_v1/` contains nine CSV families, byte hashes,
+structural inspection checks and explicit capability gaps. Static checks establish
+consistent widths, existing local/supersession record references and composite
+party/reference uniqueness only. No schema adapter, temporal exporter, financial
+posting, outcome reconciler, scenario engine or model was executed or verified.
+The complete full-scale corpus remains pending. Cheapest next architecture
+falsifier: trace the current pilot source producer to actual TTL consumer and
+attempt new-family header parsing before implementing generation; do not silently
+call these inspection headers canonical engine input. Existing baseline evidence
+is unchanged; no measured capability or target-runtime gap is upgraded.
+
+## 2026-11-16 Phase 2 builder entry trace
+
+Preparation claim: fictional source events can use unchanged APA/PO adapters;
+nonfinancial lifecycle headers cannot be assumed consumed by financial engines.
+Inspected ComponentPilot generation and run_component_pilot.sh -> run_full_corpus.sh
+-> run_pipeline.sh / standardizeAndSort APA/PO discovery and source schemas.
+Unchanged baseline command: `sbt -batch 'testOnly *ComponentPilotSpec *StandardizeAndSort* *ReportingOrder* *Connected*'`.
+22 tests passed across three suites (patterns matched no ReportingOrder/Connected
+suite). sbt required cache access outside workspace; rerun with approved escalation
+passed. New generation remains design_only; builder must test real orchestration
+before any implementation claim. Existing generator fixture caps are not lifted.
+
+## 2026-11-16 Phase 2 implementation/admission in progress
+
+New source preparation/inspection is `partially_verified`: five new focused tests
+and 37 existing generator/adapter/reporting tests pass (42 total). Actual old pilot
+outputs pass resumed ComponentPilotCheck; initial checker compilation failed during
+unrelated new-code editing, retained in original log/FAILED marker. New first
+fixture source/financial execution completed, but initial validator incorrectly
+required C instead of canonical O; corrected validator requires D/O. No financial
+engine change. Reviewed new 100-component execution is active; full corpus remains
+pending. Source prep uses explicit multi-level sort/merge boundaries, supplied
+registry and external uniqueness controls, not population-wide ID sets. Target
+GenevaERS gaps remain open; no prototype helper is promoted to measured support.
+Receipt: data/test_evidence/phase2_generation_20261116/README.md.
+
+## 2026-11-16 vendor-ID non-bunching requirement recalled by owner
+
+Status: `contradicted` for the draft canonical vendor-ID assignment, not for stable
+regeneration. PhaseTwoCorpus currently assigns sequential c940... IDs and pairs
+adjacent component ordinals to suppliers. Hashed process aliases do not establish
+that canonical IDs lack natural bunching. Full-generation admission is blocked on
+replacement and focused uniqueness/stability/non-bunching checks. Artificial IDs
+with a provenance-bearing real-VA crosswalk are proposed, not implemented; current
+fictional records must not be relabeled as observed real-vendor behavior.
+
+## 2026-11-16 separately versioned Phase 1 identity upgrade
+
+`partially_verified`. Full compact 65,716-key map prepared; three unresolved keys
+preserved and original/new keys unique. Baseline 22 tests and three focused identity
+upgrade tests pass; actual post/GL consumers show byte-identical GL and equivalent
+inverse-mapped ledger business fields (physical row ordinal excluded). Exact old
+keys remain distinct: no legal-party bridge or missing-identity recovery claimed.
+Historical concatenated order requires explicit pre-merge vendor sorting, followed
+by restored financial order. No full legacy replay, AIM evaluation or target GERS
+closure. Evidence data/test_evidence/phase1_identity_upgrade_20261116/.
+
+## 2026-11-16 resumed two-class source preparation
+
+`partially_verified`. The sequential vendor assignment criticized above is replaced
+in the active synthetic implementation by the separately tested opaque stable
+identity contract. A variable calibrated 100-component/two-year actual pipeline
+completed with 3,451 financial sources / 6,902 canonical SJE rows, source/period/
+lineage checks and expanded-report reconciliation. New combined fixture verifies
+joint annual budgets, recurring fictional suppliers across years/funds, signed
+reused activity and source/posting-date separation. Conservative second-stage
+eligibility and missing treasury schedule rejection pass focused tests. Full
+read-only source selection and combined admission remain pending; these tests do
+not establish economic realism, an AIM score, generalized multi-stream context CKB
+or GenevaERS runtime support. Receipts:
+data/test_evidence/phase2_generation_20261116/.
+
+## 2026-11-16 synthetic identity caller cross-seed review
+
+`contradicted` for cross-recipe-seed stability in synthetic v5 callers: the shared
+identity algorithm is deterministic, but callers supply the activity seed as the
+population identity. Within the frozen seed, tested yearly/extension stability and
+financial controls remain valid. The separate observed Phase 1 mapping does not
+use this seed. Complete the running v5 admission unchanged, then separate explicit
+population identity from stochastic seed, test cross-seed stability and validate a
+new combined pilot before full generation. V5 admission can supply conservative
+resource evidence for a bijective, same-width identity-only revision, with that
+qualification; it is not evidence of the missing cross-seed guarantee.
+
+## 2026-11-16 corrected synthetic population identity accepted at pilot scope
+
+`partially_verified`. Explicit population identity now supplies canonical and
+process-local actor keys independently of stochastic activity seed. Fifteen focused
+tests pass; actual generated vendor masters, private party crosswalks and funding
+contracts remain identical across two activity seeds while events differ. Corrected
+v6 combined pilot completed all source/financial/report controls. Actual `cmp`
+returned zero for both annual GL files and cross-vendor aggregate report versus
+v5. Evidence: data/test_evidence/phase2_generation_20261116/combined_profile_v6/.
+The earlier cross-seed contradiction is corrected for this bounded slice; no new
+full-corpus or model guarantee follows by narrative. Full v6 generation and one
+financial/report workflow are active under session-run.tmp/phase2_full_v6 with
+code/config/driver frozen, a measured storage budget and 40-GiB stage floor.
+
+## 2026-11-16 full v6 source/financial workflow verified for declared scope
+
+`verified` for this frozen Scala workload: generation, both knowledge-cutoff
+consumers, unchanged financial/posting path and expanded reporting completed
+without restart. 2,444,027 financial sources -> 4,888,054 canonical SJE rows;
+6,988,627 financial reporting rows, 10,745 groups, zero reconciliation failures.
+Each cutoff verified all 475 package hashes, exact annual envelopes, source identity
+uniqueness and explicit missing/canceled outcomes. Existing baseline and named new
+workload evidence remain distinct; no target-runtime or AI-performance promotion.
+
+After the frozen workflow, a separately declared read-only audit reconstructed
+selection -> source/public lineage -> actual nominal/direct D record. Its cheap
+spot falsifier passed, then two focused tests passed, including intentional wrong-
+fund rejection. Full audit matches all 49,091 signed amounts, translated dates and
+classifications to public evidence and actual agency/fund/object fields. Actor-
+ordered R registry and vendor-ordered canonical streams reach a bounded merge;
+only reused records are resorted by locator. No global party map or financial replay.
+5,744 invented suppliers: 2,966 multi-year, 2,670 multi-context, 19,746 memberships.
+One local Scala syntax error in the new checker was corrected before tests and
+execution; no completed financial output was regenerated or modified.
+
+Receipt data/test_evidence/phase2_generation_20261116/full_v6/ holds actual controls,
+captured audit source, input hashes, process/sort metrics and capacity assessment.
+Source/identity tests: fifteen on frozen v6 plus two new audit tests. Core source
+hash checks still pass. Original datasets/evidence remain unchanged. No Python,
+Q2 evaluation, Control read, private manuscript edit or new clean cost point.
+Generalized multi-stream context generation, future modeling/feature sufficiency,
+economic realism and GERS-001/002/003 remain outside this verified scope.

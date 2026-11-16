@@ -1,0 +1,3 @@
+check,expected,actual,status
+source_pairs_balanced_lineage_date_rule,2444027,2444027,PASS
+sje_rows,4888054,4888054,PASS

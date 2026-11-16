@@ -1,0 +1,16 @@
+record_id,system,local_party,kind,effective_date,available_at,local_ref,business_ref,proposal_ref,supersedes,amount_cents,currency,quantity,unit,status
+B101,buy,B17,commitment,2032-01-20,2032-01-20T12:00:00Z,,ORDER77,P41,,1000000,USD,,,accepted
+H201,staff,H9,responsibility,2032-01-22,2032-01-25T12:00:00Z,,SERVICE-E,,,,,,,active
+R301,receipts,P6,expected_receipt,2032-01-25,2032-01-27T12:00:00Z,,GRANT9,,,1200000,USD,,,expected
+F401,facilities,F81,commitment,2032-01-23,2032-01-23T12:00:00Z,,REPAIR3,P52,,300000,USD,,,accepted
+B501,buy,B28,commitment,2032-01-24,2032-01-24T12:00:00Z,,ORDER88,P63,,200000,USD,,,accepted
+B102,buy,B17,delivery,2032-03-20,2032-04-05T12:00:00Z,B101,ORDER77,P41,,,,60,service_units,partial
+B103,buy,B17,invoice,2032-03-25,2032-04-06T12:00:00Z,B101,ORDER77,P41,,700000,USD,,,issued
+B104,buy,B17,invoice,2032-03-25,2032-04-12T12:00:00Z,B101,ORDER77,P41,B103,650000,USD,,,corrected
+B105,buy,B17,payment,2032-04-20,2032-04-21T12:00:00Z,B104,ORDER77,P41,,400000,USD,,,partial
+B106,buy,B17,payment,2032-05-20,2032-05-21T12:00:00Z,B104,ORDER77,P41,,250000,USD,,,final
+H202,staff,H12,responsibility,2032-03-01,2032-04-10T12:00:00Z,,SERVICE-E,,,,,,,active
+R302,receipts,P6,receipt,2032-05-31,2032-06-02T12:00:00Z,R301,GRANT9,,,900000,USD,,,partial
+F402,facilities,F81,cancellation,2032-03-10,2032-03-11T12:00:00Z,F401,REPAIR3,P52,,0,USD,,,canceled
+R303,receipts,A3,receipt,2032-02-15,2032-02-16T12:00:00Z,,,,,100000,USD,,,agency_summary
+B601,buy,,payment,2032-02-18,2032-02-19T12:00:00Z,,,,,50000,USD,,,identity_missing

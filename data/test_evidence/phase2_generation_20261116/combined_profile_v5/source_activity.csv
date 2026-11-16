@@ -1,0 +1,9 @@
+synthetic_year,generation_class,family,events,net_cents,negative_events,zero_events,min_cents,max_cents,arrival_lag_0_7_days,arrival_lag_8_30_days,arrival_lag_over_30_days
+SY01,reassigned_activity,EXP,3847,8748704464,112,0,-28017705,5549968033,98,1785,1964
+SY01,wholly_generated,EXP,967,19172155903,0,0,66901,583731073,838,124,5
+SY01,wholly_generated,PO,395,30000000,0,0,1147,924395,336,55,4
+SY01,wholly_generated,REV,266,26324146598,0,0,495035,1368332229,239,26,1
+SY02,reassigned_activity,EXP,3824,2670298630,113,0,-6306000,2024106198,103,1768,1953
+SY02,wholly_generated,EXP,1118,26255284659,0,0,42135,927944756,937,167,14
+SY02,wholly_generated,PO,409,30000000,0,0,489,702267,346,61,2
+SY02,wholly_generated,REV,321,28826467435,0,0,553552,2417113018,268,49,4

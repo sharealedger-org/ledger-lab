@@ -1,0 +1,3 @@
+reference_id,version,scenario,scope,parent_scope,effective_from,effective_to,issued_at,available_at
+ORG1,1,baseline,service-east,community,2032-01-01,2033-01-01,2032-01-01T00:00:00Z,2032-01-01T00:00:00Z
+ORG1,2,future-view,service-east,infrastructure,2032-04-01,2033-01-01,2032-02-01T09:00:00Z,2032-02-01T09:00:00Z

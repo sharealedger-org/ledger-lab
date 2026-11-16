@@ -1,0 +1,4 @@
+proposal_id,version,issued_at,effective_date,available_at,target_date,scope,currency,expected_cost_cents,expected_receipt_cents,assumptions
+P41,1,2032-01-10T09:00:00Z,2032-01-10,2032-01-10T09:00:00Z,2032-03-31,service-east,USD,1000000,1200000,full-delivery-and-receipt-by-target
+P52,1,2032-01-12T09:00:00Z,2032-01-12,2032-01-12T09:00:00Z,2032-04-30,facility-west,USD,300000,0,repair-completed-by-target
+P63,1,2032-01-15T09:00:00Z,2032-01-15,2032-01-15T09:00:00Z,2032-06-30,supply-north,USD,200000,0,delivery-observed-by-target

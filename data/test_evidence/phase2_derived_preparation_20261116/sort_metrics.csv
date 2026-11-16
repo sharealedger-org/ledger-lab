@@ -1,0 +1,2 @@
+partition,rows,input_bytes,output_bytes,spills,merge_levels,fan_in,chunk_rows,cumulative_sort_bytes,elapsed_seconds,peak_buffer_bytes,buffer_byte_cap
+source_descriptors_sorted.csv,2444027,785580366,785580366,25,2,16,100000,2356741098,17.767871262,33525734,33554432

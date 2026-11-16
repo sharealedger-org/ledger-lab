@@ -42,6 +42,92 @@ in AGENTS and the contributor guide. Runtime checkpoints and next gates are unch
 
 ## Current plans and evidence
 
+**Latest owner sequence:** Complete integration preparation and bounded checks,
+make a preparation commit, wait for owner reboot, then run fresh raw
+transformation/posting/reporting. Validate/iterate as needed and commit accepted
+results separately; prepare a Zenodo upload script after validation. See
+[derived baseline contract](../../docs/PHASE_TWO_DERIVED_BASELINE_CONTRACT.md).
+The earlier pre-commit-run requirement and 280,369,115-row simple append are
+superseded. Exclude 49,091 reused financial copies from the additive source set;
+apply fictional attribution to eligible original historical records. Conditional
+journal count 266,319,818; ledger/report counts remain unknown.
+
+Authorized retirement of prior derived corpora completed. Original raw VA data,
+v6 package, historical report tables, GL/control summaries and preparation
+snapshots are retained in their declared locations. Historical report path is
+preserved by symlink; about 345 GiB free after preparation. No cloud movement.
+Wholly-source subset completed: 2,394,936 retained and 49,091 copies excluded.
+Historical SJE normalizer, metadata, financial controls and check-default runner
+implemented; 25 focused tests and unchanged 22-test baseline pass, including the
+actual raw-to-sequential-reporting fixture. See the
+[preparation receipt](../../data/test_evidence/phase2_derived_preparation_20261116/README.md).
+Full admission/validation awaits reboot. No large run before reboot,
+Q2 model work, Control read or Paper 1/2 edit.
+
+**Owner scope correction:** The intended pre-commit full validation combines the
+historical corpus and synthetic addition. Completed v6 is addition-only validation,
+not the requested combined run. Expected retained reporting-input sum:
+273,380,488 + 6,988,627 = 280,369,115 journal/ledger rows. Preserve both completed
+receipts; do not relabel either as combined evidence. Integration must declare
+population/source namespaces, identity upgrade application, historical versus SY
+calendar semantics and reused-activity provenance before the run. Re-admit storage
+for the combined workload; the v6-only 26.37-GiB forecast does not cover it. No
+commit or additional execution yet; combined validation and paper interpretation
+remain outstanding. This supersedes the broad readiness claim below.
+
+**Completed Phase 2 v6 — ready for owner validation:**
+[Full receipt](../../data/test_evidence/phase2_generation_20261116/full_v6/README.md)
+and [Paper 3 addition](../../docs/tds-evidence/phase2-generation-paper3/README.md).
+10,000 components/SY01–SY14; 2,444,027 financial sources, 280,000 responsibility
+records, 4,888,054 SJEs and 6,988,627 reporting financial rows. One uninterrupted
+financial/report workflow; all source/hash/history/conservation/reconciliation
+controls pass. Original/public/actual nominal classifications match for all 49,091
+reused expenses. Their 5,744 invented suppliers include 2,966 multi-year and 2,670
+multi-AFO suppliers. Fifteen frozen source/identity tests and two adversarial
+read-only audit tests pass. Actor IDs are independent of activity seed; no natural
+ordering fields are encoded. Broader AIM inference/forecasting sufficiency and
+target GenevaERS runtime gaps remain open.
+
+Retained root 27.93 GiB, reusable inputs 6.83 GiB, free space 73.16 GiB. A
+comparable same-input next pass budgets 26.37 GiB with 25% margin and leaves
+46.79 GiB free, above 40 GiB. No offload/deletion needed; new Phase 3 engine/model
+scopes need their own admission. Original Phase 1 results remain untouched; its
+separate identity registry/utility has not been applied as a full historical replay.
+No Q2 evaluation, Control read or private manuscript editing. The checkpoints
+below retain chronology; their active/pending statements are superseded here.
+
+**Full Phase 2 v6 active:** `session-run.tmp/phase2_full_v6` runs frozen generation
+for 10,000 components/SY01–SY14, then one actual financial/report workflow and
+source/storage assessment. Corrected v6 pilot passed; its FY31/FY32 GL and
+cross-vendor aggregate report are byte-identical to v5. Population identity is now
+independent of recipe seed (15 focused tests pass). Completed v5 scale admission:
+350,326 sources, 700,652 SJE rows, 1,020,536 reporting financial rows, zero
+reconciliation failures, 4,301,916 KiB retained. Full admitted at ~100 GiB free
+with a conservative 35.9-GiB run budget and 40-GiB stage floor. Preserve frozen
+main code/config/driver while active. Full/Phase 3 acceptance remain pending;
+no Q2 model, historical replay, archival or deletion.
+
+**Active Phase 2 preparation, 2026-11-16:** Owner resumed autonomous execution.
+The [current plan](../../docs/PHASE_TWO_EXECUTION_PLAN.md#active-revision--autonomous-execution-resumed)
+supersedes discussion pauses below. Phase 1 opaque identity registry: 65,716 old
+keys, unique mapped identities, three special/unresolved keys preserved; actual
+bounded post/GL equivalence tested, no historical replay. Variable calibrated
+100-component/two-year generation and actual posting/reporting passed. Thirteen
+focused tests pass. Read-only bounded zero-vendor activity selection is finishing;
+combined two-class admission and full 14-year run remain pending. Keep the original
+corpus and failed/interrupted prototype receipts. Phase 3 disk reserve is a gate;
+no retained corpus deletion, forecasting model or Q2 evaluation is authorized here.
+
+**Combined pilot accepted:** `session-run.tmp/phase2_combined_profile_v5` completed
+without orchestration interruption: 100 components/SY01–SY02, 11,147 financial
+sources, 22,294 SJE legs, actual posting/report reconciliation and cutoff/source
+controls. Allocated root 251,860 KiB. Initial 14-year selection completed read-only;
+conservative v2 retains 49,091 expenses with signed amounts and source periods.
+The 10,000-component/two-year combined admission is active under
+`session-run.tmp/phase2_combined_admission_v5`; full generation awaits its measured
+storage/financial/report gates. Permanent compact receipt is in the Phase 2
+evidence directory; no historical financial replay.
+
 **Post-reboot restart, owner requested:** 18 verification tests pass across three
 matched suites, including indexed versus sorted/sequential report equivalence.
 Corrected the new fixture's missing `reportProfile=expanded` (previously selected
@@ -366,3 +452,134 @@ corpus controls pass, Bash syntax/whitespace checks pass. Compact cited logs are
 included despite the generic log ignore. ARM can follow MEMBER_REPO_EDITING_PLAN
 and the reporting addendum without copying the large execution datasets. Synthetic
 preparation remains the local next work; new AIM model/feature design is still open.
+
+**Phase 2 inspection preparation from `38a41c6`, 2026-11-16:** Added
+[corpus specification v1](../../docs/PHASE_TWO_CORPUS_SPEC_V1.md),
+[calibration map v1](../../docs/PHASE_TWO_CALIBRATION_MAP_V1.md) and
+[self-contained inspection package](../../data/synthetic/phase2_inspection_v1/README.md).
+The hand-authored sample separates disconnected process evidence, proposals,
+late corrections/outcomes, optional modernization fields and private truth; includes
+cancellation, censoring and future scenario references. Structural CSV widths,
+record references, composite party/reference uniqueness and CSV hashes checked.
+This is an inspectable initial slice, not a full-scale generated corpus. Aggregate
+reporting anchors calibrate workload planning; unmeasured economic distributions
+remain unknown and sample amounts are illustrative. Generator, adapters, cutoff
+exporter and outcome consumer remain design_only/not_implemented. Next: inspect
+contracts and trace actual Scala producer/consumers before the generator fixture;
+then complete coverage and resource admission before full scale. No Python,
+financial runtime change, Q2 model evaluation, reporting repeat, Control access,
+publication or Paper 1/2 edit. ARM writing remains independent.
+
+**Autonomous Phase 2 execution started, 2026-11-16:** Owner authorized the plan
+through full fictional generation, one financial pass, evaluation and justified
+versioned iteration, with Paper 3 methodology as the writing outcome. Storage gates
+must preserve Phase 3 capacity; no retained corpus deletion without explicit
+approval. See docs/PHASE_TWO_EXECUTION_PLAN.md and
+[data receipt](../../data/test_evidence/phase2_generation_20261116/README.md).
+42 focused tests pass; unchanged pilot financial/reporting outputs pass the resumed
+checker. Initial new fixture exposed/fixed a D/C-versus-canonical-D/O validator
+assumption; financial engine unchanged and failed evidence retained. Reviewed
+100-component/two-year driver active at session-run.tmp/phase2_profile_v2;
+full generation/financial run not yet admitted. New Scala source preparation,
+external sorting and cutoff/lineage consumers exist; measured financial path
+remains existing Scala TTL/ARE/post/reporting. No Q2 model work, Control read,
+private manuscript edit, archived-data deletion or cloud copy.
+
+**Owner discussion pause, 2026-11-16:** Owner recalls the early no-natural-bunching
+vendor-ID requirement. Current sequential canonical IDs/adjacent-component vendor
+assignment fail that requirement despite stable hashed process aliases. Added a
+mandatory correction/validation gate to PHASE_TWO_EXECUTION_PLAN.md before full
+freeze. Owner suggests artificial IDs with a separate VA crosswalk for real
+vendors; mixed-population inclusion remains under discussion, not implemented.
+Clarified the proposed FY2031 envelope as an annual fictional activity total,
+using shifted historical reporting calibration, not a bond maturity or forecast.
+No calibrated fixture/full corpus should launch while discussion is paused;
+inspect previously started admission/reporting state before any later resume.
+
+**Synthetic year naming, 2026-11-16:** Owner favors an immediately recognizable
+synthetic calendar for results review. Plan now uses short `SY01`–`SY14` display
+labels. ISO backing dates, fiscal/month conventions and leap-year behavior require
+an explicit versioned mapping before implementation; labels do not indicate AD 1
+or an actual future forecast. Discussion pause remains in effect.
+
+**Finance/treasury direction, 2026-11-16 discussion:** Owner proposes these as
+useful component domains. Execution plan now records candidate cash/liquidity,
+debt/funding, investment/counterparty and financial-planning source workflows.
+These require distinct business recipes, role namespaces and temporal/outcome
+contracts; no treasury engine or AIM model is implemented by the plan. Initial
+slice selection remains discussion work. Execution pause remains in effect.
+
+**Long-term treasury inquiry, 2026-11-16 discussion:** Owner adds future funding
+needs and twenty-year proposed-portfolio risk under expense growth and existing
+bond obligations. Plan distinguishes historical and forward horizons (illustratively
+SY14 cutoff -> SY34 target), contractual liabilities, proposed assets, funding
+assumptions and growth conventions. Conditional funding calculations and
+probabilistic risk claims remain separate. No new projection/model/financial engine
+execution; discussion pause remains in effect.
+
+**CKB/laptop scope discussion, 2026-11-16:** Owner asks to structure expanded
+preparation around bounded common-key processes and necessary resorts. Added
+[proposed topology](../../docs/PHASE_TWO_CKB_GENERATION_TOPOLOGY.md); current recipe
+loop is not promoted to a generalized context CKB. Completed two-year admission
+covers 1,440,072 financial rows, 504,072 largest group and zero report failures;
+generation/extract process peaks ~1.06 GiB RSS, retained root ~4.8 GiB. Reporting
+completed after the documented launcher interruption/resume. These support tested
+prototype feasibility, not full treasury/model capacity or a cost point. Identifier,
+calendar, recipe diversity and new actual-consumer gates precede full generation.
+No new execution while discussion remains paused.
+
+**Zero-vendor CKB refinement, 2026-11-16:** Owner proposes agency or full agency/
+fund/object breaks for large unresolved populations and recurring suppliers across
+years. Topology plan now separates pre-assignment context processing from post-
+assignment vendor/date CKB, with persistent supplier registry/shared memberships,
+streamed large groups and explicit block-reuse lineage. Candidate key needs actual
+grain/cardinality profiling; no supplier assignment or new run implemented by this
+discussion. Original VA data and summary-grain receipts remain unchanged.
+
+**Owner scope/identity clarification, 2026-11-16:** Bounded component/treasury scope
+accepted; refunds/reversals optional if inexpensive. Stable vendor identity is an
+explicit Phase 1 upgrade to audit/version separately and then preserve in synthetic
+work. Distinguish ID recoding, supported real-identity resolution and fictional
+zero-record attribution; old baseline remains retained. Plan calls for targeted
+affected-result assessment, not automatic reporting repeats. Provenance should be
+proportionate: stored bytes/hashes, recipe/seed/map versions, actual reused-block
+mappings and financial lineage; no exhaustive random-draw log. Discussion pause
+remains; no identity upgrade or new full run implemented by this note.
+
+**Separate synthetic actors, 2026-11-16 owner clarification:** Initial corpus should
+use its own stable actor identities and process/event links for traceability;
+synthetic activity need not be mixed into existing VA vendors. This supersedes
+candidate mixed-actor plans. Phase 1 identity upgrade stays separate; any supported
+VA crosswalk belongs there, not as a required synthetic-vendor correspondence.
+Aggregate/pattern calibration can inform fictional activity without transferring
+actor identity. Plan updated; discussion pause remains in effect.
+
+**Owner resumes autonomous execution, 2026-11-16:** Two synthetic classes accepted:
+reassigned zero-vendor activity and wholly generated actors/activity. Both use stable
+non-bunched identities; real actors receive no synthetic additions. Active plan
+revision supersedes discussion pauses. Start with separately versioned Phase 1
+identity audit/upgrade, then CKB-oriented reassignment and bounded operating/cash/
+simple-funding recipes, SY labels, sample controls, full admission/execution and
+Paper 3 evidence. No Q2 modeling or automatic old reporting repeats. No new full
+corpus launched at resumption.
+
+**Phase 1 identity upgrade bounded evidence, 2026-11-16:** Full compact mapping of
+65,716 existing reporting keys unique, three special/unresolved keys preserved.
+22 baseline and three focused tests pass, including actual post/GL consumption,
+unchanged GL and inverse-mapped ledger business equivalence. Existing groupings
+preserved without party inference. Explicit vendor-order sort precedes mapping;
+financial sort restored afterward. [Receipt](../../data/test_evidence/phase1_identity_upgrade_20261116/README.md).
+Full historical replay and AIM comparisons not performed. Shared stable-ID contract
+now ready to integrate into the separate two-class synthetic preparation.
+
+**Resumed preparation progress, 2026-11-16:** Shared stable actor IDs, SY source
+calendar and bounded variable recipes pass unit/control checks. Actual calibrated
+100-component/two-year variable sample completes financial/reporting execution:
+3,451 financial sources / 6,902 SJE rows, exact annual controls, dates/posting periods,
+source/rule lineage and report reconciliation pass. Receipt subset in
+ data/test_evidence/phase2_generation_20261116/variable_profile_v4/.
+Read-only bottom-hash source selection is active across retained Run 1 FY03–16,
+5,000 eligible zero-vendor expense records/year, bounded sample state; original
+financial outputs unchanged. Mixed-class unit tests cover recurring suppliers
+across years/funds and joint budget conservation. Actual mixed-class/full execution
+still pending frozen selection/admission. Q2/portfolio modeling remains unopened.

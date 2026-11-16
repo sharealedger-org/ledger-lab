@@ -1,0 +1,8 @@
+system,local_party,role,name,location,available_at
+buy,B17,vendor,Copper Lantern Services,Suite 4,2032-01-01T00:00:00Z
+staff,H9,employee,Mira Vale,Suite 4,2032-01-01T00:00:00Z
+receipts,P6,revenue_party,North Orchard Trust,West Annex,2032-01-01T00:00:00Z
+facilities,F81,vendor,Quiet Harbor Repairs,Suite 4,2032-01-01T00:00:00Z
+buy,B28,vendor,Copper Lantern Supply,East Annex,2032-01-01T00:00:00Z
+staff,H12,employee,Oren Lake,North Office,2032-01-01T00:00:00Z
+receipts,A3,agency,Fictional Community Office,North Office,2032-01-01T00:00:00Z

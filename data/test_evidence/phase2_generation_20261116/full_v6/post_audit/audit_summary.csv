@@ -1,0 +1,10 @@
+metric,value,status
+selected_originals,49091,PASS
+public_original_matches,49091,PASS
+posted_classification_matches,49091,PASS
+actual_sje_rows_read,4888054,PASS
+reused_sje_legs,98182,PASS
+fictional_reused_suppliers,5744,PASS
+suppliers_in_multiple_years,2966,PASS
+suppliers_in_multiple_afo_contexts,2670,PASS
+supplier_context_memberships,19746,PASS

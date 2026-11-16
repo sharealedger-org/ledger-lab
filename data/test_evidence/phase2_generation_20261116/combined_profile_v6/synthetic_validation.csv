@@ -1,0 +1,21 @@
+case_id,family,expected,actual,status
+before_baseline,lookup_cases,NOT_FOUND|,NOT_FOUND|,PASS
+attribute_before,lookup_cases,REF-agency-SIM_A405-v1|SIMULATED ADMINISTRATIVE AGENCY,REF-agency-SIM_A405-v1|SIMULATED ADMINISTRATIVE AGENCY,PASS
+attribute_on,lookup_cases,REF-agency-SIM_A405-v2|SIMULATED SERVICE AGENCY,REF-agency-SIM_A405-v2|SIMULATED SERVICE AGENCY,PASS
+attribute_after,lookup_cases,REF-agency-SIM_A405-v2|SIMULATED SERVICE AGENCY,REF-agency-SIM_A405-v2|SIMULATED SERVICE AGENCY,PASS
+event_date_switch,lookup_cases,REF-agency-SIM_A405-v1|SIMULATED ADMINISTRATIVE AGENCY,REF-agency-SIM_A405-v1|SIMULATED ADMINISTRATIVE AGENCY,PASS
+supplied_run_date,lookup_cases,REF-agency-SIM_A405-v2|SIMULATED SERVICE AGENCY,REF-agency-SIM_A405-v2|SIMULATED SERVICE AGENCY,PASS
+sal_change,lookup_cases,SAL-SIM_I000001-v2|HIGH,SAL-SIM_I000001-v2|HIGH,PASS
+party_change,lookup_cases,PARTY-SIM_P000001-v2|PUBLIC,PARTY-SIM_P000001-v2|PUBLIC,PASS
+car_before,lookup_cases,CAR-SIM_I000001-OWNER-v1|SIM_P000001,CAR-SIM_I000001-OWNER-v1|SIM_P000001,PASS
+car_on,lookup_cases,CAR-SIM_I000001-OWNER-v2|SIM_P000002,CAR-SIM_I000001-OWNER-v2|SIM_P000002,PASS
+alias_many_to_one,lookup_cases,ALIAS-405-GENERAL-v1|SIM_F405,ALIAS-405-GENERAL-v1|SIM_F405,PASS
+alias_context,lookup_cases,ALIAS-748-FUND-v1|SIM_F748,ALIAS-748-FUND-v1|SIM_F748,PASS
+alias_dated_before,lookup_cases,ALIAS-405-FUND-v1|SIM_F405,ALIAS-405-FUND-v1|SIM_F405,PASS
+alias_dated_on,lookup_cases,ALIAS-405-FUND-v2|SIM_F405B,ALIAS-405-FUND-v2|SIM_F405B,PASS
+leaf_before,hierarchy_cases,agency:SIM_A405>secretarial_area:SIM_S01>root:SIM_ROOT,agency:SIM_A405>secretarial_area:SIM_S01>root:SIM_ROOT,PASS
+leaf_on,hierarchy_cases,agency:SIM_A405>secretarial_area:SIM_S02>root:SIM_ROOT,agency:SIM_A405>secretarial_area:SIM_S02>root:SIM_ROOT,PASS
+leaf_after,hierarchy_cases,agency:SIM_A405>secretarial_area:SIM_S02>root:SIM_ROOT,agency:SIM_A405>secretarial_area:SIM_S02>root:SIM_ROOT,PASS
+ancestor_before,hierarchy_cases,service_area:SIM_SA71501>program:SIM_P715>function:SIM_FN7>root:SIM_ROOT,service_area:SIM_SA71501>program:SIM_P715>function:SIM_FN7>root:SIM_ROOT,PASS
+ancestor_on,hierarchy_cases,service_area:SIM_SA71501>program:SIM_P715>function:SIM_FN3>root:SIM_ROOT,service_area:SIM_SA71501>program:SIM_P715>function:SIM_FN3>root:SIM_ROOT,PASS
+quiet_instrument,hierarchy_cases,instrument:SIM_I000002>agency:SIM_A748>agency:SIM_A793>secretarial_area:SIM_S01>root:SIM_ROOT,instrument:SIM_I000002>agency:SIM_A748>agency:SIM_A793>secretarial_area:SIM_S01>root:SIM_ROOT,PASS

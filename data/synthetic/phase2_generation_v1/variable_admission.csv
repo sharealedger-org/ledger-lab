@@ -1,0 +1,10 @@
+key,value
+seed,phase2-v1
+population,phase2-fictional-population-v1
+components,10000
+firstYear,2031
+lastYear,2032
+expenseCents,1000000
+receiptCents,1200000
+commitmentCents,300000
+variability,component-variability-v2

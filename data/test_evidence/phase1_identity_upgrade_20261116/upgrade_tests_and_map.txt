@@ -1,0 +1,86 @@
+[info] welcome to sbt 1.10.11 (Eclipse Adoptium Java 21.0.8)
+[info] loading settings for project global-plugins from idea.sbt...
+[info] loading global plugins from /Users/ktwitchell001/.sbt/1.0/plugins
+[info] loading settings for project va_pipeline-build from assembly.sbt, plugins.sbt...
+[info] loading project definition from /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/project
+[info] loading settings for project root from build.sbt...
+[info] set current project to va_pipeline (in build file:/Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/)
+[info] compiling 1 Scala source to /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/target/scala-2.12/classes ...
+[info] done compiling
+PASS identity_map keys=3 unresolved=1 existing_grouping_preserved=true
+PASS identity_application rows=6 file=/var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/identity-upgrade-5846942617436576798/fresh.attempt/SortedJEFY14merged.csv posting_not_yet_claimed=true
+****************************************************************************************************
+                                Post Module
+Start Time: Mon Nov 16 09:19:21 MST 2026
+****************************************************************************************************
+processing file: /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/identity-upgrade-5846942617436576798/old/SortedJEFY14merged.csv
+No existing ledger file.  File will be created: LDGR2014.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          6
+Ledger Records Read:           0
+Ledger Records Written:        6
+Process End Time:      Mon Nov 16 09:19:21 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2014 rc=0 records_read=6 records_written=6 elapsed_s=1 input_bytes=0 output_bytes=1283
+RESOURCE step=3 year=2014 jvm_heap_bytes=1073741824
+****************************************************************************************************
+                         Step 20 — CCP1 GL Post (GLPost)
+Start Time: Mon Nov 16 09:19:21 MST 2026
+****************************************************************************************************
+  SortedJE files : SortedJEFY14merged.csv
+  Output file    : /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/identity-upgrade-5846942617436576798/old/GL2014.csv
+  GL balance rows written : 2
+  Journal rows read       : 6
+  Output                  : /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/identity-upgrade-5846942617436576798/old/GL2014.csv
+STATUS: COMPLETE
+RESULT step=20 year=14 rc=0 records_read=6 records_written=2 elapsed_s=1 input_bytes=1127 output_bytes=142 net_amount=0.00
+RESOURCE step=20 year=14 jvm_heap_bytes=1073741824
+****************************************************************************************************
+Process End Time: Mon Nov 16 09:19:21 MST 2026
+****************************************************************************************************
+****************************************************************************************************
+                                Post Module
+Start Time: Mon Nov 16 09:19:21 MST 2026
+****************************************************************************************************
+processing file: /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/identity-upgrade-5846942617436576798/fresh/SortedJEFY14merged.csv
+No existing ledger file.  File will be created: LDGR2014.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          6
+Ledger Records Read:           0
+Ledger Records Written:        6
+Process End Time:      Mon Nov 16 09:19:21 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2014 rc=0 records_read=6 records_written=6 elapsed_s=1 input_bytes=0 output_bytes=1391
+RESOURCE step=3 year=2014 jvm_heap_bytes=1073741824
+****************************************************************************************************
+                         Step 20 — CCP1 GL Post (GLPost)
+Start Time: Mon Nov 16 09:19:21 MST 2026
+****************************************************************************************************
+  SortedJE files : SortedJEFY14merged.csv
+  Output file    : /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/identity-upgrade-5846942617436576798/fresh/GL2014.csv
+  GL balance rows written : 2
+  Journal rows read       : 6
+  Output                  : /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/identity-upgrade-5846942617436576798/fresh/GL2014.csv
+STATUS: COMPLETE
+RESULT step=20 year=14 rc=0 records_read=6 records_written=2 elapsed_s=1 input_bytes=1235 output_bytes=142 net_amount=0.00
+RESOURCE step=20 year=14 jvm_heap_bytes=1073741824
+****************************************************************************************************
+Process End Time: Mon Nov 16 09:19:21 MST 2026
+****************************************************************************************************
+[info] PhaseOneIdentityUpgradeSpec:
+[info] - opaque IDs preserve exact source grouping, sentinels and extension stability without numeric bunching
+[info] - registry rejects duplicate old identities and does not claim a completed map
+[info] - actual post and GL consume rekeyed canonical SJE with unchanged financial projection
+[info] Run completed in 1 second, 64 milliseconds.
+[info] Total number of tests run: 3
+[info] Suites: completed 1, aborted 0
+[info] Tests: succeeded 3, failed 0, canceled 0, ignored 0, pending 0
+[info] All tests passed.
+[success] Total time: 8 s, completed Nov 16, 2026, 9:19:21 AM
+[info] running org.universalledger.foundation.va.corpus.PhaseOneIdentityUpgrade --coverage /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/report_sorted_v3_20261115/reboot_attempt/corpus_report/synthetic_vendor_coverage.csv --out /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/phase1_identity_upgrade_v1 --chunk 10000
+PASS identity_map keys=65716 unresolved=3 existing_grouping_preserved=true
+[success] Total time: 6 s, completed Nov 16, 2026, 9:19:27 AM

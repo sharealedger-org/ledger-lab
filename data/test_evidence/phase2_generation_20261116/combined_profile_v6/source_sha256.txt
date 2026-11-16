@@ -1,0 +1,10 @@
+ffaaf426db8b2c90efef89f9da388d22b66249ee8fb09643b91bcaec5931a033  /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/corpus/PhaseTwoCalibration.scala
+4c39baeaa21eaa121730ecc973782a1c9fdedb66d02e2b9f55012e07ebb0f302  /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/corpus/PhaseTwoCheck.scala
+eee8c025f57b69e29c60aeda2b9142e505bdc01345f898a1854d34fb0eff4b99  /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/corpus/PhaseTwoCorpus.scala
+172a8c907535eb28a0ac847541bd2e5e78bfd70fb2e39de816cfab24b89bbb98  /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/corpus/PhaseTwoLifecycle.scala
+7dd039c3aa26c2a1e18390f1d887f5bddb9f25bdd3c53fe76d823f06042e43ac  /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/corpus/PhaseTwoSchemas.scala
+641e7d5bb1b5f36af82602e420d5639b3381d07a94f5fb8c35faed95e0581c7b  /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/corpus/CorpusExternalSort.scala
+8fcbb99c877329e4cbacc9ab51ef8d57c68b53f2210383b6c4813edc67d20087  /Users/ktwitchell001/workspace/sharealedger/ledger-lab/scripts/run_phase2_corpus.sh
+de82b9d5ff033e92a0bb752838c51be80a67dfea247a7022d711d201d77520d5  /Users/ktwitchell001/workspace/sharealedger/ledger-lab/data/synthetic/phase2_generation_v1/variable_profile.csv
+67a84d057d0ba1f0c515cf3c3b3ec987cf838e31cefe5801e93eb684aac58f46  /Users/ktwitchell001/workspace/sharealedger/ledger-lab/data/synthetic/phase2_generation_v1/reported_annual_calibration.csv
+22c5afb220e086d0e03d50daf3249258456814f92a6377b7dc8c3ffba34e4343  /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/reassigned_activity_eligible_v2/selected.csv

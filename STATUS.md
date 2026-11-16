@@ -16,6 +16,56 @@ The audit register wins any evidence disagreement.
 
 ## Current checkpoint
 
+**Latest owner sequence — preparation, commit, reboot, full raw replay:** Finish
+integration preparation and its bounded checks, commit that preparation, then
+leave large execution stopped for owner reboot. After reboot run one fresh
+historical-plus-wholly-generated transformation/posting/reporting baseline;
+validate and commit final results separately. Create the Zenodo upload script
+after validation. No Q2 model evaluation. The
+[derived baseline contract](docs/PHASE_TWO_DERIVED_BASELINE_CONTRACT.md) supersedes
+the pre-commit-run and simple-append arithmetic below: reused financial copies
+replace historical attribution rather than add activity. Conditional expected
+journal rows: 266,319,818; ledger/report row counts await actual posting.
+
+Owner-authorized prior derived-corpus retirement completed. Raw VA originals,
+v6 inputs, prior GL/control summaries and successful historical reports remain.
+Report paths resolve through a preserved alias into
+`session-run.tmp/retained_phase1_evidence_v1`. About 347 GiB free at the resumed
+check. Integration preparation now passes 25 focused tests and the unchanged
+22-test baseline, including a fresh raw-to-sequential-reporting fixture.
+[Preparation receipt](data/test_evidence/phase2_derived_preparation_20261116/README.md)
+contains resume instructions. Full admission/validation awaits reboot; no large
+run started.
+
+**Scope correction — combined-corpus validation pending:** Owner clarifies that
+the pre-commit full run must include retained historical data plus the new synthetic
+population. V6 validated only the synthetic addition. Its controls remain valid,
+but it does not satisfy the combined run. Retained historical reporting input is
+273,380,488 rows; v6 adds 6,988,627: expected combined financial reporting input
+280,369,115 rows before identity/calendar integration adjustments. These include
+journal and ledger records, not independent source transactions. Keep package
+uncommitted; combined contract, storage admission, execution and interpretation
+remain pending. The 26.37-GiB next-pass estimate below applies only to v6 alone.
+
+**Phase 2 v6 completed, 2026-11-16 — ready for owner validation:** Full
+10,000-component/SY01–SY14 corpus generated; one uninterrupted financial/report
+workflow passed: 2,444,027 sources, 4,888,054 SJEs, 6,988,627 reporting financial
+rows, zero reconciliation failures. Read-only audit confirms all 49,091 reused
+classifications and supplier recurrence. Fifteen frozen source/identity tests and
+two post-audit tests pass. [Full receipt](data/test_evidence/phase2_generation_20261116/full_v6/README.md),
+[Paper 3 addition](docs/tds-evidence/phase2-generation-paper3/README.md).
+73.16 GiB free; a comparable next pass fits with margin and the 40-GiB reserve.
+No Q2 models, old reporting repeat, retained-corpus deletion or Paper 1/2 edits.
+Historical launch/discussion checkpoints below are superseded by this receipt.
+
+**Phase 2 autonomous preparation resumed, 2026-11-16:** The owner-approved
+[execution plan](docs/PHASE_TWO_EXECUTION_PLAN.md#active-revision--autonomous-execution-resumed)
+now covers two synthetic actor classes, a separately versioned Phase 1 identity
+upgrade, SY dates, bounded operating/treasury sources, combined admission, full
+generation and one new financial/report pass. The opaque identity registry and
+bounded tests are complete; combined/full acceptance remains pending. Historical
+reporting is preserved. No Q2 model evaluation or Paper 1/2 edits.
+
 **Q2 preparation, 2026-11-16:** The working design is a complete fictional
 Phase 2 corpus, calibrated using the reporting evidence and inspected before
 experimental freeze. [AIM corpus requirements](docs/PHASE_TWO_AIM_CORPUS_REQUIREMENTS.md)

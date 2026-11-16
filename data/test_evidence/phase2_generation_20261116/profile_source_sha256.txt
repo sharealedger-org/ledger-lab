@@ -1,0 +1,7 @@
+0b3dd997cb4131e4792b9c50c2ed1ef13149bed23014739dafa8e8885b52daa9  /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/corpus/PhaseTwoCheck.scala
+57b6cb063341a866fe2431899b63275b52659b54759c33f8c1cd86af669d21f0  /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/corpus/PhaseTwoCorpus.scala
+206938b98f05b44549ac51b2193494338852bc3c34c6d01e35a9c083a55f77f1  /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/corpus/PhaseTwoLifecycle.scala
+e4c5641d6acc687e049a0f1239a1a00f78698dc294e2e882fb03e7b951677fce  /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/corpus/PhaseTwoSchemas.scala
+e287cdefc9908a76a82d04066a01566b8712008c7bbbbafa5dfcc5a6b81e10f6  /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/corpus/CorpusExternalSort.scala
+1790dfdaf4f2bb9bc64054ba971e544465ef715a1d38bc0da43d50ee6a672b7d  /Users/ktwitchell001/workspace/sharealedger/ledger-lab/scripts/run_phase2_corpus.sh
+ea6c7c015e8a47eabce1735900ab02793c645d88fae4d1caae16bb457dc695a5  /Users/ktwitchell001/workspace/sharealedger/ledger-lab/data/synthetic/phase2_generation_v1/profile.csv

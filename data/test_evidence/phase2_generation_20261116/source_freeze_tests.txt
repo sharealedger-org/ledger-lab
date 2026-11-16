@@ -1,0 +1,38 @@
+[info] welcome to sbt 1.10.11 (Eclipse Adoptium Java 21.0.8)
+[info] loading settings for project global-plugins from idea.sbt...
+[info] loading global plugins from /Users/ktwitchell001/.sbt/1.0/plugins
+[info] loading settings for project va_pipeline-build from assembly.sbt, plugins.sbt...
+[info] loading project definition from /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/project
+[info] loading settings for project root from build.sbt...
+[info] set current project to va_pipeline (in build file:/Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/)
+[info] compiling 3 Scala sources to /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/target/scala-2.12/classes ...
+[info] done compiling
+PASS reused_selection source_year=2003 eligible=20 selected=5 sample_bytes=494
+PASS reused_selection source_year=2003 eligible=20 selected=5 sample_bytes=502
+RESULT phase2_generation components=4 years=2 financial_sources=224 output=/var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/phase2-test-9867825311305030408/a
+RESULT phase2_generation components=4 years=2 financial_sources=228 output=/var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/combined-corpus-12558868710191846358/out
+RESULT phase2_generation components=4 years=2 financial_sources=224 output=/var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/phase2-test-9867825311305030408/b
+RESULT phase2_generation components=4 years=2 financial_sources=113 output=/var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/combined-corpus-18228208476558686026/out
+[info] ReassignedActivitySpec:
+[info] - selection is order-independent, retains posting period and excludes summary/known/receipt records
+[info] CombinedCorpusSpec:
+[info] - reassigned and recipe activity conserve joint annual budgets and recur across years and funds
+[info] - bounded variable recipes preserve totals while changing sizes counts and dates
+[info] - SY labels round trip fiscal-boundary and leap-day dates without lexical date assumptions
+RESULT phase2_generation components=4 years=2 financial_sources=224 output=/var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/phase2-test-11722866008124640921/out
+RESULT phase2_generation components=4 years=2 financial_sources=224 output=/var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/phase2-test-11995857752587088691/input
+RESULT phase2_generation components=4 years=2 financial_sources=224 output=/var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/phase2-test-6407617792738726617/calibrated
+[info] PhaseTwoCorpusSpec:
+[info] - deterministic package content across external merge levels and source chunk sizes
+[info] - generation retains canceled and unobserved outcomes without scoring missing as zero
+[info] - invalid generation horizon is rejected before attempt publication
+[info] - cutoff consumer excludes private answers and late corrections and rejects changed source bytes
+[info] - calendar emits a real leap day and the final day of the fiscal year
+[info] - frozen report envelopes allocate exact annual cents and preserve all private context references
+[info] - external sort fails byte conservation for an unterminated internal partition
+[info] Run completed in 7 seconds, 532 milliseconds.
+[info] Total number of tests run: 11
+[info] Suites: completed 3, aborted 0
+[info] Tests: succeeded 11, failed 0, canceled 0, ignored 0, pending 0
+[info] All tests passed.
+[success] Total time: 22 s, completed Nov 16, 2026, 10:04:50 AM

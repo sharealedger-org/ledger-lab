@@ -1,0 +1,53 @@
+[info] welcome to sbt 1.10.11 (Eclipse Adoptium Java 21.0.8)
+[info] loading settings for project global-plugins from idea.sbt...
+[info] loading global plugins from /Users/ktwitchell001/.sbt/1.0/plugins
+[info] loading settings for project va_pipeline-build from assembly.sbt, plugins.sbt...
+[info] loading project definition from /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/project
+[info] loading settings for project root from build.sbt...
+[info] set current project to va_pipeline (in build file:/Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/)
+[info] compiling 1 Scala source to /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/target/scala-2.12/classes ...
+[info] done compiling
+PASS reused_selection source_year=2003 eligible=20 selected=5 sample_bytes=494
+PASS reused_selection source_year=2003 eligible=20 selected=5 sample_bytes=502
+[info] ReassignedActivitySpec:
+[info] - selection is order-independent, retains posting period and excludes summary/known/receipt records
+[info] Run completed in 483 milliseconds.
+[info] Total number of tests run: 1
+[info] Suites: completed 1, aborted 0
+[info] Tests: succeeded 1, failed 0, canceled 0, ignored 0, pending 0
+[info] All tests passed.
+[success] Total time: 10 s, completed Nov 16, 2026, 9:31:28 AM
+[info] running org.universalledger.foundation.va.corpus.ReassignedActivity --sourceRoot /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/synthetic_reference_corpus_v2_20261115/monthly_a/output --years 2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016 --objects /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/corpus_admission_20261115_receipts_v2/inputs/aRefObjectCSV.txt --out /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/reassigned_activity_selection_v1 --seed phase2-v1 --cap 5000
+PASS reused_selection source_year=2003 eligible=2923838 selected=5000 sample_bytes=823371
+PASS reused_selection source_year=2004 eligible=2855734 selected=5000 sample_bytes=825331
+PASS reused_selection source_year=2005 eligible=2905225 selected=5000 sample_bytes=826703
+PASS reused_selection source_year=2006 eligible=3125289 selected=5000 sample_bytes=826172
+PASS reused_selection source_year=2007 eligible=3136031 selected=5000 sample_bytes=826109
+PASS reused_selection source_year=2008 eligible=3586928 selected=5000 sample_bytes=824105
+PASS reused_selection source_year=2009 eligible=3430775 selected=5000 sample_bytes=824256
+PASS reused_selection source_year=2010 eligible=3229089 selected=5000 sample_bytes=823324
+PASS reused_selection source_year=2011 eligible=3695163 selected=5000 sample_bytes=816599
+PASS reused_selection source_year=2012 eligible=3858948 selected=5000 sample_bytes=819819
+PASS reused_selection source_year=2013 eligible=3737645 selected=5000 sample_bytes=822246
+PASS reused_selection source_year=2014 eligible=3960482 selected=5000 sample_bytes=944618
+PASS reused_selection source_year=2015 eligible=3511169 selected=5000 sample_bytes=944324
+PASS reused_selection source_year=2016 eligible=3139554 selected=5000 sample_bytes=945852
+[success] Total time: 2379 s (0:39:39.0), completed Nov 16, 2026, 10:11:08 AM
+     2398.44 real      2153.65 user        83.17 sys
+          1228832768  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              653338  page reclaims
+                   0  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   8  messages sent
+                   8  messages received
+                  52  signals received
+                 927  voluntary context switches
+             3577053  involuntary context switches
+      16315002595521  instructions retired
+       7449865797708  cycles elapsed
+          1157451776  peak memory footprint

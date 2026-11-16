@@ -1,0 +1,5 @@
+operation,source,destination
+retain_report,/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/report_sorted_v3_20261115/reboot_attempt/corpus_report,/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/retained_phase1_evidence_v1/historical_report
+remove_derived,/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/synthetic_reference_corpus_v2_20261115,
+remove_derived,/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/report_sorted_v3_20261115,
+restore_report_alias,/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/report_sorted_v3_20261115/reboot_attempt/corpus_report,/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/retained_phase1_evidence_v1/historical_report

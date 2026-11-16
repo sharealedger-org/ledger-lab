@@ -1,0 +1,268 @@
+[info] welcome to sbt 1.10.11 (Eclipse Adoptium Java 21.0.8)
+[info] loading settings for project global-plugins from idea.sbt...
+[info] loading global plugins from /Users/ktwitchell001/.sbt/1.0/plugins
+[info] loading settings for project va_pipeline-build from assembly.sbt, plugins.sbt...
+[info] loading project definition from /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/project
+[info] loading settings for project root from build.sbt...
+[info] set current project to va_pipeline (in build file:/Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/)
+[info] compiling 1 Scala source to /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/target/scala-2.12/classes ...
+[info] done compiling
+[info] compiling 2 Scala sources to /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/target/scala-2.12/test-classes ...
+[info] done compiling
+****************************************************************************************************
+                   Step ttl — APA Technical Transform Layer (standardizeAndSort.applyAPA)
+Start Time: Mon Nov 16 15:16:14 MST 2026
+****************************************************************************************************
+PASS eligible_reused rows=1
+  inPath      : /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/derived-baseline-13857919875071882439/historical/VARawFiles
+  refPath     : /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/derived-baseline-13857919875071882439/refs
+  outPath     : /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/derived-baseline-13857919875071882439/historical/output
+  year        : 2003  types: E
+  SortSpec    : ../sort_specs/SortedJE.sortspec  (15 fields)
+  VendorMaster: /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/derived-baseline-13857919875071882439/refs/VendorMaster.csv  (1 entries)
+  ChunkSize   : 1
+  Reference   : agency=1 fund=1 object=1 program=1 source=1
+  Source folder (Expenditure FY2003): /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/derived-baseline-13857919875071882439/historical/VARawFiles/FY 2003 Expenditure
+  Discovered 1 E files for FY2003
+
+  Processing E 2003/05 → /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/derived-baseline-13857919875071882439/historical/output/SortedJEFY03_2003_05_exp.csv  (1 file(s))
+  Spilled chunk 1  (1 SJE rows so far)
+  Spilled chunk 2  (2 SJE rows so far)
+
+  File Expenditures May 2003.csv: data_lines=1 source=1 unresolved_ref=0 blank=0
+
+  2003/05: source=1 sje=2 unresolved_ref=0 spills=2
+  Merging 2 spill(s) → /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/derived-baseline-13857919875071882439/historical/output/SortedJEFY03_2003_05_exp.csv ...
+  Written: /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/derived-baseline-13857919875071882439/historical/output/SortedJEFY03_2003_05_exp.csv (2 rows)
+
+Control totals:
+  Source rows processed : 1
+  SJE rows produced     : 2  (= ~2 × source rows)
+  Unresolved ref lookups: 0
+
+RESULT step=ttl year=2003 rc=0 records_read=1 records_written=2 elapsed_s=1 input_bytes=181 output_bytes=0
+RESOURCE step=ttl year=2003 jvm_heap_bytes=1073741824
+STATUS: COMPLETE
+****************************************************************************************************
+Process End Time: Mon Nov 16 15:16:14 MST 2026
+****************************************************************************************************
+****************************************************************************************************
+                   Step ttl — APA Technical Transform Layer (standardizeAndSort.applyAPA)
+Start Time: Mon Nov 16 15:16:14 MST 2026
+****************************************************************************************************
+  inPath      : /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/derived-baseline-13857919875071882439/wholly/VARawFiles
+  refPath     : /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/derived-baseline-13857919875071882439/refs
+  outPath     : /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/derived-baseline-13857919875071882439/wholly/output
+  year        : 2031  types: E
+  SortSpec    : ../sort_specs/SortedJE.sortspec  (15 fields)
+  VendorMaster: /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/derived-baseline-13857919875071882439/refs/VendorMaster.csv  (1 entries)
+  ChunkSize   : 1
+  Reference   : agency=1 fund=1 object=1 program=1 source=1
+  Source folder (Expenditure FY2031): /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/derived-baseline-13857919875071882439/wholly/VARawFiles/FY 2031 Expenditure
+  Discovered 1 E files for FY2031
+
+  Processing E 2031/05 → /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/derived-baseline-13857919875071882439/wholly/output/SortedJEFY31_2031_05_exp.csv  (1 file(s))
+  Spilled chunk 1  (1 SJE rows so far)
+  Spilled chunk 2  (2 SJE rows so far)
+
+  File Expenditures May 2031.csv: data_lines=1 source=1 unresolved_ref=0 blank=0
+
+  2031/05: source=1 sje=2 unresolved_ref=0 spills=2
+  Merging 2 spill(s) → /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/derived-baseline-13857919875071882439/wholly/output/SortedJEFY31_2031_05_exp.csv ...
+  Written: /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/derived-baseline-13857919875071882439/wholly/output/SortedJEFY31_2031_05_exp.csv (2 rows)
+
+Control totals:
+  Source rows processed : 1
+  SJE rows produced     : 2  (= ~2 × source rows)
+  Unresolved ref lookups: 0
+
+RESULT step=ttl year=2031 rc=0 records_read=1 records_written=2 elapsed_s=1 input_bytes=169 output_bytes=0
+RESOURCE step=ttl year=2031 jvm_heap_bytes=1073741824
+STATUS: COMPLETE
+****************************************************************************************************
+Process End Time: Mon Nov 16 15:16:14 MST 2026
+****************************************************************************************************
+****************************************************************************************************
+                                Post Module
+Start Time: Mon Nov 16 15:16:14 MST 2026
+****************************************************************************************************
+processing file: /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/derived-baseline-13857919875071882439/financial/SortedJEFY31merged.csv
+No existing ledger file.  File will be created: LDGR2031.csv
+----------------------------------
+****************************************************************************************************
+                                Post Module
+Start Time: Mon Nov 16 15:16:14 MST 2026
+****************************************************************************************************
+processing file: /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/baseline-normalize-1856725182229905319/normalized/SortedJEFY31merged.csv
+No existing ledger file.  File will be created: LDGR2031.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          6
+Ledger Records Read:           0
+Ledger Records Written:        6
+Process End Time:      Mon Nov 16 15:16:14 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2031 rc=0 records_read=6 records_written=6 elapsed_s=1 input_bytes=0 output_bytes=1396
+RESOURCE step=3 year=2031 jvm_heap_bytes=1073741824
+****************************************************************************************************
+                         Step 20 — CCP1 GL Post (GLPost)
+Start Time: Mon Nov 16 15:16:14 MST 2026
+****************************************************************************************************
+  SortedJE files : SortedJEFY31merged.csv
+  Output file    : /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/baseline-normalize-1856725182229905319/normalized/GL2031.csv
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          4
+Ledger Records Read:           0
+Ledger Records Written:        4
+Process End Time:      Mon Nov 16 15:16:14 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2031 rc=0 records_read=4 records_written=4 elapsed_s=1 input_bytes=0 output_bytes=1210
+RESOURCE step=3 year=2031 jvm_heap_bytes=1073741824
+****************************************************************************************************
+                         Step 20 — CCP1 GL Post (GLPost)
+Start Time: Mon Nov 16 15:16:14 MST 2026
+****************************************************************************************************
+  SortedJE files : SortedJEFY31merged.csv
+  Output file    : /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/derived-baseline-13857919875071882439/financial/GL2031.csv
+  GL balance rows written : 2
+  Journal rows read       : 4
+  Output                  : /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/derived-baseline-13857919875071882439/financial/GL2031.csv
+STATUS: COMPLETE
+RESULT step=20 year=31 rc=0 records_read=4 records_written=2 elapsed_s=1 input_bytes=1491 output_bytes=146 net_amount=0.00
+RESOURCE step=20 year=31 jvm_heap_bytes=1073741824
+****************************************************************************************************
+Process End Time: Mon Nov 16 15:16:14 MST 2026
+****************************************************************************************************
+  GL balance rows written : 3
+  Journal rows read       : 6
+  Output                  : /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/baseline-normalize-1856725182229905319/normalized/GL2031.csv
+STATUS: COMPLETE
+RESULT step=20 year=31 rc=0 records_read=6 records_written=3 elapsed_s=1 input_bytes=1385 output_bytes=175 net_amount=0.00
+RESOURCE step=20 year=31 jvm_heap_bytes=1073741824
+****************************************************************************************************
+Process End Time: Mon Nov 16 15:16:14 MST 2026
+****************************************************************************************************
+RESULT reporting_sort kind=movement rows=4 spills=4 levels=2 bytes=1491 file=SortedJEFY31merged.csv
+RESULT reporting_sort kind=balance rows=4 spills=4 levels=2 bytes=1210 file=LDGR2031.csv
+RESULT step=5v profile=expanded rc=0 records_read=8 vendors=2 spills=4
+RESULT step=5r rc=0 records_written=4 merge_passes=2
+PASS reused_selection source_year=2003 eligible=20 selected=5 sample_bytes=494
+PASS reused_selection source_year=2003 eligible=20 selected=5 sample_bytes=502
+[info] PhaseTwoBaselineNormalizeSpec:
+[info] - paired attribution, known rekey, unresolved receipts and dates reach actual posting
+[info] - duplicate source journals fail the current-group bound without publishing
+PASS identity_map keys=3 unresolved=1 existing_grouping_preserved=true
+PASS identity_application rows=6 file=/var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/identity-upgrade-10330356633596146347/fresh.attempt/SortedJEFY14merged.csv posting_not_yet_claimed=true
+****************************************************************************************************
+                                Post Module
+Start Time: Mon Nov 16 15:16:16 MST 2026
+****************************************************************************************************
+processing file: /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/identity-upgrade-10330356633596146347/old/SortedJEFY14merged.csv
+No existing ledger file.  File will be created: LDGR2014.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          6
+Ledger Records Read:           0
+Ledger Records Written:        6
+Process End Time:      Mon Nov 16 15:16:16 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2014 rc=0 records_read=6 records_written=6 elapsed_s=1 input_bytes=0 output_bytes=1283
+RESOURCE step=3 year=2014 jvm_heap_bytes=1073741824
+****************************************************************************************************
+                         Step 20 — CCP1 GL Post (GLPost)
+Start Time: Mon Nov 16 15:16:16 MST 2026
+****************************************************************************************************
+  SortedJE files : SortedJEFY14merged.csv
+  Output file    : /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/identity-upgrade-10330356633596146347/old/GL2014.csv
+  GL balance rows written : 2
+  Journal rows read       : 6
+  Output                  : /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/identity-upgrade-10330356633596146347/old/GL2014.csv
+STATUS: COMPLETE
+RESULT step=20 year=14 rc=0 records_read=6 records_written=2 elapsed_s=1 input_bytes=1127 output_bytes=142 net_amount=0.00
+RESOURCE step=20 year=14 jvm_heap_bytes=1073741824
+****************************************************************************************************
+Process End Time: Mon Nov 16 15:16:16 MST 2026
+****************************************************************************************************
+****************************************************************************************************
+                                Post Module
+Start Time: Mon Nov 16 15:16:16 MST 2026
+****************************************************************************************************
+processing file: /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/identity-upgrade-10330356633596146347/fresh/SortedJEFY14merged.csv
+No existing ledger file.  File will be created: LDGR2014.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          6
+Ledger Records Read:           0
+Ledger Records Written:        6
+Process End Time:      Mon Nov 16 15:16:16 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2014 rc=0 records_read=6 records_written=6 elapsed_s=1 input_bytes=0 output_bytes=1391
+RESOURCE step=3 year=2014 jvm_heap_bytes=1073741824
+****************************************************************************************************
+                         Step 20 — CCP1 GL Post (GLPost)
+Start Time: Mon Nov 16 15:16:16 MST 2026
+****************************************************************************************************
+  SortedJE files : SortedJEFY14merged.csv
+  Output file    : /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/identity-upgrade-10330356633596146347/fresh/GL2014.csv
+  GL balance rows written : 2
+  Journal rows read       : 6
+  Output                  : /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/identity-upgrade-10330356633596146347/fresh/GL2014.csv
+STATUS: COMPLETE
+RESULT step=20 year=14 rc=0 records_read=6 records_written=2 elapsed_s=1 input_bytes=1235 output_bytes=142 net_amount=0.00
+RESOURCE step=20 year=14 jvm_heap_bytes=1073741824
+****************************************************************************************************
+Process End Time: Mon Nov 16 15:16:16 MST 2026
+****************************************************************************************************
+RESULT phase2_generation components=4 years=2 financial_sources=228 output=/var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/reused-audit-2127585770735978404/inputs
+RESULT phase2_generation components=4 years=2 financial_sources=224 output=/var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/phase2-test-4028457765657244352/a
+RESULT phase2_generation components=4 years=2 financial_sources=228 output=/var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/combined-corpus-5102930553985062990/out
+PASS reassigned_audit originals=4 suppliers=1 multiyear=1 multicontext=1
+[info] PhaseTwoDerivedBaselineSpec:
+[info] - fresh raw history and generated sources normalize merge post and reach sequential reporting
+[info] PhaseOneIdentityUpgradeSpec:
+[info] - opaque IDs preserve exact source grouping, sentinels and extension stability without numeric bunching
+[info] - registry rejects duplicate old identities and does not claim a completed map
+[info] - actual post and GL consume rekeyed canonical SJE with unchanged financial projection
+[info] PhaseTwoBaselineDimensionsSpec:
+[info] - metadata rekeys and shifts originals, replaces sampled supplier masters, and preserves reference ambiguity
+[info] ReassignedActivitySpec:
+[info] - selection is order-independent, retains posting period and excludes summary/known/receipt records
+[info] PhaseTwoBaselineControlsSpec:
+[info] - shifted historical plus wholly GL and exact journal counts reconcile
+[info] - balanced but duplicated addition fails the GL conservation check
+[info] PhaseTwoWhollySourcesSpec:
+[info] - reused financial copies are excluded and shifted raw ordinals retain event lineage
+[info] - an untracked raw record prevents publication
+RESULT phase2_generation components=4 years=2 financial_sources=224 output=/var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/phase2-test-4028457765657244352/b
+RESULT phase2_generation components=4 years=2 financial_sources=228 output=/var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/reused-audit-2816479415740184016/inputs
+RESULT phase2_generation components=4 years=2 financial_sources=113 output=/var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/combined-corpus-17326889287370089022/out
+[info] ReassignedCorpusAuditSpec:
+[info] - original/public/posted classifications and actual multi-year supplier recurrence are checked
+[info] - a changed nominal classification fails without publishing an audit completion
+RESULT phase2_generation components=4 years=2 financial_sources=224 output=/var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/phase2-test-14086675193389494111/out
+RESULT phase2_generation components=4 years=2 financial_sources=154 output=/var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/combined-corpus-17326889287370089022/alternative
+[info] CombinedCorpusSpec:
+[info] - supplier eligibility excludes personal summary and financing activity without refilling the sample
+[info] - reassigned and recipe activity conserve joint annual budgets and recur across years and funds
+[info] - bounded variable recipes preserve totals while changing sizes counts and dates
+[info] - SY labels round trip fiscal-boundary and leap-day dates without lexical date assumptions
+RESULT phase2_generation components=4 years=2 financial_sources=224 output=/var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/phase2-test-9707973175635048725/input
+RESULT phase2_generation components=4 years=2 financial_sources=224 output=/var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/phase2-test-15507739147736605821/calibrated
+[info] PhaseTwoCorpusSpec:
+[info] - deterministic package content across external merge levels and source chunk sizes
+[info] - generation retains canceled and unobserved outcomes without scoring missing as zero
+[info] - invalid generation horizon is rejected before attempt publication
+[info] - cutoff consumer excludes private answers and late corrections and rejects changed source bytes
+[info] - calendar emits a real leap day and the final day of the fiscal year
+[info] - frozen report envelopes allocate exact annual cents and preserve all private context references
+[info] - external sort fails byte conservation for an unterminated internal partition
+[info] Run completed in 6 seconds, 778 milliseconds.
+[info] Total number of tests run: 25
+[info] Suites: completed 10, aborted 0
+[info] Tests: succeeded 25, failed 0, canceled 0, ignored 0, pending 0
+[info] All tests passed.
+[success] Total time: 17 s, completed Nov 16, 2026, 3:16:20 PM

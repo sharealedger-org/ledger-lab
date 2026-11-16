@@ -1,0 +1,2 @@
+input,sha256,policy,method
+initial_selected.csv,dfc8951afd2bf6daf5486b6b0b969e66a1ee5baa4d5e12aa1321a5634cd6584f,supplier-expense-eligibility-v2,bottom_hash_then_independent_category_filter_no_refill

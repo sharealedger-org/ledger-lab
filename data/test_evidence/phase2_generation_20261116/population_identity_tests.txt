@@ -1,0 +1,115 @@
+[info] welcome to sbt 1.10.11 (Eclipse Adoptium Java 21.0.8)
+[info] loading settings for project global-plugins from idea.sbt...
+[info] loading global plugins from /Users/ktwitchell001/.sbt/1.0/plugins
+[info] loading settings for project va_pipeline-build from assembly.sbt, plugins.sbt...
+[info] loading project definition from /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/project
+[info] loading settings for project root from build.sbt...
+[info] set current project to va_pipeline (in build file:/Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/)
+[info] compiling 5 Scala sources to /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/target/scala-2.12/classes ...
+[info] done compiling
+[info] compiling 7 Scala sources to /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/target/scala-2.12/classes ...
+[warn] one deprecation (since 2.12.16); re-run with -deprecation for details
+[warn] one warning found
+[info] done compiling
+[info] compiling 2 Scala sources to /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/target/scala-2.12/test-classes ...
+[info] done compiling
+PASS eligible_reused rows=1
+PASS reused_selection source_year=2003 eligible=20 selected=5 sample_bytes=494
+PASS reused_selection source_year=2003 eligible=20 selected=5 sample_bytes=502
+PASS identity_map keys=3 unresolved=1 existing_grouping_preserved=true
+PASS identity_application rows=6 file=/var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/identity-upgrade-15209191179015647470/fresh.attempt/SortedJEFY14merged.csv posting_not_yet_claimed=true
+****************************************************************************************************
+                                Post Module
+Start Time: Mon Nov 16 10:31:54 MST 2026
+****************************************************************************************************
+processing file: /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/identity-upgrade-15209191179015647470/old/SortedJEFY14merged.csv
+No existing ledger file.  File will be created: LDGR2014.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          6
+Ledger Records Read:           0
+Ledger Records Written:        6
+Process End Time:      Mon Nov 16 10:31:54 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2014 rc=0 records_read=6 records_written=6 elapsed_s=1 input_bytes=0 output_bytes=1283
+RESOURCE step=3 year=2014 jvm_heap_bytes=1073741824
+****************************************************************************************************
+                         Step 20 — CCP1 GL Post (GLPost)
+Start Time: Mon Nov 16 10:31:54 MST 2026
+****************************************************************************************************
+  SortedJE files : SortedJEFY14merged.csv
+  Output file    : /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/identity-upgrade-15209191179015647470/old/GL2014.csv
+  GL balance rows written : 2
+  Journal rows read       : 6
+  Output                  : /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/identity-upgrade-15209191179015647470/old/GL2014.csv
+STATUS: COMPLETE
+RESULT step=20 year=14 rc=0 records_read=6 records_written=2 elapsed_s=1 input_bytes=1127 output_bytes=142 net_amount=0.00
+RESOURCE step=20 year=14 jvm_heap_bytes=1073741824
+****************************************************************************************************
+Process End Time: Mon Nov 16 10:31:54 MST 2026
+****************************************************************************************************
+****************************************************************************************************
+                                Post Module
+Start Time: Mon Nov 16 10:31:54 MST 2026
+****************************************************************************************************
+processing file: /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/identity-upgrade-15209191179015647470/fresh/SortedJEFY14merged.csv
+No existing ledger file.  File will be created: LDGR2014.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          6
+Ledger Records Read:           0
+Ledger Records Written:        6
+Process End Time:      Mon Nov 16 10:31:54 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2014 rc=0 records_read=6 records_written=6 elapsed_s=1 input_bytes=0 output_bytes=1391
+RESOURCE step=3 year=2014 jvm_heap_bytes=1073741824
+****************************************************************************************************
+                         Step 20 — CCP1 GL Post (GLPost)
+Start Time: Mon Nov 16 10:31:54 MST 2026
+****************************************************************************************************
+  SortedJE files : SortedJEFY14merged.csv
+  Output file    : /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/identity-upgrade-15209191179015647470/fresh/GL2014.csv
+  GL balance rows written : 2
+  Journal rows read       : 6
+  Output                  : /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/identity-upgrade-15209191179015647470/fresh/GL2014.csv
+STATUS: COMPLETE
+RESULT step=20 year=14 rc=0 records_read=6 records_written=2 elapsed_s=1 input_bytes=1235 output_bytes=142 net_amount=0.00
+RESOURCE step=20 year=14 jvm_heap_bytes=1073741824
+****************************************************************************************************
+Process End Time: Mon Nov 16 10:31:54 MST 2026
+****************************************************************************************************
+[info] PhaseOneIdentityUpgradeSpec:
+[info] - opaque IDs preserve exact source grouping, sentinels and extension stability without numeric bunching
+[info] - registry rejects duplicate old identities and does not claim a completed map
+[info] - actual post and GL consume rekeyed canonical SJE with unchanged financial projection
+RESULT phase2_generation components=4 years=2 financial_sources=228 output=/var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/combined-corpus-8527280277976572207/out
+RESULT phase2_generation components=4 years=2 financial_sources=224 output=/var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/phase2-test-1682836421682563780/a
+RESULT phase2_generation components=4 years=2 financial_sources=224 output=/var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/phase2-test-1682836421682563780/b
+RESULT phase2_generation components=4 years=2 financial_sources=113 output=/var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/combined-corpus-5159724681595012611/out
+RESULT phase2_generation components=4 years=2 financial_sources=224 output=/var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/phase2-test-13663100526216043446/out
+RESULT phase2_generation components=4 years=2 financial_sources=154 output=/var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/combined-corpus-5159724681595012611/alternative
+[info] CombinedCorpusSpec:
+[info] - supplier eligibility excludes personal summary and financing activity without refilling the sample
+[info] - reassigned and recipe activity conserve joint annual budgets and recur across years and funds
+[info] - bounded variable recipes preserve totals while changing sizes counts and dates
+[info] - SY labels round trip fiscal-boundary and leap-day dates without lexical date assumptions
+RESULT phase2_generation components=4 years=2 financial_sources=224 output=/var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/phase2-test-17389811770286029782/input
+RESULT phase2_generation components=4 years=2 financial_sources=224 output=/var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/phase2-test-1730417333546387102/calibrated
+[info] ReassignedActivitySpec:
+[info] - selection is order-independent, retains posting period and excludes summary/known/receipt records
+[info] PhaseTwoCorpusSpec:
+[info] - deterministic package content across external merge levels and source chunk sizes
+[info] - generation retains canceled and unobserved outcomes without scoring missing as zero
+[info] - invalid generation horizon is rejected before attempt publication
+[info] - cutoff consumer excludes private answers and late corrections and rejects changed source bytes
+[info] - calendar emits a real leap day and the final day of the fiscal year
+[info] - frozen report envelopes allocate exact annual cents and preserve all private context references
+[info] - external sort fails byte conservation for an unterminated internal partition
+[info] Run completed in 5 seconds, 157 milliseconds.
+[info] Total number of tests run: 15
+[info] Suites: completed 4, aborted 0
+[info] Tests: succeeded 15, failed 0, canceled 0, ignored 0, pending 0
+[info] All tests passed.
+[success] Total time: 25 s, completed Nov 16, 2026, 10:31:57 AM

@@ -1,5 +1,12 @@
 # GenevaERS Capability Gap Register
 
+**2026-11-16 Phase 2 preparation application:** Source subset, structural
+identity/calendar normalization and metadata preparation use bounded Scala sorts
+and ordered consumption. These offline corpus-preparation prototypes do not close
+GERS-001/002 or demonstrate target GenevaERS identifier/join support. The financial
+replay remains Scala TTL/ARE/post/GL and sequential reporting. Fixture success is
+not a new cost point or target-runtime capability claim.
+
 Ledger Lab measures financial architecture and cost curves. GenevaERS owns the generalized execution substrate. When a Ledger Lab workload requires a runtime capability that GenevaERS does not currently provide, record the gap here instead of implementing a one-off substitute in the Scala prototype.
 
 A gap is not a Ledger Lab defect by default. It becomes a GenevaERS enhancement candidate with a defined contract, implementation location, and validation workload.

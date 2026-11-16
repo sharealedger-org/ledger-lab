@@ -1,0 +1,28 @@
+[info] welcome to sbt 1.10.11 (Eclipse Adoptium Java 21.0.8)
+[info] loading settings for project global-plugins from idea.sbt...
+[info] loading global plugins from /Users/ktwitchell001/.sbt/1.0/plugins
+[info] loading settings for project va_pipeline-build from assembly.sbt, plugins.sbt...
+[info] loading project definition from /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/project
+[info] loading settings for project root from build.sbt...
+[info] set current project to va_pipeline (in build file:/Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/)
+[info] running org.universalledger.foundation.va.corpus.PhaseTwoCorpus --config /Users/ktwitchell001/workspace/sharealedger/ledger-lab/data/synthetic/phase2_generation_v1/variable_full.csv --base /Users/ktwitchell001/workspace/sharealedger/ledger-lab/data/synthetic/connected_reporting_v1 --histories /Users/ktwitchell001/workspace/sharealedger/ledger-lab/data/synthetic/reclass_history_v1 --out /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/phase2_full_v6/inputs --chunk 100000 --calibration /Users/ktwitchell001/workspace/sharealedger/ledger-lab/data/synthetic/phase2_generation_v1/reported_annual_calibration.csv --reused /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/reassigned_activity_eligible_v2
+RESULT phase2_generation components=10000 years=14 financial_sources=2444027 output=/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/phase2_full_v6/inputs
+[success] Total time: 824 s (0:13:44.0), completed Nov 16, 2026, 10:51:42 AM
+      832.23 real       785.25 user        41.56 sys
+          1234575360  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              619507  page reclaims
+                   0  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   8  messages sent
+                   8  messages received
+                  56  signals received
+               25919  voluntary context switches
+             1340304  involuntary context switches
+       6085035904109  instructions retired
+       2785862098879  cycles elapsed
+          1182703616  peak memory footprint

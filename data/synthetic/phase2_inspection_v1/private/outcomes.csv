@@ -1,0 +1,6 @@
+resolution_id,proposal_id,measure,value,unit,occurred_on,available_at,cutoff,observation_status,support_records,match_basis
+U1,P41,delivered,60,service_units,2032-03-20,2032-04-05T12:00:00Z,2032-06-30,partial,B102,explicit_proposal_ref
+U2,P41,final_cost,650000,USD_cents,2032-03-25,2032-04-12T12:00:00Z,2032-06-30,observed,B104,explicit_proposal_ref
+U3,P41,receipt_to_cutoff,900000,USD_cents,2032-05-31,2032-06-02T12:00:00Z,2032-06-30,partial,R302,private_generation_only
+U4,P52,completion,,date,2032-03-10,2032-03-11T12:00:00Z,2032-06-30,canceled,F402,explicit_proposal_ref
+U5,P63,completion,,date,,,2032-06-30,unobserved,,none

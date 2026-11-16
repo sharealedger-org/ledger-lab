@@ -1,0 +1,418 @@
+[info] welcome to sbt 1.10.11 (Eclipse Adoptium Java 21.0.8)
+[info] loading settings for project global-plugins from idea.sbt...
+[info] loading global plugins from /Users/ktwitchell001/.sbt/1.0/plugins
+[info] loading settings for project va_pipeline-build from assembly.sbt, plugins.sbt...
+[info] loading project definition from /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/project
+[info] loading settings for project root from build.sbt...
+[info] set current project to va_pipeline (in build file:/Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/)
+[info] compiling 2 Scala sources to /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/target/scala-2.12/classes ...
+[info] done compiling
+****************************************************************************************************
+****************************************************************************************************
+                     Step 2p — PO Standardize & Sort (standardizeAndSort.applyPO)
+                         Step 2 — Standardize & Sort (standardizeAndSort)
+Start Time: Mon Nov 16 08:43:12 MST 2026
+Start Time: Mon Nov 16 08:43:12 MST 2026
+****************************************************************************************************
+****************************************************************************************************
+  Input file   : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/po-lineage-1150412201408335323/in/VA_opendata_FY2003.txt
+  Output file  : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/po-lineage-1150412201408335323/out/SortedJEFY03q1PO.csv
+  Year         : 2003  Quarter: 1
+  AcctDate     : 2003/03/01
+  SortSpec     : ../sort_specs/SortedJE.sortspec  (15 fields)
+  ChunkSize    : 1
+  Input file   : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-csv-valid-10814794130746680391/input/FY14q1exp.csv
+  Output file  : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-csv-valid-10814794130746680391/output/SortedJEFY14q1exp.csv
+  Year         : 2014  Quarter: 1  Type: E  RecFormat: C
+  AcctDate     : 2014/03/01
+  SortSpec     : ../sort_specs/SortedJE.sortspec  (15 fields)
+  ChunkSize    : 200000
+  DryRun       : false
+  VendorMaster : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-csv-valid-10814794130746680391/input/VendorMaster.csv  (1 entries)
+  Spilled chunk 1  (2 rows so far)
+  1 spill file(s), 2 total rows
+
+Control totals:
+  Journal lines produced:  2
+  Lines with instID match: 0  (0%)
+  Lines without match:     2
+  Sum of all amounts:      0.00  (should be ~0 — debits cancel credits)
+
+Merging 1 spill(s) → /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-csv-valid-10814794130746680391/output/SortedJEFY14q1exp.csv ...
+Written: /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-csv-valid-10814794130746680391/output/SortedJEFY14q1exp.csv (0.0 MB, 2 rows)
+STATUS: COMPLETE
+
+Control totals:
+  Physical lines      : 2  (all assigned to a record: 2)
+  Logical records     : 2  (= accepted + quarantined)
+RESULT step=2 year=2014 rc=0 records_read=1 records_written=2 elapsed_s=1 input_bytes=155 output_bytes=431
+RESOURCE step=2 year=2014 jvm_heap_bytes=1073741824
+****************************************************************************************************
+Process End Time: Mon Nov 16 08:43:13 MST 2026
+****************************************************************************************************
+  PO records accepted : 2
+  Records quarantined : 0  (reader rejects 0; see /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/po-lineage-1150412201408335323/out/POQuarantineFY03.csv)
+  SJE rows produced   : 4  (= 2 × accepted records)
+  Spill files used    : 4
+  Sum of all amounts  : 0.00  (should be 0.00)
+
+RESULT step=2p year=2003 rc=0 records_read=2 records_written=4 records_accepted=2 skipped_quarantine=0 reader_rejects=0 physical_lines=2 elapsed_s=1 input_bytes=545 output_bytes=1422
+RESOURCE step=2p year=2003 jvm_heap_bytes=1073741824
+STATUS: COMPLETE
+****************************************************************************************************
+Process End Time: Mon Nov 16 08:43:13 MST 2026
+****************************************************************************************************
+****************************************************************************************************
+                     Step 2p — PO Standardize & Sort (standardizeAndSort.applyPO)
+Start Time: Mon Nov 16 08:43:13 MST 2026
+****************************************************************************************************
+                         Step 2 — Standardize & Sort (standardizeAndSort)
+Start Time: Mon Nov 16 08:43:13 MST 2026
+****************************************************************************************************
+  Input file   : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-csv-invalid-10326043668023678637/input/FY14q1exp.csv
+  Output file  : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-csv-invalid-10326043668023678637/output/SortedJEFY14q1exp.csv
+  Year         : 2014  Quarter: 1  Type: E  RecFormat: C
+  AcctDate     : 2014/03/01
+  SortSpec     : ../sort_specs/SortedJE.sortspec  (15 fields)
+  ChunkSize    : 200000
+  DryRun       : false
+  VendorMaster : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-csv-invalid-10326043668023678637/input/VendorMaster.csv  (1 entries)
+****************************************************************************************************
+  Input file   : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/po-2p-cols-9646198850910138998/in/VA_opendata_FY2003.txt
+  Output file  : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/po-2p-cols-9646198850910138998/out/SortedJEFY03q1PO.csv
+  Year         : 2003  Quarter: 1
+  AcctDate     : 2003/03/01
+  SortSpec     : ../sort_specs/SortedJE.sortspec  (15 fields)
+  ChunkSize    : 200000
+
+Control totals:
+  Physical lines      : 2  (all assigned to a record: 2)
+  Logical records     : 2  (= accepted + quarantined)
+  PO records accepted : 2
+  Records quarantined : 0  (reader rejects 0; see /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/po-2p-cols-9646198850910138998/out/POQuarantineFY03.csv)
+  SJE rows produced   : 4  (= 2 × accepted records)
+  Spill files used    : 1
+  Sum of all amounts  : 0.00  (should be 0.00)
+
+RESULT step=2p year=2003 rc=0 records_read=2 records_written=4 records_accepted=2 skipped_quarantine=0 reader_rejects=0 physical_lines=2 elapsed_s=1 input_bytes=539 output_bytes=1373
+RESOURCE step=2p year=2003 jvm_heap_bytes=1073741824
+STATUS: COMPLETE
+****************************************************************************************************
+Process End Time: Mon Nov 16 08:43:13 MST 2026
+****************************************************************************************************
+[info] StandardizeAndSortSpec:
+[info] - CSV source header and quoted comma fields are parsed before SJE output
+[info] - malformed CSV transaction rows are rejected
+****************************************************************************************************
+                     Step 2p — PO Standardize & Sort (standardizeAndSort.applyPO)
+Start Time: Mon Nov 16 08:43:13 MST 2026
+****************************************************************************************************
+  Input file   : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/po-2p-balance-12706867286486240163/in/VA_opendata_FY2003.txt
+  Output file  : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/po-2p-balance-12706867286486240163/out/SortedJEFY03q1PO.csv
+  Year         : 2003  Quarter: 1
+  AcctDate     : 2003/03/01
+  SortSpec     : ../sort_specs/SortedJE.sortspec  (15 fields)
+  ChunkSize    : 200000
+
+Control totals:
+  Physical lines      : 1  (all assigned to a record: 1)
+  Logical records     : 1  (= accepted + quarantined)
+  PO records accepted : 1
+  Records quarantined : 0  (reader rejects 0; see /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/po-2p-balance-12706867286486240163/out/POQuarantineFY03.csv)
+  SJE rows produced   : 2  (= 2 × accepted records)
+  Spill files used    : 1
+  Sum of all amounts  : 0.00  (should be 0.00)
+
+RESULT step=2p year=2003 rc=0 records_read=1 records_written=2 records_accepted=1 skipped_quarantine=0 reader_rejects=0 physical_lines=1 elapsed_s=1 input_bytes=392 output_bytes=711
+RESOURCE step=2p year=2003 jvm_heap_bytes=1073741824
+STATUS: COMPLETE
+****************************************************************************************************
+Process End Time: Mon Nov 16 08:43:13 MST 2026
+****************************************************************************************************
+****************************************************************************************************
+                     Step 2p — PO Standardize & Sort (standardizeAndSort.applyPO)
+Start Time: Mon Nov 16 08:43:13 MST 2026
+****************************************************************************************************
+  Input file   : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/po-2p-ipid-14362835535381363704/in/VA_opendata_FY2003.txt
+  Output file  : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/po-2p-ipid-14362835535381363704/out/SortedJEFY03q1PO.csv
+  Year         : 2003  Quarter: 1
+  AcctDate     : 2003/03/01
+  SortSpec     : ../sort_specs/SortedJE.sortspec  (15 fields)
+  ChunkSize    : 200000
+
+Control totals:
+  Physical lines      : 2  (all assigned to a record: 2)
+  Logical records     : 2  (= accepted + quarantined)
+  PO records accepted : 2
+  Records quarantined : 0  (reader rejects 0; see /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/po-2p-ipid-14362835535381363704/out/POQuarantineFY03.csv)
+  SJE rows produced   : 4  (= 2 × accepted records)
+  Spill files used    : 1
+  Sum of all amounts  : 0.00  (should be 0.00)
+
+RESULT step=2p year=2003 rc=0 records_read=2 records_written=4 records_accepted=2 skipped_quarantine=0 reader_rejects=0 physical_lines=2 elapsed_s=1 input_bytes=539 output_bytes=1373
+RESOURCE step=2p year=2003 jvm_heap_bytes=1073741824
+STATUS: COMPLETE
+****************************************************************************************************
+Process End Time: Mon Nov 16 08:43:13 MST 2026
+****************************************************************************************************
+****************************************************************************************************
+                     Step 2p — PO Standardize & Sort (standardizeAndSort.applyPO)
+Start Time: Mon Nov 16 08:43:13 MST 2026
+****************************************************************************************************
+  Input file   : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/po-2p-commit-9819700055615384704/in/VA_opendata_FY2003.txt
+  Output file  : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/po-2p-commit-9819700055615384704/out/SortedJEFY03q1PO.csv
+  Year         : 2003  Quarter: 1
+  AcctDate     : 2003/03/01
+  SortSpec     : ../sort_specs/SortedJE.sortspec  (15 fields)
+  ChunkSize    : 200000
+
+Control totals:
+  Physical lines      : 1  (all assigned to a record: 1)
+  Logical records     : 1  (= accepted + quarantined)
+  PO records accepted : 1
+  Records quarantined : 0  (reader rejects 0; see /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/po-2p-commit-9819700055615384704/out/POQuarantineFY03.csv)
+  SJE rows produced   : 2  (= 2 × accepted records)
+  Spill files used    : 1
+  Sum of all amounts  : 0.00  (should be 0.00)
+
+RESULT step=2p year=2003 rc=0 records_read=1 records_written=2 records_accepted=1 skipped_quarantine=0 reader_rejects=0 physical_lines=1 elapsed_s=1 input_bytes=392 output_bytes=711
+RESOURCE step=2p year=2003 jvm_heap_bytes=1073741824
+STATUS: COMPLETE
+****************************************************************************************************
+Process End Time: Mon Nov 16 08:43:13 MST 2026
+****************************************************************************************************
+****************************************************************************************************
+                     Step 2p — PO Standardize & Sort (standardizeAndSort.applyPO)
+Start Time: Mon Nov 16 08:43:13 MST 2026
+****************************************************************************************************
+  Input file   : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/po-2p-addrfrag-10292520344288123721/in/VA_opendata_FY2003.txt
+  Output file  : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/po-2p-addrfrag-10292520344288123721/out/SortedJEFY03q1PO.csv
+  Year         : 2003  Quarter: 1
+  AcctDate     : 2003/03/01
+  SortSpec     : ../sort_specs/SortedJE.sortspec  (15 fields)
+  ChunkSize    : 200000
+
+Control totals:
+  Physical lines      : 1  (all assigned to a record: 1)
+  Logical records     : 1  (= accepted + quarantined)
+  PO records accepted : 0
+  Records quarantined : 1  (reader rejects 0; see /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/po-2p-addrfrag-10292520344288123721/out/POQuarantineFY03.csv)
+    ADDRESS_FRAGMENT     1
+  SJE rows produced   : 0  (= 2 × accepted records)
+  Spill files used    : 0
+  Sum of all amounts  : 0.00  (should be 0.00)
+
+RESULT step=2p year=2003 rc=0 records_read=1 records_written=0 records_accepted=0 skipped_quarantine=1 reader_rejects=0 physical_lines=1 elapsed_s=1 input_bytes=399 output_bytes=0
+RESOURCE step=2p year=2003 jvm_heap_bytes=1073741824
+STATUS: COMPLETE
+****************************************************************************************************
+Process End Time: Mon Nov 16 08:43:13 MST 2026
+****************************************************************************************************
+****************************************************************************************************
+                     Step 2p — PO Standardize & Sort (standardizeAndSort.applyPO)
+Start Time: Mon Nov 16 08:43:13 MST 2026
+****************************************************************************************************
+  Input file   : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/po-2p-addrfrag-mixed-12525416863313157272/in/VA_opendata_FY2003.txt
+  Output file  : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/po-2p-addrfrag-mixed-12525416863313157272/out/SortedJEFY03q1PO.csv
+  Year         : 2003  Quarter: 1
+  AcctDate     : 2003/03/01
+  SortSpec     : ../sort_specs/SortedJE.sortspec  (15 fields)
+  ChunkSize    : 200000
+[applyPO] QUARANTINE address-fragment in PONUMBER field (record 2, line 3): 'PA 16823' — skipping row
+
+Control totals:
+  Physical lines      : 3  (all assigned to a record: 3)
+  Logical records     : 3  (= accepted + quarantined)
+  PO records accepted : 2
+  Records quarantined : 1  (reader rejects 0; see /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/po-2p-addrfrag-mixed-12525416863313157272/out/POQuarantineFY03.csv)
+    ADDRESS_FRAGMENT     1
+  SJE rows produced   : 4  (= 2 × accepted records)
+  Spill files used    : 1
+  Sum of all amounts  : 0.00  (should be 0.00)
+
+RESULT step=2p year=2003 rc=0 records_read=3 records_written=4 records_accepted=2 skipped_quarantine=1 reader_rejects=0 physical_lines=3 elapsed_s=1 input_bytes=697 output_bytes=1373
+RESOURCE step=2p year=2003 jvm_heap_bytes=1073741824
+STATUS: COMPLETE
+****************************************************************************************************
+Process End Time: Mon Nov 16 08:43:13 MST 2026
+****************************************************************************************************
+****************************************************************************************************
+                     Step 2p — PO Standardize & Sort (standardizeAndSort.applyPO)
+Start Time: Mon Nov 16 08:43:13 MST 2026
+****************************************************************************************************
+  Input file   : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/po-2p-badprice-17487086775292543359/in/VA_opendata_FY2003.txt
+  Output file  : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/po-2p-badprice-17487086775292543359/out/SortedJEFY03q1PO.csv
+  Year         : 2003  Quarter: 1
+  AcctDate     : 2003/03/01
+  SortSpec     : ../sort_specs/SortedJE.sortspec  (15 fields)
+  ChunkSize    : 200000
+
+Control totals:
+  Physical lines      : 1  (all assigned to a record: 1)
+  Logical records     : 1  (= accepted + quarantined)
+  PO records accepted : 0
+  Records quarantined : 1  (reader rejects 0; see /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/po-2p-badprice-17487086775292543359/out/POQuarantineFY03.csv)
+    BAD_PRICE            1
+  SJE rows produced   : 0  (= 2 × accepted records)
+  Spill files used    : 0
+  Sum of all amounts  : 0.00  (should be 0.00)
+
+RESULT step=2p year=2003 rc=0 records_read=1 records_written=0 records_accepted=0 skipped_quarantine=1 reader_rejects=0 physical_lines=1 elapsed_s=1 input_bytes=398 output_bytes=0
+RESOURCE step=2p year=2003 jvm_heap_bytes=1073741824
+STATUS: COMPLETE
+****************************************************************************************************
+Process End Time: Mon Nov 16 08:43:13 MST 2026
+****************************************************************************************************
+****************************************************************************************************
+                     Step 2p — PO Standardize & Sort (standardizeAndSort.applyPO)
+Start Time: Mon Nov 16 08:43:13 MST 2026
+****************************************************************************************************
+  Input file   : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/po-2p-badprice-mixed-2634658136735855273/in/VA_opendata_FY2003.txt
+  Output file  : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/po-2p-badprice-mixed-2634658136735855273/out/SortedJEFY03q1PO.csv
+  Year         : 2003  Quarter: 1
+  AcctDate     : 2003/03/01
+  SortSpec     : ../sort_specs/SortedJE.sortspec  (15 fields)
+  ChunkSize    : 200000
+[applyPO] QUARANTINE non-numeric price field (record 2, line 3): poNumber='DO38798' price='USD' — skipping row
+
+Control totals:
+  Physical lines      : 3  (all assigned to a record: 3)
+  Logical records     : 3  (= accepted + quarantined)
+  PO records accepted : 2
+  Records quarantined : 1  (reader rejects 0; see /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/po-2p-badprice-mixed-2634658136735855273/out/POQuarantineFY03.csv)
+    BAD_PRICE            1
+  SJE rows produced   : 4  (= 2 × accepted records)
+  Spill files used    : 1
+  Sum of all amounts  : 0.00  (should be 0.00)
+
+RESULT step=2p year=2003 rc=0 records_read=3 records_written=4 records_accepted=2 skipped_quarantine=1 reader_rejects=0 physical_lines=3 elapsed_s=1 input_bytes=697 output_bytes=1373
+RESOURCE step=2p year=2003 jvm_heap_bytes=1073741824
+STATUS: COMPLETE
+****************************************************************************************************
+Process End Time: Mon Nov 16 08:43:13 MST 2026
+****************************************************************************************************
+****************************************************************************************************
+                     Step 2p — PO Standardize & Sort (standardizeAndSort.applyPO)
+Start Time: Mon Nov 16 08:43:13 MST 2026
+****************************************************************************************************
+  Input file   : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/po-2p-boundary-13314072540037162756/in/VA_opendata_FY2003.txt
+  Output file  : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/po-2p-boundary-13314072540037162756/out/SortedJEFY03q1PO.csv
+  Year         : 2003  Quarter: 1
+  AcctDate     : 2003/03/01
+  SortSpec     : ../sort_specs/SortedJE.sortspec  (15 fields)
+  ChunkSize    : 200000
+
+Control totals:
+  Physical lines      : 4  (all assigned to a record: 4)
+  Logical records     : 3  (= accepted + quarantined)
+  PO records accepted : 3
+  Records quarantined : 0  (reader rejects 0; see /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/po-2p-boundary-13314072540037162756/out/POQuarantineFY03.csv)
+  SJE rows produced   : 6  (= 2 × accepted records)
+  Spill files used    : 1
+  Sum of all amounts  : 0.00  (should be 0.00)
+
+RESULT step=2p year=2003 rc=0 records_read=3 records_written=6 records_accepted=3 skipped_quarantine=0 reader_rejects=0 physical_lines=4 elapsed_s=1 input_bytes=631 output_bytes=1768
+RESOURCE step=2p year=2003 jvm_heap_bytes=1073741824
+STATUS: COMPLETE
+****************************************************************************************************
+Process End Time: Mon Nov 16 08:43:13 MST 2026
+****************************************************************************************************
+****************************************************************************************************
+                     Step 2p — PO Standardize & Sort (standardizeAndSort.applyPO)
+Start Time: Mon Nov 16 08:43:13 MST 2026
+****************************************************************************************************
+  Input file   : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/po-2p-multiline-tabs-13209086566469312684/in/VA_opendata_FY2003.txt
+  Output file  : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/po-2p-multiline-tabs-13209086566469312684/out/SortedJEFY03q1PO.csv
+  Year         : 2003  Quarter: 1
+  AcctDate     : 2003/03/01
+  SortSpec     : ../sort_specs/SortedJE.sortspec  (15 fields)
+  ChunkSize    : 200000
+
+Control totals:
+  Physical lines      : 2  (all assigned to a record: 2)
+  Logical records     : 1  (= accepted + quarantined)
+  PO records accepted : 0
+  Records quarantined : 1  (reader rejects 1; see /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/po-2p-multiline-tabs-13209086566469312684/out/POQuarantineFY03.csv)
+    FIELD_COUNT          1
+  SJE rows produced   : 0  (= 2 × accepted records)
+  Spill files used    : 0
+  Sum of all amounts  : 0.00  (should be 0.00)
+
+RESULT step=2p year=2003 rc=0 records_read=1 records_written=0 records_accepted=0 skipped_quarantine=1 reader_rejects=1 physical_lines=2 elapsed_s=1 input_bytes=577 output_bytes=0
+RESOURCE step=2p year=2003 jvm_heap_bytes=1073741824
+STATUS: COMPLETE
+****************************************************************************************************
+Process End Time: Mon Nov 16 08:43:13 MST 2026
+****************************************************************************************************
+****************************************************************************************************
+                     Step 2p — PO Standardize & Sort (standardizeAndSort.applyPO)
+Start Time: Mon Nov 16 08:43:13 MST 2026
+****************************************************************************************************
+  Input file   : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/po-2p-commas-6464788044209648880/in/VA_opendata_FY2003.txt
+  Output file  : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/po-2p-commas-6464788044209648880/out/SortedJEFY03q1PO.csv
+  Year         : 2003  Quarter: 1
+  AcctDate     : 2003/03/01
+  SortSpec     : ../sort_specs/SortedJE.sortspec  (15 fields)
+  ChunkSize    : 200000
+
+Control totals:
+  Physical lines      : 1  (all assigned to a record: 1)
+  Logical records     : 1  (= accepted + quarantined)
+  PO records accepted : 1
+  Records quarantined : 0  (reader rejects 0; see /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/po-2p-commas-6464788044209648880/out/POQuarantineFY03.csv)
+  SJE rows produced   : 2  (= 2 × accepted records)
+  Spill files used    : 1
+  Sum of all amounts  : 0.00  (should be 0.00)
+
+RESULT step=2p year=2003 rc=0 records_read=1 records_written=2 records_accepted=1 skipped_quarantine=0 reader_rejects=0 physical_lines=1 elapsed_s=1 input_bytes=403 output_bytes=664
+RESOURCE step=2p year=2003 jvm_heap_bytes=1073741824
+STATUS: COMPLETE
+****************************************************************************************************
+Process End Time: Mon Nov 16 08:43:13 MST 2026
+****************************************************************************************************
+****************************************************************************************************
+                     Step 2m — Merge Payment + PO SortedJE streams
+Start Time: Mon Nov 16 08:43:13 MST 2026
+****************************************************************************************************
+  Payment files: 1 file(s)
+    /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/po-2m-merge-7414565979592716675/out/SortedJEFY03q1exp.csv
+  PO file      : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/po-2m-merge-7414565979592716675/out/SortedJEFY03q1PO.csv
+  Merged output: /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/po-2m-merge-7414565979592716675/out/SortedJEFY03merged.csv
+  SortSpec     : ../sort_specs/SortedJE.sortspec  (15 fields)
+
+  Merged rows written: 4
+
+RESULT step=2m year=2003 rc=0 records_read=0 records_written=4 elapsed_s=1 input_bytes=0 output_bytes=839
+RESOURCE step=2m year=2003 jvm_heap_bytes=1073741824
+STATUS: COMPLETE
+****************************************************************************************************
+Process End Time: Mon Nov 16 08:43:13 MST 2026
+****************************************************************************************************
+[info] StandardizeAndSortPOSpec:
+[info] - PO repeated document lines retain distinct source records and built-in rule version
+[info] - Step 2p: applyPO produces 2 SJE rows per PO source row, each 39 columns
+[info] - Step 2p: debit and credit amounts cancel within each PO journal group
+[info] - Step 2p: transIPID is populated from VENDORID, not hardcoded '0'
+[info] - Step 2p: transCommitmentID (col 2) is set to PONUMBER
+[info] - Step 2p: RESULT and RESOURCE metric log lines are emitted to stdout
+[info] - Step 2p: address-fragment PONUMBER is quarantined, produces 0 SJE rows
+[info] - Step 2p: address-fragment row is skipped; adjacent well-formed rows still emit
+[info] - Step 2p: non-numeric price field is quarantined, produces 0 SJE rows
+[info] - Step 2p: non-numeric price row is skipped; adjacent well-formed rows still emit
+[info] - Step 2p: implausible VENDORID is quarantined; well-formed neighbours (digits, letters+digits) still emit
+[info] - Step 2p: structural reader accepts inch-mark quotes, quarantines embedded-tab records with a reason code, and reconciles
+[info] - Step 2p: unmatched quote in description does not absorb following records; embedded newline is joined
+[info] - Step 2p: multiline record with extra embedded tabs is quarantined under FIELD_COUNT
+[info] - Step 2p: commas in PONUMBER and descriptions are sanitized to prevent CSV corruption
+[info] - Step 2m: mergeSpills produces a merged file with all rows in sort order
+[info] ComponentPilotSpec:
+[info] - context generation and sorted assignment are invariant to input order and sort chunking
+[info] - missing and duplicate assignment fail before completion
+[info] - invalid fiscal dates and duplicate events are rejected
+[info] - bounded sort fan-in rejects inputs exceeding declared resource envelope
+[info] Run completed in 1 second, 233 milliseconds.
+[info] Total number of tests run: 22
+[info] Suites: completed 3, aborted 0
+[info] Tests: succeeded 22, failed 0, canceled 0, ignored 0, pending 0
+[info] All tests passed.
+[success] Total time: 8 s, completed Nov 16, 2026, 8:43:13 AM

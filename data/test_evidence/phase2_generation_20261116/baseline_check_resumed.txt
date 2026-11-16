@@ -1,0 +1,16 @@
+[info] welcome to sbt 1.10.11 (Eclipse Adoptium Java 21.0.8)
+[info] loading settings for project global-plugins from idea.sbt...
+[info] loading global plugins from /Users/ktwitchell001/.sbt/1.0/plugins
+[info] loading settings for project va_pipeline-build from assembly.sbt, plugins.sbt...
+[info] loading project definition from /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/project
+[info] loading settings for project root from build.sbt...
+[info] set current project to va_pipeline (in build file:/Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/)
+[info] running org.universalledger.foundation.va.corpus.ComponentPilotCheck --root /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/phase2_unchanged_baseline_v1 --requireLineage true
+PASS reconciliation.csv rows=26
+PASS synthetic_validation.csv rows=20
+PASS synthetic_conservation.csv rows=96
+PASS financial_rows=86 vendors=3 attributed_input_rows=56 unattributed_input_rows=30
+PASS vendor_temporal_summary.csv rows=96
+PASS vendor_attribute_summary.csv rows=208
+PASS component pilot financial_rows=60 generated_events=36 cutoff_rows=35; limitations in validation/pilot_checks.csv
+[success] Total time: 3 s, completed Nov 16, 2026, 7:35:20 AM
