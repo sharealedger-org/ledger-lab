@@ -60,10 +60,20 @@ object PhaseTwoBaselineDimensions {
       SyntheticReferenceBundle.specs.foreach{case(name,_,_)=>
         require(Vector(historical,generated).map(root=>new File(root,name).length()).sum<=16L*1024*1024)
         val inputs=Vector(historical,generated).map(root=>new Input(new File(root,name),"reference",true))
-        require(inputs.map(_.header).distinct.size==1)
-        val p=writer(attempt,name,inputs.head.header)
+        val header=inputs.maxBy(_.header.size).header
+        val p=writer(attempt,name,header)
         val seen=scala.collection.mutable.Set[String]()
-        try inputs.foreach{in=>var n=in.next();while(n.nonEmpty){val line=csv(n.get);require(seen.size<100000);if(seen.add(line))p.println(line);n=in.next()}}finally{inputs.foreach(_.close());IdentityAudit.close(p)}
+        try{
+          // Generated fund references omit the historical parent-fund columns.
+          // Accept only a trailing schema extension; retain absent fields empty
+          // instead of inventing parent relationships or shifting column values.
+          require(inputs.forall(in=>header.take(in.header.size)==in.header),"Reference headers must agree or omit trailing columns")
+          inputs.foreach{in=>var n=in.next();while(n.nonEmpty){
+            val r=n.get;require(r.size==in.header.size,"Reference row/header width mismatch")
+            val line=csv(r.padTo(header.size,""));require(seen.size<100000)
+            if(seen.add(line))p.println(line);n=in.next()
+          }}
+        }finally{inputs.foreach(_.close());IdentityAudit.close(p)}
       }
     }finally IdentityAudit.close(metrics)
     Files.write(new File(attempt,"DIMENSIONS_COMPLETE").toPath,"historical_rekey_and_shift_generated_unchanged_conflicting_reference_labels_ambiguous\n".getBytes("UTF-8"))

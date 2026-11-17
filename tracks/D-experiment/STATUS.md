@@ -42,6 +42,24 @@ in AGENTS and the contributor guide. Runtime checkpoints and next gates are unch
 
 ## Current plans and evidence
 
+**Owner requested restart:** Metadata repair applied;46 metadata/reporting tests
+and28 remaining baseline/control tests pass (74 across12 suites). Financial
+class checksum verification excluding only dimensions passes. All14 years and
+global controls accepted266,319,818 journal rows. Preparing fresh reporting root
+from those completed partitions; no reposting. Original metadata failure remains
+preserved. Archive rejection still applies; no old attempt files changed.
+
+**Owner paused; full financial controls passed, metadata failure diagnosed:**
+All14 year controls and shared full-population controls passed (266,319,818
+journal rows). Original driver exit1 occurred afterward at the known fund header
+mismatch in dimensions. Production metadata patch is applied, uncommitted;
+46 tests/6 suites passed in `session-run.tmp/fused_metadata_schema_fix_v1/production_tests.txt`.
+No financial/test JVM remains running at the diagnostic check. Reporting has not
+restarted. Automatic review rejected archival of89 preserved files because
+removal of their uncompressed originals lacked explicit authorization; none ran.
+Do not resume execution without owner resumption. Prior live/unapplied entries
+below are historical checkpoints.
+
 **Wave3 passed; twelve of14 accepted:** FY03–FY14 each completed exact native/
 combined GL and observer row controls. Final wave FY15/FY16 is active on verified
 JVMs58296/58297, same group42994/session11522. Gate:210,080,804KiB free,

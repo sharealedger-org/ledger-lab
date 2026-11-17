@@ -1,6 +1,6 @@
 # Ledger Lab: Status (read this first)
 
-Updated 2026-11-16 (Arizona). Start here, then read the relevant track status.
+Updated 2026-11-17 (Arizona). Start here, then read the relevant track status.
 The audit register wins any evidence disagreement.
 
 ## Terms used on this path
@@ -15,6 +15,24 @@ The audit register wins any evidence disagreement.
 | Control / Gold | The separately implemented comparison system / verified reference outputs retained for comparison. |
 
 ## Current checkpoint
+
+**Owner-authorized reporting restart:** All14 financial years and shared controls
+passed, totaling266,319,818 journal rows. Metadata reference-schema repair now
+passes74 tests across12 suites in two runs, including the unchanged financial
+baseline and raw-to-report fixtures. All financial compiled bytes remain frozen;
+only the dimensions adapter differs. Fresh reporting continuation is being
+started from successful partitions; no financial replay. Reporting and final
+deliverables remain pending. No archival/deletion is authorized by this restart.
+
+**Paused by owner; financial replay passed, reporting not resumed:** All14 years
+and shared controls passed:261,529,946 historical +4,789,872 wholly generated =
+266,319,818 journal rows. Driver then failed in dimensions on historical5-column/
+generated3-column fund headers. The tested metadata repair is now applied to
+production source;46 tests across6 suites passed. Changes are uncommitted; no
+financial/test JVM remains live at the diagnostic check. Further baseline checks,
+reporting, result review and final deliverables remain pending. Proposed archival
+was rejected by automatic approval review; no attempt files were archived/deleted.
+This supersedes the active-worker and unapplied-patch checkpoints below.
 
 **Twelve years accepted; final two active:** FY03–FY14 passed native and combined
 GL/row/observer controls. FY15/FY16 now run as two verified live JVMs in the same

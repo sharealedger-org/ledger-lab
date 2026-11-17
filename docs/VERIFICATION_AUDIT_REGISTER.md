@@ -2354,6 +2354,15 @@ All 47 tests pass. Hash/control/cache evidence is preserved under short_year_gat
 the strict hash gate is unchanged. Fresh actual FY03 admission is still required.
 # Fused scheduler fixture continuation
 
+Full financial run completed all14 years and shared exact controls:261,529,946
+historical +4,789,872 wholly generated =266,319,818 journal rows. Driver then
+failed at the diagnosed fund metadata schema mismatch. Production repair applied
+after financial completion;46 metadata/reporting plus28 baseline/control tests
+pass. Non-metadata financial class bytes reverified unchanged. Financial receipts
+in `data/test_evidence/phase2_derived_baseline_20261116/full_financial/`; production
+test logs in `metadata_schema_fix/`. Reporting restart authorized; full reporting
+and final result acceptance still pending. No old attempt archival occurred.
+
 Prepared separate Bash reporting continuation for the known metadata repair. It
 requires all14 actual financial completions and the three full-population Scala
 control totals, preserves source partitions through links, and validates frozen

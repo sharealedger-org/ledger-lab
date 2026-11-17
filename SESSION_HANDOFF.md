@@ -682,6 +682,26 @@ controller draft (check syntax/memory gate only); needs bounded multi-year execu
 and reporting resource admission before production launch. No full proof yet.
 # Hot-path continuation — corrected real-year restart
 
+Owner subsequently authorized job restart. Metadata production repair now passes
+46 +28 tests (12 disjoint suites); all non-metadata compiled financial classes
+match the successful financial snapshot. All14/global financial controls passed;
+small control/summary receipts copied to `.../full_financial/`. Next launch fresh
+reporting continuation from existing accepted partitions, not financial replay.
+Archive helper remains untracked/unexecuted: restart does not authorize the
+previously rejected deletion of retained uncompressed evidence copies.
+
+OWNER PAUSED, 2026-11-17. Subsequent failure diagnostic confirms all14 financial
+years and global counts PASS:261,529,946 +4,789,872 =266,319,818 journal rows.
+Session11522 exited1 at dimensions fund-header mismatch, not financial processing.
+Production metadata patch applied and46 tests/6 suites passed; source/test edits
+remain uncommitted. No financial/test JVM is live. Further baseline verification,
+commit of repair and fresh reporting continuation have NOT occurred. Do not start
+those while paused. Archive helper selftests/check-only passed, but actual run
+was rejected by automatic approval review for deleting89 retained uncompressed
+evidence copies without explicit authorization. No archive/source unlink ran.
+Helper remains untracked; seek explicit approval or a reviewed safer alternative
+if archival is needed after resumption. Financial corpus and old attempts intact.
+
 Latest: Wave3 COMPLETED; FY03–FY14 accepted (12/14). Final FY15/FY16 ACTIVE,
 verified JVMs58296/58297 in same group42994/session11522. Admission free210,080,804KiB,
 worker reservation90,225,074KiB plus40GiB. All financial classes unchanged.

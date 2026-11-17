@@ -1,0 +1,9 @@
+canonical_bytes=102677962038
+largest_file_bytes=9048705583
+free_kib=188999704
+sort_budget_kib=135617954
+reserve_kib=41943040
+ordered_retention_kib=100271448
+projected_report_free_kib=88728256
+report_budget_kib=82358090
+projected_reporting_shortfall_kib=35572874

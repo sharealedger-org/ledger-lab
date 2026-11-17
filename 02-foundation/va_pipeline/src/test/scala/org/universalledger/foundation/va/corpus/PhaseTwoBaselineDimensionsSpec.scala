@@ -5,6 +5,7 @@ import java.nio.file.Files
 import org.scalatest.funsuite.AnyFunSuite
 
 class PhaseTwoBaselineDimensionsSpec extends AnyFunSuite {
+  private def write(file:File,text:String):Unit=Files.write(file.toPath,text.getBytes("UTF-8"))
   def temp(f:(File,File,File,File)=>Unit):Unit={val root=Files.createTempDirectory("baseline-dimensions-").toFile
     def write(file:File,text:String):Unit={file.getParentFile.mkdirs();Files.write(file.toPath,text.getBytes("UTF-8"))}
     def remove(x:File):Unit={if(x.isDirectory)x.listFiles().foreach(remove);Files.delete(x.toPath)}
@@ -34,5 +35,22 @@ class PhaseTwoBaselineDimensionsSpec extends AnyFunSuite {
     var references=0
     ConnectedViewsCheck.scan(new File(out,"aRefFundCSV.txt")){_=>references+=1}
     assert(references==3)
+  }}
+  test("real five-column historical and three-column generated fund references retain their actual fields") {temp{(h,g,n,out)=>
+    val prefix="FNDDTL_FUND_DETAIL_KEY,FNDDTL_FUND_DETAIL_CODE,FNDDTL_FUND_DETAIL_NAME"
+    write(new File(h,"aRefFundCSV.txt"),prefix+",FND_FUND_CODE,FND_FUND_NAME\n201,201,Historical,10,GENERAL\n")
+    write(new File(g,"aRefFundCSV.txt"),prefix+"\n201,201,Fictional\n")
+    PhaseTwoBaselineDimensions.prepare(h,g,Vector(n),out,2)
+    val rows=scala.collection.mutable.ArrayBuffer[Map[String,String]]()
+    ConnectedViewsCheck.scan(new File(out,"aRefFundCSV.txt"))(rows+=_)
+    assert(rows.size==2)
+    assert(rows.find(_("FNDDTL_FUND_DETAIL_NAME")=="Historical").exists(r=>r("FND_FUND_CODE")=="10" && r("FND_FUND_NAME")=="GENERAL"))
+    assert(rows.find(_("FNDDTL_FUND_DETAIL_NAME")=="Fictional").exists(r=>r("FND_FUND_CODE").isEmpty && r("FND_FUND_NAME").isEmpty))
+  }}
+  test("incompatible reference column order fails instead of assigning values to another field") {temp{(h,g,n,out)=>
+    write(new File(h,"aRefFundCSV.txt"),"key,label,code\n1,Historical,10\n")
+    write(new File(g,"aRefFundCSV.txt"),"label,key\nFictional,1\n")
+    intercept[IllegalArgumentException]{PhaseTwoBaselineDimensions.prepare(h,g,Vector(n),out,2)}
+    assert(!new File(out,"DIMENSIONS_COMPLETE").exists())
   }}
 }

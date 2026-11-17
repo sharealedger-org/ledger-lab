@@ -1,0 +1,2 @@
+historical_year,synthetic_year,historical_journal_rows,wholly_journal_rows,combined_journal_rows,ledger_rows,gl_rows,journal_input_opens,process_seconds,status
+2010,2038,20439088,340228,20779316,1496007,572630,1,1740.694140951,PASS
