@@ -682,6 +682,15 @@ controller draft (check syntax/memory gate only); needs bounded multi-year execu
 and reporting resource admission before production launch. No full proof yet.
 # Hot-path continuation — corrected real-year restart
 
+Latest: Wave3 COMPLETED; FY03–FY14 accepted (12/14). Final FY15/FY16 ACTIVE,
+verified JVMs58296/58297 in same group42994/session11522. Admission free210,080,804KiB,
+worker reservation90,225,074KiB plus40GiB. All financial classes unchanged.
+Wait for these two and shared full-population financial controls before applying
+the tested metadata patch. Original driver is still expected to stop at the known
+fund-reference mismatch; preserve that attempt. Then apply/test/commit repair and
+launch guarded reporting continuation with a fresh root, updating dashboard.
+Storage inventory remains read-only; no attempt compressed or removed.
+
 Read-only storage planning: failed/stopped serialv1/v2 and fused admissionv1/v2
 total about38GiB; `.../phase2_derived_baseline_20261116/stopped_attempt_storage.txt`
 records exact du allocation. No files compressed or removed. Protected raw/

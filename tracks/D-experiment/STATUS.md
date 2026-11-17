@@ -42,6 +42,13 @@ in AGENTS and the contributor guide. Runtime checkpoints and next gates are unch
 
 ## Current plans and evidence
 
+**Wave3 passed; twelve of14 accepted:** FY03–FY14 each completed exact native/
+combined GL and observer row controls. Final wave FY15/FY16 is active on verified
+JVMs58296/58297, same group42994/session11522. Gate:210,080,804KiB free,
+90,225,074KiB worker reservation plus40GiB reserve; class hashes reverified.
+Global all-year controls follow these two. Keep production metadata patch
+unapplied until then; reporting/validation/Zenodo script still pending.
+
 **Reporting storage planning inventory only:** Preserved failed/stopped serial
 v1/v2 and fused admissionv1/v2 occupy about38GiB before any compression. Snapshot
 in `data/test_evidence/phase2_derived_baseline_20261116/stopped_attempt_storage.txt`.

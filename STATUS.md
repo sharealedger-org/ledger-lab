@@ -16,13 +16,13 @@ The audit register wins any evidence disagreement.
 
 ## Current checkpoint
 
-**Eight years accepted; third wave active:** FY03–FY10 passed native and combined
-GL/row/observer controls. FY11–FY14 now run as four verified live JVMs in the same
-session11522/group42994. Third-wave admission:252,423,628KiB free,
-184,607,438KiB worker reservation plus40GiB reserve. FY15–FY16 remain queued.
-Metadata repair stays isolated/unapplied; guarded reporting continuation is
-prepared for after all financial work and production repair. Full financial/
-report acceptance and final deliverables remain pending.
+**Twelve years accepted; final two active:** FY03–FY14 passed native and combined
+GL/row/observer controls. FY15/FY16 now run as two verified live JVMs in the same
+session11522/group42994. Final-wave admission:210,080,804KiB free,
+90,225,074KiB worker reservation plus40GiB reserve. Metadata repair remains
+isolated/unapplied; apply/test it only after all financial workers and shared
+controls finish, then use the prepared fresh reporting continuation. Full
+financial/report acceptance and final deliverables remain pending.
 
 **Full-run continuation:** FY04 and FY05 financial controls have passed; FY03/06
 still posting. Metadata preflight found historical fund references have5 columns
