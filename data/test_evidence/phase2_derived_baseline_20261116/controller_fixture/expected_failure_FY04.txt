@@ -1,0 +1,171 @@
+****************************************************************************************************
+                   Step ttl ? APA Technical Transform Layer (standardizeAndSort.applyAPA)
+Start Time: Mon Nov 16 22:14:32 MST 2026
+****************************************************************************************************
+  inPath      : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/fused_controller_fixture_v2/history/VARawFiles
+  refPath     : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/fused_controller_fixture_v2/history
+  outPath     : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/fused_controller_fixture_failure_v2/years/FY32.attempt/source.attempt/adapters/historical
+  year        : 04  types: E,R
+  SortSpec    : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/sort_specs/SortedJE.sortspec  (15 fields)
+  VendorMaster: /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/fused_controller_fixture_v2/history/VendorMaster.csv  (1 entries)
+  ChunkSize   : 200000
+  Reference   : agency=1 fund=1 object=1 program=1 source=1
+  Source folder (Expenditure FY2004): /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/fused_controller_fixture_v2/history/VARawFiles/FY 2004 Expenditure
+  Discovered 1 E files for FY4
+
+  Processing E 0004/05 ? /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/fused_controller_fixture_failure_v2/years/FY32.attempt/source.attempt/adapters/historical/SortedJEFY04_0004_05_exp.csv  (1 file(s))
+
+  File Expenditures May 2004.csv: data_lines=2 source=2 unresolved_ref=0 blank=0
+
+  0004/05: source=2 sje=4 unresolved_ref=0 spills=0
+  Shared financial sort received 4 rows; no per-adapter sorted SJE file written
+
+Control totals:
+  Source rows processed : 2
+  SJE rows produced     : 4  (= ~2 ? source rows)
+  Unresolved ref lookups: 0
+
+RESULT step=ttl year=04 rc=0 records_read=2 records_written=4 elapsed_s=1 input_bytes=250 output_bytes=0
+RESOURCE step=ttl year=04 jvm_heap_bytes=518979584
+STATUS: COMPLETE
+  Source folder (Revenue FY2004): /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/fused_controller_fixture_v2/history/VARawFiles/FY 2004 Revenue
+  Discovered 1 R files for FY4
+
+  Processing R rev ? /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/fused_controller_fixture_failure_v2/years/FY32.attempt/source.attempt/adapters/historical/SortedJEFY04rev.csv  (1 file(s))
+
+  File Revenues May 2004.csv: data_lines=1 source=1 unresolved_ref=0 blank=0
+
+  rev: source=1 sje=2 unresolved_ref=0 spills=0
+  Shared financial sort received 2 rows; no per-adapter sorted SJE file written
+
+RESULT step=ttl year=04 rc=0 records_read=3 records_written=6 elapsed_s=1 input_bytes=113 output_bytes=0
+RESOURCE step=ttl year=04 jvm_heap_bytes=518979584
+****************************************************************************************************
+Process End Time: Mon Nov 16 22:14:32 MST 2026
+****************************************************************************************************
+****************************************************************************************************
+                     Step 2p ? PO Standardize & Sort (standardizeAndSort.applyPO)
+Start Time: Mon Nov 16 22:14:32 MST 2026
+****************************************************************************************************
+  Input file   : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/fused_controller_fixture_v2/history/VAPOData/VA_opendata_FY2004.txt
+  Output file  : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/fused_controller_fixture_failure_v2/years/FY32.attempt/source.attempt/adapters/historical/SortedJEFY04q1PO.csv
+  Year         : 04  Quarter: 1
+  AcctDate     : 04/03/01
+  SortSpec     : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/sort_specs/SortedJE.sortspec  (15 fields)
+  ChunkSize    : 200000
+
+Control totals:
+  Physical lines      : 1  (all assigned to a record: 1)
+  Logical records     : 1  (= accepted + quarantined)
+  PO records accepted : 1
+  Records quarantined : 0  (reader rejects 0; see /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/fused_controller_fixture_failure_v2/years/FY32.attempt/source.attempt/adapters/historical/POQuarantineFY04.csv)
+  SJE rows produced   : 2  (= 2 ? accepted records)
+  Spill files used    : 0
+  Sum of all amounts  : 0.00  (should be 0.00)
+
+RESULT step=2p year=04 rc=0 records_read=1 records_written=2 records_accepted=1 skipped_quarantine=0 reader_rejects=0 physical_lines=1 elapsed_s=1 input_bytes=344 output_bytes=0
+RESOURCE step=2p year=04 jvm_heap_bytes=518979584
+STATUS: COMPLETE
+****************************************************************************************************
+Process End Time: Mon Nov 16 22:14:32 MST 2026
+****************************************************************************************************
+****************************************************************************************************
+                   Step ttl ? APA Technical Transform Layer (standardizeAndSort.applyAPA)
+Start Time: Mon Nov 16 22:14:32 MST 2026
+****************************************************************************************************
+  inPath      : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/fused_controller_fixture_v2/whole/VARawFiles
+  refPath     : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/fused_controller_fixture_v2/whole
+  outPath     : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/fused_controller_fixture_failure_v2/years/FY32.attempt/source.attempt/adapters/wholly_generated
+  year        : 32  types: E,R
+  SortSpec    : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/sort_specs/SortedJE.sortspec  (15 fields)
+  VendorMaster: /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/fused_controller_fixture_v2/whole/VendorMaster.csv  (1 entries)
+  ChunkSize   : 200000
+  Reference   : agency=1 fund=1 object=1 program=1 source=1
+  Source folder (Expenditure FY2032): /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/fused_controller_fixture_v2/whole/VARawFiles/FY 2032 Expenditure
+  Discovered 1 E files for FY32
+
+  Processing E 0032/05 ? /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/fused_controller_fixture_failure_v2/years/FY32.attempt/source.attempt/adapters/wholly_generated/SortedJEFY32_0032_05_exp.csv  (1 file(s))
+
+  File Expenditures May 2032.csv: data_lines=1 source=1 unresolved_ref=0 blank=0
+
+  0032/05: source=1 sje=2 unresolved_ref=0 spills=0
+  Shared financial sort received 2 rows; no per-adapter sorted SJE file written
+
+Control totals:
+  Source rows processed : 1
+  SJE rows produced     : 2  (= ~2 ? source rows)
+  Unresolved ref lookups: 0
+
+RESULT step=ttl year=32 rc=0 records_read=1 records_written=2 elapsed_s=1 input_bytes=169 output_bytes=0
+RESOURCE step=ttl year=32 jvm_heap_bytes=518979584
+STATUS: COMPLETE
+WARNING: No Revenue directory found for FY32 under /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/fused_controller_fixture_v2/whole/VARawFiles
+  WARNING: No APA R files discovered for FY32 ? skipping
+
+  Processing R rev ? /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/fused_controller_fixture_failure_v2/years/FY32.attempt/source.attempt/adapters/wholly_generated/SortedJEFY32rev.csv  (0 file(s))
+
+  rev: source=0 sje=0 unresolved_ref=0 spills=0
+  Shared financial sort received 0 rows; no per-adapter sorted SJE file written
+
+RESULT step=ttl year=32 rc=0 records_read=1 records_written=2 elapsed_s=1 input_bytes=0 output_bytes=0
+RESOURCE step=ttl year=32 jvm_heap_bytes=518979584
+****************************************************************************************************
+Process End Time: Mon Nov 16 22:14:32 MST 2026
+****************************************************************************************************
+****************************************************************************************************
+                     Step 2p ? PO Standardize & Sort (standardizeAndSort.applyPO)
+Start Time: Mon Nov 16 22:14:32 MST 2026
+****************************************************************************************************
+  Input file   : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/fused_controller_fixture_v2/whole/VAPOData/VA_opendata_FY2032.txt
+  Output file  : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/fused_controller_fixture_failure_v2/years/FY32.attempt/source.attempt/adapters/wholly_generated/SortedJEFY32q1PO.csv
+  Year         : 32  Quarter: 1
+  AcctDate     : 32/03/01
+  SortSpec     : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/sort_specs/SortedJE.sortspec  (15 fields)
+  ChunkSize    : 200000
+
+Control totals:
+  Physical lines      : 1  (all assigned to a record: 1)
+  Logical records     : 1  (= accepted + quarantined)
+  PO records accepted : 1
+  Records quarantined : 0  (reader rejects 0; see /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/fused_controller_fixture_failure_v2/years/FY32.attempt/source.attempt/adapters/wholly_generated/POQuarantineFY32.csv)
+  SJE rows produced   : 2  (= 2 ? accepted records)
+  Spill files used    : 0
+  Sum of all amounts  : 0.00  (should be 0.00)
+
+RESULT step=2p year=32 rc=0 records_read=1 records_written=2 records_accepted=1 skipped_quarantine=0 reader_rejects=0 physical_lines=1 elapsed_s=1 input_bytes=377 output_bytes=0
+RESOURCE step=2p year=32 jvm_heap_bytes=518979584
+STATUS: COMPLETE
+****************************************************************************************************
+Process End Time: Mon Nov 16 22:14:32 MST 2026
+****************************************************************************************************
+Exception in thread "main" java.nio.file.NoSuchFileException: /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/fused_controller_fixture_v2/retained_missing_reference/financial_controls/FY04/GL2004.csv
+	at java.base/sun.nio.fs.UnixException.translateToIOException(UnixException.java:92)
+	at java.base/sun.nio.fs.UnixException.rethrowAsIOException(UnixException.java:106)
+	at java.base/sun.nio.fs.UnixException.rethrowAsIOException(UnixException.java:111)
+	at java.base/sun.nio.fs.UnixFileSystemProvider.newByteChannel(UnixFileSystemProvider.java:261)
+	at java.base/java.nio.file.Files.newByteChannel(Files.java:380)
+	at java.base/java.nio.file.Files.newByteChannel(Files.java:432)
+	at java.base/java.nio.file.spi.FileSystemProvider.newInputStream(FileSystemProvider.java:420)
+	at java.base/java.nio.file.Files.newInputStream(Files.java:160)
+	at org.universalledger.foundation.va.corpus.ComponentPilot$.sha(ComponentPilot.scala:22)
+	at org.universalledger.foundation.va.corpus.FusedFinancialYear$.run(FusedFinancialYear.scala:41)
+	at org.universalledger.foundation.va.corpus.FusedFinancialYear$.main(FusedFinancialYear.scala:62)
+	at org.universalledger.foundation.va.corpus.FusedFinancialYear.main(FusedFinancialYear.scala)
+        2.23 real         2.09 user         0.19 sys
+            93016064  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+               23366  page reclaims
+                   0  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   1  signals received
+                   0  voluntary context switches
+                4628  involuntary context switches
+          4373388049  instructions retired
+          7236131624  cycles elapsed
+            78630912  peak memory footprint
