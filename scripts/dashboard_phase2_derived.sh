@@ -98,6 +98,10 @@ global_stage_row() {
     esac
   fi
   if [[ "$value" == RUN && -f "$root/FAILED" ]]; then value=FAILED; fi
+  if [[ "$stage" == exact_output_audit && ! -f "$marker" ]]; then
+    [[ ! -d "$root/exact_output_audit" ]] || value=RUN
+    [[ ! -f "$root/EXACT_OUTPUT_AUDIT_FAILED" ]] || value=FAILED
+  fi
   state="$value"
   # Current temporary files show activity; consolidation can reduce this count.
   if [[ ( "$stage" == report_extract || "$stage" == report_reduce ) && "$value" == RUN && -d "$report" ]]; then

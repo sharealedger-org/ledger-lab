@@ -10,8 +10,11 @@ Same28 sorted inputs, 2GiB heap/one active processor; about145GiB free at
 admission, 40GiB reserve. Dashboard Terminal window1532 selects the new run.
 All17 focused tests and separate500064-row controls passed before launch.
 Actual output equivalence, full controls and paired timings remain pending.
-Separate post-engine full-record audit is being prepared; it will compile/run
-outside the frozen timed build. Upload helper and payload manifest prepared;
+Separate post-engine full-record audit is queued in session13773; it will compile/run
+outside the frozen timed build after workflow completion, compare21 outputs and
+write `COMPARISON.md` with scoped paired timings. Audit tool tests have not yet
+run; their execution is part of that post-engine queue. Lightweight observer53959
+retains correctly decoded decimal/hex file offsets without an ETA. Upload helper and payload manifest prepared;
 no upload/publication or Q2 models. This supersedes the pilot-only/no-improved-
 implementation descriptions below.
 
