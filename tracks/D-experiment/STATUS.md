@@ -1,5 +1,15 @@
 # Track D: Primary research experiment
 
+**Final-collapse wiring verified:** Owner explicitly confirms final cross-worker
+sort/collapse work. Frozen `e788d67` already invokes ReportingPartitionCombine
+after all three worker reductions. Cross-vendor totals use6 key fields, temporal
+summary13, attribute summary10, with all remaining measures reduced by existing
+ReportingSums (10000-key/32MiB bound, fan-in16). Vendor-local outputs concatenate
+in range order; no intermediate concatenated summary file is written. All18
+fixture tests passed, including complete serial/combined record comparison and
+independent controls. Full-run preparation has verified journals through FY41;
+three-worker execution/final collapse are still pending, not accepted by narrative.
+
 **2026-11-17 owner-requested three-way replacement:** Single-worker driver68582
 and JVM68667 intentionally terminated after43min; outputs and
 `STOPPED_BY_OWNER_REPARTITION` retained. Its queued audit69309 was cancelled.
@@ -12,7 +22,7 @@ global additive summaries and corrupted range-hash rejection. Independent audit
 tool falsifiers also pass. Evidence lives in that branch's
 `data/test_evidence/reporting_three_way_v1/`.
 
-Replacement session69014/driver80675 starts verified range preparation at12:44 AZT
+Replacement session69014/driver80675 starts verified range preparation at12:43 AZT
 in `session-run.tmp/phase2_reporting_three_way_v1`; three workers launch after
 preparation, each2GiB/1 active processor, ranges before`v`, `v` to`v5`, and`v5`
 onward. Accepted financial/sorted inputs are reused. Preparation scans source
