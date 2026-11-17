@@ -24,7 +24,8 @@ engine_cell() {
     ok) CELL="${value}s"; ROWS="$(compact "$rin")>$(compact "$rout")" ;;
     fail) CELL=FAILED ;;
     run)
-      if [[ -f "$root/FAILED" && "$current" == "$stage" ]]; then CELL=FAILED
+      if [[ -f "$root/STOPPED_BY_OWNER_REORG" && "$current" == "$stage" ]]; then CELL=STOPPED
+      elif [[ -f "$root/FAILED" && "$current" == "$stage" ]]; then CELL=FAILED
       else
         stamp="$(TZ=America/Phoenix date -j -f '%Y-%m-%dT%H:%M:%S' "$value" +%s 2>/dev/null || date +%s)"
         elapsed=$(( $(date +%s) - stamp )); CELL="RUN $((elapsed/60)):$((elapsed%60))"
@@ -38,6 +39,7 @@ operation_cell() {
   if [[ -f "$marker" ]] || awk -F, -v s="$stage" '$1==s{seen=1;next}seen{done=1}END{exit !done}' "$root/storage_gates.csv"; then
     seconds="$(awk '$2=="real"{printf "%.0f",$1}' "$root/logs/$stage.log")"
     CELL="${seconds:-?}s"
+  elif [[ -f "$root/STOPPED_BY_OWNER_REORG" && "$current" == "$stage" ]]; then CELL=STOPPED
   elif [[ -f "$root/FAILED" && "$current" == "$stage" ]]; then CELL=FAILED
   elif [[ "$current" == "$stage" ]]; then CELL=RUN
   else CELL=started; fi
@@ -64,7 +66,8 @@ class_row() {
   [[ ! -f "$file" ]] || state=prepared
   [[ "$combined" != yes || "${cells[6]}" == - ]] || state=posted
   [[ "$current" != "$stage" && "$current" != "$normalization" ]] || state=ACTIVE
-  if [[ "$state" == ACTIVE && -f "$root/FAILED" ]]; then state=FAILED; fi
+  if [[ "$state" == ACTIVE && -f "$root/STOPPED_BY_OWNER_REORG" ]]; then state=STOPPED
+  elif [[ "$state" == ACTIVE && -f "$root/FAILED" ]]; then state=FAILED; fi
   printf '%-18s |' "$label"
   for CELL in "${cells[@]}"; do printf ' %-11s' "$CELL"; done
   printf ' | %s\n' "$state"
@@ -74,12 +77,62 @@ class_row() {
     printf ' |\n'
   fi
 }
+fused_count() {
+  local file="$1" kind="$2" adapter="$3" pair accepted journals
+  [[ -s "$file" ]] || { printf '-'; return; }
+  pair="$(awk -F, -v k="$kind" -v a="$adapter" '$1==k&&$2==a{print $3,$4}' "$file")"
+  [[ -n "$pair" ]] || { printf '-'; return; }
+  read -r accepted journals <<< "$pair"
+  printf '%s>%s' "$(compact "$accepted")" "$(compact "$journals")"
+}
+render_fused() {
+  local old new sy base source worker phase pooled post_state gl_state perm_state state kind label pay po id
+  printf 'PHASE 2 FUSED GENERATION PROOF   %s\n' "$(TZ=America/Phoenix date '+%Y-%m-%d %H:%M:%S AZT')"
+  printf 'Workflow: '; cat "$root/STATUS"
+  [[ ! -f "$root/FAILED" ]] || cat "$root/FAILED"
+  printf '\n%-18s | %-11s %-11s %-11s %-11s %-11s %-11s %-11s | STATE\n' 'YEAR / CLASS' 'Pay JEs' 'PO JEs' 'Shared sort' 'ID/Date' 'Post' 'GL Bal' 'Permute'
+  for old in 03 04 05 06 07 08 09 10 11 12 13 14 15 16; do
+    new="$(printf '%02d' "$((10#$old+28))")";sy="$(printf '%02d' "$((10#$old-2))")"
+    worker="$root/workers/FY$new.status"
+    if [[ ! -f "$worker" ]]; then
+      printf '%-18s | %-11s %-11s %-11s %-11s %-11s %-11s %-11s | queued\n' "FY$old/SY$sy" - - - - - - -
+      continue
+    fi
+    phase="$(cat "$worker")";base="$root/years/FY$new"
+    [[ -d "$base" ]] || base="$base.attempt"
+    source="$base/source";[[ -d "$source" ]] || source="$source.attempt"
+    pooled=RUN;state=source
+    [[ ! -f "$source/SOURCE_PREPARATION_COMPLETE" ]] || { pooled=sorted;state=prepared; }
+    for kind in historical wholly_generated; do
+      if [[ "$kind" == historical ]]; then label="FY$old historical";id='in TTL';else label="SY$sy generated";id=-;fi
+      pay="$(fused_count "$source/source_controls.csv" "$kind" Pay)"
+      po="$(fused_count "$source/source_controls.csv" "$kind" PO)"
+      printf '%-18s | %-11s %-11s %-11s %-11s %-11s %-11s %-11s | %s\n' "$label" "$pay" "$po" shared "$id" - 'ARE control' - "$state"
+    done
+    post_state=-;gl_state=-;perm_state=-;state=queued
+    case "$phase" in fused_post_*|financial_controls_*) post_state=RUN;gl_state='in Post';perm_state='in Post';state=posting;; esac
+    if [[ -f "$base/output/FY$new/fused_posting_controls.csv" ]]; then post_state=done;gl_state=observed;perm_state=reduced;state=controls;fi
+    [[ ! -f "$base/FINANCIAL_YEAR_COMPLETE" ]] || state=PASS
+    [[ ! -f "$root/FAILED" || "$state" == PASS ]] || state=FAILED
+    printf '%-18s | %-11s %-11s %-11s %-11s %-11s %-11s %-11s | %s\n' "SY$sy combined" - - "$pooled" - "$post_state" "$gl_state" "$perm_state" "$state"
+  done
+  printf '\nPay/PO cells: accepted source groups>journals. Shared sort and in-Post outputs are fused, not extra scans.\n'
+  printf 'Original-pair ARE controls preserve historical GL; full reporting follows financial validation.\n'
+  printf 'Latest disk sample (UTC, free KiB, allocated KiB): ';tail -n 1 "$root/monitor_storage.csv" 2>/dev/null || true
+  printf 'Latest worker log:\n';tail -n 3 "$root/logs/FY03.log" 2>/dev/null | tr '\r' '\n' || true
+  printf 'Run: %s\nRefresh: %ss; Ctrl-C closes display only.\n' "$root" "$interval"
+}
 render() {
+  if [[ -f "$root/PROFILE" && "$(cat "$root/PROFILE")" == phase2-fused-v1 ]]; then render_fused;return;fi
   local current old new sy stage show_counts
   current="$(cat "$root/STATUS" 2>/dev/null || echo admission)"
   printf 'PHASE 2 — HISTORICAL + GENERATED BASELINE   %s\n' "$(TZ=America/Phoenix date '+%Y-%m-%d %H:%M:%S AZT')"
   printf 'Current stage: %s\n' "$current"
-  [[ ! -f "$root/FAILED" ]] || cat "$root/FAILED"
+  if [[ -f "$root/STOPPED_BY_OWNER_REORG" ]]; then cat "$root/STOPPED_BY_OWNER_REORG"
+  elif [[ -f "$root/FAILED" ]]; then cat "$root/FAILED"; fi
+  if [[ -f "$root/STOPPED_BY_OWNER_REORG" && -f "$repo/session-run.tmp/phase2_fused_preparation_v1/STATUS" ]]; then
+    printf 'Reorganization: '; cat "$repo/session-run.tmp/phase2_fused_preparation_v1/STATUS"
+  fi
   [[ ! -f "$root/WORKFLOW_COMPLETE" ]] || cat "$root/WORKFLOW_COMPLETE"
   printf '\n%-18s | %-11s %-11s %-11s %-11s %-11s %-11s %-11s | STATE\n' 'YEAR / CLASS' 'Pay JEs' 'PO JEs' 'Merge' 'ID/Date' 'Post' 'GL Bal' 'Permute'
   for old in 03 04 05 06 07 08 09 10 11 12 13 14 15 16; do

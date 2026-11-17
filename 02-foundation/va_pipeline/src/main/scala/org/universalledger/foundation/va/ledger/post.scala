@@ -30,8 +30,13 @@ import scala.io.Source
 
 
 object post {
+  trait Observer {
+    def opened(file:File):Unit=()
+    def journal(columns:Array[String]):Unit
+    def balance():Unit
+  }
   def apply(fileInLocation: String, fileOutLocation: String, filterYear: String = "",
-            journalNameContains: String = ""): Unit = {
+            journalNameContains: String = "", observer:Option[Observer]=None): Unit = {
     val t0 = System.currentTimeMillis()
 
     println("*" * 100)
@@ -185,7 +190,9 @@ object post {
       //-----------------------------------------------------------------------------------------
 
       // SortedJE files have no header row (JE files are headerless; sortJE preserves that).
-      var jrnlFileX: Iterator[String] = Source.fromFile(fn.toString).getLines()
+      val journalSource=Source.fromFile(fn.toString)
+      observer.foreach(_.opened(fn))
+      var jrnlFileX: Iterator[String] = journalSource.getLines()
       val jrnlLine: BufferedIterator[String] = jrnlFileX.buffered
 
       var jrnlRec = Transaction(
@@ -209,6 +216,7 @@ object post {
           e(10), e(11), e(12), e(13), e(14), e(15), e(16), e(17), e(18), e(19),
           e(20), e(21), e(22), e(23), e(24), safeBD(e(25)), e(26), safeBD(e(27)), safeBD(e(28)), e(29), e(30),
           e(31), e(32), e(33), e(34), e(35), e(36), e(37), e(38))
+        observer.foreach(_.journal(e))
 //        try {
           testJrnlFullKey =
               jrnlRec.transIPID +           // instrument ID — must be first to key by vendor
@@ -244,9 +252,6 @@ object post {
         jrnlEOF = "Y"
       }
 
-      if (jrnlLine.isEmpty) eofJrnl()
-      else readJrnl()
-
       //*****************************************************************************************
       // process variables for while loop in file processing
       //*****************************************************************************************
@@ -260,7 +265,9 @@ object post {
       //*****************************************************************************************
       // Mainline Program Structure:
       //*****************************************************************************************
-
+      try {
+      if (jrnlLine.isEmpty) eofJrnl()
+      else readJrnl()
             while ((jrnlEOF == "N" || ldgrEOF == "N") &&
               !(jrnlEOF == "Y" && ldgrEOF == "Y")) {
 
@@ -330,9 +337,10 @@ object post {
       // Complete fn processing loop for current file name.
       //*****************************************************************************************
 
-      outLedger.close()
-      if (ldgrSource != null) {
-        ldgrSource.close()
+      } finally {
+        outLedger.close()
+        journalSource.close()
+        if (ldgrSource != null) ldgrSource.close()
       }
       // On Windows, Java File.renameTo fails silently if the destination file already exists.
       // Use java.nio.file.Files.move with REPLACE_EXISTING for cross-platform atomicity.
@@ -435,6 +443,7 @@ object post {
           ldgrRec.ldgrExtensionIDCustom + ","
 
         outLedger.write(balSeq + "\n")
+        observer.foreach(_.balance())
         // if (debugPrint == "Y") println("Final output bal: " + ldgrRec)
         ldgrAmtAccum = 0
       }

@@ -8,10 +8,32 @@ import org.universalledger.foundation.va.ledger.{LedgerApp,ReportingSupport}
 object PhaseTwoBaselineControls {
   import ReportingSupport._
   def rows(root:File,pass:String,column:String):Long={var found=0;var result=0L
+    if(pass.startsWith("source:")){
+      require(column=="output_rows")
+      val adapters=scala.collection.mutable.Set[String]()
+      ConnectedViewsCheck.scan(new File(root,"source_controls.csv")){r=>if(r("source_class")==pass.stripPrefix("source:")){
+        require(r("status")=="PASS" && adapters.add(r("adapter")))
+        require(r("source_groups").toLong*2==r("journal_rows").toLong)
+        result+=r("journal_rows").toLong
+      }}
+      require(adapters.toSet==Set("Pay","PO"),"Missing fused source adapter controls");return result
+    }
+    if(pass=="fused_post"){
+      require(column=="input_rows")
+      val counts=scala.collection.mutable.ArrayBuffer[Long]()
+      ConnectedViewsCheck.scan(new File(root,"fused_posting_controls.csv")){r=>
+        require(r("status")=="PASS" || r("status")=="OBSERVED")
+        if(Set("gl_observer_rows","permutation_observer_rows")(r("check"))){
+          require(r("expected")==r("actual"));counts+=r("actual").toLong
+        }
+      }
+      require(counts.size==2 && counts.distinct.size==1,"Fused observation controls incomplete");return counts.head
+    }
     ConnectedViewsCheck.scan(new File(root,"metrics/process_metrics.csv")){r=>if(r("pass_id")==pass){require(r("status")=="complete");found+=1;result+=r(column).toLong}}
     require(found==1,"Missing/duplicate process metric "+pass);result
   }
-  def check(root:File,retained:File,years:Vector[Int],out:File,full:Boolean):Unit={
+  def check(root:File,retained:File,years:Vector[Int],out:File,full:Boolean,
+      historicalPass:String="2m",whollyPass:String="2m",postingPass:String="3"):Unit={
     val attempt=new File(out.getPath+".attempt");require(!out.exists() && !attempt.exists() && attempt.mkdirs())
     val controls=writer(attempt,"baseline_controls.csv",Seq("check","expected","actual","status"))
     val metrics=writer(attempt,"sort_metrics.csv",CorpusExternalSort.header)
@@ -22,7 +44,7 @@ object PhaseTwoBaselineControls {
       val previousGL=new File(retained,s"financial_controls/FY$old/GL$year.csv")
       val nativeGL=new File(native,s"GL$year.csv")
       require(ComponentPilot.sha(previousGL)==ComponentPilot.sha(nativeGL),"Historical raw replay GL changed")
-      val h=rows(native,"2m","output_rows");val w=rows(whole,"2m","output_rows");val actual=rows(financial,"3","input_rows")
+      val h=rows(native,historicalPass,"output_rows");val w=rows(whole,whollyPass,"output_rows");val actual=rows(financial,postingPass,"input_rows")
       require(h+w==actual,"Merged journal row conservation")
       historicalRows+=h;wholeRows+=w;finalRows+=actual
       row(controls,s"FY$fresh journal_rows",h+w,actual,"PASS")
@@ -43,5 +65,6 @@ object PhaseTwoBaselineControls {
     Files.write(new File(attempt,"BASELINE_FINANCIAL_CONTROLS_COMPLETE").toPath,s"historical_journal_rows=$historicalRows\nwholly_journal_rows=$wholeRows\nfinal_journal_rows=$finalRows\n".getBytes("UTF-8"))
     Files.move(attempt.toPath,out.toPath,StandardCopyOption.ATOMIC_MOVE)
   }
-  def main(args:Array[String]):Unit={val p=LedgerApp.parseArgs(args);check(new File(p("root")),new File(p("retained")),p("years").split(",").toVector.map(x=>2000+x.toInt),new File(p("out")),p.getOrElse("full","false").toBoolean)}
+  def main(args:Array[String]):Unit={val p=LedgerApp.parseArgs(args);check(new File(p("root")),new File(p("retained")),p("years").split(",").toVector.map(x=>2000+x.toInt),new File(p("out")),p.getOrElse("full","false").toBoolean,
+    p.getOrElse("historicalPass","2m"),p.getOrElse("whollyPass","2m"),p.getOrElse("postingPass","3"))}
 }

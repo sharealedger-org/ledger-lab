@@ -378,7 +378,10 @@ object standardizeAndSort {
   //  and writes SortedJEFY{yr}q{n}PO.csv.
   //
   //  Memory contract: externalSort is O(chunkSize).  No ArrayBuffer of all rows.
-  def applyPO(params: Map[String, String]): Unit = {
+  def applyPO(params: Map[String, String]): Unit = applyPO(params,None)
+
+  /** Paired SJE output exit; the caller owns sorting when supplied. */
+  def applyPO(params: Map[String, String], pairOutput:Option[Vector[String]=>Unit]): Unit = {
     val t0 = System.currentTimeMillis()
 
     println("*" * 100)
@@ -558,7 +561,18 @@ object standardizeAndSort {
       return
     }
 
-    val (rowsWritten, spillCount) = SortEngine.externalSort(rowIterator, outFile, sortSpec, chunkSize, tmpDir)
+    val (rowsWritten, spillCount) = pairOutput match {
+      case None => SortEngine.externalSort(rowIterator, outFile, sortSpec, chunkSize, tmpDir)
+      case Some(emit) =>
+        var written=0L
+        while(rowIterator.hasNext){
+          val debit=rowIterator.next()
+          require(rowIterator.hasNext,"Incomplete PO journal pair")
+          emit(Vector(debit,rowIterator.next()));written+=2
+        }
+        require(written==totalRows)
+        (written,0)
+    }
     new File(tmpDir).delete()
     reconcile()
 
@@ -1126,7 +1140,10 @@ object standardizeAndSort {
   }
 
   // ── applyAPA: TTL entry point ─────────────────────────────────────────────────
-  def applyAPA(params: Map[String, String]): Unit = {
+  def applyAPA(params: Map[String, String]): Unit = applyAPA(params,None)
+
+  /** Paired SJE output exit before financial sort-key extraction. */
+  def applyAPA(params: Map[String, String], pairOutput:Option[Vector[String]=>Unit]): Unit = {
     val t0 = System.currentTimeMillis()
 
     println("*" * 100)
@@ -1298,10 +1315,13 @@ object standardizeAndSort {
                           locator("VARawFiles/" + relative, rowNum - 1L))
                         val pairs = buildJEPairsAPA(normalized, recType, vendorMap,
                                                     accountingRule, filePeriodKey, acctDate, jrnlID, provenance)
-                        for ((rowStr, _, _) <- pairs) {
-                          chunk += rowStr
-                          sjeRows += 1
-                          if (chunk.size >= chunkSize) flushChunk()
+                        pairOutput match {
+                          case Some(emit) => emit(pairs.map(_._1).toVector);sjeRows+=pairs.size
+                          case None => for ((rowStr, _, _) <- pairs) {
+                            chunk += rowStr
+                            sjeRows += 1
+                            if (chunk.size >= chunkSize) flushChunk()
+                          }
                         }
                       }
                   }
@@ -1321,7 +1341,9 @@ object standardizeAndSort {
 
         println(s"\n  $batchLabel: source=$sourceRows sje=$sjeRows unresolved_ref=$unmatchedRef spills=${spills.size}")
 
-        if (!dryRun && sjeRows > 0) {
+        if (pairOutput.nonEmpty && !dryRun && !parseOnly) {
+          println(s"  Shared financial sort received $sjeRows rows; no per-adapter sorted SJE file written")
+        } else if (!dryRun && sjeRows > 0) {
           println(s"  Merging ${spills.size} spill(s) → $outFile ...")
           val rowsWritten = SortEngine.mergeSpills(spills.toSeq, outFile, sortSpec)
           println(f"  Written: $outFile ($rowsWritten%,d rows)")

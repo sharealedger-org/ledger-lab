@@ -213,19 +213,9 @@ object PermutationGenerator {
 
   // ── Entry point called by LedgerApp dispatcher ─────────────────────────────
   def apply(params: Map[String, String]): Unit = {
-    val t0 = System.currentTimeMillis()
-
-    println("*" * 100)
-    println("                         Step 21 — CCP1 Permutation Capacity (PermutationGenerator)")
-    println("Start Time: " + Calendar.getInstance.getTime)
-    println("*" * 100)
-
-    val inPath  = params.getOrElse("inPath",  "data/output/")
-    val outPath = params.getOrElse("outPath", "data/output/")
-    val yearStr = params.getOrElse("year",    "2014")
-
-    val shortYr = if (yearStr.length == 4) yearStr.substring(2) else yearStr
-
+    val inPath=params.getOrElse("inPath","data/output/")
+    val yearStr=params.getOrElse("year","2014")
+    val shortYr=if(yearStr.length==4)yearStr.substring(2)else yearStr
     // Collect SortedJE files for the requested year
     val inDir   = new File(inPath)
     // One-read rule: when SortedJEFY{yy}merged.csv exists, skip the 2m inputs that hold the same rows.
@@ -243,39 +233,80 @@ object PermutationGenerator {
     }
     println(s"  SortedJE files : ${jeFiles.map(_.getName).mkString(", ")}")
 
-    val outFile     = new File(outPath, s"PERM_TBL20${shortYr}.csv")
-    val summaryFile = new File(outPath, s"PERM_SUMMARY20${shortYr}.csv")
+
+    val accumulator=new Accumulator(params)
+    try {
+      jeFiles.foreach { file =>
+        accumulator.addInputBytes(file.length())
+        val source=Source.fromFile(file)(scala.io.Codec.UTF8
+          .onMalformedInput(java.nio.charset.CodingErrorAction.REPLACE)
+          .onUnmappableCharacter(java.nio.charset.CodingErrorAction.REPLACE))
+        try source.getLines().foreach(line=>accumulator.accept(line.split(",",-1)))
+        finally source.close()
+      }
+      accumulator.finish()
+    } finally accumulator.close()
+  }
+
+  /** Incremental consumer used by the actual posting journal-read boundary.
+    * No journal file is opened here; accept observes each upstream record once.
+    */
+  final class Accumulator(params: Map[String,String]) extends AutoCloseable {
+    private val t0 = System.currentTimeMillis()
+
+    println("*" * 100)
+    println("                         Step 21 — CCP1 Permutation Capacity (PermutationGenerator)")
+    println("Start Time: " + Calendar.getInstance.getTime)
+    println("*" * 100)
+
+    private val inPath  = params.getOrElse("inPath",  "data/output/")
+    private val outPath = params.getOrElse("outPath", "data/output/")
+    private val yearStr = params.getOrElse("year",    "2014")
+
+    private val shortYr = if (yearStr.length == 4) yearStr.substring(2) else yearStr
+
+    private val outFile     = new File(outPath, s"PERM_TBL20${shortYr}.csv")
+    private val summaryFile = new File(outPath, s"PERM_SUMMARY20${shortYr}.csv")
     println(s"  Output file    : ${outFile.getPath}")
 
-    val bufCap = params.getOrElse("permBufferCapacity", "1000000").toInt
-    val fdCap  = params.getOrElse("permFdCap", "20000").toInt
+    private val bufCap = params.getOrElse("permBufferCapacity", "1000000").toInt
+    private val fdCap  = params.getOrElse("permFdCap", "20000").toInt
+    private val maxGlKeys=params.getOrElse("permMaxGLKeys",Int.MaxValue.toString).toInt
+    private val maxVendors=params.getOrElse("permMaxVendors",Int.MaxValue.toString).toInt
+    private val mergeFanIn=params.getOrElse("permMergeFanIn",Int.MaxValue.toString).toInt
+    require(bufCap>0 && fdCap>0 && maxGlKeys>0 && maxVendors>0)
+    require(mergeFanIn>=2)
     require(DIM_COUNT < 64, "dimension index must fit in 6 bits")
     new File(outPath).mkdirs()
 
     // ── Pass over the sorted JE: per-row facts into a bounded buffer; full buffers spill as sorted runs ──
-    val glIndex      = mutable.HashMap[GLKey, GLInfo]()
-    var nextId       = 0
-    val varied       = Array.fill(DIM_COUNT)(false)
-    val variedBefore = new Array[Boolean](DIM_COUNT)
-    val firstHash    = new Array[Long](DIM_COUNT)
-    val hs           = new Array[Long](DIM_COUNT)
-    val fd           = new FdTracker(DIM_COUNT, VENDOR_DIM, fdCap, firstHash)
+    private val glIndex      = mutable.HashMap[GLKey, GLInfo]()
+    private var nextId       = 0
+    private val varied       = Array.fill(DIM_COUNT)(false)
+    private val variedBefore = new Array[Boolean](DIM_COUNT)
+    private val firstHash    = new Array[Long](DIM_COUNT)
+    private val hs           = new Array[Long](DIM_COUNT)
+    private val fd           = new FdTracker(DIM_COUNT, VENDOR_DIM, fdCap, firstHash)
     // Vendor-group check (exact, uses the CKB vendor order): a dimension is vendor-determined when it is
     // constant within every vendor group.  A vendor that reappears after its group closed makes it unreliable.
-    val vendorConst  = Array.fill(DIM_COUNT)(true)
-    val vendorFirst  = new Array[Long](DIM_COUNT)
-    val vendorsDone  = mutable.HashSet[Long]()
-    var curVendor    = 0L
-    var haveVendor   = false
-    var vendorOrdered = true
-    var totalRead    = 0L
-    var totalInputBytes = 0L
+    private val vendorConst  = Array.fill(DIM_COUNT)(true)
+    private val vendorFirst  = new Array[Long](DIM_COUNT)
+    private val vendorsDone  = mutable.HashSet[Long]()
+    private var curVendor    = 0L
+    private var haveVendor   = false
+    private var vendorOrdered = true
+    private var totalRead    = 0L
+    private var totalInputBytes = 0L
 
-    val buf = new Array[Rec](bufCap)
-    var bufN = 0
-    val spills = mutable.ArrayBuffer[File]()
-    var spillRecords = 0L
-    def spillBuffer(): Unit = {
+    private val buf = new Array[Rec](bufCap)
+    private var bufN = 0
+    private val spills = mutable.ArrayBuffer[File]()
+    private var spillRecords = 0L
+    private var initialSpillFiles=0
+    private var mergeLevels=0
+    private var mergeBytes=0L
+    private def spillBuffer(): Unit = {
+      require(spills.size<100000,"Permutation spill metadata bound exceeded")
       java.util.Arrays.sort(buf, 0, bufN, recComparator)
       val f = new File(outPath, s"perm_spill_${shortYr}_${spills.size}.tmp")
       val out = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(f), 1 << 16))
@@ -295,10 +326,10 @@ object PermutationGenerator {
     }
     // Direct-mapped recent-fact cache: a fact identical to the one last stored in its slot is not re-emitted.
     // Bounded (2^20 slots), it only removes duplicates the spill de-duplication would remove anyway.
-    val cacheMask = (1 << 20) - 1
-    val cachePk   = Array.fill(cacheMask + 1)(-1L)
-    val cacheH    = new Array[Long](cacheMask + 1)
-    def emit(glId: Int, d: Int, h: Long): Unit = {
+    private val cacheMask = (1 << 20) - 1
+    private val cachePk   = Array.fill(cacheMask + 1)(-1L)
+    private val cacheH    = new Array[Long](cacheMask + 1)
+    private def emit(glId: Int, d: Int, h: Long): Unit = {
       val pk = (glId.toLong << 6) | d
       val slot = ((pk * 0x9E3779B97F4A7C15L) ^ h * 0xC2B2AE3D27D4EB4FL).hashCode & cacheMask
       if (cachePk(slot) == pk && cacheH(slot) == h) return
@@ -308,71 +339,106 @@ object PermutationGenerator {
       bufN += 1
     }
 
-    val runs = mutable.ArrayBuffer[Run]()
-    try {
-      for (jeFile <- jeFiles) {
-        totalInputBytes += jeFile.length()
-        implicit val codec = scala.io.Codec.UTF8
-          .onMalformedInput(java.nio.charset.CodingErrorAction.REPLACE)
-          .onUnmappableCharacter(java.nio.charset.CodingErrorAction.REPLACE)
-        val src = Source.fromFile(jeFile)(codec)
-        try {
-          for (line <- src.getLines()) {
-            val cols = line.split(",", -1)
-            // Same row-acceptance rule as step 20 (> col 31) so records_read matches; short rows read ""
-            if (cols.length > COL_DIR_FLAG) {
-              totalRead += 1
-              val key = GLKey(
-                agency         = cols(COL_AGENCY).trim,
-                nominalAccount = cols(COL_NOMINAL_ACC).trim,
-                fund           = cols(COL_FUND).trim,
-                objectCode     = cols(COL_OBJECT).trim,
-                fiscalYear     = cols(COL_FISCAL_YR).trim,
-                dirFlag        = cols(COL_DIR_FLAG).trim
-              )
-              var info = glIndex.getOrElse(key, null)
-              val isNew = info == null
-              if (isNew) { info = new GLInfo(nextId); nextId += 1; glIndex.put(key, info) }
-              info.rows += 1
-              val existing = if (isNew) info.id else nextId   // GL ids that existed before this row
-
-              var d = 0
-              while (d < DIM_COUNT) {
-                val c = DIM_COLUMNS(d)
-                hs(d) = hash64(if (c < cols.length) cols(c).trim else "")
-                d += 1
+    private val runs = mutable.ArrayBuffer[Run]()
+    private def compactSpills():Unit={
+      initialSpillFiles=spills.size
+      // Leave room for the resident final buffer in the terminal merge.
+      while(spills.size>=mergeFanIn){
+        mergeLevels+=1
+        val next=mutable.ArrayBuffer[File]()
+        spills.grouped(mergeFanIn).zipWithIndex.foreach{case(group,i)=>
+          if(group.size==1)next+=group.head
+          else{
+            val readers=group.map(new FileRun(_))
+            val target=new File(outPath,s"perm_merge_${shortYr}_${mergeLevels}_$i.tmp")
+            val out=new DataOutputStream(new BufferedOutputStream(new FileOutputStream(target),1<<16))
+            val q=new mutable.PriorityQueue[(Rec,Int)]()(
+              Ordering.fromLessThan[(Rec,Int)]((a,b)=>recLess(b._1,a._1)))
+            try{
+              readers.indices.foreach(j=>if(readers(j).cur!=null)q.enqueue((readers(j).cur,j)))
+              var last:Rec=null
+              while(q.nonEmpty){
+                val(r,j)=q.dequeue()
+                if(last==null||r.pk!=last.pk||r.h!=last.h){out.writeLong(r.pk);out.writeLong(r.h)}
+                last=r;readers(j).advance()
+                if(readers(j).cur!=null)q.enqueue((readers(j).cur,j))
               }
-              if (totalRead == 1L) System.arraycopy(hs, 0, firstHash, 0, DIM_COUNT)
-              System.arraycopy(varied, 0, variedBefore, 0, DIM_COUNT)
-              d = 0
-              while (d < DIM_COUNT) {
-                if (!varied(d) && hs(d) != firstHash(d)) {
-                  varied(d) = true
-                  // Every earlier row held the first value, so every GL key seen so far owes that one fact.
-                  var g = 0
-                  while (g < existing) { emit(g, d, firstHash(d)); g += 1 }
-                }
-                if (varied(d)) emit(info.id, d, hs(d))
-                d += 1
-              }
-              fd.observe(hs, variedBefore, varied)
-
-              val vh = hs(VENDOR_DIM)
-              if (!haveVendor || vh != curVendor) {
-                if (haveVendor) vendorsDone += curVendor
-                if (vendorsDone.contains(vh)) vendorOrdered = false
-                curVendor = vh; haveVendor = true
-                System.arraycopy(hs, 0, vendorFirst, 0, DIM_COUNT)
-              } else {
-                d = 0
-                while (d < DIM_COUNT) { if (hs(d) != vendorFirst(d)) vendorConst(d) = false; d += 1 }
-              }
-            }
+            }finally{readers.foreach(_.close());out.close()}
+            mergeBytes+=target.length();group.foreach(f=>require(f.delete()))
+            next+=target
           }
-        } finally src.close()
+        }
+        spills.clear();spills++=next
       }
+    }
 
+    private var closed=false
+    private var finished=false
+    def rows:Long=totalRead
+    def addInputBytes(bytes:Long):Unit={require(!finished && bytes>=0);totalInputBytes+=bytes}
+    def accept(cols:Array[String]):Unit={
+      require(!finished && !closed)
+  // Same row-acceptance rule as step 20 (> col 31) so records_read matches; short rows read ""
+  if (cols.length > COL_DIR_FLAG) {
+    totalRead += 1
+    val key = GLKey(
+      agency         = cols(COL_AGENCY).trim,
+      nominalAccount = cols(COL_NOMINAL_ACC).trim,
+      fund           = cols(COL_FUND).trim,
+      objectCode     = cols(COL_OBJECT).trim,
+      fiscalYear     = cols(COL_FISCAL_YR).trim,
+      dirFlag        = cols(COL_DIR_FLAG).trim
+    )
+    var info = glIndex.getOrElse(key, null)
+    val isNew = info == null
+    if (isNew) {
+      require(glIndex.size<maxGlKeys,"Permutation GL-key bound exceeded")
+      info = new GLInfo(nextId); nextId += 1; glIndex.put(key, info)
+    }
+    info.rows += 1
+    val existing = if (isNew) info.id else nextId   // GL ids that existed before this row
+
+    var d = 0
+    while (d < DIM_COUNT) {
+      val c = DIM_COLUMNS(d)
+      hs(d) = hash64(if (c < cols.length) cols(c).trim else "")
+      d += 1
+    }
+    if (totalRead == 1L) System.arraycopy(hs, 0, firstHash, 0, DIM_COUNT)
+    System.arraycopy(varied, 0, variedBefore, 0, DIM_COUNT)
+    d = 0
+    while (d < DIM_COUNT) {
+      if (!varied(d) && hs(d) != firstHash(d)) {
+        varied(d) = true
+        // Every earlier row held the first value, so every GL key seen so far owes that one fact.
+        var g = 0
+        while (g < existing) { emit(g, d, firstHash(d)); g += 1 }
+      }
+      if (varied(d)) emit(info.id, d, hs(d))
+      d += 1
+    }
+    fd.observe(hs, variedBefore, varied)
+
+    val vh = hs(VENDOR_DIM)
+    if (!haveVendor || vh != curVendor) {
+      if (haveVendor) {
+        require(vendorsDone.contains(curVendor) || vendorsDone.size<maxVendors,"Permutation vendor-tracking bound exceeded")
+        vendorsDone += curVendor
+      }
+      if (vendorsDone.contains(vh)) vendorOrdered = false
+      curVendor = vh; haveVendor = true
+      System.arraycopy(hs, 0, vendorFirst, 0, DIM_COUNT)
+    } else {
+      d = 0
+      while (d < DIM_COUNT) { if (hs(d) != vendorFirst(d)) vendorConst(d) = false; d += 1 }
+    }
+  }
+    }
+    def finish():Unit={
+      require(!finished && !closed);finished=true
+      try {
       // ── Final reduce: merge the sorted runs; distinct hashes per (GL key, dimension) ──
+      compactSpills()
       java.util.Arrays.sort(buf, 0, bufN, recComparator)
       spills.foreach(f => runs += new FileRun(f))
       runs += new MemRun(buf, bufN)
@@ -476,15 +542,20 @@ object PermutationGenerator {
       println(s"  Determinants not tracked : $untrackedNames")
       println(s"  Output                   : ${outFile.getPath}")
       println("STATUS: COMPLETE")
-      println(s"RESULT step=21 year=$yearStr rc=0 records_read=$totalRead records_written=$glKeys elapsed_s=$elapsedS input_bytes=$totalInputBytes output_bytes=$outBytes vendor_rows=$vendorRows capacity=$capacityTotal capacity_independent=$independentTotal varying_dims=$varyingNames car_dims=$carNames dropped_dims=$droppedNames capacity_dims=$capacityNames buffer_overflow=$overflow spill_files=${spills.size} spill_records=$spillRecords reduce_seconds=$reduceS vendor_order=${if (vendorOrdered) "ok" else "violated"} fd_untracked_dims=$untrackedNames")
+      println(s"RESULT step=21 year=$yearStr rc=0 records_read=$totalRead records_written=$glKeys elapsed_s=$elapsedS input_bytes=$totalInputBytes output_bytes=$outBytes vendor_rows=$vendorRows capacity=$capacityTotal capacity_independent=$independentTotal varying_dims=$varyingNames car_dims=$carNames dropped_dims=$droppedNames capacity_dims=$capacityNames buffer_overflow=$overflow spill_files=$initialSpillFiles spill_records=$spillRecords reduce_seconds=$reduceS vendor_order=${if (vendorOrdered) "ok" else "violated"} fd_untracked_dims=$untrackedNames merge_levels=$mergeLevels merge_bytes=$mergeBytes final_merge_readers=${runs.size}")
       println(s"RESOURCE step=21 year=$yearStr jvm_heap_bytes=$peakRss")
 
       println("*" * 100)
       println(s"Process End Time: ${Calendar.getInstance.getTime}")
       println("*" * 100)
-    } finally {
-      runs.foreach(r => try r.close() catch { case _: Exception => })
-      spills.foreach(f => try f.delete() catch { case _: Exception => })
+
+      } finally close()
+    }
+    override def close():Unit=if(!closed){
+      closed=true
+      runs.foreach(r=>try r.close()catch{case _:Exception=>()})
+      spills.foreach(f=>try f.delete()catch{case _:Exception=>()})
+      glIndex.clear();vendorsDone.clear()
     }
   }
 }

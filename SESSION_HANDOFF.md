@@ -578,3 +578,64 @@ Owner requests familiar stage columns and synthetic class rows. Unified dashboar
 now displays historical/generated/combined rows, times/counts and corpus stages;
 queued years collapse and active-year counts expand to keep width/height bounded.
 Zenodo script/results commit still await actual full validation. No Q2/publication.
+
+20:55 AZT: committed correction/dashboard/evidence as 465fe21. Started fresh full
+v2 (session 21872) at phase2_derived_baseline_v2; hashes/AC/disk gates pass (~326
+GiB free). Current driver replays raw FY03; do not duplicate it. Unified dashboard
+open in Terminal (124 columns/58 rows), active pointer selects v2. User prefers
+class rows to excessive columns; implemented Pay/PO/Merge/ID-Date/Post/GL/Permute
+with active-year counts, compact queued years and shared corpus-stage footer.
+App goal tool still reports paused; user has authorized go-forward, but app-side
+resume is needed for automatic agent continuation after the turn. Driver itself
+is active independently. All full controls/results/Zenodo work remain pending.
+
+Owner subsequently resumed the persistent app goal (confirmed active via goal
+tool). Autonomous agent follow-through is now active as well as v2 driver 26340,
+execution session 21872. Dashboard process 26600 was verified live. Next: retain
+current attempt, monitor financial/resource controls, inspect first successful
+posting, then complete remaining years/reporting and accepted-results deliverables.
+
+Owner supersedes waiting for full completion: this work proves synthetic generation,
+not Paper 1 cost curves. Stop large v2 and reorganize sooner. Sent TERM only to
+verified process group 26340; execution session 21872 exited 143. Preserve its
+completed producer/hash evidence and interrupted normalization, marked explicitly
+STOPPED_BY_OWNER_REORG rather than a financial failure. Goal remains active for
+bounded fused implementation/verification, then corpus-scale generation proof.
+Retain independent Paper 1/default profile, Scala financial processing, controls,
+40-GiB reserve and separate validated-results/Zenodo-script deliverables.
+
+21:21 AZT implementation checkpoint: added HistoricalJournalExit and made the
+legacy normalizer delegate to it. Added optional paired output exits to APA/PO
+(default APIs unchanged), SharedJournalSort and FusedSourcePrepare. Shared sorter
+uses canonical runs and existing SortEngine keys, bounded byte/row buffers and
+fan-in; no separate source-locator/financial wrapper passes. New fused source
+fixture compares journals and actual ledger/GL/permutation/report results against
+independent normalization. 26 tests pass (fused_source_tests.txt).
+Next implement GL/permutation observers at post.readJrnl, reusing existing logic
+with explicit caps/fan-in and bounded GL partials; build native historical control
+observer branch, fused full driver, admission and dashboard profile support. No
+full run active. Do not call source-only fixture complete topology evidence.
+
+21:32 AZT: actual fused GL/permutation test passed, then complete bounded fused
+year/native-control test passed (45 tests/eight suites). New FusedPosting observes
+inside post.readJrnl, counts real input opens and ledger emits; same GL/permutation
+algorithms back independent and incremental APIs. Fixture renames named input
+after open to falsify any later GL/Perm journal reread. Perm merge supports bounded
+fan-in (forced 2, six levels over 47 spills), state caps tested. New
+FusedFinancialYear.main runs source callbacks, native GL hash control, shared sort,
+posting observers and exact combined controls, atomically publishes year output.
+Native/wholly original GL accumulators clear maps after writing. GL cap overflow
+fails; no bounded GL partial spill implementation is claimed.
+Next: freeze this slice; run/admit actual FY03 fused year to measure memory/scratch
+and validate exact real GL/source rows. Build full Bash controller (max four workers,
+resource admission; compiled Scala CLI), dimensions/reporting and dashboard fused
+profile. Full goal, reporting, validated commit and Zenodo upload script pending.
+
+Ready to freeze fused financial admission build. Final resource checks: 45 pass.
+Added scripts/run_phase2_fused_admission.sh (check-only default), compiled Scala
+CLI one-year resource/control run, 2-GiB heap/one active processor, process-group
+isolation and 40-GiB live scratch stop. FY03 provisional budget ~28 GiB, free~315
+GiB at check. Fused dashboard profile preview passes, keeps class rows/stage columns
+and labels shared/in-post work. Next commit preparation; launch actual FY03 at
+session-run.tmp/phase2_fused_admission_v1. Keep Scala build frozen while active;
+full controller/parallel admission/reporting remain to do after real-year evidence.

@@ -438,4 +438,29 @@ class GLPostSpec extends AnyFunSuite {
     assert(log.contains("RESOURCE step=21 year=2014"), "Should emit RESOURCE log line")
     assert(log.contains("records_read=2 "), log)
   }
+  test("incremental observers reject GL/vendor state beyond declared bounds") {
+    withTempDirectory("observer-bounds-") { dir =>
+      val row=makeJERow("a","A","F","EXP","2031/05","1","D").split(",",-1)
+      val gl=new GLPost.Accumulator(dir.resolve("bounded_GL.csv").toFile,1)
+      gl.accept(row)
+      val other=row.clone();other(12)="OTHER"
+      assert(intercept[IllegalArgumentException]{gl.accept(other)}.getMessage.contains("GL key bound"))
+      val permutation=new PermutationGenerator.Accumulator(Map("outPath"->dir.toString,"year"->"31",
+        "permBufferCapacity"->"2","permMaxGLKeys"->"1","permMaxVendors"->"1","permMergeFanIn"->"2"))
+      try {
+        permutation.accept(row)
+        assert(intercept[IllegalArgumentException]{permutation.accept(other)}.getMessage.contains("GL-key bound"))
+      } finally permutation.close()
+      val vendorDir=Files.createDirectory(dir.resolve("vendors"))
+      val vendors=new PermutationGenerator.Accumulator(Map("outPath"->vendorDir.toString,"year"->"31",
+        "permBufferCapacity"->"2","permMaxVendors"->"1","permMergeFanIn"->"2"))
+      try {
+        vendors.accept(row)
+        val b=row.clone();b(0)="b";vendors.accept(b)
+        val c=row.clone();c(0)="c"
+        assert(intercept[IllegalArgumentException]{vendors.accept(c)}.getMessage.contains("vendor-tracking bound"))
+      } finally vendors.close()
+    }
+  }
+
 }

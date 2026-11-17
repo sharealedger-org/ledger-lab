@@ -42,6 +42,48 @@ in AGENTS and the contributor guide. Runtime checkpoints and next gates are unch
 
 ## Current plans and evidence
 
+**Fused financial build ready for real-year admission:** 45 tests pass after
+resource cleanup checks. FusedFinancialYear includes original-pair native GL
+hash checks, shared source sort, actual posting observations, bounded permutation
+fan-in and exact combined GL/row controls. New admission wrapper runs compiled
+Scala directly with 2-GiB heap/one logical processor and 40-GiB live scratch stop;
+FY03 provisional worker budget ~28 GiB, not a measured footprint. Fused dashboard
+shows shared/in-Post work without implying separate scans. Freeze this checkpoint,
+then run real FY03 before any four-worker/full-corpus admission. No cost claim.
+
+**Owner reprioritization — fused implementation now:** Stop v2 before full
+completion; this is synthetic generation proof, not a cost-curve measurement.
+Verified process group 26340 terminated; session 21872 exited 143. Marked
+`STOPPED_BY_OWNER_REORG`; preserve completed raw controls/interrupted attempt.
+Implement/verify the [fused process contract](../../docs/PHASE_TWO_FUSED_PROCESS_CONTRACT.md)
+on bounded fixtures before new full admission. Pair normalization before initial
+sort, shared Pay/PO sort, GL/permutation observations in posting; required bounded
+reductions remain explicit. Preserve Paper 1 independent/default path. Goal active;
+no large replay currently running, no fused success claim or Q2/publication.
+
+**21:21 AZT bounded source slice:** Shared pair-policy exit and pre-sort APA/PO
+output exits now feed one bounded shared financial sorter. New named fixture
+matches independent journal multisets and actual ledger/GL/permutation/report
+outputs; 26 tests pass, including unchanged baseline. Posting observers/native
+control branch/full orchestration remain unimplemented. Evidence in
+`phase2_derived_baseline_20261116/fused_source_tests.txt`; no full admission yet.
+
+**21:32 AZT fused financial fixture:** Posting now supplies actual journal-read
+observations to shared GL/permutation accumulators. The no-reread falsifier and
+bounded permutation merges pass; complete FusedFinancialYear adds native raw-pair
+GL hash and combined row/GL controls. 45 tests pass across eight suites. State
+caps are explicit; GL cap overflow fails instead of spilling. Actual FY03
+resource/control admission and full controller/reporting remain pending; no cost
+claim. See `fused_financial_year_tests.txt` and the audit register.
+
+**20:55 AZT — corrected full v2 active:** `465fe21`, execution session 21872,
+root `session-run.tmp/phase2_derived_baseline_v2`; fresh raw replay, not an in-place
+retry. Frozen hashes/AC/starting gate passed (~326 GiB free); stage reserve and
+monitoring enabled. Live Terminal dashboard restored stage columns and compact
+class rows; active pointer selects v2. V1 failure remains preserved. Full financial
+and reporting acceptance pending. Owner has resumed the persistent app goal;
+autonomous agent follow-through and the financial driver are both active.
+
 **Owner resumes, evening 2026-11-16 AZT:** V1 stopped at posting because the
 launcher did not seed its isolated generation with the prepared merged journals.
 Preserved failure logs prove the missing consumer input; no combined acceptance.
@@ -622,3 +664,11 @@ Read-only bottom-hash source selection is active across retained Run 1 FY03–16
 financial outputs unchanged. Mixed-class unit tests cover recurring suppliers
 across years/funds and joint budget conservation. Actual mixed-class/full execution
 still pending frozen selection/admission. Q2/portfolio modeling remains unopened.
+
+Owner follow-up during v2: prior four-CPU scheduling is the target after the
+corrected first-year posting gate; host has four logical CPUs/two physical cores,
+16 GiB RAM. Owner also questions separate ID/date passes. Code trace confirms
+complete journal pairs exist before APA/PO sorting, giving a candidate pair-level
+fusion point. Current financial merge cannot rekey vendor IDs without restoring
+sort order. Fusion/parallel admission remain unimplemented and must pass versioned
+consumer/control/materialization gates; current v2 engine/config remain frozen.

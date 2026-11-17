@@ -2215,3 +2215,93 @@ The harness first failed loading a function through process substitution; loadin
 a saved function file fixes that harness failure. No financial engine code changed.
 Correction is verified at bounded handoff scope only; fresh full v2 remains pending.
 Owner explicitly resumed after pause and requested compact class rows/stage columns.
+
+## 2026-11-16 evening AZT — Owner challenges serial scheduling and normalization passes
+
+Owner recalls prior four-CPU execution and asks whether ID/date preparation can
+run as a CKB sort exit alongside merge. Read-only trace confirms APA constructs
+both journal lines before chunk insertion in standardizeAndSort.applyAPA;
+PO similarly constructs debitRow/creditRow before rowIterator sorting. Thus a
+pair-level normalization hook before initial key extraction is a candidate to
+avoid the later source-locator sort and financial re-sort. Current mergeSpills
+only accepts already financially ordered streams: recoding leading vendor IDs at
+that exit without downstream sorting would violate its order contract.
+
+This is an implementation opportunity, not completed fusion evidence. Required
+falsifier before any replacement: unchanged baseline and named fused fixtures
+reach actual merge/post/report consumers with paired reassignment, exact shifted
+historical-plus-wholly GL, explicit lineage/dates, controls and bounded buffers.
+Default old behavior must remain unchanged. Preserve current measured path until
+an approved versioned replacement passes its gates.
+
+Host evidence: 16 GiB RAM, four logical CPUs/two physical cores. Four workers are
+the owner's scheduling target after first corrected posting passes. Admission must
+budget concurrent temporary sorts and RSS, not infer four-worker safety from CPU
+count. Current serial v2 remains active. No financial or topology edit from this
+read-only trace; no fused or parallel run claim.
+
+## 2026-11-16 evening AZT — Candidate shared-sort/posting-observer profile
+
+Owner asks to move ID/date into paired TTL/ARE output, share Pay/PO sorting, and
+produce GL/permutation while posting rather than retain Paper 1's separate scans.
+Read-only trace confirms pairs precede key extraction, post.readJrnl is the actual
+ordered read boundary, and current GLPost/PermutationGenerator each reread SJEs.
+GL uses a year-wide hash map; permutation has bounded fact spills but also global
+GL indexing and vendor tracking. Co-locating unchanged helpers is not yet a bounded
+integrated implementation. See PHASE_TWO_FUSED_PROCESS_CONTRACT.md for the
+candidate topology, native historical control preservation, restart/materialization
+contracts and falsifiers. State: design_only/not_implemented. Current v2 continues;
+Paper 1 profile and target-runtime gap statuses remain unchanged.
+
+## 2026-11-16 21:21 AZT — Shared source-sort fixture verified; posting fusion pending
+
+Owner explicitly supersedes completing the old full replay first: stop v2 and
+reorganize now because this is synthetic-generation proof, not a cost measurement.
+Verified replay group 26340 stopped; session 21872 exited 143, owner-stop marker
+preserves the distinction from financial failure. Goal stays active.
+
+Extracted HistoricalJournalExit is shared by the old standalone normalizer and
+new paired APA/PO output exits. FusedSourcePrepare feeds historical and wholly
+pairs to SharedJournalSort (32-MiB/100k defaults, fan-in 16), using existing
+SortEngine key/chunk/merge contracts without encoded wrapper files. Original-pair
+observer is an explicit pre-normalization control interface; full native GL branch
+and full orchestration still need construction. New fixture uses negative expenses,
+known/reassigned/unresolved identities, receipts, PO, both populations, one-row
+runs and fan-in 2. Journal multisets, sorted keys, ledger/GL/permutation files and
+actual sequential reporting reconcile against the independent profile. No per-
+adapter SortedJE terminal files remain in the fused path. 26 tests pass across six
+suites, including the 22 unchanged baseline tests and original integrated fixture.
+Receipt: phase2_derived_baseline_20261116/fused_source_tests.txt.
+
+This verifies the bounded source-fusion slice only. Posting observation fusion,
+full historical control branch, bounded permutation reduction/indexing, resource
+admission, full generation proof and accepted-results/Zenodo deliverables remain.
+No target-runtime gap or new cost point is closed.
+
+## 2026-11-16 21:32 AZT — Fused posting and native GL controls verified on fixture
+
+GLPost and PermutationGenerator now expose incremental accumulators; their
+independent file entry points delegate to the same algorithms. post.readJrnl feeds
+both accumulators immediately after parsing each actual journal record, while
+writeBal records actual emitted ledger rows. FusedPosting does not open the
+journal for either observer. The named fixture renames the journal after posting
+opens its file descriptor: posting/GL/permutation still finish and match the
+independent ledger, GL, permutation table/summary and sequential-report controls.
+Actual source-open instrumentation reports one journal open, not a hard-coded
+same-JVM claim. Fused permutation reduction forces two-way fan-in over 47 spills
+and six levels, with final readers 2. GL/permutation key/vendor bounds fail when
+exceeded in a separate adversarial test. Independent defaults/profile remain.
+
+FusedFinancialYear additionally observes unmodified historical/wholly pairs before
+normalization to produce native GLs without native sorted-SJE scans. It verifies
+native historical GL hash, source-to-post row conservation and exact combined GL
+keys via the shared PhaseTwoBaselineControls implementation, using explicit
+source/observer controls rather than fictitious separate process metrics.
+The full bounded year fixture passes and publishes FINANCIAL_YEAR_COMPLETE only
+after those checks. 45 tests pass across eight suites: fused_financial_year_tests.txt.
+
+This is bounded prototype evidence. Full-year memory/materialization admission,
+parallel scheduling, full historical/generated reporting and final interpretation
+remain pending. Configured GL/permutation indexing caps are 1,000,000 keys/groups;
+GL overflow currently fails explicitly rather than spilling. No production target
+runtime support or cost-curve measurement is inferred.

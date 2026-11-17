@@ -16,6 +16,25 @@ The audit register wins any evidence disagreement.
 
 ## Current checkpoint
 
+**Fused financial fixture verified:** 45 focused/baseline tests pass. The complete
+bounded source/sort/post/GL/permutation workflow and native/combined controls are
+implemented. Real FY03 memory/scratch/control admission is next, followed by full
+generation proof with bounded scheduling and reporting. No cost-curve claim.
+
+**Owner requests reorganization now:** Large v2 replay stopped deliberately before
+completion. Work proves synthetic generation, not Paper 1 cost curves. Bounded
+implementation/verification of the fused TTL/ARE/shared-sort/posting topology is
+now the priority; see Track D and `docs/PHASE_TWO_FUSED_PROCESS_CONTRACT.md`.
+Preserve independent baseline profile and interrupted evidence. No large run active.
+
+**Fresh corrected replay active, 2026-11-16 20:55 AZT:** Full v2 attempt runs
+from committed `465fe21` at `session-run.tmp/phase2_derived_baseline_v2`, beginning
+fresh FY03 raw transformation. Frozen hashes/AC/300-GiB starting gate pass
+(~326 GiB free). Unified detailed dashboard is open and selects v2 through
+`session-run.tmp/phase2_derived_baseline.current`. Full controls/report acceptance
+pending. Owner has resumed the application's persistent goal; autonomous agent
+follow-through and the financial driver are both active.
+
 **Corrected replay preparation, 2026-11-16 evening AZT:** First attempt stopped
 at SY01 posting: the Bash handoff omitted `--seedFromCommitted`, so its isolated
 posting generation received no merged journals. No final financial/report claim.

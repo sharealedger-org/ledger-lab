@@ -72,3 +72,23 @@ fan-in 16, 255/287 spills and 2/3 merge levels. Normalizer process wall 2,995.93
 maximum RSS 1,051,447,296 bytes. Compact controls, sort metrics and process log are
 retained here. The driver reached actual combined SY01 posting; its completion
 and GL conservation are still pending. Full corpus/reporting remains pending.
+
+Fresh corrected v2 launched 2026-11-16 20:55 AZT from `465fe21` in execution
+session 21872, root `session-run.tmp/phase2_derived_baseline_v2`. Starting stage:
+historical_03. Frozen input hash checks and AC gate passed; initial free space
+341,393,612 KiB. Caffeinate and minute process/storage monitor started; 40-GiB
+stage gates unchanged. The runtime active pointer selects v2 for the unified
+dashboard. New layout uses historical/generated/combined class rows and familiar
+stage/time/count columns; queued years collapse to one row, active-year counts
+expand. V1 remains failed and preserved; all v2 full financial/report checks pending.
+
+Owner superseded completing v2 first: large v2 deliberately stopped for the fused
+reorganization. Source and posting-observer slices now pass 45 focused/baseline
+tests, including the no-reread falsifier, native historical GL, exact combined GL
+and forced bounded permutation reduction. `fused_financial_year_final_tests.txt`
+and `fused_financial_year_resource_tests.txt` retain the final fixture checks.
+`run_phase2_fused_admission.sh` is the next real-year gate, not full completion:
+compiled Scala, 2-GiB max heap, one active processor, provisional FY03 budget from
+historical size metadata, 40-GiB live reserve stop, actual RSS/storage sampling.
+The new fused dashboard labels shared sort and in-post observations explicitly.
+No new cost-point, full corpus or target-runtime success is claimed.

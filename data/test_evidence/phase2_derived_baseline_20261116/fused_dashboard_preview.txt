@@ -1,0 +1,26 @@
+PHASE 2 FUSED GENERATION PROOF   2026-11-16 21:39:42 AZT
+Workflow: bounded_fixture_passed_real_admission_next
+
+YEAR / CLASS       | Pay JEs     PO JEs      Shared sort ID/Date     Post        GL Bal      Permute     | STATE
+FY03 historical    | -           -           shared      in TTL      -           ARE control -           | source
+SY01 generated     | -           -           shared      -           -           ARE control -           | source
+SY01 combined      | -           -           RUN         -           -           -           -           | queued
+FY04/SY02          | -           -           -           -           -           -           -           | queued
+FY05/SY03          | -           -           -           -           -           -           -           | queued
+FY06/SY04          | -           -           -           -           -           -           -           | queued
+FY07/SY05          | -           -           -           -           -           -           -           | queued
+FY08/SY06          | -           -           -           -           -           -           -           | queued
+FY09/SY07          | -           -           -           -           -           -           -           | queued
+FY10/SY08          | -           -           -           -           -           -           -           | queued
+FY11/SY09          | -           -           -           -           -           -           -           | queued
+FY12/SY10          | -           -           -           -           -           -           -           | queued
+FY13/SY11          | -           -           -           -           -           -           -           | queued
+FY14/SY12          | -           -           -           -           -           -           -           | queued
+FY15/SY13          | -           -           -           -           -           -           -           | queued
+FY16/SY14          | -           -           -           -           -           -           -           | queued
+
+Pay/PO cells: accepted source groups>journals. Shared sort and in-Post outputs are fused, not extra scans.
+Original-pair ARE controls preserve historical GL; full reporting follows financial validation.
+Latest disk sample (UTC, free KiB, allocated KiB): Latest worker log:
+Run: /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/fused_dashboard_preview
+Refresh: 0s; Ctrl-C closes display only.

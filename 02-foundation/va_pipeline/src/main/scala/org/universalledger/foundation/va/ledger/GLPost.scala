@@ -75,6 +75,56 @@ object GLPost {
   private case class GLKey(agency: String, nominalAccount: String, fund: String, objectCode: String,
                            fiscalYear: String, dirFlag: String)
 
+  /** Incremental GL observer; fused profiles supply a finite key bound. */
+  final class Accumulator(outFile:File,maxKeys:Int=Int.MaxValue) {
+    require(maxKeys>0)
+    private val balances=mutable.HashMap[GLKey,BigDecimal]()
+    private var totalRead=0L
+    private var netAmount=BigDecimal(0)
+    private var finished=false
+    private var writtenRows=0L
+    def rows:Long=totalRead
+    def net:BigDecimal=netAmount
+    def size:Long=if(finished)writtenRows else balances.size.toLong
+    def accept(cols:Array[String]):Unit={
+      require(!finished)
+      if (cols.length > COL_DIR_FLAG) {
+        totalRead += 1
+        val key = GLKey(
+          agency         = cols(COL_AGENCY).trim,
+          nominalAccount = cols(COL_NOMINAL_ACC).trim,
+          fund           = cols(COL_FUND).trim,
+          objectCode     = cols(COL_OBJECT).trim,
+          fiscalYear     = cols(COL_FISCAL_YR).trim,
+          dirFlag        = cols(COL_DIR_FLAG).trim
+        )
+        val amt = try BigDecimal(cols(COL_AMOUNT).trim) catch { case _: NumberFormatException => BigDecimal(0) }
+        require(balances.contains(key) || balances.size<maxKeys,"GL key bound exceeded")
+        balances(key) = balances.getOrElse(key, BigDecimal(0)) + amt
+        netAmount += amt
+      }
+
+    }
+    def finish():Unit={
+      require(!finished);finished=true
+      writtenRows=balances.size.toLong
+      val outPath=outFile.getParent
+      // ── Write GL output ───────────────────────────────────────────────────────
+      new File(outPath).mkdirs()
+      val pw = new PrintWriter(new BufferedWriter(new FileWriter(outFile)))
+      try {
+        pw.println("agency,nominal_account_id,fund,object_id,fiscal_year,dir_flag,total_amount")
+        // Sort output by key for deterministic output
+        val sorted = balances.toSeq.sortBy(kv =>
+          (kv._1.fiscalYear, kv._1.agency, kv._1.nominalAccount, kv._1.fund, kv._1.objectCode, kv._1.dirFlag))
+        for ((key, total) <- sorted) {
+          pw.println(s"${key.agency},${key.nominalAccount},${key.fund},${key.objectCode},${key.fiscalYear},${key.dirFlag},$total")
+        }
+      } finally pw.close()
+      balances.clear()
+    }
+  }
+
   // ── Entry point called by LedgerApp dispatcher ─────────────────────────────
   def apply(params: Map[String, String]): Unit = {
     val t0 = System.currentTimeMillis()
@@ -111,12 +161,8 @@ object GLPost {
     val outFile = new File(outPath, s"GL20${shortYr}.csv")
     println(s"  Output file    : ${outFile.getPath}")
 
-    // ── Accumulate account-keyed balances ─────────────────────────────────────
-    val balances   = mutable.HashMap[GLKey, BigDecimal]()
-    var netAmount  = BigDecimal(0)
-    var totalRead  = 0L
-    var totalInputBytes = 0L
-
+    val accumulator=new Accumulator(outFile)
+    var totalInputBytes=0L
     for (jeFile <- jeFiles) {
       totalInputBytes += jeFile.length()
       implicit val codec = scala.io.Codec.UTF8
@@ -126,38 +172,15 @@ object GLPost {
       try {
         for (line <- src.getLines()) {
           val cols = line.split(",", -1)
-          if (cols.length > COL_DIR_FLAG) {
-            totalRead += 1
-            val key = GLKey(
-              agency         = cols(COL_AGENCY).trim,
-              nominalAccount = cols(COL_NOMINAL_ACC).trim,
-              fund           = cols(COL_FUND).trim,
-              objectCode     = cols(COL_OBJECT).trim,
-              fiscalYear     = cols(COL_FISCAL_YR).trim,
-              dirFlag        = cols(COL_DIR_FLAG).trim
-            )
-            val amt = try BigDecimal(cols(COL_AMOUNT).trim) catch { case _: NumberFormatException => BigDecimal(0) }
-            balances(key) = balances.getOrElse(key, BigDecimal(0)) + amt
-            netAmount += amt
-          }
+          accumulator.accept(cols)
         }
       } finally src.close()
     }
 
-    // ── Write GL output ───────────────────────────────────────────────────────
-    new File(outPath).mkdirs()
-    val pw = new PrintWriter(new BufferedWriter(new FileWriter(outFile)))
-    try {
-      pw.println("agency,nominal_account_id,fund,object_id,fiscal_year,dir_flag,total_amount")
-      // Sort output by key for deterministic output
-      val sorted = balances.toSeq.sortBy(kv =>
-        (kv._1.fiscalYear, kv._1.agency, kv._1.nominalAccount, kv._1.fund, kv._1.objectCode, kv._1.dirFlag))
-      for ((key, total) <- sorted) {
-        pw.println(s"${key.agency},${key.nominalAccount},${key.fund},${key.objectCode},${key.fiscalYear},${key.dirFlag},$total")
-      }
-    } finally pw.close()
-
-    val totalWritten = balances.size.toLong
+    accumulator.finish()
+    val totalRead=accumulator.rows
+    val netAmount=accumulator.net
+    val totalWritten = accumulator.size
     val outBytes     = outFile.length()
     val elapsedS     = ((System.currentTimeMillis() - t0) / 1000).max(1)
     val peakRss      = Runtime.getRuntime.totalMemory()
