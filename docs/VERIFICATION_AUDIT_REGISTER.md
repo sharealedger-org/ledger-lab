@@ -2526,7 +2526,7 @@ no live class change, output acceptance or target-runtime maturity promotion.
 ## 2026-11-17 — Frozen launch architecture availability
 
 Actual d9dbd2d git tree contains CKB_LAYER_EXECUTION_MODEL.md blob70bf8a2,
-architecture gates blob43b5649 and agent rules blobbf2d043 (full exact IDs in
+architecture gates blob43b5649 and agent rules blob bf2d043 (full exact IDs in
 access_provenance/launch_tree.txt). Exact contents and SHA-256 receipt retained
 under data/test_evidence/ckb_reporting_transfer_20261117/access_provenance/.
 The CKB model already describes dependent generated-record delivery groups;
@@ -2534,3 +2534,16 @@ last change before launch e5b78e8 on2026-11-15. This supports availability at
 launch in addition to the owner's full-access statement. It does not reconstruct
 per-turn retrieval or establish training causation. No engine modification or
 report acceptance. All retained source-copy checksums verified.
+
+## 2026-11-17 — Early reassigned-group reporting link
+
+Actual ongoing coverage emits v777305469290280721924923592149096066 with
+SIM_I000030/prepared_sorted_assignment_stream,449,292 financial input rows and
+reporting identity_rekeyedfalse. Actual prepared assignment and master type
+FICTIONAL_REASSIGNED agree. Selected FY31 normalization columns identify the
+original zero vendor and reassigned_activity; private actor key excluded from
+retained projection. Receipt: baseline early_report_review/reassigned_*.csv.
+This verifies a scoped attribution link during extraction, not final dated-view
+behavior, full population/financial/report acceptance or legal-party truth.
+Recheck the completed generation; no RESULT_REVIEW_COMPLETE marker or maturity
+upgrade. No financial values recomputed outside Scala.

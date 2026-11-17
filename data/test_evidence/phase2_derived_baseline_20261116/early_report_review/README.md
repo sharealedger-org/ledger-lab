@@ -41,3 +41,17 @@ combined master and one actual normalization candidate. Full attribute/date-view
 checks and recheck against the final completed generation remain pending, along
 with all financial/report controls and the reassigned/wholly targets. No final
 RESULT_REVIEW_COMPLETE marker or maturity upgrade is justified by this sample.
+
+## Early reassigned historical grouping
+
+2026-11-17T14:31:29Z observation: actual emitted coverage for
+v777305469290280721924923592149096066 is attributed,SIM_I000030,
+prepared_sorted_assignment_stream,449,292 financial input rows,
+identity_rekeyedfalse. Actual prepared assignment and FICTIONAL_REASSIGNED master
+are retained as reassigned_*.csv. The FY31 normalization candidate projection
+retains vendor/original/class/template columns only; the private actor-key column
+is deliberately excluded. It identifies the original zero-key population and
+reassigned_activity class. Reporting identity preservation does not deny that
+upstream reassignment happened. Mixed journal/ledger row count is not an event
+count. Final attribute/date outputs, completed-generation recheck, wholly target
+and full population/control acceptance remain pending.

@@ -1,9 +1,9 @@
 # Track D: Primary research experiment
 
-**Live observation,2026-11-17T14:14:59Z:** Actual session84820 waited twice55s
-and remained running; driver66386, JVM82547 CPU223m55s, dashboard97164
-and observer18501 live. Input offsets90,438,631,424/102,677,962,038B (~88.1%);
-coverage advanced tov688..., free66,095,292KiB (~63GiB). Final reduction/checks/
+**Live observation,2026-11-17T14:31:29Z:** Actual session84820 waited three55s
+intervals and remained running; driver66386, JVM82547 CPU238m51s, dashboard97164
+and observer18501 live. Input offsets94,123,327,488/102,677,962,038B (~91.7%);
+coverage advanced tov788..., free59,289,768KiB (~56.5GiB). Final reduction/checks/
 census/review/script pending. No restart or engine change; final acceptance
 remains incomplete. Earlier actual Terminal793 read independently confirmed
 that the compact dashboard was refreshing.
@@ -30,6 +30,13 @@ Study access_provenance receipt preserves exact d9dbd2d launch-tree CKB model,
 gates and agent rules with blob IDs/SHA hashes. Generated-record delivery groups
 were documented there before launch; this proves availability at launch, not
 per-turn reading, comprehension or hidden-training causation.
+
+Early reassigned target v777305... now emits SIM_I000030,449,292 mixed financial
+input rows and reporting identity_rekeyedfalse. Actual assignment/master and a
+private-key-excluded normalization projection agree on reassigned_activity from
+the original zero vendor. Receipt early_report_review/reassigned_*.csv; completed
+generation/date views/wholly target/full controls still pending. No acceptance
+or maturity upgrade.
 
 **2026-11-17 measured transfer study designated mid-run:** Owner requests current
 and concluding evidence plus a formally compared improved rerun. See
