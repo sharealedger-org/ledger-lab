@@ -1,0 +1,39 @@
+PHASE 2 FUSED GENERATION PROOF   2026-11-17 02:38:58 AZT
+Workflow: report_order
+Reporting continuation; financial inputs: /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/phase2_fused_baseline_v1
+
+YEAR / WORK             | Source + sort     Post / GL / Perm    Controls     | STATE
+FY03 / SY01             | done              done                PASS         | PASS
+FY04 / SY02             | done              done                PASS         | PASS
+FY05 / SY03             | done              done                PASS         | PASS
+FY06 / SY04             | done              done                PASS         | PASS
+FY07 / SY05             | done              done                PASS         | PASS
+FY08 / SY06             | done              done                PASS         | PASS
+FY09 / SY07             | done              done                PASS         | PASS
+FY10 / SY08             | done              done                PASS         | PASS
+FY11 / SY09             | done              done                PASS         | PASS
+FY12 / SY10             | done              done                PASS         | PASS
+FY13 / SY11             | done              done                PASS         | PASS
+FY14 / SY12             | done              done                PASS         | PASS
+FY15 / SY13             | done              done                PASS         | PASS
+FY16 / SY14             | done              done                PASS         | PASS
+------------------------+------------------------------------------------------
+Corpus controls         | -                 done                -            | done
+Dimensions / metadata   | -                 done                -            | done
+Reporting sort          | -                 RUN                 -            | RUN
+Reporting extract       | -                 pending             -            | pending
+Reporting reduction     | -                 pending             -            | pending
+Reporting checks        | -                 pending             -            | pending
+Output census           | -                 pending             -            | pending
+Result validation       | -                 pending             -            | pending
+Zenodo script ready     | -                 pending             -            | pending
+
+Each year combines historical and generated inputs. ID/date runs in ARE; GL/Perm share posting.
+Disk: 160Gi free
+Latest sample (UTC, free KiB, allocated KiB): 2026-11-17T09:38:40Z,171487140,55028124
+Latest log:
+RESULT reporting_sort kind=balance rows=1554506 spills=16 levels=1 bytes=279643807 file=LDGR2036.csv
+RESULT reporting_sort kind=movement rows=17012068 spills=171 levels=2 bytes=6169567562 file=SortedJEFY37merged.csv
+RESULT reporting_sort kind=balance rows=1010562 spills=11 levels=1 bytes=169582764 file=LDGR2037.csv
+Run: session-run.tmp/phase2_fused_reporting_v2
+Refresh: 0s; Ctrl-C closes display only.

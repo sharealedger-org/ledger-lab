@@ -1,0 +1,8 @@
+   39166 session-run.tmp/phase2_fused_reporting_v2/dimensions/VendorMaster.csv
+   98863 session-run.tmp/phase2_fused_reporting_v2/dimensions/synthetic_assignments.csv
+     552 session-run.tmp/phase2_fused_reporting_v2/dimensions/aRefAgencyCSV.txt
+    1065 session-run.tmp/phase2_fused_reporting_v2/dimensions/aRefFundCSV.txt
+     685 session-run.tmp/phase2_fused_reporting_v2/dimensions/aRefObjectCSV.txt
+    1649 session-run.tmp/phase2_fused_reporting_v2/dimensions/aRefProgramCSV.txt
+    2259 session-run.tmp/phase2_fused_reporting_v2/dimensions/aRefSourceCSV.txt
+  144239 total

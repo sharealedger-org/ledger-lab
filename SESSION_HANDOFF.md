@@ -837,3 +837,20 @@ live for phase2_fused_reporting_v2. Session84820 remains running. No restart.
 Archive receipt's89 compressed-file SHA hashes rechecked successfully; normalized
 actual selected paths match the owner-approved proposal exactly. Archived bytes
 40,585,489,959 ->2,467,501,061. Final report validation is still pending.
+
+Prepared full_financial/report_acceptance_plan.md: expected286,277,734 report
+financial rows over28 partitions, useful-result sampling, complete extract/reduce
+and external population checks. Script creation follows validation per contract;
+do not run the existing raw-source zenodo_upload.py, which publishes unrelated
+records. Official Zenodo API documentation inspected read-only for later script
+preparation; no API mutation or upload performed. Checkpoint commit58569ea holds
+archive evidence and design-only roadmap, not final validated results.
+
+Full metadata evidence retained under full_dimensions (hashes, physical lines,
+sort metrics, process time/RSS, read-only dashboard snapshot). Actual metadata
+elapsed81.27seconds, RSS626,593,792bytes. Frozen class checks pass. Sort completed
+FY38, eight of14; same JVM66823 accumulating CPU, dashboard66618 alive. Storage
+admission remains conservative and unchanged: after transient sort files clear,
+projected reporting headroom is narrow (~1–2GiB beyond report budget+40GiB
+reserve at this sample), so retain current stage gate and monitor actual free
+space. Do not infer a need to archive successful outputs or weaken reserve.

@@ -1,0 +1,3 @@
+partition,rows,input_bytes,output_bytes,spills,merge_levels,fan_in,chunk_rows,cumulative_sort_bytes,elapsed_seconds,peak_buffer_bytes,buffer_byte_cap
+VendorMaster.csv.sorted,1330999,383699744,383699744,14,1,16,100000,767399488,9.367635301,29072032,33554432
+synthetic_assignments.csv.sorted,1390696,200260224,200260224,14,1,16,100000,400520448,4.910434653,14300000,33554432

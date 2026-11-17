@@ -822,3 +822,15 @@ complete journal pairs exist before APA/PO sorting, giving a candidate pair-leve
 fusion point. Current financial merge cannot rekey vendor IDs without restoring
 sort order. Fusion/parallel admission remain unimplemented and must pass versioned
 consumer/control/materialization gates; current v2 engine/config remain frozen.
+
+2026-11-17 acceptance preparation: `full_financial/report_acceptance_plan.md`
+requires286,277,734 report financial input rows (266,319,818 journals plus
+19,957,916 ledger rows), all28 declared partitions and external population checks
+in addition to the existing Scala report controls. This is pending acceptance,
+not a completed reporting result. Archival/design checkpoint committed58569ea.
+
+2026-11-17 live follow-up: direct JVM CPU advancement and dashboard confirmed;
+sorting completed through FY38 (eight of14). Full dimensions receipt retained in
+`data/test_evidence/phase2_derived_baseline_20261116/full_dimensions/`, including
+product hashes, process RSS/time, sort metrics and physical-line counts.
+Compiled reporting class manifest recheck passes. Reporting acceptance pending.
