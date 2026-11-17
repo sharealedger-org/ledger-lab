@@ -42,6 +42,14 @@ in AGENTS and the contributor guide. Runtime checkpoints and next gates are unch
 
 ## Current plans and evidence
 
+**Reporting storage planning inventory only:** Preserved failed/stopped serial
+v1/v2 and fused admissionv1/v2 occupy about38GiB before any compression. Snapshot
+in `data/test_evidence/phase2_derived_baseline_20261116/stopped_attempt_storage.txt`.
+No compression/removal occurred; raw/wholly/v6 inputs, retained reports, active
+run and successful admission are excluded. Use actual reporting admission gates;
+allocation alone does not prove reclaimable space. FY11/12/13 now posting after
+native gates; FY14 still sorting. Final controls remain pending for this wave.
+
 **Wave2 passed; eight of14 accepted:** FY03–FY10 each published financial
 completion after exact native/combined GL and observer row controls. Wave3
 FY11/12/13/14 now has four verified live JVMs52343–52346, group42994/session11522.

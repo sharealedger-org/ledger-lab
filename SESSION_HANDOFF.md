@@ -682,6 +682,14 @@ controller draft (check syntax/memory gate only); needs bounded multi-year execu
 and reporting resource admission before production launch. No full proof yet.
 # Hot-path continuation — corrected real-year restart
 
+Read-only storage planning: failed/stopped serialv1/v2 and fused admissionv1/v2
+total about38GiB; `.../phase2_derived_baseline_20261116/stopped_attempt_storage.txt`
+records exact du allocation. No files compressed or removed. Protected raw/
+wholly/v6 inputs, retained reports, successful admission and active run excluded.
+If reporting gates need capacity, recheck inactive consumers before considering
+lossless archival of these candidates; do not assume all allocation is freed.
+FY11/12/13 currently posting after native GL gates; FY14 still in shared sort.
+
 Latest: Wave2 complete, all FY03–FY10 financial controls PASS (8/14 accepted).
 Wave3 FY11–FY14 ACTIVE with verified JVMs52343–52346, same group42994/session11522.
 Gate free252,423,628KiB; worker reserve184,607,438KiB plus40GiB. FY15/16 queued.
