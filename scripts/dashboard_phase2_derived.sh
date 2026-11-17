@@ -113,7 +113,11 @@ global_stage_row() {
 render_fused() {
   local current old new sy base source phase source_state post_state checks state worker report latest stopped=no
   current="$(cat "$root/STATUS")"
-  printf 'PHASE 2 FUSED GENERATION PROOF   %s\n' "$(TZ=America/Phoenix date '+%Y-%m-%d %H:%M:%S AZT')"
+  if [[ "$(cat "$root/PROFILE")" == ckb-reporting-v1-matched-presorted ]]; then
+    printf 'PHASE 2 CKB REPORTING COMPARISON   %s\n' "$(TZ=America/Phoenix date '+%Y-%m-%d %H:%M:%S AZT')"
+  else
+    printf 'PHASE 2 FUSED GENERATION PROOF   %s\n' "$(TZ=America/Phoenix date '+%Y-%m-%d %H:%M:%S AZT')"
+  fi
   printf 'Workflow: %s\n' "$current"
   [[ ! -f "$root/SCOPE" ]] || cat "$root/SCOPE"
   if [[ -f "$root/STOPPED_FOR_DATE_HOTPATH" ]]; then
@@ -152,6 +156,14 @@ render_fused() {
   global_stage_row 'Reporting reduction' report_reduce "$report/REPORT_COMPLETE"
   global_stage_row 'Reporting checks' report_checks "$root/REPORT_CHECKS_COMPLETE"
   global_stage_row 'Output census' census "$root/CENSUS_COMPLETE"
+  if [[ "$(cat "$root/PROFILE")" == ckb-reporting-v1-matched-presorted ]]; then
+    global_stage_row 'Exact output comparison' exact_output_audit "$root/EXACT_OUTPUT_EQUIVALENCE_COMPLETE"
+    printf '\nFinancial preparation/sorting reused; reporting alone is timed again.\n'
+    printf 'Temporal output bytes: '
+    if [[ -f "$report/vendor_temporal_cuts.csv" ]]; then
+      if [[ "$(uname -s)" == Darwin ]]; then stat -f '%z' "$report/vendor_temporal_cuts.csv"; else stat -c '%s' "$report/vendor_temporal_cuts.csv"; fi
+    else printf '0\n'; fi
+  fi
   global_stage_row 'Result validation' result_review "$root/RESULT_REVIEW_COMPLETE"
   global_stage_row 'Zenodo script ready' zenodo_script "$root/ZENODO_SCRIPT_READY"
   printf '\nEach year combines historical and generated inputs. ID/date runs in ARE; GL/Perm share posting.\n'
@@ -164,7 +176,9 @@ render_fused() {
   printf 'Run: %s\nRefresh: %ss; Ctrl-C closes display only.\n' "$root" "$interval"
 }
 render() {
-  if [[ -f "$root/PROFILE" && "$(cat "$root/PROFILE")" == phase2-fused-v1 ]]; then render_fused;return;fi
+  if [[ -f "$root/PROFILE" ]]; then
+    case "$(cat "$root/PROFILE")" in phase2-fused-v1|ckb-reporting-v1-matched-presorted) render_fused;return;; esac
+  fi
   local current old new sy stage show_counts
   current="$(cat "$root/STATUS" 2>/dev/null || echo admission)"
   printf 'PHASE 2 — HISTORICAL + GENERATED BASELINE   %s\n' "$(TZ=America/Phoenix date '+%Y-%m-%d %H:%M:%S AZT')"
