@@ -1,0 +1,19 @@
+PASS relationship precision candidate rows=4756111 changed_share_rows=303
+      161.66 real       102.83 user         5.99 sys
+           171921408  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              117808  page reclaims
+                   9  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   1  signals received
+                 578  voluntary context switches
+              207260  involuntary context switches
+        495743765321  instructions retired
+        326571014012  cycles elapsed
+           150941696  peak memory footprint

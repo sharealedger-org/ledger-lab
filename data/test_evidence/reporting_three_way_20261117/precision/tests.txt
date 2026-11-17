@@ -1,0 +1,692 @@
+[info] welcome to sbt 1.10.11 (Eclipse Adoptium Java 21.0.8)
+[info] loading settings for project global-plugins from idea.sbt...
+[info] loading global plugins from /Users/ktwitchell001/.sbt/1.0/plugins
+[info] loading settings for project va_pipeline-build from assembly.sbt, plugins.sbt...
+[info] loading project definition from /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/reporting_precision_worktree/02-foundation/va_pipeline/project
+[info] loading settings for project root from build.sbt...
+[info] set current project to va_pipeline (in build file:/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/reporting_precision_worktree/02-foundation/va_pipeline/)
+[info] compiling 1 Scala source to /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/reporting_precision_worktree/02-foundation/va_pipeline/target/scala-2.12/classes ...
+[info] done compiling
+****************************************************************************************************
+                                Post Module
+Start Time: Tue Nov 17 14:43:04 MST 2026
+****************************************************************************************************
+processing file: ../../session-run.tmp/reporting-14589689425837029480/inputs/SortedJEFY14merged.csv
+No existing ledger file.  File will be created: LDGR2014.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          12
+Ledger Records Read:           0
+Ledger Records Written:        10
+Process End Time:      Tue Nov 17 14:43:04 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2014 rc=0 records_read=12 records_written=10 elapsed_s=1 input_bytes=0 output_bytes=1715
+RESOURCE step=3 year=2014 jvm_heap_bytes=1073741824
+****************************************************************************************************
+                                Post Module
+Start Time: Tue Nov 17 14:43:04 MST 2026
+****************************************************************************************************
+processing file: ../../session-run.tmp/reporting-14589689425837029480/inputs/SortedJEFY15merged.csv
+No existing ledger file.  File will be created: LDGR2015.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          4
+Ledger Records Read:           0
+Ledger Records Written:        4
+Process End Time:      Tue Nov 17 14:43:04 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2015 rc=0 records_read=4 records_written=4 elapsed_s=1 input_bytes=0 output_bytes=1016
+RESOURCE step=3 year=2015 jvm_heap_bytes=1073741824
+PASS relationship precision candidate rows=2 changed_share_rows=2
+[info] ReportingPrecisionSpec:
+[info] - inline and materialized exits preserve high precision division context
+[info] - bounded report-only relationship correction reproduces normalized shares
+RESULT reporting_sort kind=movement rows=12 spills=6 levels=3 bytes=2436 file=SortedJEFY14merged.csv
+RESULT reporting_sort kind=balance rows=10 spills=5 levels=3 bytes=1715 file=LDGR2014.csv
+RESULT reporting_sort kind=movement rows=4 spills=2 levels=1 bytes=806 file=SortedJEFY15merged.csv
+RESULT reporting_sort kind=balance rows=4 spills=2 levels=1 bytes=1016 file=LDGR2015.csv
+RESULT step=5v profile=expanded rc=0 records_read=36 vendors=3 spills=20
+RESULT step=5r rc=0 records_written=14 merge_passes=5
+RANGES kind=balance rows=10 path=/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/reporting_precision_worktree/session-run.tmp/reporting-14589689425837029480/three-sorted/FY14/LDGR2014.csv
+RANGES kind=balance rows=4 path=/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/reporting_precision_worktree/session-run.tmp/reporting-14589689425837029480/three-sorted/FY15/LDGR2015.csv
+RANGES kind=contract rows=2 path=/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/reporting_precision_worktree/session-run.tmp/reporting-14589689425837029480/contracts.csv
+RANGES kind=movement rows=12 path=/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/reporting_precision_worktree/session-run.tmp/reporting-14589689425837029480/three-sorted/FY14/SortedJEFY14merged.csv
+RANGES kind=movement rows=4 path=/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/reporting_precision_worktree/session-run.tmp/reporting-14589689425837029480/three-sorted/FY15/SortedJEFY15merged.csv
+RANGES kind=synthetic_assignment rows=2 path=/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/reporting_precision_worktree/session-run.tmp/reporting-14589689425837029480/three-assignments.csv
+RANGES kind=vendor rows=2 path=/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/reporting_precision_worktree/session-run.tmp/reporting-14589689425837029480/vendors.csv
+RESULT step=5v profile=expanded rc=0 records_read=4 vendors=1 spills=4
+RESULT step=5r rc=0 records_written=4 merge_passes=2
+RESULT step=5v profile=expanded rc=0 records_read=27 vendors=1 spills=12
+RESULT step=5r rc=0 records_written=12 merge_passes=4
+RESULT step=5v profile=expanded rc=0 records_read=5 vendors=1 spills=4
+RESULT step=5r rc=0 records_written=4 merge_passes=2
+COMBINED view=movement_history rows=14
+COMBINED view=balance_history rows=14
+COMBINED view=reconciliation rows=14
+COMBINED view=relationships rows=6
+COMBINED view=vendor_activity rows=10
+COMBINED view=aim_movements rows=4
+COMBINED view=aim_balances rows=4
+COMBINED view=aim_combined rows=4
+COMBINED view=vendor_temporal_cuts rows=84
+COMBINED view=vendor_attribute_totals rows=260
+COMBINED view=synthetic_conservation rows=96
+COMBINED view=synthetic_vendor_coverage rows=3
+COMBINED view=analysis_packets rows=22
+COMBINED view=coverage rows=22
+COMBINED view=dimension_attributes rows=22
+PASS reconciliation.csv rows=14
+PASS synthetic_validation.csv rows=20
+PASS synthetic_conservation.csv rows=96
+PASS financial_rows=30 vendors=3 attributed_input_rows=26 unattributed_input_rows=4
+PASS vendor_temporal_summary.csv rows=60
+PASS vendor_attribute_summary.csv rows=156
+****************************************************************************************************
+                                Post Module
+Start Time: Tue Nov 17 14:43:11 MST 2026
+****************************************************************************************************
+processing file: ../../session-run.tmp/literal-quotes-5595801844830313498/input/SortedJEFY14merged.csv
+No existing ledger file.  File will be created: LDGR2014.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          2
+Ledger Records Read:           0
+Ledger Records Written:        2
+Process End Time:      Tue Nov 17 14:43:11 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2014 rc=0 records_read=2 records_written=2 elapsed_s=1 input_bytes=0 output_bytes=808
+RESOURCE step=3 year=2014 jvm_heap_bytes=1073741824
+RESULT step=5v profile=expanded rc=0 records_read=4 vendors=1 spills=2
+RESULT step=5r rc=0 records_written=4 merge_passes=1
+****************************************************************************************************
+                                Post Module
+Start Time: Tue Nov 17 14:43:11 MST 2026
+****************************************************************************************************
+processing file: ../../session-run.tmp/reporting-1411144378677591598/inputs/SortedJEFY14merged.csv
+No existing ledger file.  File will be created: LDGR2014.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          12
+Ledger Records Read:           0
+Ledger Records Written:        10
+Process End Time:      Tue Nov 17 14:43:11 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2014 rc=0 records_read=12 records_written=10 elapsed_s=1 input_bytes=0 output_bytes=1715
+RESOURCE step=3 year=2014 jvm_heap_bytes=1073741824
+****************************************************************************************************
+                                Post Module
+Start Time: Tue Nov 17 14:43:11 MST 2026
+****************************************************************************************************
+processing file: ../../session-run.tmp/reporting-1411144378677591598/inputs/SortedJEFY15merged.csv
+No existing ledger file.  File will be created: LDGR2015.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          4
+Ledger Records Read:           0
+Ledger Records Written:        4
+Process End Time:      Tue Nov 17 14:43:11 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2015 rc=0 records_read=4 records_written=4 elapsed_s=1 input_bytes=0 output_bytes=1016
+RESOURCE step=3 year=2015 jvm_heap_bytes=1073741824
+****************************************************************************************************
+                                Post Module
+Start Time: Tue Nov 17 14:43:11 MST 2026
+****************************************************************************************************
+processing file: ../../session-run.tmp/reporting-1411144378677591598/quote-prefix-source/SortedJEFY14merged.csv
+No existing ledger file.  File will be created: LDGR2014.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          6
+Ledger Records Read:           0
+Ledger Records Written:        6
+Process End Time:      Tue Nov 17 14:43:11 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2014 rc=0 records_read=6 records_written=6 elapsed_s=1 input_bytes=0 output_bytes=1238
+RESOURCE step=3 year=2014 jvm_heap_bytes=1073741824
+RESULT step=5v profile=expanded rc=0 records_read=14 vendors=3 spills=6
+RESULT step=5r rc=0 records_written=6 merge_passes=3
+RESULT reporting_sort kind=movement rows=6 spills=6 levels=3 bytes=1348 file=SortedJEFY14merged.csv
+RESULT reporting_sort kind=balance rows=6 spills=6 levels=3 bytes=1238 file=LDGR2014.csv
+RESULT step=5v profile=expanded rc=0 records_read=14 vendors=3 spills=6
+RESULT step=5r rc=0 records_written=6 merge_passes=3
+****************************************************************************************************
+                                Post Module
+Start Time: Tue Nov 17 14:43:14 MST 2026
+****************************************************************************************************
+processing file: ../../session-run.tmp/reporting-13904954637653683908/inputs/SortedJEFY14merged.csv
+No existing ledger file.  File will be created: LDGR2014.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          12
+Ledger Records Read:           0
+Ledger Records Written:        10
+Process End Time:      Tue Nov 17 14:43:14 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2014 rc=0 records_read=12 records_written=10 elapsed_s=1 input_bytes=0 output_bytes=1715
+RESOURCE step=3 year=2014 jvm_heap_bytes=1073741824
+****************************************************************************************************
+                                Post Module
+Start Time: Tue Nov 17 14:43:14 MST 2026
+****************************************************************************************************
+processing file: ../../session-run.tmp/reporting-13904954637653683908/inputs/SortedJEFY15merged.csv
+No existing ledger file.  File will be created: LDGR2015.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          4
+Ledger Records Read:           0
+Ledger Records Written:        4
+Process End Time:      Tue Nov 17 14:43:14 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2015 rc=0 records_read=4 records_written=4 elapsed_s=1 input_bytes=0 output_bytes=1016
+RESOURCE step=3 year=2015 jvm_heap_bytes=1073741824
+RESULT step=5v profile=expanded rc=0 records_read=34 vendors=3 spills=10
+RESULT step=5r rc=0 records_written=14 merge_passes=4
+****************************************************************************************************
+                                Post Module
+Start Time: Tue Nov 17 14:43:14 MST 2026
+****************************************************************************************************
+processing file: ../../session-run.tmp/reporting-14725190776367087001/inputs/SortedJEFY14merged.csv
+No existing ledger file.  File will be created: LDGR2014.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          12
+Ledger Records Read:           0
+Ledger Records Written:        10
+Process End Time:      Tue Nov 17 14:43:14 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2014 rc=0 records_read=12 records_written=10 elapsed_s=1 input_bytes=0 output_bytes=1715
+RESOURCE step=3 year=2014 jvm_heap_bytes=1073741824
+****************************************************************************************************
+                                Post Module
+Start Time: Tue Nov 17 14:43:14 MST 2026
+****************************************************************************************************
+processing file: ../../session-run.tmp/reporting-14725190776367087001/inputs/SortedJEFY15merged.csv
+No existing ledger file.  File will be created: LDGR2015.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          4
+Ledger Records Read:           0
+Ledger Records Written:        4
+Process End Time:      Tue Nov 17 14:43:14 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2015 rc=0 records_read=4 records_written=4 elapsed_s=1 input_bytes=0 output_bytes=1016
+RESOURCE step=3 year=2015 jvm_heap_bytes=1073741824
+RESULT step=5v profile=expanded rc=0 records_read=34 vendors=3 spills=20
+RESULT step=5r rc=0 records_written=14 merge_passes=5
+RESULT step=5v profile=expanded rc=0 records_read=34 vendors=3 spills=1
+RESULT step=5r rc=0 records_written=14 merge_passes=0
+****************************************************************************************************
+                                Post Module
+Start Time: Tue Nov 17 14:43:14 MST 2026
+****************************************************************************************************
+processing file: ../../session-run.tmp/reporting-5826386799595977963/inputs/SortedJEFY14merged.csv
+No existing ledger file.  File will be created: LDGR2014.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          12
+Ledger Records Read:           0
+Ledger Records Written:        10
+Process End Time:      Tue Nov 17 14:43:14 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2014 rc=0 records_read=12 records_written=10 elapsed_s=1 input_bytes=0 output_bytes=1715
+RESOURCE step=3 year=2014 jvm_heap_bytes=1073741824
+****************************************************************************************************
+                                Post Module
+Start Time: Tue Nov 17 14:43:14 MST 2026
+****************************************************************************************************
+processing file: ../../session-run.tmp/reporting-5826386799595977963/inputs/SortedJEFY15merged.csv
+No existing ledger file.  File will be created: LDGR2015.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          4
+Ledger Records Read:           0
+Ledger Records Written:        4
+Process End Time:      Tue Nov 17 14:43:14 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2015 rc=0 records_read=4 records_written=4 elapsed_s=1 input_bytes=0 output_bytes=1016
+RESOURCE step=3 year=2015 jvm_heap_bytes=1073741824
+****************************************************************************************************
+                                Post Module
+Start Time: Tue Nov 17 14:43:14 MST 2026
+****************************************************************************************************
+processing file: ../../session-run.tmp/reporting-17825154133406745125/inputs/SortedJEFY14merged.csv
+No existing ledger file.  File will be created: LDGR2014.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          12
+Ledger Records Read:           0
+Ledger Records Written:        10
+Process End Time:      Tue Nov 17 14:43:14 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2014 rc=0 records_read=12 records_written=10 elapsed_s=1 input_bytes=0 output_bytes=1715
+RESOURCE step=3 year=2014 jvm_heap_bytes=1073741824
+****************************************************************************************************
+                                Post Module
+Start Time: Tue Nov 17 14:43:14 MST 2026
+****************************************************************************************************
+processing file: ../../session-run.tmp/reporting-17825154133406745125/inputs/SortedJEFY15merged.csv
+No existing ledger file.  File will be created: LDGR2015.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          4
+Ledger Records Read:           0
+Ledger Records Written:        4
+Process End Time:      Tue Nov 17 14:43:14 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2015 rc=0 records_read=4 records_written=4 elapsed_s=1 input_bytes=0 output_bytes=1016
+RESOURCE step=3 year=2015 jvm_heap_bytes=1073741824
+RESULT step=5v profile=expanded rc=0 records_read=34 vendors=3 spills=10
+RESULT step=5r rc=0 records_written=14 merge_passes=4
+****************************************************************************************************
+                                Post Module
+Start Time: Tue Nov 17 14:43:15 MST 2026
+****************************************************************************************************
+processing file: ../../session-run.tmp/reporting-10329189119076498860/inputs/SortedJEFY14merged.csv
+No existing ledger file.  File will be created: LDGR2014.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          12
+Ledger Records Read:           0
+Ledger Records Written:        10
+Process End Time:      Tue Nov 17 14:43:15 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2014 rc=0 records_read=12 records_written=10 elapsed_s=1 input_bytes=0 output_bytes=1715
+RESOURCE step=3 year=2014 jvm_heap_bytes=1073741824
+****************************************************************************************************
+                                Post Module
+Start Time: Tue Nov 17 14:43:15 MST 2026
+****************************************************************************************************
+processing file: ../../session-run.tmp/reporting-10329189119076498860/inputs/SortedJEFY15merged.csv
+No existing ledger file.  File will be created: LDGR2015.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          4
+Ledger Records Read:           0
+Ledger Records Written:        4
+Process End Time:      Tue Nov 17 14:43:15 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2015 rc=0 records_read=4 records_written=4 elapsed_s=1 input_bytes=0 output_bytes=1016
+RESOURCE step=3 year=2015 jvm_heap_bytes=1073741824
+RESULT step=5v profile=expanded rc=0 records_read=34 vendors=3 spills=10
+RESULT step=5r rc=0 records_written=14 merge_passes=4
+****************************************************************************************************
+                                Post Module
+Start Time: Tue Nov 17 14:43:15 MST 2026
+****************************************************************************************************
+processing file: ../../session-run.tmp/reporting-8968214042244179376/inputs/SortedJEFY14merged.csv
+No existing ledger file.  File will be created: LDGR2014.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          12
+Ledger Records Read:           0
+Ledger Records Written:        10
+Process End Time:      Tue Nov 17 14:43:15 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2014 rc=0 records_read=12 records_written=10 elapsed_s=1 input_bytes=0 output_bytes=1715
+RESOURCE step=3 year=2014 jvm_heap_bytes=1073741824
+****************************************************************************************************
+                                Post Module
+Start Time: Tue Nov 17 14:43:15 MST 2026
+****************************************************************************************************
+processing file: ../../session-run.tmp/reporting-8968214042244179376/inputs/SortedJEFY15merged.csv
+No existing ledger file.  File will be created: LDGR2015.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          4
+Ledger Records Read:           0
+Ledger Records Written:        4
+Process End Time:      Tue Nov 17 14:43:15 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2015 rc=0 records_read=4 records_written=4 elapsed_s=1 input_bytes=0 output_bytes=1016
+RESOURCE step=3 year=2015 jvm_heap_bytes=1073741824
+RESULT step=5v profile=expanded rc=0 records_read=35 vendors=3 spills=10
+RESULT step=5r rc=0 records_written=14 merge_passes=4
+****************************************************************************************************
+                                Post Module
+Start Time: Tue Nov 17 14:43:15 MST 2026
+****************************************************************************************************
+processing file: ../../session-run.tmp/reporting-9816548741977507238/inputs/SortedJEFY14merged.csv
+No existing ledger file.  File will be created: LDGR2014.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          12
+Ledger Records Read:           0
+Ledger Records Written:        10
+Process End Time:      Tue Nov 17 14:43:15 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2014 rc=0 records_read=12 records_written=10 elapsed_s=1 input_bytes=0 output_bytes=1715
+RESOURCE step=3 year=2014 jvm_heap_bytes=1073741824
+****************************************************************************************************
+                                Post Module
+Start Time: Tue Nov 17 14:43:15 MST 2026
+****************************************************************************************************
+processing file: ../../session-run.tmp/reporting-9816548741977507238/inputs/SortedJEFY15merged.csv
+No existing ledger file.  File will be created: LDGR2015.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          4
+Ledger Records Read:           0
+Ledger Records Written:        4
+Process End Time:      Tue Nov 17 14:43:15 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2015 rc=0 records_read=4 records_written=4 elapsed_s=1 input_bytes=0 output_bytes=1016
+RESOURCE step=3 year=2015 jvm_heap_bytes=1073741824
+****************************************************************************************************
+                                Post Module
+Start Time: Tue Nov 17 14:43:15 MST 2026
+****************************************************************************************************
+processing file: ../../session-run.tmp/reporting-9816548741977507238/literal-input/SortedJEFY14merged.csv
+No existing ledger file.  File will be created: LDGR2014.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          6
+Ledger Records Read:           0
+Ledger Records Written:        6
+Process End Time:      Tue Nov 17 14:43:15 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2014 rc=0 records_read=6 records_written=6 elapsed_s=1 input_bytes=0 output_bytes=1226
+RESOURCE step=3 year=2014 jvm_heap_bytes=1073741824
+RESULT step=5v profile=expanded rc=0 records_read=16 vendors=4 spills=6
+RESULT step=5r rc=0 records_written=4 merge_passes=3
+****************************************************************************************************
+                                Post Module
+Start Time: Tue Nov 17 14:43:16 MST 2026
+****************************************************************************************************
+processing file: ../../session-run.tmp/reporting-12100963038085160390/inputs/SortedJEFY14merged.csv
+No existing ledger file.  File will be created: LDGR2014.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          12
+Ledger Records Read:           0
+Ledger Records Written:        10
+Process End Time:      Tue Nov 17 14:43:16 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2014 rc=0 records_read=12 records_written=10 elapsed_s=1 input_bytes=0 output_bytes=1715
+RESOURCE step=3 year=2014 jvm_heap_bytes=1073741824
+****************************************************************************************************
+                                Post Module
+Start Time: Tue Nov 17 14:43:16 MST 2026
+****************************************************************************************************
+processing file: ../../session-run.tmp/reporting-12100963038085160390/inputs/SortedJEFY15merged.csv
+No existing ledger file.  File will be created: LDGR2015.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          4
+Ledger Records Read:           0
+Ledger Records Written:        4
+Process End Time:      Tue Nov 17 14:43:16 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2015 rc=0 records_read=4 records_written=4 elapsed_s=1 input_bytes=0 output_bytes=1016
+RESOURCE step=3 year=2015 jvm_heap_bytes=1073741824
+****************************************************************************************************
+                                Post Module
+Start Time: Tue Nov 17 14:43:16 MST 2026
+****************************************************************************************************
+processing file: ../../session-run.tmp/reporting-12100963038085160390/currency-input/SortedJEFY14merged.csv
+No existing ledger file.  File will be created: LDGR2014.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          4
+Ledger Records Read:           0
+Ledger Records Written:        4
+Process End Time:      Tue Nov 17 14:43:16 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2014 rc=0 records_read=4 records_written=4 elapsed_s=1 input_bytes=0 output_bytes=1012
+RESOURCE step=3 year=2014 jvm_heap_bytes=1073741824
+****************************************************************************************************
+                                Post Module
+Start Time: Tue Nov 17 14:43:16 MST 2026
+****************************************************************************************************
+processing file: ../../session-run.tmp/reporting-16811940384071099071/inputs/SortedJEFY14merged.csv
+No existing ledger file.  File will be created: LDGR2014.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          12
+Ledger Records Read:           0
+Ledger Records Written:        10
+Process End Time:      Tue Nov 17 14:43:16 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2014 rc=0 records_read=12 records_written=10 elapsed_s=1 input_bytes=0 output_bytes=1715
+RESOURCE step=3 year=2014 jvm_heap_bytes=1073741824
+****************************************************************************************************
+                                Post Module
+Start Time: Tue Nov 17 14:43:16 MST 2026
+****************************************************************************************************
+processing file: ../../session-run.tmp/reporting-16811940384071099071/inputs/SortedJEFY15merged.csv
+No existing ledger file.  File will be created: LDGR2015.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          4
+Ledger Records Read:           0
+Ledger Records Written:        4
+Process End Time:      Tue Nov 17 14:43:16 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2015 rc=0 records_read=4 records_written=4 elapsed_s=1 input_bytes=0 output_bytes=1016
+RESOURCE step=3 year=2015 jvm_heap_bytes=1073741824
+****************************************************************************************************
+                                Post Module
+Start Time: Tue Nov 17 14:43:19 MST 2026
+****************************************************************************************************
+processing file: ../../session-run.tmp/reporting-16811940384071099071/large-input/SortedJEFY14merged.csv
+No existing ledger file.  File will be created: LDGR2014.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          500004
+Ledger Records Read:           0
+Ledger Records Written:        4
+Process End Time:      Tue Nov 17 14:43:22 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2014 rc=0 records_read=500004 records_written=4 elapsed_s=2 input_bytes=0 output_bytes=1050
+RESOURCE step=3 year=2014 jvm_heap_bytes=1073741824
+RESULT step=5v profile=expanded rc=0 records_read=500012 vendors=3 spills=4
+RESULT step=5r rc=0 records_written=4 merge_passes=2
+****************************************************************************************************
+                                Post Module
+Start Time: Tue Nov 17 14:43:55 MST 2026
+****************************************************************************************************
+processing file: ../../session-run.tmp/reporting-11592547444762716921/inputs/SortedJEFY14merged.csv
+No existing ledger file.  File will be created: LDGR2014.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          12
+Ledger Records Read:           0
+Ledger Records Written:        10
+Process End Time:      Tue Nov 17 14:43:55 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2014 rc=0 records_read=12 records_written=10 elapsed_s=1 input_bytes=0 output_bytes=1715
+RESOURCE step=3 year=2014 jvm_heap_bytes=1073741824
+****************************************************************************************************
+                                Post Module
+Start Time: Tue Nov 17 14:43:55 MST 2026
+****************************************************************************************************
+processing file: ../../session-run.tmp/reporting-11592547444762716921/inputs/SortedJEFY15merged.csv
+No existing ledger file.  File will be created: LDGR2015.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          4
+Ledger Records Read:           0
+Ledger Records Written:        4
+Process End Time:      Tue Nov 17 14:43:55 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2015 rc=0 records_read=4 records_written=4 elapsed_s=1 input_bytes=0 output_bytes=1016
+RESOURCE step=3 year=2015 jvm_heap_bytes=1073741824
+****************************************************************************************************
+                                Post Module
+Start Time: Tue Nov 17 14:43:55 MST 2026
+****************************************************************************************************
+processing file: ../../session-run.tmp/reporting-11592547444762716921/dated-input/SortedJEFY14merged.csv
+No existing ledger file.  File will be created: LDGR2014.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          10
+Ledger Records Read:           0
+Ledger Records Written:        6
+Process End Time:      Tue Nov 17 14:43:55 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2014 rc=0 records_read=10 records_written=6 elapsed_s=1 input_bytes=0 output_bytes=1246
+RESOURCE step=3 year=2014 jvm_heap_bytes=1073741824
+RESULT step=5v profile=expanded rc=0 records_read=21 vendors=3 spills=12
+RESULT step=5r rc=0 records_written=6 merge_passes=4
+RESULT step=5v profile=expanded rc=0 records_read=21 vendors=3 spills=1
+RESULT step=5r rc=0 records_written=6 merge_passes=0
+****************************************************************************************************
+                                Post Module
+Start Time: Tue Nov 17 14:43:56 MST 2026
+****************************************************************************************************
+processing file: ../../session-run.tmp/reporting-12460144481326688685/inputs/SortedJEFY14merged.csv
+No existing ledger file.  File will be created: LDGR2014.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          12
+Ledger Records Read:           0
+Ledger Records Written:        10
+Process End Time:      Tue Nov 17 14:43:56 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2014 rc=0 records_read=12 records_written=10 elapsed_s=1 input_bytes=0 output_bytes=1715
+RESOURCE step=3 year=2014 jvm_heap_bytes=1073741824
+****************************************************************************************************
+                                Post Module
+Start Time: Tue Nov 17 14:43:56 MST 2026
+****************************************************************************************************
+processing file: ../../session-run.tmp/reporting-12460144481326688685/inputs/SortedJEFY15merged.csv
+No existing ledger file.  File will be created: LDGR2015.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          4
+Ledger Records Read:           0
+Ledger Records Written:        4
+Process End Time:      Tue Nov 17 14:43:56 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2015 rc=0 records_read=4 records_written=4 elapsed_s=1 input_bytes=0 output_bytes=1016
+RESOURCE step=3 year=2015 jvm_heap_bytes=1073741824
+****************************************************************************************************
+                                Post Module
+Start Time: Tue Nov 17 14:43:57 MST 2026
+****************************************************************************************************
+processing file: ../../session-run.tmp/reporting-15951632634799592948/inputs/SortedJEFY14merged.csv
+No existing ledger file.  File will be created: LDGR2014.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          12
+Ledger Records Read:           0
+Ledger Records Written:        10
+Process End Time:      Tue Nov 17 14:43:57 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2014 rc=0 records_read=12 records_written=10 elapsed_s=1 input_bytes=0 output_bytes=1715
+RESOURCE step=3 year=2014 jvm_heap_bytes=1073741824
+****************************************************************************************************
+                                Post Module
+Start Time: Tue Nov 17 14:43:57 MST 2026
+****************************************************************************************************
+processing file: ../../session-run.tmp/reporting-15951632634799592948/inputs/SortedJEFY15merged.csv
+No existing ledger file.  File will be created: LDGR2015.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          4
+Ledger Records Read:           0
+Ledger Records Written:        4
+Process End Time:      Tue Nov 17 14:43:57 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2015 rc=0 records_read=4 records_written=4 elapsed_s=1 input_bytes=0 output_bytes=1016
+RESOURCE step=3 year=2015 jvm_heap_bytes=1073741824
+****************************************************************************************************
+                                Post Module
+Start Time: Tue Nov 17 14:43:57 MST 2026
+****************************************************************************************************
+processing file: ../../session-run.tmp/reporting-15951632634799592948/source-14/SortedJEFY14merged.csv
+No existing ledger file.  File will be created: LDGR2014.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          4
+Ledger Records Read:           0
+Ledger Records Written:        4
+Process End Time:      Tue Nov 17 14:43:57 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2014 rc=0 records_read=4 records_written=4 elapsed_s=1 input_bytes=0 output_bytes=1016
+RESOURCE step=3 year=2014 jvm_heap_bytes=1073741824
+****************************************************************************************************
+                                Post Module
+Start Time: Tue Nov 17 14:43:57 MST 2026
+****************************************************************************************************
+processing file: ../../session-run.tmp/reporting-15951632634799592948/source-15/SortedJEFY15merged.csv
+No existing ledger file.  File will be created: LDGR2015.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          4
+Ledger Records Read:           0
+Ledger Records Written:        2
+Process End Time:      Tue Nov 17 14:43:57 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2015 rc=0 records_read=4 records_written=2 elapsed_s=1 input_bytes=0 output_bytes=782
+RESOURCE step=3 year=2015 jvm_heap_bytes=1073741824
+RESULT reporting_sort kind=movement rows=4 spills=4 levels=2 bytes=816 file=SortedJEFY14merged.csv
+RESULT reporting_sort kind=balance rows=4 spills=4 levels=2 bytes=1016 file=LDGR2014.csv
+RESULT reporting_sort kind=movement rows=4 spills=4 levels=2 bytes=794 file=SortedJEFY15merged.csv
+RESULT reporting_sort kind=balance rows=2 spills=2 levels=1 bytes=782 file=LDGR2015.csv
+RESULT step=5v profile=expanded rc=0 records_read=19 vendors=2 spills=8
+RESULT step=5r rc=0 records_written=6 merge_passes=3
+RESULT step=5v profile=expanded rc=0 records_read=19 vendors=2 spills=8
+RESULT step=5r rc=0 records_written=6 merge_passes=3
+RESULT step=5v profile=expanded rc=0 records_read=19 vendors=2 spills=1
+RESULT step=5r rc=0 records_written=6 merge_passes=0
+[info] ReportingPassSpec:
+[info] - three_range_equivalence preserves records, ordinals, empty ranges and global totals
+[info] - canonical quotes remain literal through actual posting and indexed reporting
+[info] - external common-key sort and one sequential CKB pass equal indexed reporting
+[info] - real posting output reconciles; features and effective dimensions remain aligned
+[info] - tiny spills and bounded multi-level merge equal a large-buffer execution
+[info] - a corrupted actual posted balance blocks publication and downstream reduction
+[info] - feature bounds, reference bounds and duplicate inputs fail closed; disorder is indexed
+[info] - fiscal-year contract distinguishes payment fiscal labels from calendar PO dates
+[info] - missing balance side, invalid amount and overlapping dimensions remain explicit
+[info] - opening plus movements is a distinct explicit reconciliation basis
+[info] - literal variable-width IDs retain identity across arbitrary physical order and dimension joins
+[info] - source currencies cannot mix merely because their currency types match
+[info] - a legitimate and an unattributed group exceed the old row guard with bounded aggregation
+[info] - synthetic date cuts and master dimensions conserve actual posted inputs with bounded spill equivalence
+[info] - synthetic reporting rejects incorrect history expectations instead of publishing
+[info] - reporting_ckb_dependency_equivalence across partitions, date modes and forced spills
+[info] - CKB analytical bytes spill bounded state and reject an oversized aggregate
+[info] - export connected fixture for separate-process orchestration when requested
+[info] Run completed in 53 seconds, 906 milliseconds.
+[info] Total number of tests run: 20
+[info] Suites: completed 2, aborted 0
+[info] Tests: succeeded 20, failed 0, canceled 0, ignored 0, pending 0
+[info] All tests passed.
+[success] Total time: 70 s (0:01:10.0), completed Nov 17, 2026, 2:43:58 PM

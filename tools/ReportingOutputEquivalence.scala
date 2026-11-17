@@ -42,14 +42,17 @@ object ReportingOutputEquivalence {
     val vendor = header.startsWith("vendor_id,")
     var next: String = in.readLine(); private var previous = ""
     def group: String = if (next == null) "" else if (vendor) firstField(next) else "ALL"
+    def pop():String={
+      require(next!=null && next.nonEmpty && next.length<=4096,"Audit line bound or empty record")
+      val line=next
+      if(vendor){val key=group;require(key>=previous,s"Vendor order violation: $key after $previous");previous=key}
+      next=in.readLine();line
+    }
     def takeGroup(key: String): Iterator[String] = new Iterator[String] {
       def hasNext: Boolean = Rows.this.next != null && group == key
       def next(): String = {
         require(hasNext)
-        val line = Rows.this.next
-        require(line.length <= 4096 && line.nonEmpty, "Audit line bound or empty record")
-        if (vendor) { require(key >= previous, s"Vendor order violation: $key after $previous"); previous = key }
-        Rows.this.next = in.readLine()
+        val line = pop()
         Base64.getEncoder.encodeToString(line.getBytes(UTF_8))
       }
     }
@@ -94,6 +97,9 @@ object ReportingOutputEquivalence {
       while (a.next != null || b.next != null) {
         require(a.next != null && b.next != null && a.group == b.group, s"Group mismatch: ${left.getName} row=$n")
         val key = a.group
+        // Equal records cancel exactly from both multisets. Retain full sorting
+        // for the unmatched suffix; no hash/tolerance substitutes for equality.
+        while(a.next!=null && b.next!=null && a.group==key && b.group==key && a.next==b.next){a.pop();b.pop();n+=1}
         val (ai, ac) = canonical(a.takeGroup(key), new File(scratch, "left"))
         val (bi, bc) = canonical(b.takeGroup(key), new File(scratch, "right"))
         try {
@@ -106,9 +112,10 @@ object ReportingOutputEquivalence {
     } finally { a.close(); b.close() }
   }
   def main(args: Array[String]): Unit = {
-    require(args.length == 3, "BASELINE_REPORT NEW_REPORT NEW_SCRATCH")
+    require(args.length == 3 || args.length == 4, "BASELINE_REPORT NEW_REPORT NEW_SCRATCH [VIEW_NAME]")
     val scratch = new File(args(2)); require(!scratch.exists() && scratch.mkdirs())
-    names.foreach(name => compare(source(new File(args(0)), name), source(new File(args(1)), name), scratch))
-    require(scratch.delete()); println("PASS all declared reporting outputs exactly equivalent")
+    val selected=if(args.length==4){val requested=args(3).split(",").toVector;require(requested.nonEmpty && requested.distinct==requested && requested.forall(names.contains));requested}else names
+    selected.foreach(name => compare(source(new File(args(0)), name), source(new File(args(1)), name), scratch))
+    require(scratch.delete()); println(s"PASS selected_outputs=${selected.size} exactly equivalent")
   }
 }

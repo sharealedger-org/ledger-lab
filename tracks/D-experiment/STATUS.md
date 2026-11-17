@@ -1,5 +1,21 @@
 # Track D: Primary research experiment
 
+**2026-11-17 completed worker run; acceptance held for precision:** All three
+workers and final combination finished. Worker-wave wall4837s; combination358.55s;
+preparation740.76s. Independent reporting controls pass:19943155 reconciliation,
+3163680 conservation,20 reference cases,286277734 financial rows/98865 vendors.
+Census gate failed only on relationships:4756111 rows in both, baseline731834020B
+versus candidate731832242B; maximum record278 versus273. Other six census rows
+are identical. Root FAILED rc1 is preserved; this is not an accepted completed run.
+First strict mismatch is a derived share's precision, not amounts/counts in the
+selected vendor. Baseline spill/reparse expands BigDecimal MathContext; direct
+CKB delivery retained34 digits. Isolated precision branch prepares an invariant
+delivery fix and two-reader bounded Scala report-only correction. First affected
+vendor's candidate matches baseline exactly; original report remains unchanged.
+Full candidate correction,20 other full-record output comparisons and regression
+tests are running. No timing ratio or full equivalence acceptance yet. Upload
+remains deferred; no Q2 model work.
+
 **Three reporting workers live, 2026-11-17 12:56 AZT:** Preparation completed
 successfully in740.76s. Concurrent JVMs84355/84356/84357 in driver group80675
 are extracting workers0/1/2; all three have live CPU activity. Verified financial

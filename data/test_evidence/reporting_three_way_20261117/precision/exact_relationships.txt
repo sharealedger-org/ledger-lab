@@ -1,0 +1,20 @@
+PASS relationships.csv.gz rows=4756111 groups=98865 exact_record_multiset=true
+PASS selected_outputs=1 exactly equivalent
+       61.84 real        34.22 user         9.51 sys
+           151875584  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+               66517  page reclaims
+                  17  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   4  signals received
+                2004  voluntary context switches
+              129575  involuntary context switches
+        161047266778  instructions retired
+        135997640007  cycles elapsed
+           137359360  peak memory footprint

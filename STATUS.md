@@ -16,6 +16,13 @@ The audit register wins any evidence disagreement.
 
 ## Current checkpoint
 
+**2026-11-17 worker processing finished; precision acceptance check active:**
+Three-worker phase80m37s and final collapse finished; independent financial and
+synthetic controls pass. Census stopped acceptance on derived relationship-share
+precision. Original outputs are preserved. An isolated bounded Scala correction
+and exact full-record verification are in progress; see Track D. No accepted
+performance ratio, upload/publication or Q2 model execution yet.
+
 **2026-11-17 three-way vendor reporting replacement:** Owner requests three
 vendor-ID workers. The single-worker CKB attempt is intentionally stopped and
 preserved, without a completed timing claim. Frozen isolated build `e788d67`

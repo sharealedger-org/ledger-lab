@@ -29,6 +29,8 @@ object ReportingOutputEquivalenceCheck {
     val a = file("a.csv", "vendor_id,key,value", rows)
     val b = file("b.csv.gz", "vendor_id,key,value", reversed)
     compare(a, b, "spill-gzip-reorder")
+    compare(a,file("identical.csv.gz","vendor_id,key,value",rows),"ordered-identical")
+    rejects(compare(a,file("tail-changed.csv","vendor_id,key,value",rows.updated(rows.size-1,"v2,1,999")),"equal-prefix-changed-tail"))
     rejects(compare(a, file("changed.csv", "vendor_id,key,value", reversed.updated(0, "v1,999,999")), "changed"))
     rejects(compare(a, file("duplicate.csv", "vendor_id,key,value", reversed.dropRight(1)), "duplicate"))
     rejects(compare(a, file("header.csv", "vendor_id,key,wrong", reversed), "header"))

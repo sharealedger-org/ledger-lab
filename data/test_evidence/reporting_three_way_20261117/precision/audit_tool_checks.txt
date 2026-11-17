@@ -1,0 +1,5 @@
+PASS a.csv rows=4302 groups=2 exact_record_multiset=true
+PASS a.csv rows=4302 groups=2 exact_record_multiset=true
+PASS q.csv rows=3 groups=2 exact_record_multiset=true
+PASS g.csv rows=3 groups=1 exact_record_multiset=true
+PASS audit reorder/gzip/spill/duplicates/changed-record/header/quoted/global checks
