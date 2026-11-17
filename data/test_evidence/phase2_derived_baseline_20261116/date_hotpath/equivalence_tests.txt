@@ -1,0 +1,1271 @@
+[info] welcome to sbt 1.10.11 (Eclipse Adoptium Java 21.0.8)
+[info] loading settings for project global-plugins from idea.sbt...
+[info] loading global plugins from /Users/ktwitchell001/.sbt/1.0/plugins
+[info] loading settings for project va_pipeline-build from assembly.sbt, plugins.sbt...
+[info] loading project definition from /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/project
+[info] loading settings for project root from build.sbt...
+[info] set current project to va_pipeline (in build file:/Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/)
+[info] compiling 4 Scala sources to /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/target/scala-2.12/classes ...
+[info] done compiling
+[info] compiling 4 Scala sources to /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/target/scala-2.12/classes ...
+[info] done compiling
+[info] compiling 1 Scala source to /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/target/scala-2.12/test-classes ...
+[info] done compiling
+****************************************************************************************************
+                     Step 2p — PO Standardize & Sort (standardizeAndSort.applyPO)
+Start Time: Mon Nov 16 21:54:02 MST 2026
+****************************************************************************************************
+****************************************************************************************************
+                         Step 2 — Standardize & Sort (standardizeAndSort)
+Start Time: Mon Nov 16 21:54:02 MST 2026
+****************************************************************************************************
+  Input file   : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/po-lineage-12333332921559284868/in/VA_opendata_FY2003.txt
+  Output file  : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/po-lineage-12333332921559284868/out/SortedJEFY03q1PO.csv
+  Year         : 2003  Quarter: 1
+  AcctDate     : 2003/03/01
+  Input file   : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-csv-valid-13253240552795967011/input/FY14q1exp.csv
+  Output file  : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-csv-valid-13253240552795967011/output/SortedJEFY14q1exp.csv
+  Year         : 2014  Quarter: 1  Type: E  RecFormat: C
+  AcctDate     : 2014/03/01
+  SortSpec     : ../sort_specs/SortedJE.sortspec  (15 fields)
+  ChunkSize    : 1
+  SortSpec     : ../sort_specs/SortedJE.sortspec  (15 fields)
+  ChunkSize    : 200000
+  DryRun       : false
+
+Control totals:
+  Physical lines      : 2  (all assigned to a record: 2)
+  Logical records     : 2  (= accepted + quarantined)
+  PO records accepted : 2
+  Records quarantined : 0  (reader rejects 0; see /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/po-lineage-12333332921559284868/out/POQuarantineFY03.csv)
+  SJE rows produced   : 4  (= 2 × accepted records)
+  Spill files used    : 4
+  Sum of all amounts  : 0.00  (should be 0.00)
+
+RESULT step=2p year=2003 rc=0 records_read=2 records_written=4 records_accepted=2 skipped_quarantine=0 reader_rejects=0 physical_lines=2 elapsed_s=1 input_bytes=545 output_bytes=1422
+RESOURCE step=2p year=2003 jvm_heap_bytes=1073741824
+STATUS: COMPLETE
+****************************************************************************************************
+Process End Time: Mon Nov 16 21:54:02 MST 2026
+****************************************************************************************************
+  VendorMaster : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-csv-valid-13253240552795967011/input/VendorMaster.csv  (1 entries)
+****************************************************************************************************
+                     Step 2p — PO Standardize & Sort (standardizeAndSort.applyPO)
+Start Time: Mon Nov 16 21:54:02 MST 2026
+****************************************************************************************************
+  Input file   : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/po-2p-cols-10470794021731668476/in/VA_opendata_FY2003.txt
+  Output file  : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/po-2p-cols-10470794021731668476/out/SortedJEFY03q1PO.csv
+  Year         : 2003  Quarter: 1
+  AcctDate     : 2003/03/01
+  SortSpec     : ../sort_specs/SortedJE.sortspec  (15 fields)
+  ChunkSize    : 200000
+
+Control totals:
+  Physical lines      : 2  (all assigned to a record: 2)
+  Logical records     : 2  (= accepted + quarantined)
+  PO records accepted : 2
+  Records quarantined : 0  (reader rejects 0; see /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/po-2p-cols-10470794021731668476/out/POQuarantineFY03.csv)
+  SJE rows produced   : 4  (= 2 × accepted records)
+  Spill files used    : 1
+  Sum of all amounts  : 0.00  (should be 0.00)
+
+RESULT step=2p year=2003 rc=0 records_read=2 records_written=4 records_accepted=2 skipped_quarantine=0 reader_rejects=0 physical_lines=2 elapsed_s=1 input_bytes=539 output_bytes=1373
+RESOURCE step=2p year=2003 jvm_heap_bytes=1073741824
+STATUS: COMPLETE
+****************************************************************************************************
+Process End Time: Mon Nov 16 21:54:02 MST 2026
+****************************************************************************************************
+****************************************************************************************************
+                     Step 2p — PO Standardize & Sort (standardizeAndSort.applyPO)
+Start Time: Mon Nov 16 21:54:02 MST 2026
+****************************************************************************************************
+  Input file   : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/po-2p-balance-8177557590473154948/in/VA_opendata_FY2003.txt
+  Output file  : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/po-2p-balance-8177557590473154948/out/SortedJEFY03q1PO.csv
+  Year         : 2003  Quarter: 1
+  AcctDate     : 2003/03/01
+  SortSpec     : ../sort_specs/SortedJE.sortspec  (15 fields)
+  ChunkSize    : 200000
+  Spilled chunk 1  (2 rows so far)
+  1 spill file(s), 2 total rows
+
+Control totals:
+  Journal lines produced:  2
+  Lines with instID match: 0  (0%)
+  Lines without match:     2
+  Sum of all amounts:      0.00  (should be ~0 — debits cancel credits)
+
+Merging 1 spill(s) → /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-csv-valid-13253240552795967011/output/SortedJEFY14q1exp.csv ...
+
+Control totals:
+  Physical lines      : 1  (all assigned to a record: 1)
+  Logical records     : 1  (= accepted + quarantined)
+  PO records accepted : 1
+  Records quarantined : 0  (reader rejects 0; see /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/po-2p-balance-8177557590473154948/out/POQuarantineFY03.csv)
+  SJE rows produced   : 2  (= 2 × accepted records)
+  Spill files used    : 1
+  Sum of all amounts  : 0.00  (should be 0.00)
+
+RESULT step=2p year=2003 rc=0 records_read=1 records_written=2 records_accepted=1 skipped_quarantine=0 reader_rejects=0 physical_lines=1 elapsed_s=1 input_bytes=392 output_bytes=711
+RESOURCE step=2p year=2003 jvm_heap_bytes=1073741824
+STATUS: COMPLETE
+****************************************************************************************************
+Process End Time: Mon Nov 16 21:54:02 MST 2026
+****************************************************************************************************
+Written: /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-csv-valid-13253240552795967011/output/SortedJEFY14q1exp.csv (0.0 MB, 2 rows)
+STATUS: COMPLETE
+RESULT step=2 year=2014 rc=0 records_read=1 records_written=2 elapsed_s=1 input_bytes=155 output_bytes=431
+RESOURCE step=2 year=2014 jvm_heap_bytes=1073741824
+****************************************************************************************************
+Process End Time: Mon Nov 16 21:54:02 MST 2026
+****************************************************************************************************
+****************************************************************************************************
+                     Step 2p — PO Standardize & Sort (standardizeAndSort.applyPO)
+Start Time: Mon Nov 16 21:54:02 MST 2026
+****************************************************************************************************
+  Input file   : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/po-2p-ipid-12247473441688229637/in/VA_opendata_FY2003.txt
+  Output file  : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/po-2p-ipid-12247473441688229637/out/SortedJEFY03q1PO.csv
+  Year         : 2003  Quarter: 1
+  AcctDate     : 2003/03/01
+  SortSpec     : ../sort_specs/SortedJE.sortspec  (15 fields)
+  ChunkSize    : 200000
+
+Control totals:
+  Physical lines      : 2  (all assigned to a record: 2)
+  Logical records     : 2  (= accepted + quarantined)
+  PO records accepted : 2
+  Records quarantined : 0  (reader rejects 0; see /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/po-2p-ipid-12247473441688229637/out/POQuarantineFY03.csv)
+  SJE rows produced   : 4  (= 2 × accepted records)
+  Spill files used    : 1
+  Sum of all amounts  : 0.00  (should be 0.00)
+
+RESULT step=2p year=2003 rc=0 records_read=2 records_written=4 records_accepted=2 skipped_quarantine=0 reader_rejects=0 physical_lines=2 elapsed_s=1 input_bytes=539 output_bytes=1373
+RESOURCE step=2p year=2003 jvm_heap_bytes=1073741824
+STATUS: COMPLETE
+****************************************************************************************************
+Process End Time: Mon Nov 16 21:54:02 MST 2026
+****************************************************************************************************
+****************************************************************************************************
+                         Step 2 — Standardize & Sort (standardizeAndSort)
+Start Time: Mon Nov 16 21:54:02 MST 2026
+****************************************************************************************************
+  Input file   : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-csv-invalid-13093631164770165977/input/FY14q1exp.csv
+  Output file  : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-csv-invalid-13093631164770165977/output/SortedJEFY14q1exp.csv
+  Year         : 2014  Quarter: 1  Type: E  RecFormat: C
+  AcctDate     : 2014/03/01
+  SortSpec     : ../sort_specs/SortedJE.sortspec  (15 fields)
+  ChunkSize    : 200000
+  DryRun       : false
+  VendorMaster : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/ttl-csv-invalid-13093631164770165977/input/VendorMaster.csv  (1 entries)
+[info] StandardizeAndSortSpec:
+[info] - CSV source header and quoted comma fields are parsed before SJE output
+[info] - malformed CSV transaction rows are rejected
+****************************************************************************************************
+                     Step 2p — PO Standardize & Sort (standardizeAndSort.applyPO)
+Start Time: Mon Nov 16 21:54:02 MST 2026
+****************************************************************************************************
+  Input file   : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/po-2p-commit-7788311429351299792/in/VA_opendata_FY2003.txt
+  Output file  : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/po-2p-commit-7788311429351299792/out/SortedJEFY03q1PO.csv
+  Year         : 2003  Quarter: 1
+  AcctDate     : 2003/03/01
+  SortSpec     : ../sort_specs/SortedJE.sortspec  (15 fields)
+  ChunkSize    : 200000
+
+Control totals:
+  Physical lines      : 1  (all assigned to a record: 1)
+  Logical records     : 1  (= accepted + quarantined)
+  PO records accepted : 1
+  Records quarantined : 0  (reader rejects 0; see /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/po-2p-commit-7788311429351299792/out/POQuarantineFY03.csv)
+  SJE rows produced   : 2  (= 2 × accepted records)
+  Spill files used    : 1
+  Sum of all amounts  : 0.00  (should be 0.00)
+
+RESULT step=2p year=2003 rc=0 records_read=1 records_written=2 records_accepted=1 skipped_quarantine=0 reader_rejects=0 physical_lines=1 elapsed_s=1 input_bytes=392 output_bytes=711
+RESOURCE step=2p year=2003 jvm_heap_bytes=1073741824
+STATUS: COMPLETE
+****************************************************************************************************
+Process End Time: Mon Nov 16 21:54:02 MST 2026
+****************************************************************************************************
+****************************************************************************************************
+                     Step 2p — PO Standardize & Sort (standardizeAndSort.applyPO)
+Start Time: Mon Nov 16 21:54:02 MST 2026
+****************************************************************************************************
+  Input file   : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/po-2p-addrfrag-11858948718318630243/in/VA_opendata_FY2003.txt
+  Output file  : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/po-2p-addrfrag-11858948718318630243/out/SortedJEFY03q1PO.csv
+  Year         : 2003  Quarter: 1
+  AcctDate     : 2003/03/01
+  SortSpec     : ../sort_specs/SortedJE.sortspec  (15 fields)
+  ChunkSize    : 200000
+****************************************************************************************************
+                                Post Module
+Start Time: Mon Nov 16 21:54:02 MST 2026
+****************************************************************************************************
+
+Control totals:
+  Physical lines      : 1  (all assigned to a record: 1)
+  Logical records     : 1  (= accepted + quarantined)
+  PO records accepted : 0
+  Records quarantined : 1  (reader rejects 0; see /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/po-2p-addrfrag-11858948718318630243/out/POQuarantineFY03.csv)
+    ADDRESS_FRAGMENT     1
+  SJE rows produced   : 0  (= 2 × accepted records)
+  Spill files used    : 0
+  Sum of all amounts  : 0.00  (should be 0.00)
+
+RESULT step=2p year=2003 rc=0 records_read=1 records_written=0 records_accepted=0 skipped_quarantine=1 reader_rejects=0 physical_lines=1 elapsed_s=1 input_bytes=399 output_bytes=0
+RESOURCE step=2p year=2003 jvm_heap_bytes=1073741824
+STATUS: COMPLETE
+****************************************************************************************************
+Process End Time: Mon Nov 16 21:54:02 MST 2026
+****************************************************************************************************
+processing file: /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/baseline-normalize-2019782049190649076/normalized/SortedJEFY31merged.csv
+No existing ledger file.  File will be created: LDGR2031.csv
+----------------------------------
+****************************************************************************************************
+                     Step 2p — PO Standardize & Sort (standardizeAndSort.applyPO)
+Start Time: Mon Nov 16 21:54:02 MST 2026
+****************************************************************************************************
+  Input file   : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/po-2p-addrfrag-mixed-8512125620101971010/in/VA_opendata_FY2003.txt
+  Output file  : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/po-2p-addrfrag-mixed-8512125620101971010/out/SortedJEFY03q1PO.csv
+  Year         : 2003  Quarter: 1
+  AcctDate     : 2003/03/01
+  SortSpec     : ../sort_specs/SortedJE.sortspec  (15 fields)
+  ChunkSize    : 200000
+[applyPO] QUARANTINE address-fragment in PONUMBER field (record 2, line 3): 'PA 16823' — skipping row
+****************************************************************************************************
+                   Step ttl — APA Technical Transform Layer (standardizeAndSort.applyAPA)
+Start Time: Mon Nov 16 21:54:02 MST 2026
+****************************************************************************************************
+
+Control totals:
+  Physical lines      : 3  (all assigned to a record: 3)
+  Logical records     : 3  (= accepted + quarantined)
+  PO records accepted : 2
+  Records quarantined : 1  (reader rejects 0; see /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/po-2p-addrfrag-mixed-8512125620101971010/out/POQuarantineFY03.csv)
+    ADDRESS_FRAGMENT     1
+  SJE rows produced   : 4  (= 2 × accepted records)
+  Spill files used    : 1
+  Sum of all amounts  : 0.00  (should be 0.00)
+
+RESULT step=2p year=2003 rc=0 records_read=3 records_written=4 records_accepted=2 skipped_quarantine=1 reader_rejects=0 physical_lines=3 elapsed_s=1 input_bytes=697 output_bytes=1373
+RESOURCE step=2p year=2003 jvm_heap_bytes=1073741824
+STATUS: COMPLETE
+****************************************************************************************************
+Process End Time: Mon Nov 16 21:54:02 MST 2026
+****************************************************************************************************
+  inPath      : /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/derived-baseline-4945582804485216551/historical/VARawFiles
+  refPath     : /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/derived-baseline-4945582804485216551/refs
+  outPath     : /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/derived-baseline-4945582804485216551/historical/output
+  year        : 2003  types: E
+  SortSpec    : ../sort_specs/SortedJE.sortspec  (15 fields)
+  VendorMaster: /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/derived-baseline-4945582804485216551/refs/VendorMaster.csv  (1 entries)
+  ChunkSize   : 1
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          6
+Ledger Records Read:           0
+Ledger Records Written:        6
+Process End Time:      Mon Nov 16 21:54:02 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2031 rc=0 records_read=6 records_written=6 elapsed_s=1 input_bytes=0 output_bytes=1396
+RESOURCE step=3 year=2031 jvm_heap_bytes=1073741824
+  Reference   : agency=1 fund=1 object=1 program=1 source=1
+****************************************************************************************************
+                         Step 20 — CCP1 GL Post (GLPost)
+Start Time: Mon Nov 16 21:54:02 MST 2026
+****************************************************************************************************
+****************************************************************************************************
+                     Step 2p — PO Standardize & Sort (standardizeAndSort.applyPO)
+Start Time: Mon Nov 16 21:54:02 MST 2026
+****************************************************************************************************
+  Input file   : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/po-2p-badprice-16331393289165822636/in/VA_opendata_FY2003.txt
+  Output file  : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/po-2p-badprice-16331393289165822636/out/SortedJEFY03q1PO.csv
+  Year         : 2003  Quarter: 1
+  AcctDate     : 2003/03/01
+  SortSpec     : ../sort_specs/SortedJE.sortspec  (15 fields)
+  ChunkSize    : 200000
+  SortedJE files : SortedJEFY31merged.csv
+  Output file    : /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/baseline-normalize-2019782049190649076/normalized/GL2031.csv
+  Source folder (Expenditure FY2003): /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/derived-baseline-4945582804485216551/historical/VARawFiles/FY 2003 Expenditure
+  Discovered 1 E files for FY2003
+
+Control totals:
+  Physical lines      : 1  (all assigned to a record: 1)
+  Logical records     : 1  (= accepted + quarantined)
+  PO records accepted : 0
+  Records quarantined : 1  (reader rejects 0; see /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/po-2p-badprice-16331393289165822636/out/POQuarantineFY03.csv)
+    BAD_PRICE            1
+  SJE rows produced   : 0  (= 2 × accepted records)
+  Spill files used    : 0
+  Sum of all amounts  : 0.00  (should be 0.00)
+
+RESULT step=2p year=2003 rc=0 records_read=1 records_written=0 records_accepted=0 skipped_quarantine=1 reader_rejects=0 physical_lines=1 elapsed_s=1 input_bytes=398 output_bytes=0
+RESOURCE step=2p year=2003 jvm_heap_bytes=1073741824
+STATUS: COMPLETE
+****************************************************************************************************
+Process End Time: Mon Nov 16 21:54:02 MST 2026
+****************************************************************************************************
+  GL balance rows written : 3
+  Journal rows read       : 6
+  Output                  : /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/baseline-normalize-2019782049190649076/normalized/GL2031.csv
+STATUS: COMPLETE
+RESULT step=20 year=31 rc=0 records_read=6 records_written=3 elapsed_s=1 input_bytes=1385 output_bytes=175 net_amount=0.00
+RESOURCE step=20 year=31 jvm_heap_bytes=1073741824
+****************************************************************************************************
+
+  Processing E 2003/05 → /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/derived-baseline-4945582804485216551/historical/output/SortedJEFY03_2003_05_exp.csv  (1 file(s))
+Process End Time: Mon Nov 16 21:54:02 MST 2026
+****************************************************************************************************
+****************************************************************************************************
+                     Step 2p — PO Standardize & Sort (standardizeAndSort.applyPO)
+Start Time: Mon Nov 16 21:54:02 MST 2026
+****************************************************************************************************
+  Input file   : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/po-2p-badprice-mixed-14109061200519442824/in/VA_opendata_FY2003.txt
+  Output file  : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/po-2p-badprice-mixed-14109061200519442824/out/SortedJEFY03q1PO.csv
+  Year         : 2003  Quarter: 1
+  AcctDate     : 2003/03/01
+  SortSpec     : ../sort_specs/SortedJE.sortspec  (15 fields)
+  ChunkSize    : 200000
+[applyPO] QUARANTINE non-numeric price field (record 2, line 3): poNumber='DO38798' price='USD' — skipping row
+  Spilled chunk 1  (1 SJE rows so far)  Spilled chunk 2  (2 SJE rows so far)
+  File Expenditures May 2003.csv: data_lines=1 source=1 unresolved_ref=0 blank=0
+
+  2003/05: source=1 sje=2 unresolved_ref=0 spills=2
+  Merging 2 spill(s) → /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/derived-baseline-4945582804485216551/historical/output/SortedJEFY03_2003_05_exp.csv ...
+
+Control totals:
+  Physical lines      : 3  (all assigned to a record: 3)
+  Logical records     : 3  (= accepted + quarantined)
+  PO records accepted : 2
+  Records quarantined : 1  (reader rejects 0; see /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/po-2p-badprice-mixed-14109061200519442824/out/POQuarantineFY03.csv)
+    BAD_PRICE            1
+  SJE rows produced   : 4  (= 2 × accepted records)
+  Spill files used    : 1
+  Sum of all amounts  : 0.00  (should be 0.00)
+
+RESULT step=2p year=2003 rc=0 records_read=3 records_written=4 records_accepted=2 skipped_quarantine=1 reader_rejects=0 physical_lines=3 elapsed_s=1 input_bytes=697 output_bytes=1373
+RESOURCE step=2p year=2003 jvm_heap_bytes=1073741824
+STATUS: COMPLETE
+****************************************************************************************************
+Process End Time: Mon Nov 16 21:54:02 MST 2026
+****************************************************************************************************
+  Written: /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/derived-baseline-4945582804485216551/historical/output/SortedJEFY03_2003_05_exp.csv (2 rows)
+
+Control totals:
+  Source rows processed : 1
+  SJE rows produced     : 2  (= ~2 × source rows)
+  Unresolved ref lookups: 0
+
+RESULT step=ttl year=2003 rc=0 records_read=1 records_written=2 elapsed_s=1 input_bytes=181 output_bytes=0
+RESOURCE step=ttl year=2003 jvm_heap_bytes=1073741824
+STATUS: COMPLETE
+****************************************************************************************************
+Process End Time: Mon Nov 16 21:54:02 MST 2026
+****************************************************************************************************
+****************************************************************************************************
+                   Step ttl — APA Technical Transform Layer (standardizeAndSort.applyAPA)
+Start Time: Mon Nov 16 21:54:02 MST 2026
+****************************************************************************************************
+  inPath      : /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/derived-baseline-4945582804485216551/wholly/VARawFiles
+  refPath     : /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/derived-baseline-4945582804485216551/refs
+  outPath     : /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/derived-baseline-4945582804485216551/wholly/output
+  year        : 2031  types: E
+  SortSpec    : ../sort_specs/SortedJE.sortspec  (15 fields)
+  VendorMaster: /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/derived-baseline-4945582804485216551/refs/VendorMaster.csv  (1 entries)
+  ChunkSize   : 1
+  Reference   : agency=1 fund=1 object=1 program=1 source=1
+  Source folder (Expenditure FY2031): /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/derived-baseline-4945582804485216551/wholly/VARawFiles/FY 2031 Expenditure
+  Discovered 1 E files for FY2031
+
+  Processing E 2031/05 → /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/derived-baseline-4945582804485216551/wholly/output/SortedJEFY31_2031_05_exp.csv  (1 file(s))
+  Spilled chunk 1  (1 SJE rows so far)  Spilled chunk 2  (2 SJE rows so far)
+  File Expenditures May 2031.csv: data_lines=1 source=1 unresolved_ref=0 blank=0
+
+  2031/05: source=1 sje=2 unresolved_ref=0 spills=2
+  Merging 2 spill(s) → /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/derived-baseline-4945582804485216551/wholly/output/SortedJEFY31_2031_05_exp.csv ...
+  Written: /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/derived-baseline-4945582804485216551/wholly/output/SortedJEFY31_2031_05_exp.csv (2 rows)
+
+Control totals:
+  Source rows processed : 1
+  SJE rows produced     : 2  (= ~2 × source rows)
+  Unresolved ref lookups: 0
+
+RESULT step=ttl year=2031 rc=0 records_read=1 records_written=2 elapsed_s=1 input_bytes=169 output_bytes=0
+RESOURCE step=ttl year=2031 jvm_heap_bytes=1073741824
+STATUS: COMPLETE
+****************************************************************************************************
+Process End Time: Mon Nov 16 21:54:02 MST 2026
+****************************************************************************************************
+****************************************************************************************************
+                         Step 20 — CCP1 GL Post (GLPost)
+Start Time: Mon Nov 16 21:54:02 MST 2026
+****************************************************************************************************
+  SortedJE files : SortedJEFY14q1exp.csv
+  Output file    : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/glpost-account-keys-14636023719305442608/output/GL2014.csv
+  GL balance rows written : 4
+  Journal rows read       : 6
+  Output                  : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/glpost-account-keys-14636023719305442608/output/GL2014.csv
+STATUS: COMPLETE
+RESULT step=20 year=2014 rc=0 records_read=6 records_written=4 elapsed_s=1 input_bytes=1176 output_bytes=239 net_amount=0.00
+RESOURCE step=20 year=2014 jvm_heap_bytes=1073741824
+****************************************************************************************************
+Process End Time: Mon Nov 16 21:54:02 MST 2026
+****************************************************************************************************
+****************************************************************************************************
+                     Step 2p — PO Standardize & Sort (standardizeAndSort.applyPO)
+Start Time: Mon Nov 16 21:54:02 MST 2026
+****************************************************************************************************
+  Input file   : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/po-2p-boundary-9720140773274102063/in/VA_opendata_FY2003.txt
+  Output file  : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/po-2p-boundary-9720140773274102063/out/SortedJEFY03q1PO.csv
+  Year         : 2003  Quarter: 1
+  AcctDate     : 2003/03/01
+  SortSpec     : ../sort_specs/SortedJE.sortspec  (15 fields)
+  ChunkSize    : 200000
+****************************************************************************************************
+                         Step 20 — CCP1 GL Post (GLPost)
+****************************************************************************************************
+                                Post Module
+Start Time: Mon Nov 16 21:54:02 MST 2026
+****************************************************************************************************
+Start Time: Mon Nov 16 21:54:02 MST 2026
+****************************************************************************************************
+processing file: /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/derived-baseline-4945582804485216551/financial/SortedJEFY31merged.csv
+  SortedJE files : SortedJEFY14q1exp.csv
+  Output file    : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/glpost-dirflag-16346587324873075646/output/GL2014.csv
+No existing ledger file.  File will be created: LDGR2031.csv
+----------------------------------
+  GL balance rows written : 2
+  Journal rows read       : 2
+  Output                  : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/glpost-dirflag-16346587324873075646/output/GL2014.csv
+STATUS: COMPLETE
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          4
+Ledger Records Read:           0
+Ledger Records Written:        4
+RESULT step=20 year=2014 rc=0 records_read=2 records_written=2 elapsed_s=1 input_bytes=381 output_bytes=147 net_amount=60.00
+RESOURCE step=20 year=2014 jvm_heap_bytes=1073741824
+****************************************************************************************************
+Process End Time: Mon Nov 16 21:54:02 MST 2026
+****************************************************************************************************
+Process End Time:      Mon Nov 16 21:54:02 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2031 rc=0 records_read=4 records_written=4 elapsed_s=1 input_bytes=0 output_bytes=1210
+RESOURCE step=3 year=2031 jvm_heap_bytes=1073741824
+****************************************************************************************************
+                         Step 20 — CCP1 GL Post (GLPost)
+Start Time: Mon Nov 16 21:54:02 MST 2026
+****************************************************************************************************
+  SortedJE files : SortedJEFY31merged.csv
+  Output file    : /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/derived-baseline-4945582804485216551/financial/GL2031.csv
+  GL balance rows written : 2
+  Journal rows read       : 4
+  Output                  : /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/derived-baseline-4945582804485216551/financial/GL2031.csv
+STATUS: COMPLETE
+RESULT step=20 year=31 rc=0 records_read=4 records_written=2 elapsed_s=1 input_bytes=1491 output_bytes=146 net_amount=0.00
+RESOURCE step=20 year=31 jvm_heap_bytes=1073741824
+****************************************************************************************************
+Process End Time: Mon Nov 16 21:54:02 MST 2026
+****************************************************************************************************
+****************************************************************************************************
+                         Step 20 — CCP1 GL Post (GLPost)
+Start Time: Mon Nov 16 21:54:02 MST 2026
+****************************************************************************************************
+  SortedJE files : SortedJEFY14q1exp.csv
+  Output file    : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/glpost-object-15259364735697222654/output/GL2014.csv
+  GL balance rows written : 3
+  Journal rows read       : 4
+  Output                  : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/glpost-object-15259364735697222654/output/GL2014.csv
+STATUS: COMPLETE
+RESULT step=20 year=2014 rc=0 records_read=4 records_written=3 elapsed_s=1 input_bytes=751 output_bytes=174 net_amount=0.00
+RESOURCE step=20 year=2014 jvm_heap_bytes=1073741824
+****************************************************************************************************
+Process End Time: Mon Nov 16 21:54:02 MST 2026
+****************************************************************************************************
+****************************************************************************************************
+                         Step 20 — CCP1 GL Post (GLPost)
+Start Time: Mon Nov 16 21:54:03 MST 2026
+****************************************************************************************************
+  SortedJE files : SortedJEFY14q1exp.csv
+  Output file    : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/glpost-no-vendor-11047808218727866049/output/GL2014.csv
+  GL balance rows written : 1
+  Journal rows read       : 3
+  Output                  : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/glpost-no-vendor-11047808218727866049/output/GL2014.csv
+STATUS: COMPLETE
+RESULT step=20 year=2014 rc=0 records_read=3 records_written=1 elapsed_s=1 input_bytes=569 output_bytes=110 net_amount=60.00
+RESOURCE step=20 year=2014 jvm_heap_bytes=1073741824
+****************************************************************************************************
+Process End Time: Mon Nov 16 21:54:03 MST 2026
+****************************************************************************************************
+****************************************************************************************************
+                         Step 20 — CCP1 GL Post (GLPost)
+Start Time: Mon Nov 16 21:54:03 MST 2026
+****************************************************************************************************
+  SortedJE files : SortedJEFY14q1exp.csv
+  Output file    : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/permgen-keys-628484697461472703/output/GL2014.csv
+  GL balance rows written : 3
+  Journal rows read       : 6
+  Output                  : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/permgen-keys-628484697461472703/output/GL2014.csv
+STATUS: COMPLETE
+RESULT step=20 year=2014 rc=0 records_read=6 records_written=3 elapsed_s=1 input_bytes=1131 output_bytes=176 net_amount=0.00
+RESOURCE step=20 year=2014 jvm_heap_bytes=1073741824
+****************************************************************************************************
+Process End Time: Mon Nov 16 21:54:03 MST 2026
+****************************************************************************************************
+RESULT reporting_sort kind=movement rows=4 spills=4 levels=2 bytes=1491 file=SortedJEFY31merged.csv
+  SortedJE files : SortedJEFY14q1exp.csv
+
+Control totals:
+  Physical lines      : 4  (all assigned to a record: 4)
+  Logical records     : 3  (= accepted + quarantined)
+  PO records accepted : 3
+  Records quarantined : 0  (reader rejects 0; see /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/po-2p-boundary-9720140773274102063/out/POQuarantineFY03.csv)
+  SJE rows produced   : 6  (= 2 × accepted records)
+  Spill files used    : 1
+  Sum of all amounts  : 0.00  (should be 0.00)
+
+RESULT step=2p year=2003 rc=0 records_read=3 records_written=6 records_accepted=3 skipped_quarantine=0 reader_rejects=0 physical_lines=4 elapsed_s=1 input_bytes=631 output_bytes=1768
+RESOURCE step=2p year=2003 jvm_heap_bytes=1073741824
+STATUS: COMPLETE
+****************************************************************************************************
+Process End Time: Mon Nov 16 21:54:03 MST 2026
+****************************************************************************************************
+****************************************************************************************************
+                     Step 2p — PO Standardize & Sort (standardizeAndSort.applyPO)
+Start Time: Mon Nov 16 21:54:03 MST 2026
+****************************************************************************************************
+  Input file   : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/po-2p-multiline-tabs-2732014174504399299/in/VA_opendata_FY2003.txt
+  Output file  : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/po-2p-multiline-tabs-2732014174504399299/out/SortedJEFY03q1PO.csv
+  Year         : 2003  Quarter: 1
+  AcctDate     : 2003/03/01
+  SortSpec     : ../sort_specs/SortedJE.sortspec  (15 fields)
+  ChunkSize    : 200000
+
+Control totals:
+  Physical lines      : 2  (all assigned to a record: 2)
+  Logical records     : 1  (= accepted + quarantined)
+  PO records accepted : 0
+  Records quarantined : 1  (reader rejects 1; see /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/po-2p-multiline-tabs-2732014174504399299/out/POQuarantineFY03.csv)
+    FIELD_COUNT          1
+  SJE rows produced   : 0  (= 2 × accepted records)
+  Spill files used    : 0
+  Sum of all amounts  : 0.00  (should be 0.00)
+
+RESULT step=2p year=2003 rc=0 records_read=1 records_written=0 records_accepted=0 skipped_quarantine=1 reader_rejects=1 physical_lines=2 elapsed_s=1 input_bytes=577 output_bytes=0
+RESOURCE step=2p year=2003 jvm_heap_bytes=1073741824
+STATUS: COMPLETE
+****************************************************************************************************
+Process End Time: Mon Nov 16 21:54:03 MST 2026
+****************************************************************************************************
+RESULT reporting_sort kind=balance rows=4 spills=4 levels=2 bytes=1210 file=LDGR2031.csv
+****************************************************************************************************
+                     Step 2p — PO Standardize & Sort (standardizeAndSort.applyPO)
+Start Time: Mon Nov 16 21:54:03 MST 2026
+****************************************************************************************************
+  Input file   : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/po-2p-commas-8316698770662381927/in/VA_opendata_FY2003.txt
+  Output file  : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/po-2p-commas-8316698770662381927/out/SortedJEFY03q1PO.csv
+  Year         : 2003  Quarter: 1
+  AcctDate     : 2003/03/01
+  SortSpec     : ../sort_specs/SortedJE.sortspec  (15 fields)
+  ChunkSize    : 200000
+
+Control totals:
+  Physical lines      : 1  (all assigned to a record: 1)
+  Logical records     : 1  (= accepted + quarantined)
+  PO records accepted : 1
+  Records quarantined : 0  (reader rejects 0; see /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/po-2p-commas-8316698770662381927/out/POQuarantineFY03.csv)
+  SJE rows produced   : 2  (= 2 × accepted records)
+  Spill files used    : 1
+  Sum of all amounts  : 0.00  (should be 0.00)
+
+RESULT step=2p year=2003 rc=0 records_read=1 records_written=2 records_accepted=1 skipped_quarantine=0 reader_rejects=0 physical_lines=1 elapsed_s=1 input_bytes=403 output_bytes=664
+RESOURCE step=2p year=2003 jvm_heap_bytes=1073741824
+STATUS: COMPLETE
+****************************************************************************************************
+Process End Time: Mon Nov 16 21:54:03 MST 2026
+****************************************************************************************************
+****************************************************************************************************
+                         Step 21 — CCP1 Permutation Capacity (PermutationGenerator)
+Start Time: Mon Nov 16 21:54:03 MST 2026
+****************************************************************************************************
+  Output file    : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/permgen-keys-628484697461472703/output/PERM_TBL2014.csv
+****************************************************************************************************
+                     Step 2m — Merge Payment + PO SortedJE streams
+Start Time: Mon Nov 16 21:54:03 MST 2026
+****************************************************************************************************
+  Payment files: 1 file(s)
+    /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/po-2m-merge-6390810774049294315/out/SortedJEFY03q1exp.csv
+  PO file      : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/po-2m-merge-6390810774049294315/out/SortedJEFY03q1PO.csv
+  Merged output: /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/po-2m-merge-6390810774049294315/out/SortedJEFY03merged.csv
+  SortSpec     : ../sort_specs/SortedJE.sortspec  (15 fields)
+
+  Merged rows written: 4
+
+RESULT step=2m year=2003 rc=0 records_read=0 records_written=4 elapsed_s=1 input_bytes=0 output_bytes=839
+RESOURCE step=2m year=2003 jvm_heap_bytes=1073741824
+STATUS: COMPLETE
+****************************************************************************************************
+Process End Time: Mon Nov 16 21:54:03 MST 2026
+****************************************************************************************************
+[info] StandardizeAndSortPOSpec:
+[info] - PO repeated document lines retain distinct source records and built-in rule version
+[info] - Step 2p: applyPO produces 2 SJE rows per PO source row, each 39 columns
+[info] - Step 2p: debit and credit amounts cancel within each PO journal group
+[info] - Step 2p: transIPID is populated from VENDORID, not hardcoded '0'
+[info] - Step 2p: transCommitmentID (col 2) is set to PONUMBER
+[info] - Step 2p: RESULT and RESOURCE metric log lines are emitted to stdout
+[info] - Step 2p: address-fragment PONUMBER is quarantined, produces 0 SJE rows
+[info] - Step 2p: address-fragment row is skipped; adjacent well-formed rows still emit
+[info] - Step 2p: non-numeric price field is quarantined, produces 0 SJE rows
+[info] - Step 2p: non-numeric price row is skipped; adjacent well-formed rows still emit
+[info] - Step 2p: implausible VENDORID is quarantined; well-formed neighbours (digits, letters+digits) still emit
+[info] - Step 2p: structural reader accepts inch-mark quotes, quarantines embedded-tab records with a reason code, and reconciles
+[info] - Step 2p: unmatched quote in description does not absorb following records; embedded newline is joined
+[info] - Step 2p: multiline record with extra embedded tabs is quarantined under FIELD_COUNT
+[info] - Step 2p: commas in PONUMBER and descriptions are sanitized to prevent CSV corruption
+[info] - Step 2m: mergeSpills produces a merged file with all rows in sort order
+****************************************************************************************************
+                   Step ttl — APA Technical Transform Layer (standardizeAndSort.applyAPA)
+Start Time: Mon Nov 16 21:54:03 MST 2026
+****************************************************************************************************
+  GL keys (rows written)   : 3
+  Journal rows read        : 6
+  Vendor rows (observed)   : 6
+  Capacity (dependencies removed): 6
+  Capacity (independent bound)   : 6
+  Varying dimensions       : transIPID
+  Vendor-determined (CAR)  : transContractID
+  Dropped by dependency    : none
+  Buffer capacity / spills : 1000000 / 0 files, 0 records, reduce 0s
+  Vendor order             : ok
+  Determinants not tracked : none
+  Output                   : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/permgen-keys-628484697461472703/output/PERM_TBL2014.csv
+STATUS: COMPLETE
+RESULT step=21 year=2014 rc=0 records_read=6 records_written=3 elapsed_s=1 input_bytes=1131 output_bytes=193 vendor_rows=6 capacity=6 capacity_independent=6 varying_dims=transIPID car_dims=transContractID dropped_dims=none capacity_dims=transIPID buffer_overflow=false spill_files=0 spill_records=0 reduce_seconds=0 vendor_order=ok fd_untracked_dims=none merge_levels=0 merge_bytes=0 final_merge_readers=1
+RESOURCE step=21 year=2014 jvm_heap_bytes=1073741824
+****************************************************************************************************
+Process End Time: Mon Nov 16 21:54:03 MST 2026
+****************************************************************************************************
+  inPath      : /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/history/VARawFiles
+  refPath     : /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/history
+  outPath     : /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/adapter_2003
+  year        : 2003  types: E,R
+  SortSpec    : ../sort_specs/SortedJE.sortspec  (15 fields)
+  VendorMaster: /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/history/VendorMaster.csv  (1 entries)
+  ChunkSize   : 200000
+  Reference   : agency=1 fund=1 object=1 program=1 source=1
+  Source folder (Expenditure FY2003): /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/history/VARawFiles/FY 2003 Expenditure
+  Discovered 1 E files for FY2003
+
+  Processing E 2003/05 → /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/adapter_2003/SortedJEFY03_2003_05_exp.csv  (1 file(s))
+
+  File Expenditures May 2003.csv: data_lines=2 source=2 unresolved_ref=0 blank=0
+  Spilled chunk 1  (4 SJE rows so far)
+  2003/05: source=2 sje=4 unresolved_ref=0 spills=1
+  Merging 1 spill(s) → /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/adapter_2003/SortedJEFY03_2003_05_exp.csv ...
+  Written: /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/adapter_2003/SortedJEFY03_2003_05_exp.csv (4 rows)
+
+Control totals:
+  Source rows processed : 2
+  SJE rows produced     : 4  (= ~2 × source rows)
+  Unresolved ref lookups: 0
+
+RESULT step=ttl year=2003 rc=0 records_read=2 records_written=4 elapsed_s=1 input_bytes=250 output_bytes=0
+RESOURCE step=ttl year=2003 jvm_heap_bytes=1073741824
+STATUS: COMPLETE
+  Source folder (Revenue FY2003): /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/history/VARawFiles/FY 2003 Revenue
+  Discovered 1 R files for FY2003
+
+  Processing R rev → /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/adapter_2003/SortedJEFY03rev.csv  (1 file(s))
+
+  File Revenues May 2003.csv: data_lines=1 source=1 unresolved_ref=0 blank=0
+  Spilled chunk 1  (2 SJE rows so far)
+  rev: source=1 sje=2 unresolved_ref=0 spills=1
+  Merging 1 spill(s) → /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/adapter_2003/SortedJEFY03rev.csv ...
+  Written: /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/adapter_2003/SortedJEFY03rev.csv (2 rows)
+
+RESULT step=ttl year=2003 rc=0 records_read=3 records_written=6 elapsed_s=1 input_bytes=113 output_bytes=660
+RESOURCE step=ttl year=2003 jvm_heap_bytes=1073741824
+****************************************************************************************************
+Process End Time: Mon Nov 16 21:54:03 MST 2026
+****************************************************************************************************
+****************************************************************************************************
+                     Step 2p — PO Standardize & Sort (standardizeAndSort.applyPO)
+Start Time: Mon Nov 16 21:54:03 MST 2026
+****************************************************************************************************
+  Input file   : /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/history/VAPOData/VA_opendata_FY2003.txt
+  Output file  : /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/adapter_2003/SortedJEFY03q1PO.csv
+  Year         : 2003  Quarter: 1
+  AcctDate     : 2003/03/01
+  SortSpec     : ../sort_specs/SortedJE.sortspec  (15 fields)
+  ChunkSize    : 200000
+
+Control totals:
+  Physical lines      : 1  (all assigned to a record: 1)
+  Logical records     : 1  (= accepted + quarantined)
+  PO records accepted : 1
+  Records quarantined : 0  (reader rejects 0; see /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/adapter_2003/POQuarantineFY03.csv)
+  SJE rows produced   : 2  (= 2 × accepted records)
+  Spill files used    : 1
+  Sum of all amounts  : 0.00  (should be 0.00)
+
+RESULT step=2p year=2003 rc=0 records_read=1 records_written=2 records_accepted=1 skipped_quarantine=0 reader_rejects=0 physical_lines=1 elapsed_s=1 input_bytes=344 output_bytes=597
+RESOURCE step=2p year=2003 jvm_heap_bytes=1073741824
+STATUS: COMPLETE
+****************************************************************************************************
+Process End Time: Mon Nov 16 21:54:03 MST 2026
+****************************************************************************************************
+****************************************************************************************************
+                   Step ttl — APA Technical Transform Layer (standardizeAndSort.applyAPA)
+Start Time: Mon Nov 16 21:54:03 MST 2026
+****************************************************************************************************
+RESULT step=5v profile=expanded rc=0 records_read=8 vendors=2 spills=4
+  inPath      : /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/whole/VARawFiles
+  refPath     : /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/whole
+  outPath     : /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/adapter_2031
+  year        : 2031  types: E,R
+  SortSpec    : ../sort_specs/SortedJE.sortspec  (15 fields)
+  VendorMaster: /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/whole/VendorMaster.csv  (1 entries)
+  ChunkSize   : 200000
+  Reference   : agency=1 fund=1 object=1 program=1 source=1
+  Source folder (Expenditure FY2031): /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/whole/VARawFiles/FY 2031 Expenditure
+  Discovered 1 E files for FY2031
+
+  Processing E 2031/05 → /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/adapter_2031/SortedJEFY31_2031_05_exp.csv  (1 file(s))
+
+  File Expenditures May 2031.csv: data_lines=1 source=1 unresolved_ref=0 blank=0
+  Spilled chunk 1  (2 SJE rows so far)
+  2031/05: source=1 sje=2 unresolved_ref=0 spills=1
+  Merging 1 spill(s) → /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/adapter_2031/SortedJEFY31_2031_05_exp.csv ...
+  Written: /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/adapter_2031/SortedJEFY31_2031_05_exp.csv (2 rows)
+
+Control totals:
+  Source rows processed : 1
+  SJE rows produced     : 2  (= ~2 × source rows)
+  Unresolved ref lookups: 0
+
+RESULT step=ttl year=2031 rc=0 records_read=1 records_written=2 elapsed_s=1 input_bytes=169 output_bytes=0
+RESOURCE step=ttl year=2031 jvm_heap_bytes=1073741824
+STATUS: COMPLETE
+WARNING: No Revenue directory found for FY2031 under /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/whole/VARawFiles
+  WARNING: No APA R files discovered for FY2031 — skipping
+
+  Processing R rev → /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/adapter_2031/SortedJEFY31rev.csv  (0 file(s))
+
+  rev: source=0 sje=0 unresolved_ref=0 spills=0
+  No rows produced for rev — output file not written
+
+RESULT step=ttl year=2031 rc=0 records_read=1 records_written=2 elapsed_s=1 input_bytes=0 output_bytes=0
+RESOURCE step=ttl year=2031 jvm_heap_bytes=1073741824
+****************************************************************************************************
+Process End Time: Mon Nov 16 21:54:03 MST 2026
+****************************************************************************************************
+****************************************************************************************************
+                     Step 2p — PO Standardize & Sort (standardizeAndSort.applyPO)
+Start Time: Mon Nov 16 21:54:03 MST 2026
+****************************************************************************************************
+  Input file   : /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/whole/VAPOData/VA_opendata_FY2031.txt
+  Output file  : /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/adapter_2031/SortedJEFY31q1PO.csv
+  Year         : 2031  Quarter: 1
+  AcctDate     : 2031/03/01
+  SortSpec     : ../sort_specs/SortedJE.sortspec  (15 fields)
+  ChunkSize    : 200000
+RESULT step=5r rc=0 records_written=4 merge_passes=2
+
+Control totals:
+  Physical lines      : 1  (all assigned to a record: 1)
+  Logical records     : 1  (= accepted + quarantined)
+  PO records accepted : 1
+  Records quarantined : 0  (reader rejects 0; see /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/adapter_2031/POQuarantineFY31.csv)
+  SJE rows produced   : 2  (= 2 × accepted records)
+  Spill files used    : 1
+  Sum of all amounts  : 0.00  (should be 0.00)
+
+RESULT step=2p year=2031 rc=0 records_read=1 records_written=2 records_accepted=1 skipped_quarantine=0 reader_rejects=0 physical_lines=1 elapsed_s=1 input_bytes=377 output_bytes=661
+RESOURCE step=2p year=2031 jvm_heap_bytes=1073741824
+STATUS: COMPLETE
+****************************************************************************************************
+Process End Time: Mon Nov 16 21:54:03 MST 2026
+****************************************************************************************************
+****************************************************************************************************
+                   Step ttl — APA Technical Transform Layer (standardizeAndSort.applyAPA)
+Start Time: Mon Nov 16 21:54:03 MST 2026
+****************************************************************************************************
+  inPath      : /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/history/VARawFiles
+  refPath     : /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/history
+  outPath     : /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/fused.attempt/adapters/historical
+  year        : 2003  types: E,R
+  SortSpec    : ../sort_specs/SortedJE.sortspec  (15 fields)
+  VendorMaster: /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/history/VendorMaster.csv  (1 entries)
+  ChunkSize   : 200000
+  Reference   : agency=1 fund=1 object=1 program=1 source=1
+  Source folder (Expenditure FY2003): /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/history/VARawFiles/FY 2003 Expenditure
+  Discovered 1 E files for FY2003
+
+  Processing E 2003/05 → /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/fused.attempt/adapters/historical/SortedJEFY03_2003_05_exp.csv  (1 file(s))
+
+  File Expenditures May 2003.csv: data_lines=2 source=2 unresolved_ref=0 blank=0
+
+  2003/05: source=2 sje=4 unresolved_ref=0 spills=0
+  Shared financial sort received 4 rows; no per-adapter sorted SJE file written
+
+Control totals:
+  Source rows processed : 2
+  SJE rows produced     : 4  (= ~2 × source rows)
+  Unresolved ref lookups: 0
+
+RESULT step=ttl year=2003 rc=0 records_read=2 records_written=4 elapsed_s=1 input_bytes=250 output_bytes=0
+RESOURCE step=ttl year=2003 jvm_heap_bytes=1073741824
+STATUS: COMPLETE
+  Source folder (Revenue FY2003): /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/history/VARawFiles/FY 2003 Revenue
+  Discovered 1 R files for FY2003
+
+  Processing R rev → /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/fused.attempt/adapters/historical/SortedJEFY03rev.csv  (1 file(s))
+
+  File Revenues May 2003.csv: data_lines=1 source=1 unresolved_ref=0 blank=0
+
+  rev: source=1 sje=2 unresolved_ref=0 spills=0
+  Shared financial sort received 2 rows; no per-adapter sorted SJE file written
+
+RESULT step=ttl year=2003 rc=0 records_read=3 records_written=6 elapsed_s=1 input_bytes=113 output_bytes=0
+RESOURCE step=ttl year=2003 jvm_heap_bytes=1073741824
+****************************************************************************************************
+Process End Time: Mon Nov 16 21:54:03 MST 2026
+****************************************************************************************************
+****************************************************************************************************
+                     Step 2p — PO Standardize & Sort (standardizeAndSort.applyPO)
+Start Time: Mon Nov 16 21:54:03 MST 2026
+****************************************************************************************************
+  Input file   : /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/history/VAPOData/VA_opendata_FY2003.txt
+  Output file  : /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/fused.attempt/adapters/historical/SortedJEFY03q1PO.csv
+  Year         : 2003  Quarter: 1
+  AcctDate     : 2003/03/01
+  SortSpec     : ../sort_specs/SortedJE.sortspec  (15 fields)
+  ChunkSize    : 200000
+
+Control totals:
+  Physical lines      : 1  (all assigned to a record: 1)
+  Logical records     : 1  (= accepted + quarantined)
+  PO records accepted : 1
+  Records quarantined : 0  (reader rejects 0; see /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/fused.attempt/adapters/historical/POQuarantineFY03.csv)
+  SJE rows produced   : 2  (= 2 × accepted records)
+  Spill files used    : 0
+  Sum of all amounts  : 0.00  (should be 0.00)
+
+RESULT step=2p year=2003 rc=0 records_read=1 records_written=2 records_accepted=1 skipped_quarantine=0 reader_rejects=0 physical_lines=1 elapsed_s=1 input_bytes=344 output_bytes=0
+RESOURCE step=2p year=2003 jvm_heap_bytes=1073741824
+STATUS: COMPLETE
+****************************************************************************************************
+Process End Time: Mon Nov 16 21:54:03 MST 2026
+****************************************************************************************************
+****************************************************************************************************
+                   Step ttl — APA Technical Transform Layer (standardizeAndSort.applyAPA)
+Start Time: Mon Nov 16 21:54:03 MST 2026
+****************************************************************************************************
+  inPath      : /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/whole/VARawFiles
+  refPath     : /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/whole
+  outPath     : /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/fused.attempt/adapters/wholly_generated
+  year        : 2031  types: E,R
+  SortSpec    : ../sort_specs/SortedJE.sortspec  (15 fields)
+  VendorMaster: /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/whole/VendorMaster.csv  (1 entries)
+  ChunkSize   : 200000
+  Reference   : agency=1 fund=1 object=1 program=1 source=1
+  Source folder (Expenditure FY2031): /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/whole/VARawFiles/FY 2031 Expenditure
+  Discovered 1 E files for FY2031
+
+  Processing E 2031/05 → /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/fused.attempt/adapters/wholly_generated/SortedJEFY31_2031_05_exp.csv  (1 file(s))
+
+  File Expenditures May 2031.csv: data_lines=1 source=1 unresolved_ref=0 blank=0
+
+  2031/05: source=1 sje=2 unresolved_ref=0 spills=0
+  Shared financial sort received 2 rows; no per-adapter sorted SJE file written
+
+Control totals:
+  Source rows processed : 1
+  SJE rows produced     : 2  (= ~2 × source rows)
+  Unresolved ref lookups: 0
+
+RESULT step=ttl year=2031 rc=0 records_read=1 records_written=2 elapsed_s=1 input_bytes=169 output_bytes=0
+RESOURCE step=ttl year=2031 jvm_heap_bytes=1073741824
+STATUS: COMPLETE
+WARNING: No Revenue directory found for FY2031 under /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/whole/VARawFiles
+  WARNING: No APA R files discovered for FY2031 — skipping
+
+  Processing R rev → /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/fused.attempt/adapters/wholly_generated/SortedJEFY31rev.csv  (0 file(s))
+
+  rev: source=0 sje=0 unresolved_ref=0 spills=0
+  Shared financial sort received 0 rows; no per-adapter sorted SJE file written
+
+RESULT step=ttl year=2031 rc=0 records_read=1 records_written=2 elapsed_s=1 input_bytes=0 output_bytes=0
+RESOURCE step=ttl year=2031 jvm_heap_bytes=1073741824
+****************************************************************************************************
+Process End Time: Mon Nov 16 21:54:03 MST 2026
+****************************************************************************************************
+****************************************************************************************************
+                     Step 2p — PO Standardize & Sort (standardizeAndSort.applyPO)
+Start Time: Mon Nov 16 21:54:03 MST 2026
+****************************************************************************************************
+  Input file   : /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/whole/VAPOData/VA_opendata_FY2031.txt
+  Output file  : /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/fused.attempt/adapters/wholly_generated/SortedJEFY31q1PO.csv
+  Year         : 2031  Quarter: 1
+  AcctDate     : 2031/03/01
+  SortSpec     : ../sort_specs/SortedJE.sortspec  (15 fields)
+  ChunkSize    : 200000
+
+Control totals:
+  Physical lines      : 1  (all assigned to a record: 1)
+  Logical records     : 1  (= accepted + quarantined)
+  PO records accepted : 1
+  Records quarantined : 0  (reader rejects 0; see /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/fused.attempt/adapters/wholly_generated/POQuarantineFY31.csv)
+  SJE rows produced   : 2  (= 2 × accepted records)
+  Spill files used    : 0
+  Sum of all amounts  : 0.00  (should be 0.00)
+
+RESULT step=2p year=2031 rc=0 records_read=1 records_written=2 records_accepted=1 skipped_quarantine=0 reader_rejects=0 physical_lines=1 elapsed_s=1 input_bytes=377 output_bytes=0
+RESOURCE step=2p year=2031 jvm_heap_bytes=1073741824
+STATUS: COMPLETE
+****************************************************************************************************
+Process End Time: Mon Nov 16 21:54:03 MST 2026
+****************************************************************************************************
+[info] PhaseTwoBaselineNormalizeSpec:
+[info] - paired attribution, known rekey, unresolved receipts and dates reach actual posting
+[info] - duplicate source journals fail the current-group bound without publishing
+[info] PhaseTwoDerivedBaselineSpec:
+[info] - fresh raw history and generated sources normalize merge post and reach sequential reporting
+[info] HistoricalDateCacheSpec:
+[info] - ISO fast path preserves legacy parsing and shifting across valid ambiguous and invalid dates
+[info] - bounded positive and negative cache preserves narrower source eligibility and eviction semantics
+****************************************************************************************************
+                                Post Module
+Start Time: Mon Nov 16 21:54:03 MST 2026
+****************************************************************************************************
+processing file: /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/reference/SortedJEFY31merged.csv
+No existing ledger file.  File will be created: LDGR2031.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          12
+Ledger Records Read:           0
+Ledger Records Written:        10
+Process End Time:      Mon Nov 16 21:54:03 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2031 rc=0 records_read=12 records_written=10 elapsed_s=1 input_bytes=0 output_bytes=2146
+RESOURCE step=3 year=2031 jvm_heap_bytes=1073741824
+****************************************************************************************************
+                         Step 20 — CCP1 GL Post (GLPost)
+Start Time: Mon Nov 16 21:54:03 MST 2026
+****************************************************************************************************
+  SortedJE files : SortedJEFY31merged.csv
+  Output file    : /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/reference/GL2031.csv
+  GL balance rows written : 4
+  Journal rows read       : 12
+  Output                  : /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/reference/GL2031.csv
+STATUS: COMPLETE
+RESULT step=20 year=31 rc=0 records_read=12 records_written=4 elapsed_s=1 input_bytes=4205 output_bytes=217 net_amount=0.00
+RESOURCE step=20 year=31 jvm_heap_bytes=1073741824
+****************************************************************************************************
+Process End Time: Mon Nov 16 21:54:03 MST 2026
+****************************************************************************************************
+  SortedJE files : SortedJEFY31merged.csv
+****************************************************************************************************
+                         Step 21 — CCP1 Permutation Capacity (PermutationGenerator)
+Start Time: Mon Nov 16 21:54:03 MST 2026
+****************************************************************************************************
+  Output file    : /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/reference/PERM_TBL2031.csv
+  GL keys (rows written)   : 4
+  Journal rows read        : 12
+  Vendor rows (observed)   : 10
+  Capacity (dependencies removed): 24
+  Capacity (independent bound)   : 1399929
+  Varying dimensions       : transIPID;transCommitmentID;transBusinessEventCode;transSourceSystemID;transOriginalDocID;transJrnlDescript;transAcctDate;transTransDate;transUnitOfMeasure;tranRuleSetID;transRuleID;transExtensionIDSource
+  Vendor-determined (CAR)  : transContractID;transTransDate
+  Dropped by dependency    : transIPID<-transExtensionIDSource;transCommitmentID<-transOriginalDocID;transJrnlLineID<-transJrnlDescript;transBusinessEventCode<-transOriginalDocID;transSourceSystemID<-transBusinessEventCode;transOriginalDocID<-transExtensionIDSource;transAcctDate<-transExtensionIDSource;transTransDate<-transIPID;transUnitOfMeasure<-transCommitmentID;tranRuleSetID<-transBusinessEventCode;transRuleID<-transBusinessEventCode
+  Buffer capacity / spills : 2 / 47 files, 94 records, reduce 0s
+  Vendor order             : ok
+  Determinants not tracked : none
+  Output                   : /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/reference/PERM_TBL2031.csv
+STATUS: COMPLETE
+RESULT step=21 year=31 rc=0 records_read=12 records_written=4 elapsed_s=1 input_bytes=4205 output_bytes=541 vendor_rows=10 capacity=24 capacity_independent=1399929 varying_dims=transIPID;transCommitmentID;transBusinessEventCode;transSourceSystemID;transOriginalDocID;transJrnlDescript;transAcctDate;transTransDate;transUnitOfMeasure;tranRuleSetID;transRuleID;transExtensionIDSource car_dims=transContractID;transTransDate dropped_dims=transIPID<-transExtensionIDSource;transCommitmentID<-transOriginalDocID;transJrnlLineID<-transJrnlDescript;transBusinessEventCode<-transOriginalDocID;transSourceSystemID<-transBusinessEventCode;transOriginalDocID<-transExtensionIDSource;transAcctDate<-transExtensionIDSource;transTransDate<-transIPID;transUnitOfMeasure<-transCommitmentID;tranRuleSetID<-transBusinessEventCode;transRuleID<-transBusinessEventCode capacity_dims=transJrnlDescript;transExtensionIDSource buffer_overflow=true spill_files=47 spill_records=94 reduce_seconds=0 vendor_order=ok fd_untracked_dims=none merge_levels=0 merge_bytes=0 final_merge_readers=48
+RESOURCE step=21 year=31 jvm_heap_bytes=1073741824
+****************************************************************************************************
+Process End Time: Mon Nov 16 21:54:03 MST 2026
+****************************************************************************************************
+****************************************************************************************************
+                         Step 21 — CCP1 Permutation Capacity (PermutationGenerator)
+Start Time: Mon Nov 16 21:54:04 MST 2026
+****************************************************************************************************
+  Output file    : /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/fused/PERM_TBL2031.csv
+****************************************************************************************************
+                         Step 21 — CCP1 Permutation Capacity (PermutationGenerator)
+Start Time: Mon Nov 16 21:54:04 MST 2026
+****************************************************************************************************
+  Output file    : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/observer-bounds-8720510354675430978/PERM_TBL2031.csv
+****************************************************************************************************
+                         Step 21 — CCP1 Permutation Capacity (PermutationGenerator)
+Start Time: Mon Nov 16 21:54:04 MST 2026
+****************************************************************************************************
+  Output file    : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/observer-bounds-8720510354675430978/vendors/PERM_TBL2031.csv
+****************************************************************************************************
+                                Post Module
+Start Time: Mon Nov 16 21:54:04 MST 2026
+****************************************************************************************************
+[info] PhaseTwoBaselineControlsSpec:
+[info] - shifted historical plus wholly GL and exact journal counts reconcile
+[info] - balanced but duplicated addition fails the GL conservation check
+[info] GLPostSpec:
+processing file: /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/fused/SortedJEFY31merged.csv
+[info] - GLPost key is agency, fund, object, nominal, period, dir flag ? offset lines are kept
+[info] - GLPost dir flag is part of the key ? same account with D and O stays on two rows
+[info] - GLPost object is part of the key
+[info] - GLPost accumulates amounts for the same key; offsets net the GL to zero
+[info] - GLPost discards instrument identity ? different vendors collapse to same account row
+[info] - GLPost one-read rule: merged file plus its 2m inputs is read once (control total is not doubled)
+No existing ledger file.  File will be created: LDGR2031.csv
+[info] - GLPost emits RESULT and RESOURCE log lines
+----------------------------------
+[info] - PermutationGenerator writes one row per GL key, same keys as GLPost
+[info] - PermutationGenerator capacity is the product of distinct values; constants contribute 1
+[info] - PermutationGenerator sums capacity over GL keys
+[info] - PermutationGenerator drops a dimension that another dimension determines, and reports CAR dims
+[info] - PermutationGenerator spilled runs give the same output as the in-memory buffer
+[info] - PermutationGenerator reports vendor_order=violated when a vendor reappears
+[info] - PermutationGenerator stops tracking a determinant past permFdCap and reports it
+[info] - PermutationSummary sums per-year summaries as BigInt
+[info] - PermutationGenerator emits RESULT and RESOURCE log lines
+[info] - incremental observers reject GL/vendor state beyond declared bounds
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          12
+Ledger Records Read:           0
+Ledger Records Written:        10
+Process End Time:      Mon Nov 16 21:54:04 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2031 rc=0 records_read=12 records_written=10 elapsed_s=1 input_bytes=0 output_bytes=2146
+RESOURCE step=3 year=2031 jvm_heap_bytes=1073741824
+  GL keys (rows written)   : 4
+  Journal rows read        : 12
+  Vendor rows (observed)   : 10
+  Capacity (dependencies removed): 24
+  Capacity (independent bound)   : 1399929
+  Varying dimensions       : transIPID;transCommitmentID;transBusinessEventCode;transSourceSystemID;transOriginalDocID;transJrnlDescript;transAcctDate;transTransDate;transUnitOfMeasure;tranRuleSetID;transRuleID;transExtensionIDSource
+  Vendor-determined (CAR)  : transContractID;transTransDate
+  Dropped by dependency    : transIPID<-transExtensionIDSource;transCommitmentID<-transOriginalDocID;transJrnlLineID<-transJrnlDescript;transBusinessEventCode<-transOriginalDocID;transSourceSystemID<-transBusinessEventCode;transOriginalDocID<-transExtensionIDSource;transAcctDate<-transExtensionIDSource;transTransDate<-transIPID;transUnitOfMeasure<-transCommitmentID;tranRuleSetID<-transBusinessEventCode;transRuleID<-transBusinessEventCode
+  Buffer capacity / spills : 2 / 1 files, 94 records, reduce 0s
+  Vendor order             : ok
+  Determinants not tracked : none
+  Output                   : /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/fused/PERM_TBL2031.csv
+STATUS: COMPLETE
+RESULT step=21 year=31 rc=0 records_read=12 records_written=4 elapsed_s=1 input_bytes=4205 output_bytes=541 vendor_rows=10 capacity=24 capacity_independent=1399929 varying_dims=transIPID;transCommitmentID;transBusinessEventCode;transSourceSystemID;transOriginalDocID;transJrnlDescript;transAcctDate;transTransDate;transUnitOfMeasure;tranRuleSetID;transRuleID;transExtensionIDSource car_dims=transContractID;transTransDate dropped_dims=transIPID<-transExtensionIDSource;transCommitmentID<-transOriginalDocID;transJrnlLineID<-transJrnlDescript;transBusinessEventCode<-transOriginalDocID;transSourceSystemID<-transBusinessEventCode;transOriginalDocID<-transExtensionIDSource;transAcctDate<-transExtensionIDSource;transTransDate<-transIPID;transUnitOfMeasure<-transCommitmentID;tranRuleSetID<-transBusinessEventCode;transRuleID<-transBusinessEventCode capacity_dims=transJrnlDescript;transExtensionIDSource buffer_overflow=true spill_files=47 spill_records=94 reduce_seconds=0 vendor_order=ok fd_untracked_dims=none merge_levels=6 merge_bytes=8512 final_merge_readers=2
+RESOURCE step=21 year=31 jvm_heap_bytes=1073741824
+****************************************************************************************************
+Process End Time: Mon Nov 16 21:54:04 MST 2026
+****************************************************************************************************
+RESULT reporting_sort kind=movement rows=12 spills=12 levels=4 bytes=4205 file=SortedJEFY31merged.csv
+RESULT reporting_sort kind=balance rows=10 spills=10 levels=4 bytes=2146 file=LDGR2031.csv
+RESULT step=5v profile=expanded rc=0 records_read=22 vendors=4 spills=10
+RESULT step=5r rc=0 records_written=8 merge_passes=4
+****************************************************************************************************
+                         Step 20 — CCP1 GL Post (GLPost)
+Start Time: Mon Nov 16 21:54:04 MST 2026
+****************************************************************************************************
+  SortedJE files : SortedJEFY03merged.csv
+  Output file    : /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/adapter_2003/GL2003.csv
+  GL balance rows written : 4
+  Journal rows read       : 8
+  Output                  : /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/adapter_2003/GL2003.csv
+STATUS: COMPLETE
+RESULT step=20 year=03 rc=0 records_read=8 records_written=4 elapsed_s=1 input_bytes=2608 output_bytes=217 net_amount=0.00
+RESOURCE step=20 year=03 jvm_heap_bytes=1073741824
+****************************************************************************************************
+Process End Time: Mon Nov 16 21:54:04 MST 2026
+****************************************************************************************************
+****************************************************************************************************
+                   Step ttl — APA Technical Transform Layer (standardizeAndSort.applyAPA)
+Start Time: Mon Nov 16 21:54:04 MST 2026
+****************************************************************************************************
+  inPath      : /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/history/VARawFiles
+  refPath     : /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/history
+  outPath     : /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/financial_year.attempt/source.attempt/adapters/historical
+  year        : 2003  types: E,R
+  SortSpec    : ../sort_specs/SortedJE.sortspec  (15 fields)
+  VendorMaster: /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/history/VendorMaster.csv  (1 entries)
+  ChunkSize   : 200000
+  Reference   : agency=1 fund=1 object=1 program=1 source=1
+  Source folder (Expenditure FY2003): /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/history/VARawFiles/FY 2003 Expenditure
+  Discovered 1 E files for FY2003
+
+  Processing E 2003/05 → /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/financial_year.attempt/source.attempt/adapters/historical/SortedJEFY03_2003_05_exp.csv  (1 file(s))
+
+  File Expenditures May 2003.csv: data_lines=2 source=2 unresolved_ref=0 blank=0
+
+  2003/05: source=2 sje=4 unresolved_ref=0 spills=0
+  Shared financial sort received 4 rows; no per-adapter sorted SJE file written
+
+Control totals:
+  Source rows processed : 2
+  SJE rows produced     : 4  (= ~2 × source rows)
+  Unresolved ref lookups: 0
+
+RESULT step=ttl year=2003 rc=0 records_read=2 records_written=4 elapsed_s=1 input_bytes=250 output_bytes=0
+RESOURCE step=ttl year=2003 jvm_heap_bytes=1073741824
+STATUS: COMPLETE
+  Source folder (Revenue FY2003): /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/history/VARawFiles/FY 2003 Revenue
+  Discovered 1 R files for FY2003
+
+  Processing R rev → /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/financial_year.attempt/source.attempt/adapters/historical/SortedJEFY03rev.csv  (1 file(s))
+
+  File Revenues May 2003.csv: data_lines=1 source=1 unresolved_ref=0 blank=0
+
+  rev: source=1 sje=2 unresolved_ref=0 spills=0
+  Shared financial sort received 2 rows; no per-adapter sorted SJE file written
+
+RESULT step=ttl year=2003 rc=0 records_read=3 records_written=6 elapsed_s=1 input_bytes=113 output_bytes=0
+RESOURCE step=ttl year=2003 jvm_heap_bytes=1073741824
+****************************************************************************************************
+Process End Time: Mon Nov 16 21:54:04 MST 2026
+****************************************************************************************************
+****************************************************************************************************
+                     Step 2p — PO Standardize & Sort (standardizeAndSort.applyPO)
+Start Time: Mon Nov 16 21:54:04 MST 2026
+****************************************************************************************************
+  Input file   : /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/history/VAPOData/VA_opendata_FY2003.txt
+  Output file  : /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/financial_year.attempt/source.attempt/adapters/historical/SortedJEFY03q1PO.csv
+  Year         : 2003  Quarter: 1
+  AcctDate     : 2003/03/01
+  SortSpec     : ../sort_specs/SortedJE.sortspec  (15 fields)
+  ChunkSize    : 200000
+
+Control totals:
+  Physical lines      : 1  (all assigned to a record: 1)
+  Logical records     : 1  (= accepted + quarantined)
+  PO records accepted : 1
+  Records quarantined : 0  (reader rejects 0; see /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/financial_year.attempt/source.attempt/adapters/historical/POQuarantineFY03.csv)
+  SJE rows produced   : 2  (= 2 × accepted records)
+  Spill files used    : 0
+  Sum of all amounts  : 0.00  (should be 0.00)
+
+RESULT step=2p year=2003 rc=0 records_read=1 records_written=2 records_accepted=1 skipped_quarantine=0 reader_rejects=0 physical_lines=1 elapsed_s=1 input_bytes=344 output_bytes=0
+RESOURCE step=2p year=2003 jvm_heap_bytes=1073741824
+STATUS: COMPLETE
+****************************************************************************************************
+Process End Time: Mon Nov 16 21:54:04 MST 2026
+****************************************************************************************************
+****************************************************************************************************
+                   Step ttl — APA Technical Transform Layer (standardizeAndSort.applyAPA)
+Start Time: Mon Nov 16 21:54:04 MST 2026
+****************************************************************************************************
+  inPath      : /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/whole/VARawFiles
+  refPath     : /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/whole
+  outPath     : /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/financial_year.attempt/source.attempt/adapters/wholly_generated
+  year        : 2031  types: E,R
+  SortSpec    : ../sort_specs/SortedJE.sortspec  (15 fields)
+  VendorMaster: /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/whole/VendorMaster.csv  (1 entries)
+  ChunkSize   : 200000
+  Reference   : agency=1 fund=1 object=1 program=1 source=1
+  Source folder (Expenditure FY2031): /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/whole/VARawFiles/FY 2031 Expenditure
+  Discovered 1 E files for FY2031
+
+  Processing E 2031/05 → /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/financial_year.attempt/source.attempt/adapters/wholly_generated/SortedJEFY31_2031_05_exp.csv  (1 file(s))
+
+  File Expenditures May 2031.csv: data_lines=1 source=1 unresolved_ref=0 blank=0
+
+  2031/05: source=1 sje=2 unresolved_ref=0 spills=0
+  Shared financial sort received 2 rows; no per-adapter sorted SJE file written
+
+Control totals:
+  Source rows processed : 1
+  SJE rows produced     : 2  (= ~2 × source rows)
+  Unresolved ref lookups: 0
+
+RESULT step=ttl year=2031 rc=0 records_read=1 records_written=2 elapsed_s=1 input_bytes=169 output_bytes=0
+RESOURCE step=ttl year=2031 jvm_heap_bytes=1073741824
+STATUS: COMPLETE
+WARNING: No Revenue directory found for FY2031 under /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/whole/VARawFiles
+  WARNING: No APA R files discovered for FY2031 — skipping
+
+  Processing R rev → /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/financial_year.attempt/source.attempt/adapters/wholly_generated/SortedJEFY31rev.csv  (0 file(s))
+
+  rev: source=0 sje=0 unresolved_ref=0 spills=0
+  Shared financial sort received 0 rows; no per-adapter sorted SJE file written
+
+RESULT step=ttl year=2031 rc=0 records_read=1 records_written=2 elapsed_s=1 input_bytes=0 output_bytes=0
+RESOURCE step=ttl year=2031 jvm_heap_bytes=1073741824
+****************************************************************************************************
+Process End Time: Mon Nov 16 21:54:04 MST 2026
+****************************************************************************************************
+****************************************************************************************************
+                     Step 2p — PO Standardize & Sort (standardizeAndSort.applyPO)
+Start Time: Mon Nov 16 21:54:04 MST 2026
+****************************************************************************************************
+  Input file   : /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/whole/VAPOData/VA_opendata_FY2031.txt
+  Output file  : /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/financial_year.attempt/source.attempt/adapters/wholly_generated/SortedJEFY31q1PO.csv
+  Year         : 2031  Quarter: 1
+  AcctDate     : 2031/03/01
+  SortSpec     : ../sort_specs/SortedJE.sortspec  (15 fields)
+  ChunkSize    : 200000
+
+Control totals:
+  Physical lines      : 1  (all assigned to a record: 1)
+  Logical records     : 1  (= accepted + quarantined)
+  PO records accepted : 1
+  Records quarantined : 0  (reader rejects 0; see /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/financial_year.attempt/source.attempt/adapters/wholly_generated/POQuarantineFY31.csv)
+  SJE rows produced   : 2  (= 2 × accepted records)
+  Spill files used    : 0
+  Sum of all amounts  : 0.00  (should be 0.00)
+
+RESULT step=2p year=2031 rc=0 records_read=1 records_written=2 records_accepted=1 skipped_quarantine=0 reader_rejects=0 physical_lines=1 elapsed_s=1 input_bytes=377 output_bytes=0
+RESOURCE step=2p year=2031 jvm_heap_bytes=1073741824
+STATUS: COMPLETE
+****************************************************************************************************
+Process End Time: Mon Nov 16 21:54:04 MST 2026
+****************************************************************************************************
+****************************************************************************************************
+                         Step 21 — CCP1 Permutation Capacity (PermutationGenerator)
+Start Time: Mon Nov 16 21:54:04 MST 2026
+****************************************************************************************************
+  Output file    : /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/financial_year.attempt/output/FY31/PERM_TBL2031.csv
+****************************************************************************************************
+                                Post Module
+Start Time: Mon Nov 16 21:54:04 MST 2026
+****************************************************************************************************
+processing file: /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/financial_year.attempt/output/FY31/SortedJEFY31merged.csv
+No existing ledger file.  File will be created: LDGR2031.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          12
+Ledger Records Read:           0
+Ledger Records Written:        10
+Process End Time:      Mon Nov 16 21:54:04 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2031 rc=0 records_read=12 records_written=10 elapsed_s=1 input_bytes=0 output_bytes=2146
+RESOURCE step=3 year=2031 jvm_heap_bytes=1073741824
+  GL keys (rows written)   : 4
+  Journal rows read        : 12
+  Vendor rows (observed)   : 10
+  Capacity (dependencies removed): 24
+  Capacity (independent bound)   : 1399929
+  Varying dimensions       : transIPID;transCommitmentID;transBusinessEventCode;transSourceSystemID;transOriginalDocID;transJrnlDescript;transAcctDate;transTransDate;transUnitOfMeasure;tranRuleSetID;transRuleID;transExtensionIDSource
+  Vendor-determined (CAR)  : transContractID;transTransDate
+  Dropped by dependency    : transIPID<-transExtensionIDSource;transCommitmentID<-transOriginalDocID;transJrnlLineID<-transJrnlDescript;transBusinessEventCode<-transOriginalDocID;transSourceSystemID<-transBusinessEventCode;transOriginalDocID<-transExtensionIDSource;transAcctDate<-transExtensionIDSource;transTransDate<-transIPID;transUnitOfMeasure<-transCommitmentID;tranRuleSetID<-transBusinessEventCode;transRuleID<-transBusinessEventCode
+  Buffer capacity / spills : 2 / 1 files, 94 records, reduce 0s
+  Vendor order             : ok
+  Determinants not tracked : none
+  Output                   : /var/folders/1z/2w2_7p356c14pjsnj3p6zjlr0000gn/T/fused-source-11655796686857651296/financial_year.attempt/output/FY31/PERM_TBL2031.csv
+STATUS: COMPLETE
+RESULT step=21 year=31 rc=0 records_read=12 records_written=4 elapsed_s=1 input_bytes=4205 output_bytes=541 vendor_rows=10 capacity=24 capacity_independent=1399929 varying_dims=transIPID;transCommitmentID;transBusinessEventCode;transSourceSystemID;transOriginalDocID;transJrnlDescript;transAcctDate;transTransDate;transUnitOfMeasure;tranRuleSetID;transRuleID;transExtensionIDSource car_dims=transContractID;transTransDate dropped_dims=transIPID<-transExtensionIDSource;transCommitmentID<-transOriginalDocID;transJrnlLineID<-transJrnlDescript;transBusinessEventCode<-transOriginalDocID;transSourceSystemID<-transBusinessEventCode;transOriginalDocID<-transExtensionIDSource;transAcctDate<-transExtensionIDSource;transTransDate<-transIPID;transUnitOfMeasure<-transCommitmentID;tranRuleSetID<-transBusinessEventCode;transRuleID<-transBusinessEventCode capacity_dims=transJrnlDescript;transExtensionIDSource buffer_overflow=true spill_files=47 spill_records=94 reduce_seconds=0 vendor_order=ok fd_untracked_dims=none merge_levels=6 merge_bytes=8512 final_merge_readers=2
+RESOURCE step=21 year=31 jvm_heap_bytes=1073741824
+****************************************************************************************************
+Process End Time: Mon Nov 16 21:54:04 MST 2026
+****************************************************************************************************
+[info] ComponentPilotSpec:
+[info] - context generation and sorted assignment are invariant to input order and sort chunking
+[info] - missing and duplicate assignment fail before completion
+[info] - invalid fiscal dates and duplicate events are rejected
+[info] - bounded sort fan-in rejects inputs exceeding declared resource envelope
+[info] FusedSourcePrepareSpec:
+[info] - paired exits and shared Pay/PO sort match independent normalization through posting and reporting
+[info] Run completed in 2 seconds, 660 milliseconds.
+[info] Total number of tests run: 47
+[info] Suites: completed 9, aborted 0
+[info] Tests: succeeded 47, failed 0, canceled 0, ignored 0, pending 0
+[info] All tests passed.
+[success] Total time: 15 s, completed Nov 16, 2026, 9:54:05 PM

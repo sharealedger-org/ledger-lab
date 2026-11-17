@@ -42,6 +42,22 @@ in AGENTS and the contributor guide. Runtime checkpoints and next gates are unch
 
 ## Current plans and evidence
 
+**Date hot-path correction verified:** Stopped first fused admission after five
+JVM samples showed four in date parsing/exception creation. No financial failure
+or accepted full-year result. Added equivalent ISO dispatch, bounded positive/
+negative date cache (4,096 entries, key limit 128 chars), and period memo (64).
+Kept the narrower attribution parser unchanged. 47 tests pass against the frozen
+parser and financial/report controls; fresh real-year admission follows this
+checkpoint. Prior stopped attempt and stacks preserved under `date_hotpath/`.
+
+**21:40 AZT real FY03 fused admission active:** `f53ac26`, execution session
+37834, driver 36376/worker 36419, root `session-run.tmp/phase2_fused_admission_v1`.
+Input hashes/AC and provisional ~28-GiB worker budget plus 40-GiB reserve pass
+(~315 GiB free). Compiled Scala runs directly at 2-GiB max heap/one active CPU;
+live minute process/storage samples and 40-GiB process-group stop enabled.
+Dashboard switched to actual fused profile. Native/combined controls, actual
+RSS/scratch acceptance and subsequent scheduling/reporting remain pending.
+
 **Fused financial build ready for real-year admission:** 45 tests pass after
 resource cleanup checks. FusedFinancialYear includes original-pair native GL
 hash checks, shared source sort, actual posting observations, bounded permutation

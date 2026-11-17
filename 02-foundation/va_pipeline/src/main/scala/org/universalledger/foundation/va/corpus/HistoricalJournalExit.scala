@@ -8,9 +8,9 @@ import org.universalledger.foundation.va.ledger.ReportingSupport
   * source-ordered normalizer. It never retains another source journal group.
   */
 final class HistoricalJournalExit(objects:File,out:File,year:Int,
-    seed:String="phase2-v1",population:String=PhaseTwoCorpus.DefaultPopulation) extends AutoCloseable {
+    seed:String="phase2-v1",population:String=PhaseTwoCorpus.DefaultPopulation,dateCacheEntries:Int=4096) extends AutoCloseable {
   import ReportingSupport._
-  import PhaseTwoBaselineNormalize.{date,period,shiftedDate,Version}
+  import PhaseTwoBaselineNormalize.{period,Version}
   require(year>=2003 && year<=2016 && objects.length()<=8L*1024*1024)
   private val categories=scala.collection.mutable.Map[String,String]()
   private val blocked=scala.collection.mutable.Set[String]()++ReassignedActivity.blockedObjects(objects)
@@ -23,6 +23,13 @@ final class HistoricalJournalExit(objects:File,out:File,year:Int,
   private val lineage=writer(out,"identity_lineage.csv",Seq("source_locator","original_vendor","derived_vendor","generation_class","private_actor_key","policy"))
   private val actors=writer(out,"actor_candidates.csv",Seq("vendor_id","original_vendor","generation_class","private_actor_key","template_instrument_id"))
   private val recent=new java.util.LinkedHashMap[String,java.lang.Boolean](4096,0.75f,true)
+  private val dates=new HistoricalDateCache(dateCacheEntries)
+  private val periods=scala.collection.mutable.Map[String,String]()
+  private def shiftedPeriod(raw:String):String=periods.getOrElse(raw,{
+    val value=period(raw)
+    if(periods.size>=64)periods.clear()
+    periods(raw)=value;value
+  })
   val counters=scala.collection.mutable.Map[String,Long]().withDefaultValue(0L)
   private var emittedRows=0L
   def rows:Long=emittedRows
@@ -37,7 +44,7 @@ final class HistoricalJournalExit(objects:File,out:File,year:Int,
     val eligible=d(0).nonEmpty && d(0).forall(_=='0') && d(6)=="Payment Sys" && d(16).startsWith("EXP") &&
       !blocked(d(14)) && ReassignedEligibility.Allowed(category) && d(8).length<=512 &&
       IdentityAuditSummary.candidateClass(d(8))=="source_name_candidate_not_legal_identity" &&
-      ReassignedActivity.sourceDate(d(24)).exists(x=>SyntheticCalendar.fiscalYear(x)==year) && BigDecimal(d(25))!=0
+      dates(d(24)).sourceDate.exists(x=>SyntheticCalendar.fiscalYear(x)==year) && BigDecimal(d(25))!=0
     val(vendor,actor,kind)=if(eligible){val(v,a,_)=ReassignedRouting.supplier(seed,population,d(12),category,d(8));(v,a,"reassigned_activity")}
       else(StablePartyIdentity.observedVendor(d(0)),"",if(StablePartyIdentity.unresolved(d(0)))"unresolved_preserved"else"observed_rekeyed")
     counters(kind)+=1
@@ -49,8 +56,9 @@ final class HistoricalJournalExit(objects:File,out:File,year:Int,
       if(recent.size()>4096){val it=recent.keySet().iterator();it.next();it.remove()}
     }else recent.get(vendor)
     val result=group.map{r=>
-      Vector(23,24).foreach(i=>if(date(r(i)).isEmpty)counters("unparseable_date_fields")+=1)
-      val changed=r.updated(0,vendor).updated(22,period(r(22))).updated(23,shiftedDate(r(23))).updated(24,shiftedDate(r(24)))
+      val accounting=dates(r(23));val effective=dates(r(24))
+      Vector(accounting,effective).foreach(value=>if(value.parsed.isEmpty)counters("unparseable_date_fields")+=1)
+      val changed=r.updated(0,vendor).updated(22,shiftedPeriod(r(22))).updated(23,accounting.shifted).updated(24,effective.shifted)
       val named=if(eligible && r(31)=="D")changed.updated(8,"Fictional Supplier "+vendor)else changed
       require(r.indices.filterNot(Set(0,8,22,23,24)).forall(i=>r(i)==named(i)),"Unexpected structural change")
       named
@@ -61,6 +69,8 @@ final class HistoricalJournalExit(objects:File,out:File,year:Int,
   def writeControls():Unit={
     val p=writer(out,"normalization_controls.csv",Seq("check","value","status"))
     try{row(p,"journal_rows_preserved",rows,"PASS");counters.toVector.sortBy(_._1).foreach{case(k,v)=>row(p,k,v,"OBSERVED")}}finally IdentityAudit.close(p)
+    val cache=writer(out,"date_cache_metrics.csv",Seq("capacity","max_key_chars","peak_entries","hits","misses","period_capacity","period_entries"))
+    try row(cache,dateCacheEntries,128,dates.peak,dates.hits,dates.misses,64,periods.size)finally IdentityAudit.close(cache)
   }
   override def close():Unit={IdentityAudit.close(lineage);IdentityAudit.close(actors)}
 }

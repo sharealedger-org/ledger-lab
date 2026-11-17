@@ -49,7 +49,7 @@ object FusedFinancialYear {
       "source:historical","source:wholly_generated","fused_post")
     val meta=new File(financial,"metrics");require(meta.mkdirs())
     val manifest=writer(meta,"run_manifest.csv",Seq("run_id","experiment_id","status","profile","journal_rows","ledger_rows","journal_input_opens"))
-    try row(manifest,out.getName,"synthetic-generation-proof","complete","phase2-fused-v1",posted.journalRows,posted.ledgerRows,posted.sourceOpens)
+    try row(manifest,options.getOrElse("runId",out.getCanonicalPath),"synthetic-generation-proof","complete","phase2-fused-v1",posted.journalRows,posted.ledgerRows,posted.sourceOpens)
     finally IdentityAudit.close(manifest)
     val summary=writer(attempt,"fused_year_summary.csv",Seq("historical_year","synthetic_year","historical_journal_rows","wholly_journal_rows","combined_journal_rows","ledger_rows","gl_rows","journal_input_opens","process_seconds","status"))
     try row(summary,year,year+28,nativeGL.rows,wholeGL.rows,posted.journalRows,posted.ledgerRows,posted.glRows,posted.sourceOpens,(System.nanoTime()-start)/1e9,"PASS")

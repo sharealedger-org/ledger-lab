@@ -16,6 +16,17 @@ The audit register wins any evidence disagreement.
 
 ## Current checkpoint
 
+**Hot-path fix ready for restart:** First fused admission deliberately stopped
+after stack samples identified repeated date-parse exceptions. Equivalent ISO
+dispatch and bounded date/period memoization pass 47 tests. Restart real FY03
+from a new frozen build; no full financial/resource acceptance yet. No cost claim.
+
+**Real fused FY03 admission active, 2026-11-16 21:40 AZT:** Frozen `f53ac26`,
+session 37834, `session-run.tmp/phase2_fused_admission_v1`. Input hash/AC/resource
+checks pass; source ingestion is active with native controls and pre-sort paired
+normalization. Live dashboard selects this profile. One year only; full financial
+controls, resource acceptance, multi-worker/full corpus and reporting still pending.
+
 **Fused financial fixture verified:** 45 focused/baseline tests pass. The complete
 bounded source/sort/post/GL/permutation workflow and native/combined controls are
 implemented. Real FY03 memory/scratch/control admission is next, followed by full

@@ -639,3 +639,33 @@ GiB at check. Fused dashboard profile preview passes, keeps class rows/stage col
 and labels shared/in-post work. Next commit preparation; launch actual FY03 at
 session-run.tmp/phase2_fused_admission_v1. Keep Scala build frozen while active;
 full controller/parallel admission/reporting remain to do after real-year evidence.
+
+21:40 AZT: frozen fused financial build f53ac26 committed (45 tests). Real FY03
+admission launched in session 37834, process group/driver 36376, worker 36419.
+Root session-run.tmp/phase2_fused_admission_v1; active pointer selects it and live
+fused dashboard opened. Hash/AC/resource checks passed (~315 GiB free, ~28-GiB
+provisional worker budget plus 40-GiB reserve). Direct compiled Scala, 2-GiB max
+heap/one active processor, minute samples and enforced 40-GiB group stop. Current
+fused_source_03; preserve compiled source/classes while active. Build only Bash
+full controller/dashboard/inspection preparation until this worker exits. Need
+actual controls and RSS/storage before four-worker corpus admission. Full global
+reporting, accepted results and Zenodo script still pending. No measurements for
+Paper 1 cost curves are being taken; these are generation-proof diagnostics.
+
+Owner requests dashboard cleanup and visible rows after FY16. Simplified fused
+view to one row per FY/SY with Source+sort, Post/GL/Perm, Controls and State.
+Added explicit pending/active/done rows for corpus controls, dimensions, report
+sort/extract/reduction/checks, census, result validation and Zenodo-script prep.
+All rows read runtime markers/status; one-year admission does not mark later
+corpus work scheduled or complete. Syntax/single-render checks passed.
+
+Date hot-path investigation: five live stack samples (date_hotpath/) found four
+in date parsing/exception generation. Stopped admission group 36376; session37834
+exited143; marker STOPPED_FOR_DATE_HOTPATH, no financial failure. Implemented ISO
+year-first fast dispatch (preserves ambiguous low-year precedence), bounded exact
+HistoricalDateCache(4096,max-key128) retaining parsed/shifted/legacy-source results,
+and 64-value period memoization in HistoricalJournalExit. Narrow source attribution
+parser unchanged. 47 tests pass, including frozen parser differential, invalid/
+ambiguous/leap inputs, disabled/evicting/negative caches and full fused controls.
+Next freeze and restart FY03 at phase2_fused_admission_v2, then inspect actual
+cache hits/misses and all real-year controls before parallel/full admission.

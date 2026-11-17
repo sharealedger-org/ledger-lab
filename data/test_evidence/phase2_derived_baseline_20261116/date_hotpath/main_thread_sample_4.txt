@@ -1,0 +1,18 @@
+"main" #1 [9475] prio=5 os_prio=31 cpu=320141.23ms elapsed=350.07s tid=0x00007f8a3d80b000 nid=9475 runnable  [0x00007000048a9000]
+   java.lang.Thread.State: RUNNABLE
+	at java.lang.Throwable.fillInStackTrace(java.base@21.0.8/Native Method)
+	at java.lang.Throwable.fillInStackTrace(java.base@21.0.8/Throwable.java:820)
+	- locked <0x000000078680d238> (a java.time.DateTimeException)
+	at java.lang.Throwable.<init>(java.base@21.0.8/Throwable.java:273)
+	at java.lang.Exception.<init>(java.base@21.0.8/Exception.java:67)
+	at java.lang.RuntimeException.<init>(java.base@21.0.8/RuntimeException.java:63)
+	at java.time.DateTimeException.<init>(java.base@21.0.8/DateTimeException.java:89)
+	at java.time.temporal.ValueRange.checkValidIntValue(java.base@21.0.8/ValueRange.java:338)
+	at java.time.temporal.ChronoField.checkValidIntValue(java.base@21.0.8/ChronoField.java:737)
+	at java.time.chrono.IsoChronology.resolveYMD(java.base@21.0.8/IsoChronology.java:645)
+	at java.time.chrono.IsoChronology.resolveYMD(java.base@21.0.8/IsoChronology.java:127)
+	at java.time.chrono.AbstractChronology.resolveDate(java.base@21.0.8/AbstractChronology.java:437)
+	at java.time.chrono.IsoChronology.resolveDate(java.base@21.0.8/IsoChronology.java:587)
+	at java.time.chrono.IsoChronology.resolveDate(java.base@21.0.8/IsoChronology.java:127)
+	at java.time.format.Parsed.resolveDateFields(java.base@21.0.8/Parsed.java:372)
+	at java.time.format.Parsed.resolveFields(java.base@21.0.8/Parsed.java:278)

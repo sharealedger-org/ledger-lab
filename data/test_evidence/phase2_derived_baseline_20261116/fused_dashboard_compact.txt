@@ -1,0 +1,38 @@
+PHASE 2 FUSED GENERATION PROOF   2026-11-16 21:44:38 AZT
+Workflow: fused_financial_year_03
+
+YEAR / WORK             | Source + sort     Post / GL / Perm    Controls     | STATE
+FY03 / SY01             | RUN               -                   -            | source
+FY04 / SY02             | -                 -                   -            | pending
+FY05 / SY03             | -                 -                   -            | pending
+FY06 / SY04             | -                 -                   -            | pending
+FY07 / SY05             | -                 -                   -            | pending
+FY08 / SY06             | -                 -                   -            | pending
+FY09 / SY07             | -                 -                   -            | pending
+FY10 / SY08             | -                 -                   -            | pending
+FY11 / SY09             | -                 -                   -            | pending
+FY12 / SY10             | -                 -                   -            | pending
+FY13 / SY11             | -                 -                   -            | pending
+FY14 / SY12             | -                 -                   -            | pending
+FY15 / SY13             | -                 -                   -            | pending
+FY16 / SY14             | -                 -                   -            | pending
+------------------------+------------------------------------------------------
+Corpus controls         | -                 pending             -            | pending
+Dimensions / metadata   | -                 pending             -            | pending
+Reporting sort          | -                 pending             -            | pending
+Reporting extract       | -                 pending             -            | pending
+Reporting reduction     | -                 pending             -            | pending
+Reporting checks        | -                 pending             -            | pending
+Output census           | -                 pending             -            | pending
+Result validation       | -                 pending             -            | pending
+Zenodo script ready     | -                 pending             -            | pending
+
+Each year combines historical and generated inputs. ID/date runs in ARE; GL/Perm share posting.
+Disk: 314Gi free
+Latest sample (UTC, free KiB, allocated KiB): 2026-11-17T04:44:27Z,329349388,624856
+Latest log:
+  Shared financial sort received 900042 rows; no per-adapter sorted SJE file written
+
+  Processing E 2003/08 ? /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/phase2_fused_admission_v1/years/FY31.attempt/source.attempt/adapters/historical/SortedJEFY03_2003_08_exp.csv  (1 file(s))
+Run: /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/phase2_fused_admission_v1
+Refresh: 0s; Ctrl-C closes display only.

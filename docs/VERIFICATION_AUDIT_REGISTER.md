@@ -2305,3 +2305,32 @@ parallel scheduling, full historical/generated reporting and final interpretatio
 remain pending. Configured GL/permutation indexing caps are 1,000,000 keys/groups;
 GL overflow currently fails explicitly rather than spilling. No production target
 runtime support or cost-curve measurement is inferred.
+
+## 2026-11-16 evening AZT — Profiled date exception hot path
+
+Actual FY03 admission f53ac26 remained live/CPU-bound. Five main-thread samples
+captured under date_hotpath/: four were in date parsing (including exception stack
+creation), one in SJE row formatting. The general normalizer tried four US-date
+formats before accepting common ISO dates, and repeated general parsing for
+checking and shifting each date field. This is a direct observation, not a cost
+point or a completed full-year result. Stopped only process group 36376; session
+37834 exited 143. Marked STOPPED_FOR_DATE_HOTPATH; partials remain unaccepted.
+
+Claim under test: a year-first ISO dispatch and bounded memoization preserve every
+existing parsed/shifted date and the narrower attribution eligibility parser.
+Candidate keeps legacy precedence for ambiguous low-year strings (first component
+<=12), retains ReassignedActivity.sourceDate unchanged, caches positive/negative
+results up to 4,096 entries/128-character keys and memoizes up to 64 period values.
+Long date strings are not retained. Differential tests use the frozen pre-change
+parser and cover valid/invalid/ambiguous/leap dates plus cache-disabled/eviction
+behavior and actual downstream financial/report controls. Acceptance and restarted
+real-year throughput still pending this entry. No target runtime gap is closed.
+
+Date-hot-path acceptance update: 47 tests pass across nine suites. The fast ISO
+branch agrees with the pre-change ordered parser and shifted output on 1,500
+calendar-format cases plus invalid/ambiguous/century/leap edge cases. Positive,
+negative, disabled and two-entry-evicting caches agree; ISO recognition does not
+broaden source eligibility. Full financial/report fixtures remain green. Real
+FY03 speed, class counts, memory and controls await fresh admission. Operational
+run IDs also now default to the canonical attempt path instead of repeating FY31
+across attempts; this metadata correction changes no financial fields.

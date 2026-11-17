@@ -1,0 +1,18 @@
+"main" #1 [9475] prio=5 os_prio=31 cpu=317936.96ms elapsed=347.78s tid=0x00007f8a3d80b000 nid=9475 runnable  [0x00007000048a9000]
+   java.lang.Thread.State: RUNNABLE
+	at java.time.LocalDate.parse(java.base@21.0.8/LocalDate.java:435)
+	at org.universalledger.foundation.va.corpus.ReassignedActivity$.$anonfun$sourceDate$1(ReassignedActivity.scala:17)
+	at org.universalledger.foundation.va.corpus.ReassignedActivity$$$Lambda/0x00000008002213a0.apply(Unknown Source)
+	at scala.collection.Iterator$$anon$11.nextCur(Iterator.scala:486)
+	at scala.collection.Iterator$$anon$11.hasNext(Iterator.scala:492)
+	at scala.collection.Iterator$SliceIterator.hasNext(Iterator.scala:268)
+	at scala.collection.Iterator.foreach(Iterator.scala:943)
+	at scala.collection.Iterator.foreach$(Iterator.scala:943)
+	at scala.collection.AbstractIterator.foreach(Iterator.scala:1431)
+	at scala.collection.generic.Growable.$plus$plus$eq(Growable.scala:62)
+	at scala.collection.generic.Growable.$plus$plus$eq$(Growable.scala:53)
+	at scala.collection.immutable.VectorBuilder.$plus$plus$eq(Vector.scala:668)
+	at scala.collection.immutable.VectorBuilder.$plus$plus$eq(Vector.scala:645)
+	at scala.collection.TraversableOnce.to(TraversableOnce.scala:366)
+	at scala.collection.TraversableOnce.to$(TraversableOnce.scala:364)
+	at scala.collection.AbstractIterator.to(Iterator.scala:1431)

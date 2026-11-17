@@ -12,9 +12,15 @@ object PhaseTwoBaselineNormalize {
   import ReportingSupport._
   val Version="phase2-historical-normalization-v1"
   val canonicalDate=DateTimeFormatter.ofPattern("yy/MM/dd")
+  private val canonicalShape=java.util.regex.Pattern.compile("[0-9]{2}/[0-9]{2}/[0-9]{2}")
+  private def yearFirstIso(s:String):Boolean=s.length==10 && s.charAt(4)=='-' && s.charAt(7)=='-' &&
+    s.take(4).forall(c=>c>='0'&&c<='9') && s.take(4).toInt>12
   def date(s:String):Option[LocalDate]={
-    val parsed=if(s.matches("[0-9]{2}/[0-9]{2}/[0-9]{2}"))
+    val parsed=if(canonicalShape.matcher(s).matches())
       try Some(LocalDate.parse(s,canonicalDate))catch{case _:java.time.DateTimeException=>None}
+    // A first component above 12 cannot be a month in any legacy source format.
+    // Keep the legacy precedence for ambiguous low-year strings such as 0001-02-03.
+    else if(yearFirstIso(s))try Some(LocalDate.parse(s))catch{case _:java.time.DateTimeException=>None}
     else ReassignedActivity.sourceDate(s).orElse(try Some(LocalDate.parse(s))catch{case _:java.time.DateTimeException=>None})
     parsed
   }

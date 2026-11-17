@@ -85,41 +85,70 @@ fused_count() {
   read -r accepted journals <<< "$pair"
   printf '%s>%s' "$(compact "$accepted")" "$(compact "$journals")"
 }
+global_stage_row() {
+  local label="$1" stage="$2" marker="$3" value=pending report="$root/report"
+  [[ -d "$report" ]] || report="$report.attempt"
+  if [[ -f "$marker" || -f "$root/stages/$stage.complete" ]]; then value=done
+  elif [[ "$current" == "$stage" ]]; then value=RUN
+  elif [[ "$current" == reporting ]]; then
+    case "$stage" in
+      report_extract) [[ -f "$report/EXTRACT_COMPLETE" ]] && value=done || value=RUN ;;
+      report_reduce) [[ ! -f "$report/EXTRACT_COMPLETE" ]] || value=RUN ;;
+    esac
+  fi
+  if [[ "$value" == RUN && -f "$root/FAILED" ]]; then value=FAILED; fi
+  printf '%-23s | %-17s %-19s %-12s | %s\n' "$label" - "$value" - "$value"
+}
 render_fused() {
-  local old new sy base source worker phase pooled post_state gl_state perm_state state kind label pay po id
+  local current old new sy base source phase source_state post_state checks state worker report latest stopped=no
+  current="$(cat "$root/STATUS")"
   printf 'PHASE 2 FUSED GENERATION PROOF   %s\n' "$(TZ=America/Phoenix date '+%Y-%m-%d %H:%M:%S AZT')"
-  printf 'Workflow: '; cat "$root/STATUS"
-  [[ ! -f "$root/FAILED" ]] || cat "$root/FAILED"
-  printf '\n%-18s | %-11s %-11s %-11s %-11s %-11s %-11s %-11s | STATE\n' 'YEAR / CLASS' 'Pay JEs' 'PO JEs' 'Shared sort' 'ID/Date' 'Post' 'GL Bal' 'Permute'
+  printf 'Workflow: %s\n' "$current"
+  if [[ -f "$root/STOPPED_FOR_DATE_HOTPATH" ]]; then
+    stopped=yes;cat "$root/STOPPED_FOR_DATE_HOTPATH"
+    [[ ! -f "$repo/session-run.tmp/phase2_fused_preparation_v1/STATUS" ]] || cat "$repo/session-run.tmp/phase2_fused_preparation_v1/STATUS"
+  elif [[ -f "$root/FAILED" ]]; then cat "$root/FAILED";fi
+  printf '\n%-23s | %-17s %-19s %-12s | STATE\n' 'YEAR / WORK' 'Source + sort' 'Post / GL / Perm' 'Controls'
   for old in 03 04 05 06 07 08 09 10 11 12 13 14 15 16; do
     new="$(printf '%02d' "$((10#$old+28))")";sy="$(printf '%02d' "$((10#$old-2))")"
     worker="$root/workers/FY$new.status"
-    if [[ ! -f "$worker" ]]; then
-      printf '%-18s | %-11s %-11s %-11s %-11s %-11s %-11s %-11s | queued\n' "FY$old/SY$sy" - - - - - - -
-      continue
+    source_state=-;post_state=-;checks=-;state=pending
+    if [[ -f "$worker" ]]; then
+      phase="$(cat "$worker")";base="$root/years/FY$new"
+      [[ -d "$base" ]] || base="$base.attempt"
+      source="$base/source";[[ -d "$source" ]] || source="$source.attempt"
+      source_state=RUN;state=source
+      [[ ! -f "$source/SOURCE_PREPARATION_COMPLETE" ]] || { source_state=done;state=prepared; }
+      case "$phase" in fused_post_*|financial_controls_*) post_state=RUN;state=posting ;; esac
+      if [[ -f "$base/output/FY$new/fused_posting_controls.csv" ]]; then post_state=done;checks=RUN;state=controls;fi
+      if [[ -f "$base/FINANCIAL_YEAR_COMPLETE" ]]; then checks=PASS;state=PASS;fi
+      if [[ "$stopped" == yes && "$state" != PASS ]]; then
+        state=STOPPED
+        [[ "$source_state" != RUN ]] || source_state=STOPPED
+        [[ "$post_state" != RUN ]] || post_state=STOPPED
+        [[ "$checks" != RUN ]] || checks=STOPPED
+      elif [[ -f "$root/FAILED" && "$state" != PASS ]]; then state=FAILED;fi
     fi
-    phase="$(cat "$worker")";base="$root/years/FY$new"
-    [[ -d "$base" ]] || base="$base.attempt"
-    source="$base/source";[[ -d "$source" ]] || source="$source.attempt"
-    pooled=RUN;state=source
-    [[ ! -f "$source/SOURCE_PREPARATION_COMPLETE" ]] || { pooled=sorted;state=prepared; }
-    for kind in historical wholly_generated; do
-      if [[ "$kind" == historical ]]; then label="FY$old historical";id='in TTL';else label="SY$sy generated";id=-;fi
-      pay="$(fused_count "$source/source_controls.csv" "$kind" Pay)"
-      po="$(fused_count "$source/source_controls.csv" "$kind" PO)"
-      printf '%-18s | %-11s %-11s %-11s %-11s %-11s %-11s %-11s | %s\n' "$label" "$pay" "$po" shared "$id" - 'ARE control' - "$state"
-    done
-    post_state=-;gl_state=-;perm_state=-;state=queued
-    case "$phase" in fused_post_*|financial_controls_*) post_state=RUN;gl_state='in Post';perm_state='in Post';state=posting;; esac
-    if [[ -f "$base/output/FY$new/fused_posting_controls.csv" ]]; then post_state=done;gl_state=observed;perm_state=reduced;state=controls;fi
-    [[ ! -f "$base/FINANCIAL_YEAR_COMPLETE" ]] || state=PASS
-    [[ ! -f "$root/FAILED" || "$state" == PASS ]] || state=FAILED
-    printf '%-18s | %-11s %-11s %-11s %-11s %-11s %-11s %-11s | %s\n' "SY$sy combined" - - "$pooled" - "$post_state" "$gl_state" "$perm_state" "$state"
+    printf '%-23s | %-17s %-19s %-12s | %s\n' "FY$old / SY$sy" "$source_state" "$post_state" "$checks" "$state"
   done
-  printf '\nPay/PO cells: accepted source groups>journals. Shared sort and in-Post outputs are fused, not extra scans.\n'
-  printf 'Original-pair ARE controls preserve historical GL; full reporting follows financial validation.\n'
-  printf 'Latest disk sample (UTC, free KiB, allocated KiB): ';tail -n 1 "$root/monitor_storage.csv" 2>/dev/null || true
-  printf 'Latest worker log:\n';tail -n 3 "$root/logs/FY03.log" 2>/dev/null | tr '\r' '\n' || true
+  printf -- '------------------------+------------------------------------------------------\n'
+  report="$root/report";[[ -d "$report" ]] || report="$report.attempt"
+  global_stage_row 'Corpus controls' financial_controls "$root/financial_controls/BASELINE_FINANCIAL_CONTROLS_COMPLETE"
+  global_stage_row 'Dimensions / metadata' dimensions "$root/dimensions/DIMENSIONS_COMPLETE"
+  global_stage_row 'Reporting sort' report_order "$root/report_order/SORT_COMPLETE"
+  global_stage_row 'Reporting extract' report_extract "$report/EXTRACT_COMPLETE"
+  global_stage_row 'Reporting reduction' report_reduce "$report/REPORT_COMPLETE"
+  global_stage_row 'Reporting checks' report_checks "$root/REPORT_CHECKS_COMPLETE"
+  global_stage_row 'Output census' census "$root/CENSUS_COMPLETE"
+  global_stage_row 'Result validation' result_review "$root/RESULT_REVIEW_COMPLETE"
+  global_stage_row 'Zenodo script ready' zenodo_script "$root/ZENODO_SCRIPT_READY"
+  printf '\nEach year combines historical and generated inputs. ID/date runs in ARE; GL/Perm share posting.\n'
+  [[ ! -f "$root/ADMISSION_COMPLETE" ]] || { printf 'Admission: ';cat "$root/ADMISSION_COMPLETE"; }
+  printf 'Disk: ';df -h "$root" | awk 'NR==2{printf "%s free\n",$4}'
+  printf 'Latest sample (UTC, free KiB, allocated KiB): ';tail -n 1 "$root/monitor_storage.csv" 2>/dev/null || true
+  latest="$(ls -t "$root/logs"/FY*.log 2>/dev/null | head -n 1 || true)"
+  [[ ! -f "$root/logs/$current.log" ]] || latest="$root/logs/$current.log"
+  if [[ -n "$latest" ]]; then printf 'Latest log:\n';tail -n 3 "$latest" | tr '\r' '\n';fi
   printf 'Run: %s\nRefresh: %ss; Ctrl-C closes display only.\n' "$root" "$interval"
 }
 render() {
