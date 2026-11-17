@@ -1,0 +1,3 @@
+User explicitly approved exact13-file manifest7e25d04872c3a97597c0a616e7fe5d6697418e324e062e554625823c83aad9f2.
+Safety checks: lossless recovery PASS; resume PASS; corrupt gzip rejected and test original retained PASS.
+Initial corrupt-gzip selftest exposed implicit-set-e guard failure; explicit return guards fixed before real archival.

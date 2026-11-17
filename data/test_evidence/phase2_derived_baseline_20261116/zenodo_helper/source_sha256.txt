@@ -1,0 +1,2 @@
+8cb71989b7b1c959aeb67da2a23ad3318de3ebbac483dd3fe8fafe84415a268f  scripts/upload_phase2_zenodo.sh
+ecb1d37ae22c4170e5c529a838b81be60487f66e7f7a3c76a7f130ce3cac913b  scripts/prepare_phase2_release_manifest.sh

@@ -1,0 +1,20 @@
+fixture=/private/tmp/phase2-upload-check.6UO5d3
+PASS local check performs no network
+PASS mock existing-draft upload checksum/size verification
+PASS resume verifies remote file and performs no second PUT
+PASS no token in persisted state
+PASS same-size local mutation rejected
+No real Zenodo request, upload or publication performed.
+Zenodo preparation: SHA256 mismatch: payload.txt
+PASS final source resume after portability/version validation edit
+PASS existing remote mismatch rejected without overwrite
+PASS oversize file rejected
+PASS parent traversal rejected
+PASS submitted record rejected
+Zenodo preparation: existing remote file differs; no overwrite: r1/payload.txt
+Zenodo preparation: invalid version/artifact/record manifest or record budget
+Zenodo preparation: invalid version/artifact/record manifest or record budget
+Zenodo preparation: draft/version state mismatch: r1
+PASS source-to-payload manifest plain/gzip mapping and original SHA lineage
+PASS generated payload manifest passes local uploader validation
+PASS gzip without verification receipt rejected

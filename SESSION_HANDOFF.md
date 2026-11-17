@@ -1337,3 +1337,16 @@ variable initially shadowed PATH; corrected inventory uses bash/artifact_path.
 Use the approved archive to recover space while retaining exact sorted rerun
 inputs. Do not overwrite original frozen classes: implement in an isolated build
 or worktree. No improved implementation or rerun has started.
+
+Results cd242fc successfully pushed to origin/main and ls-remote matched fullhash.
+Owner says proceed. Approved13-file archive runs session70988, log
+session-run.tmp/phase2_baseline_archive_v1.log, receipt directorysame basename.
+Three firstfiles archived at16:54UTC; sourceinventory job86809 completed85files,
+186,778,467,131B. Sourceplan includesallpublic financial outputs/views/dimensions/
+control, excludesraw/private inputs/sortedcopies/spills. Archive safety fixture
+foundset-e-in-conditionalfunction hazard, fixedexplicitreturns before realrun.
+Upload helpers scripts/upload_phase2_zenodo.sh and prepare_phase2_release_manifest.sh
+pass mocks; docs/PHASE_TWO_ZENODO_HELPER.md givescommands. No realnetwork/APIupload.
+Generate payloadmanifest after ARCHIVE_COMPLETE. Current scriptsready markertrue,
+actualpayload verification deferred. Implementimprovedflow in isolatedworktree
+from new helper-preparation commit; preserve main baseline targetclasses.

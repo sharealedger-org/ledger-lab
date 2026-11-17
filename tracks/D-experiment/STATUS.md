@@ -1014,3 +1014,14 @@ recheck matches all14 producer summaries and28 PASS controls; frozen class hashe
 pass. Input offsets82,199,969,792/102,677,962,038B (~80.1%), lastfree77,823,020KiB.
 Extraction remains running; report/release acceptance pending. Recheck receipt:
 full_financial/live_receipt_recheck_20261117.txt under the baseline evidence root.
+
+2026-11-17 continuation: results cd242fc pushed/remote verified. User approved
+exact13-file108.36GiB verified archival; session70988 runs the pinned-manifest
+archiver, sorted by size. Only verified originals are removed after decodedSHA
+comparison and written/synced receipt. Initial corrupt-gzip fixture caught an
+implicit-set-e bug; explicit guards fixed and recovery/resume/corruption-retention
+selftests passed before any approved original removal. Upload and manifest Bash
+helpers pass offline mocks; source plan85files/186,778,467,131B. No real upload.
+Physical payload manifest awaits archival; ZENODO_SCRIPT_READY records script
+readiness, not publication or complete payload preflight. Next: isolated Scala
+CKB reporting implementation and equivalence fixtures before timing admission.
