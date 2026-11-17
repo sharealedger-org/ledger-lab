@@ -7,6 +7,7 @@ run=${2:?completed CKB run root}
 [[ "$baseline" = /* && "$run" = /* && -f "$run/WORKFLOW_COMPLETE" && -f "$run/INPUT_EQUIVALENCE_COMPLETE" && -f "$run/REPORT_CHECKS_COMPLETE" && -f "$run/CENSUS_COMPLETE" ]]
 audit="$run/exact_output_audit"
 [[ ! -e "$audit" ]] || { echo 'Audit directory exists; preserve its receipt and choose an explicitly reviewed retry'; exit 2; }
+trap 'rc=$?; if [[ $rc -ne 0 ]]; then printf "FAILED rc=%s\n" "$rc" > "$run/EXACT_OUTPUT_AUDIT_FAILED"; fi' EXIT
 free=$(df -Pk "$run" | awk 'NR==2{print $4}')
 ((free >= 58720256)) || { echo 'Audit requires 40 GiB reserve plus 16 GiB scratch'; exit 2; }
 mkdir -p "$audit/classes"
