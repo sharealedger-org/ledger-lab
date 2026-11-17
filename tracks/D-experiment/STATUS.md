@@ -1,5 +1,20 @@
 # Track D: Primary research experiment
 
+**2026-11-17 corrected census passed; final audit continues:** All seven census
+profiles now exactly match baseline after the verified303-share correction.
+Original relationships and initial census/FAILED marker are retained separately.
+Financial/synthetic controls and strict movement/balance/relationships/reconciliation/
+activity/AIM/cross-vendor proofs pass. Large temporal/master record comparisons
+remain active in session3725/JVM10725; reserve monitor10084 enforces40GiB.
+Finalizer session18200 waits for all18 remaining-selection proofs, then rechecks
+all21 unique outputs, reference hashes, frozen classes, inputs, controls and census.
+Only then it writes completion evidence/timings and locally commits its own clean
+status pages and evidence. Script `scripts/finalize_three_way_reporting_evidence.sh`
+is committed as `dbd70ac`; pending-proof rejection was tested. No full acceptance
+or timing ratio yet. Isolated fix `9bc12a3` passes20 tests. Dashboard1786 shows
+the active verification stage. Next planned slice is allocation/basis feedback;
+upload/publication and Q2 models remain deferred.
+
 **2026-11-17 completed worker run; acceptance held for precision:** All three
 workers and final combination finished. Worker-wave wall4837s; combination358.55s;
 preparation740.76s. Independent reporting controls pass:19943155 reconciliation,

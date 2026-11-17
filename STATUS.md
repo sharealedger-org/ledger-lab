@@ -16,6 +16,13 @@ The audit register wins any evidence disagreement.
 
 ## Current checkpoint
 
+**2026-11-17 final output audit:** Three reporting workers finished in80m37s.
+The303 relationship-share precision correction matches all4756111 baseline
+records; all seven corrected census profiles match. Final temporal/master exact
+comparisons continue, with guarded evidence capture/local commit queued only
+after every proof passes. See Track D. Next planned work: allocation/basis
+feedback. No upload/publication or Q2 execution.
+
 **2026-11-17 worker processing finished; precision acceptance check active:**
 Three-worker phase80m37s and final collapse finished; independent financial and
 synthetic controls pass. Census stopped acceptance on derived relationship-share
