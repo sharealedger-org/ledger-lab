@@ -682,6 +682,14 @@ controller draft (check syntax/memory gate only); needs bounded multi-year execu
 and reporting resource admission before production launch. No full proof yet.
 # Hot-path continuation — corrected real-year restart
 
+Latest: Wave2 complete, all FY03–FY10 financial controls PASS (8/14 accepted).
+Wave3 FY11–FY14 ACTIVE with verified JVMs52343–52346, same group42994/session11522.
+Gate free252,423,628KiB; worker reserve184,607,438KiB plus40GiB. FY15/16 queued.
+Current dashboard/root remain full baseline v1. Do not apply production metadata
+patch until all financial workers and global controls finish. The separate
+reporting continuation (`48df91e`, plus later docs) is guard-tested but not run;
+apply/test/commit metadata repair first, then launch it in a fresh output root.
+
 Latest financial progress: FY09 COMPLETED with17,012,068 journal rows,1,010,562
 ledger rows,356,272 exact GL keys, one input open and observer row conservation.
 Historical PO0/0 is the declared empty placeholder; native GL exact hash matched.

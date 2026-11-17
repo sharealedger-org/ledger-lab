@@ -42,6 +42,13 @@ in AGENTS and the contributor guide. Runtime checkpoints and next gates are unch
 
 ## Current plans and evidence
 
+**Wave2 passed; eight of14 accepted:** FY03–FY10 each published financial
+completion after exact native/combined GL and observer row controls. Wave3
+FY11/12/13/14 now has four verified live JVMs52343–52346, group42994/session11522.
+Admission:252,423,628KiB free,184,607,438KiB worker reservation plus40GiB reserve;
+frozen-class check passed again. FY15/16 remain queued. Metadata patch still
+isolated/unapplied; full all-year controls and reporting/results acceptance pending.
+
 **FY09 accepted; five of14 financial years passed:** Native GL hash matched the
 retained reference exactly, declared missing-PO placeholder produced0/0 accepted
 rows, and all17,012,068 combined journal rows reached GL/permutation during one
