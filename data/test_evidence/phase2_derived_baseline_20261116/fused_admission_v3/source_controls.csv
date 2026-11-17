@@ -1,0 +1,5 @@
+source_class,adapter,source_groups,journal_rows,status
+historical,Pay,6701860,13403720,PASS
+historical,PO,52420,104840,PASS
+wholly_generated,Pay,130055,260110,PASS
+wholly_generated,PO,41066,82132,PASS

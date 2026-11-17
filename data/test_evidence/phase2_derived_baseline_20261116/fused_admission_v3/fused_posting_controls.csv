@@ -1,0 +1,5 @@
+check,expected,actual,status
+gl_observer_rows,13850802,13850802,PASS
+permutation_observer_rows,13850802,13850802,PASS
+journal_input_opens,1,1,PASS
+ledger_rows_emitted,1105396,1105396,OBSERVED

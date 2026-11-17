@@ -1,0 +1,2 @@
+partition,rows,input_bytes,output_bytes,spills,merge_levels,fan_in,chunk_rows,cumulative_sort_bytes,elapsed_seconds,peak_buffer_bytes,buffer_byte_cap
+SortedJEFY31merged.csv,13850802,5065138091,5065138091,151,2,16,100000,15195414273,520.244137759,33554431,33554432

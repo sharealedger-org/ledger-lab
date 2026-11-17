@@ -2354,6 +2354,13 @@ All 47 tests pass. Hash/control/cache evidence is preserved under short_year_gat
 the strict hash gate is unchanged. Fresh actual FY03 admission is still required.
 # Fused scheduler fixture continuation
 
+Real FY03 v3 admission subsequently completed exit0: exact retained native GL
+hash, exact combined GL conservation over364,216 keys, 13,850,802 rows observed
+by both consumers in one posting input open; 1,105,396 ledger rows. Maximum RSS
+709,038,080 bytes. Receipt: `data/test_evidence/phase2_derived_baseline_20261116/fused_admission_v3/`.
+Evidence state: one real financial year verified; full corpus/reporting pending.
+Minute scratch samples do not establish instantaneous peak; no cost point.
+
 Actual `scripts/run_phase2_fused_baseline.sh` ran two bounded raw years with two
 concurrent workers and independent native reference GLs. Shared financial controls
 passed: 16 historical + 8 wholly generated = 24 journal rows, exact GL conservation

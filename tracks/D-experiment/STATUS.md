@@ -42,6 +42,20 @@ in AGENTS and the contributor guide. Runtime checkpoints and next gates are unch
 
 ## Current plans and evidence
 
+**FY03 admission completed:** v3/session11936 exit0; native+combined GL controls
+passed, 13,850,802 journal rows seen by both actual posting observers, one input
+open, 1,105,396 ledger rows, 364,216 GL keys. Process elapsed663.05sec,
+maximum RSS709,038,080 bytes. Evidence in
+`data/test_evidence/phase2_derived_baseline_20261116/fused_admission_v3/`.
+Admits the next bounded full replay; not full population/report acceptance.
+
+**FY03 native gate passed; fused posting active:** Admission v3 produced the exact
+retained FY03 GL SHA-256 `f86fafe44e6fb6e0e3a1878001cf6bb02fa59af63b223cf62dda2d6f15d98160`.
+Source controls: 13,508,560 historical plus 342,242 wholly generated journal rows;
+posting consumes their 13,850,802 combined rows. Source cache: 29,248,690 hits,
+567 misses, peak567/4096 entries. Final combined GL/posting/resource acceptance
+pending; partial evidence under `.../phase2_derived_baseline_20261116/fused_admission_v3/`.
+
 **Two-worker controller fixture passed:** Actual Bash controller executed two raw
 years in one wave, verifying 16 historical + 8 wholly generated = 24 journal rows
 and exact GL controls. Missing-reference fixture caused the worker failure and

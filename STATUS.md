@@ -16,6 +16,12 @@ The audit register wins any evidence disagreement.
 
 ## Current checkpoint
 
+**Real fused FY03 admission passed:** `a0dae7c`, v3/session11936 exit0. Exact
+native and combined GL controls pass; 13,850,802 journal rows observed once by
+posting/GL/permutation; 1,105,396 ledger rows. Peak RSS709,038,080 bytes within
+the declared2GiB heap profile. Full14-year bounded replay/reporting is next;
+no full-population acceptance or cost-point claim yet.
+
 **Corrected fused FY03 admission restarted:** Frozen `a0dae7c`, execution
 session 11936, root `session-run.tmp/phase2_fused_admission_v3`. Starting resource
 gate passed; source processing active and live dashboard switched to v3. Strict

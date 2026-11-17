@@ -1,0 +1,7 @@
+git=a0dae7cc07541aaa17c79005cffad47bfdbb3b82
+year=03
+heap_max_mib=2048
+active_processors=1
+worker_budget_kib=29217327
+reserve_kib=41943040
+entry_point=org.universalledger.foundation.va.corpus.FusedFinancialYear
