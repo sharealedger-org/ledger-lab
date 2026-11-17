@@ -86,7 +86,8 @@ fused_count() {
   printf '%s>%s' "$(compact "$accepted")" "$(compact "$journals")"
 }
 global_stage_row() {
-  local label="$1" stage="$2" marker="$3" value=pending report="$root/report"
+  local label="$1" stage="$2" marker="$3" value=pending report="$root/report" state partial_count
+  local partials=()
   [[ -d "$report" ]] || report="$report.attempt"
   if [[ -f "$marker" || -f "$root/stages/$stage.complete" ]]; then value=done
   elif [[ "$current" == "$stage" ]]; then value=RUN
@@ -97,7 +98,15 @@ global_stage_row() {
     esac
   fi
   if [[ "$value" == RUN && -f "$root/FAILED" ]]; then value=FAILED; fi
-  printf '%-23s | %-17s %-19s %-12s | %s\n' "$label" - "$value" - "$value"
+  state="$value"
+  # Current temporary files show activity; consolidation can reduce this count.
+  if [[ "$stage" == report_extract && "$value" == RUN && -d "$report/bucket_partials" ]]; then
+    partials=("$report"/bucket_partials/*.csv)
+    partial_count=0
+    [[ ! -f "${partials[0]:-}" ]] || partial_count="${#partials[@]}"
+    value="RUN $partial_count spills"
+  fi
+  printf '%-23s | %-17s %-19s %-12s | %s\n' "$label" - "$value" - "$state"
 }
 render_fused() {
   local current old new sy base source phase source_state post_state checks state worker report latest stopped=no

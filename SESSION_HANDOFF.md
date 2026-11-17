@@ -988,3 +988,84 @@ extra engine run, maturity upgrade or report acceptance. Audit entry added.
 2026-11-17T10:50:28Z verified wait: same driver66386/session84820, extraction
 JVM82547 CPU32m00s/RSS760,332KiB and dashboard66618 live.25 bucket spills,
 latest free125,275,296KiB, no monitor alarm. Configuration/class profile unchanged.
+
+2026-11-17T10:56:02Z verified wait: same driver66386/session84820 and extraction
+JVM82547 CPU37m25s/RSS765,776KiB; dashboard66618 live. Round->monitor snapshots
+match28 financial input paths;27 advanced, none new/missing/regressed, offset
+delta3,210,739,712bytes.27 bucket spills, latest free125,213,952KiB, no reserve
+alarm. No restart/class/config change. Final report acceptance and deliverables
+remain pending; offset movement is not completed-row/control evidence.
+
+2026-11-17T11:00:52Z verified wait: same driver66386/session84820, JVM82547
+CPU42m06s/RSS765,780KiB and dashboard66618 live. Monitor->recent samples match28
+financial input paths, all28 advanced with no regression/new/missing paths;
+offset delta3,632,267,264bytes.30 bucket spills, latest free125,135,156KiB, no
+reserve alarm. No restart/class/config change. Final extract/reduce/controls and
+result/upload-script deliverables remain pending; no full acceptance claim.
+
+2026-11-17T11:05:05Z verified wait: same driver66386/session84820, JVM82547
+CPU46m12s/RSS765,540KiB and dashboard66618 live. Recent->continuing offset
+samples retain28 same financial paths; all28 advanced, no regression/missing/new
+paths, delta3,062,890,496bytes.33 bucket spills; latest free125,030,172KiB, no
+reserve alarm. No restart/financial-class/config change. Final report acceptance
+and result/upload-script deliverables still pending.
+
+2026-11-17T11:09:39Z verified wait: same driver66386/session84820, extraction
+JVM82547 CPU50m34s/RSS765,552KiB and dashboard66618 live. Continuing->live
+offset snapshots match28 financial input paths;16 advanced, no regression/new/
+missing paths, delta3,522,166,784bytes.34 bucket spills; latest free125,019,168KiB,
+no reserve alarm. No restart/class/config change. Final report controls and all
+result/upload-script deliverables remain pending.
+
+2026-11-17T11:13:51Z verified wait: same driver66386/session84820, JVM82547
+CPU54m38s/RSS765,800KiB and dashboard66618 live. Live->poll snapshots match28
+financial input paths;26 advanced, no new/missing/regressed paths, offset delta
+2,975,858,688bytes.36 bucket spills; latest free124,965,440KiB, no reserve alarm.
+No restart/class/config change. Final report controls and result/upload-script
+deliverables remain pending; input positions are diagnostics, not row acceptance.
+
+2026-11-17T11:18:17Z verified wait: same driver66386/session84820, extraction
+JVM82547 CPU58m55s/RSS765,552KiB and dashboard66618 live. Poll->active snapshots
+match28 financial input paths; all28 advanced, no regression/new/missing paths,
+offset delta3,150,970,880bytes.41 bucket spills; latest free124,830,964KiB with
+no reserve alarm. No restart/class/config change. Final report controls and all
+result/upload-script deliverables remain pending; no acceptance upgrade.
+
+2026-11-17T11:22:35Z verified wait: same driver66386/session84820, JVM82547
+CPU63m04s/RSS765,552KiB and dashboard66618 live. Active->verified offset samples
+match28 financial input paths; all28 advanced, no regression/new/missing paths,
+delta3,113,222,144bytes.45 bucket spills; latest free124,696,584KiB, no reserve
+alarm. No restart/class/config change. Final reporting controls, result inspection,
+validated-results commit and upload script remain pending.
+
+2026-11-17T11:27:05Z verified wait: same driver66386/session84820, JVM82547
+CPU67m25s/RSS765,552KiB and dashboard66618 live. Verified->check snapshots match
+28 financial input paths; all28 advanced, no regression/new/missing paths,
+offset delta3,218,079,744bytes.48 bucket spills; latest free124,651,444KiB, no
+reserve alarm. No restart/class/config change. Final reporting controls and
+result/upload-script deliverables remain pending.
+
+Dashboard-only activity enhancement: global extraction cell now shows current
+bucket spill-file count; count can fall during consolidation, not a completion
+percentage. Bash3.2 syntax passes; actual pre/post row width82 unchanged.
+Read-only preview showed52 spills; later actual Terminal showed11 during cleanup.
+Receipt dashboard_activity retains the actual row and verification description.
+
+Refreshed ONLY display in existing Terminal793/title Ledger Lab Corpus Dashboard/
+tty/dev/ttys005. Exact old command/group66618 verified beforeTERM; new dashboard
+95648 live. Same financial driver66386/session84820 and extraction82547/group
+66386 continued; class checksum recheck passes. No financial/config/class change.
+At2026-11-17T11:30:48Z JVM CPU70m58s/RSS767,624KiB. Movement/balance/reconciliation
+files are now nonempty and growing (first rows include zero-key reconciliations);
+input_manifest still buffered. Spill count drops during per-group reduction,
+so stalled input offsets can coincide with valid output progress. Check output
+byte growth/CPU before calling that a stall. Final extraction/reduction/control
+and semantic acceptance remain pending.
+
+2026-11-17T11:33:26Z verified wait: same driver66386/session84820, extraction
+82547 CPU73m28s/RSS767,776KiB and refreshed dashboard95648 live. Current Terminal
+cellRUN0spills reflects temporary consolidation, not a halt. Movement grew
+33,226,752->272,678,912bytes; balance33,783,808->277,274,624; reconciliation
+45,768,704->376,029,184. Earlier exact observation time not retained; later sample
+11:33:26Z. Manifest remains buffered. Latest free123,561,736KiB; final acceptance
+pending. Use output growth as well as input offsets during spill/output phases.

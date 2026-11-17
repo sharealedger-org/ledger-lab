@@ -4,8 +4,8 @@
 to continue unchanged. Financial14-year controls passed; reporting acceptance
 remains pending. All28 report sorts completed and match accepted producer
 row/path/size metadata (286,277,734 rows). Extraction JVM82547/session84820 and
-dashboard66618 confirmed live at2026-11-17T10:45:53Z. Nineteen of28 input read positions
-advanced between latest samples (2,668,625,920bytes total; no regression). These are
+dashboard95648 confirmed live at2026-11-17T11:30:48Z. All28 input read positions
+advanced between latest samples (3,218,079,744bytes total; no regression). These are
 buffered read diagnostics, not completed-row counts. Actual reporting storage
 admission passed with40GiB reserve intact; receipt `full_report_sort` retained.
 The [stream and allocation feedback plan](../../docs/STREAM_LAYER_EVOLUTION_AND_ALLOCATION_FEEDBACK_PLAN.md)
@@ -883,3 +883,12 @@ inventories. Ledger-row growth is not added transaction count; no exact causal
 decomposition or new financial/cost/report-acceptance claim. At10:50:28Z same
 extraction JVM82547/session84820 and dashboard66618 live;25 bucket spills,
 free125,275,296KiB, no reserve alarm. Final report controls/deliverables pending.
+
+2026-11-17 dashboard activity improvement: active extraction shows current bucket
+spill count in the existing status cell; same82-character row, no columns/rows
+added. Counts can fall during consolidation and are not completed-work totals.
+Actual Terminal793/ttys005 display checked. Only dashboard66618 was refreshed;
+new dashboard95648 live, financial driver66386/session84820 and extraction82547
+unchanged; reporting class SHA check passes. Receipt dashboard_activity retained.
+At11:33:26Z output histories/reconciliation have grown to273–376MB while input
+manifest remains buffered; final report/control/semantic acceptance still pending.
