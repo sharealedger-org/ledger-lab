@@ -2471,3 +2471,41 @@ actual business attributes, financial amounts or full report acceptance. Reporti
 identity preservation is distinct from the earlier declared structural rekey.
 Full attribute/date checks, completed-generation recheck, remaining classes and
 complete controls remain pending. No maturity upgrade or result-review marker.
+
+## 2026-11-17 — Reporting spill and dependent-view inspection
+
+Falsifiable claim: the current analytical accumulator retains hot keys when it
+spills. Cheapest falsifier: inspect ReportingSums.add/flush/foreach. It flushes
+the entire map at the distinct-key limit and also materializes its final buffer.
+SyntheticReporting.add/finishVendor first reduces fine-grained facts, expands
+three date modes/thirteen attributes, and reduces again. ReportingSort writes
+its final ordered stream; ReportingReduce writes/reopens a merged stream.
+These source observations establish avoidable-boundary candidates, not measured
+bottleneck attribution or a speedup. Combined historical/wholly records already
+share accumulators; the complete identifier-routed generated-record dependency
+model is not implemented by that fact. Owner-directed section9 of the stream
+layer plan defines equivalence falsifiers and engineering reruns. Design_only;
+no live processing change, full-report acceptance or maturity promotion.
+
+## 2026-11-17 — Owner-designated reporting architecture-transfer study
+
+Owner now requests formal measurement of the running attempt and a matched
+improved rerun. Protocol: docs/REPORTING_CKB_TRANSFER_STUDY.md; evidence root:
+data/test_evidence/ckb_reporting_transfer_20261117/. Existing process timers,
+source/class hashes and manifests are preserved; mid-run initial snapshot and
+read-only terminal observer add evidence without changing the engine. Missing
+historical per-view counters remain missing. This is an observed implementation
+transfer failure and internal architectural comparator, not proof of inadequate
+training or a replicated paper speedup. Final controls, acceptance, concluding
+interpretation and improved-run equivalence remain pending. No maturity upgrade.
+
+## 2026-11-17 — CKB access condition clarified by owner
+
+Owner reports building agents had complete access to the CKB method throughout
+this execution. This is an owner-reported exposure condition, not a reconstructed
+per-turn reading history. The observed failure with access available shows that
+restricted access alone cannot explain this case. Whether available material was
+retrieved, understood and applied remains a separate question; no hidden-training
+cause is established. Study protocol now separates those conditions. Initial
+detached observer did not persist; persistent session57877/PID18501 was verified
+sampling actual reducer files. No financial-process change.

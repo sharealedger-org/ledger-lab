@@ -1217,3 +1217,41 @@ observed_*.csv. Attributed here means analytical template, not resolved legal
 party/actual business attributes; reporting identity preservation does not undo
 the upstream structural recode. Full date/attribute/final-generation rechecks,
 otherclasses, controls and all final deliverables still pending. No review marker.
+
+2026-11-17T12:57:55Z verified wait: same driver66386/session84820, JVM82547
+CPU154m25s/RSS805,040KiB and dashboard97164 live. Temporal-cut output allocation
+23,412,800KiB; latest free95,967,748KiB, no reserve alarm/config/class change.
+Observed-key input/output link committed758211f as scoped early evidence, not
+final date-view/financial/report acceptance. Reassigned/wholly samples and full
+published-generation/population/hash/controls remain pending. Final validated
+results commit and upload script still pending.
+
+## 2026-11-17 reporting CKB planning update
+
+Owner requested a redesign plan and later engineering-performance rerun. See
+docs/STREAM_LAYER_EVOLUTION_AND_ALLOCATION_FEEDBACK_PLAN.md section9 for actual
+whole-map flushing findings, identified input/generated records, dependent view
+routing, key/order boundaries, shared summaries and the staged equivalence/rerun
+plan. Current job remains unchanged; this turn implements documentation only.
+Do not treat the design as implemented or as a paper cost point.
+
+## 2026-11-17 owner-designated measured CKB transfer case
+
+Owner changes prior nonmeasurement intent: capture this reporting attempt and its
+conclusion, then compare a matched improved architecture. Read
+`docs/REPORTING_CKB_TRANSFER_STUDY.md` and section9 of the layer plan. Evidence:
+`data/test_evidence/ckb_reporting_transfer_20261117/initial`; read-only observer
+PID18501 watches driver66386 and captures `conclusion` plus outcome marker.
+Observer syntax and completed-workflow fixture passed; initial/conclusion fixture
+hashes verified. Current financial job remains unchanged. At termination, review
+actual metrics/controls and append the substantive interpretation specified by
+the protocol; automatic capture alone is not acceptance. Formal designation was
+mid-run: retain actual missing measurements and source identities. Do not claim
+training causation, paper-level speedup, or completed improved implementation.
+
+Owner confirms complete builder access to CKB throughout: lack of permitted
+access cannot alone explain this failure. Protocol distinguishes availability
+from actual retrieval, comprehension and implementation. Observer correction:
+initial detached PID18370 did not persist; session57877/PID18501 was verified
+sampling, and operational references were corrected. Do not stop the observer
+when ending a chat turn; final substantive interpretation remains pending.

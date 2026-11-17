@@ -1,10 +1,37 @@
 # Track D: Primary research experiment
 
+**2026-11-17 measured transfer study designated mid-run:** Owner requests current
+and concluding evidence plus a formally compared improved rerun. See
+[CKB reporting transfer study](../../docs/REPORTING_CKB_TRANSFER_STUDY.md), ID
+CKB-REPORT-TRANSFER-20261117. Initial evidence snapshot is hash-verified; observer
+18501 captures terminal logs/metrics/status without changing the financial job.
+Observed implementation transfer failure is distinct from the unproven training
+cause. Mid-run registration, missing counters and confounding are explicit.
+Owner confirms building agents had complete CKB access throughout: restrictions
+on access alone cannot explain this case. Effective retrieval/application and
+the specific cause remain unresolved; see the study's exposure distinction.
+This supersedes prior nonmeasurement intent; no paper cost point or final
+acceptance is claimed. Section9 remains the proposed improved architecture.
+
+**2026-11-17 reporting redesign planned:** Owner requests a better CKB model and
+an engineering rerun after learning from current reporting. Section9 of the
+[layer plan](../../docs/STREAM_LAYER_EVOLUTION_AND_ALLOCATION_FEEDBACK_PLAN.md)
+now prioritizes partition/producer identifiers, generated analytical records
+feeding dependent views, shared summary keys, direct merge/reduce exits and a
+measured comparison of spill policies. It specifies baseline equivalence,
+bounded-state dependency fixtures and subset/full-corpus reruns. Design_only;
+no live job or financial classes changed, no performance improvement established.
+Owner clarified spill lifetimes: view-owned cross-vendor outputs finish after
+corpus input; oversized vendor SJEs stream and expire after consumption while
+reusable effective-dated party/contract targets remain resident. Section9 now
+separates these from summary-map pressure and specifies an oversized-vendor
+bounded-memory falsifier. This remains a proposed contract.
+
 **2026-11-17 next-phase assessment:** Owner directs the current reporting run
 to continue unchanged. Financial14-year controls passed; reporting acceptance
 remains pending. All28 report sorts completed and match accepted producer
 row/path/size metadata (286,277,734 rows). Extraction JVM82547/session84820 and
-dashboard97164 confirmed live at2026-11-17T12:50:46Z. Input reads and report
+dashboard97164 confirmed live at2026-11-17T12:57:55Z. Input reads and report
 partial outputs advanced across observations. A read-only thread sample identified
 synthetic dated-view generation in finishVendor; these are activity diagnostics, not
 completed-row counts. Actual reporting storage

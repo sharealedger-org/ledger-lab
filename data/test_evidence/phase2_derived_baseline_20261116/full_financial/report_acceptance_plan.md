@@ -40,3 +40,11 @@ Before acceptance:
    manifests, checksums and resumable state with environment token. The existing
    scripts/zenodo_upload.py is a different raw-source publication workflow and
    must not be run for this task. No upload or publication is authorized here.
+
+2026-11-17 owner update: this attempt was designated mid-run as a formally
+measured observational baseline for CKB-REPORT-TRANSFER-20261117. This supersedes
+the earlier diagnostic-only intent in item5; it does not supply missing metrics
+or establish a replicated cost point. Protocol:
+docs/REPORTING_CKB_TRANSFER_STUDY.md. Retain concluding evidence and interpretation
+as part of final result review, including implementation transfer failure despite
+owner-confirmed complete builder access. Do not infer hidden training causation.

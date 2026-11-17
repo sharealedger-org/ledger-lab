@@ -16,11 +16,27 @@ The audit register wins any evidence disagreement.
 
 ## Current checkpoint
 
+**2026-11-17 formally recorded CKB transfer case:** Owner now designates the
+ongoing reporting attempt as an observational measured baseline and requests a
+matched improved-architecture rerun. The
+[study protocol](docs/REPORTING_CKB_TRANSFER_STUDY.md) records the architecture
+transfer failure, training-gap hypothesis and alternative explanations. Initial
+hash-verified evidence is captured; read-only observer18501 is configured to
+capture terminal evidence. This supersedes earlier nonmeasurement intent, not
+the frozen live configuration. Final result acceptance remains pending.
+
+**2026-11-17 CKB reporting follow-up:** The owner-directed
+[layer plan, section9](docs/STREAM_LAYER_EVOLUTION_AND_ALLOCATION_FEEDBACK_PLAN.md#9-reporting-redesign-learned-from-the-current-execution)
+now specifies identifier-routed dependent views, shared summarization, bounded
+generated records and merge exits, with equivalence and engineering-performance
+reruns. Planning only; current reporting continues unchanged. No paper timing
+claim or completed implementation.
+
 **2026-11-17 allocation-feedback assessment:** Keep the current reporting
 configuration unchanged. Financial controls passed for all 14 years. All 28
 reporting sorts passed external row/path/size checks: 286,277,734 rows.
 Extraction is live (JVM82547/session84820), dashboard97164 running, confirmed
-2026-11-17T12:50:46Z. Input reads and report partials advanced across observations;
+2026-11-17T12:57:55Z. Input reads and report partials advanced across observations;
 this is progress evidence, not completed-row acceptance. Actual storage admission
 passed with40GiB reserve intact.
 Final reporting acceptance remains pending. Owner explicitly approved verified

@@ -1,5 +1,12 @@
 # Stream evolution, allocation feedback and AIM iteration
 
+**Owner update, 2026-11-17:** The ongoing attempt is now designated a formally
+measured observational baseline for the
+[CKB transfer study](REPORTING_CKB_TRANSFER_STUDY.md), with a matched improved
+rerun protocol. This supersedes the earlier nonmeasurement intent below without
+backdating registration or promoting it to a replicated paper cost point. Keep
+the running architecture unchanged; preserve existing and terminal evidence.
+
 2026-11-17. Status: **design_only**. Owner-directed assessment for the next
 phases. Keep the current generation/reporting execution in its existing
 configuration. This plan implements no engine, changes no live class, runs no
@@ -316,7 +323,7 @@ by this plan.
 | Stage | Deliverable and cheapest acceptance/falsification |
 |---|---|
 | A — finish current corpus | Let the existing run finish; validate financial/report controls, inspect useful outputs and freeze a versioned Q2 input package. No timing-paper claim. |
-| B — evidence/99 bridge | Map actual profile artifacts to canonical run/process/partition IDs and layer coverage. Test success, missing evidence, failure and zero work.99 reads evidence only and runs after failed attempts too. |
+| B — reporting CKB prototype and evidence/99 bridge | Prioritize the reporting redesign in section9 before broader allocation work. Map actual profile artifacts to canonical run/process/partition IDs and layer coverage. Test success, missing evidence, failure and zero work.99 reads evidence only and runs after failed attempts too. |
 | C — lagged-basis allocation | A small three-receiver/two-execution Scala workload uses an explicit old basis, generates balanced standard SJEs, applies them and emits the next basis. Change only the old basis and require allocations to change: a consumer that ignores it fails. No Bash financial logic. |
 | D — drift and impact | Include equal-denominator/different-vector, zero/missing group, new/retired receiver, signed/negative driver, rounding and incompatible-rule cases. Verify pool conservation and distinguish basis from rule changes. |
 | E — reusable scenarios and convergence | Run multiple candidates from one frozen pre-allocation snapshot; prove no repeated charging. Execute final-rule verification with the newly generated basis, including cycles/nonconvergence and a changed-data invalidation case. |
@@ -336,3 +343,164 @@ required GenevaERS services under GERS-001/002/003 as applicable; source merge,
 identifier and buffer/reduce prototype success does not close target runtime
 gaps. Larger runs require admitted state/I/O budgets. Timing and cost comparisons
 follow only after matched capabilities, frozen profiles and repeated measurements.
+
+## 9. Reporting redesign learned from the current execution
+
+Owner direction, 2026-11-17: plan a more faithful CKB reporting model and a
+correctness/performance rerun, integrated with the layer roadmap. This is
+engineering performance evidence, not a paper-level timing experiment. Keep the
+current job unchanged; this section authorizes planning, not a live replacement.
+
+### Observations and falsifiable objective
+
+Inspection of `ReportingSums.add/flush/foreach` establishes that reaching the
+distinct-key limit flushes the entire map. It does not retain hot keys. Its
+finalization flushes even an accumulator that could otherwise be consumed from
+memory. The current synthetic limit is10,000 keys per accumulator; ordinary
+accumulators use50,000. These are configured limits, not observed heap exhaustion.
+`SyntheticReporting.add/finishVendor` first reduces fine-grained facts, expands
+them into three date modes and thirteen master-attribute views, then reduces
+again. ReportingSort materializes its final merge, and ReportingReduce has a
+merge-file/reopen/reduce boundary. Historical and wholly generated financial
+populations already share reporting accumulators; separate population scans are
+not the explanation for these intermediates. Their original partition identity
+must not be inferred from a combined file or vendor ID.
+
+Claim to test: for the same frozen inputs, masters, rules and output capability,
+identifier-routed view dependencies and merge exits can preserve all controls
+and semantic outputs while reducing intermediate bytes and avoidable passes.
+No completion-time or speedup claim follows from source inspection alone.
+
+### Proposed CKB contract and layer placement
+
+Layer02 owns a bounded common-key delivery mechanism. A record envelope carries
+record-class/schema version, immediate input or producer partition ID, current
+common key, producer/view ID, source generation and lineage references. Distinguish
+immediate partition identity from original source-population provenance. Existing
+Financial.source/Input and canonical SJE parsers are starting contracts, not proof
+that the complete envelope/routing behavior exists. Specify a versioned adapter
+before changing their schemas; preserve existing public output paths.
+
+Layer05 declares each analytical view's input identifiers, selection, summary
+key/measures, dependencies and output record class. Identifier selection does not
+implicitly put the identifier into the summary key: eligible facts from different
+files or producers collapse together when the view's declared grain permits it.
+An aggregate retains lineage references and contributing counts rather than
+silently assigning one source identity to a mixed-population total.
+
+Views can emit identified analytical records into the current delivery group for
+dependent views. Declare an acyclic dependency graph and whether each consumer
+requires individual facts or a producer's finalized summary; prevent consuming
+both representations and double counting. Resolve effective-dated masters and
+assignments before their dependent financial views, preserving existing date
+semantics. Generated-record queues and current-key state have explicit byte/key
+bounds. Analytical emissions are not accounting events: balanced generated SJEs
+remain04-owned, applied through02/03, using the existing SJE contract and controls.
+
+Same-key records may flow directly to dependent views. A different output key,
+an already-emitted target, or an unavailable global total requires a declared
+summary/generated-event sort or join boundary. Re-injection must never break
+stream ordering, create cycles, or turn all history into one unbounded buffer.
+
+### Vendor breaks, streaming leaves and view-owned spill lifetimes
+
+Owner clarification: distinguish three state lifetimes instead of treating all
+vendor-sized work as one spillable collection. This is the proposed contract,
+not a description of an implemented replacement.
+
+| State | Lifetime and disposition |
+|---|---|
+| Cross-vendor view output | Summarize at the view's declared grain during delivery. At a vendor break, flush completed vendor-local contributions where appropriate into that view output's own stream. Keep its files isolated from other view outputs. Final cross-vendor sort/reduction waits for end of corpus, when all contributions are known. Memory-pressure spills within that stream are separately counted. |
+| Lowest-level SJE facts | Stream each fact through all eligible views and dependent consumers, then release it. A huge vendor such as0000000000 must not require retaining or spilling its entire SJE collection just because its vendor break has not arrived. Preserve partial controls and any still-required summary state, not all consumed facts. |
+| Reusable join targets | Retain involved-party, contract, assignment and effective-dated target records required by later SJEs in the vendor group. Release only at the declared scope boundary, or earlier when ordering proves they cannot match again. These are join state, not leaf history or ordinary output spill records. |
+
+Join hierarchy and dependency liveness govern retention, rather than a generic
+least-used-record policy. A leaf is releasable only after all of its required
+consumers have seen it; a future-looking consumer must declare its actual summary
+or ordering requirement. Load/deliver join targets before matching leaves, or
+declare the lookup/readiness contract. Effective/availability cutoffs and
+multiple contracts/parties must retain their existing selection semantics.
+
+Reusable targets are expected to be small even for the zero vendor. Instrument
+their count/bytes and admit a separate bound; do not silently evict needed targets
+or assume memory is unlimited. An exceptional target overflow must have an
+explicit bounded strategy or a clear diagnostic. It must not trigger routine
+materialization of all SJEs. Summary-map pressure is a third, independent resource
+condition: streaming leaves does not bound the number of distinct output keys.
+
+The oversized-vendor falsifier feeds far more SJEs than the leaf-buffer bound,
+with a fixed small target set and later SJEs requiring early target versions.
+Require complete consumption, correct effective-date joins, stable leaf/target
+memory and no vendor-history spill. Separately force view-summary spills and
+verify that each output's cross-vendor reduction waits for corpus completion,
+combines matching keys and never consumes another view's records. Record reasons
+for materialization: vendor-break output, summary-capacity overflow, external
+sort level or exceptional join-state overflow; expose them separately in metrics.
+
+### Physical changes to prototype
+
+1. Feed the final reporting-order merge directly into the common-key consumer.
+   Retain sorted canonical files as an explicit restart/debug profile, not a
+   mandatory write-and-reread in the fused profile. External-sort merge levels
+   remain real physical passes and must be counted.
+2. Update eligible final view summaries during delivery where inputs are ready.
+   Use identified producer summaries for dependencies that genuinely need them.
+   Eliminate raw-summary materialization only after proving date segmentation,
+   attribution, D/O measures and conservation remain equivalent.
+3. Consume an in-memory final accumulator directly when no spill exists. When
+   spills exist, fold equal keys during merge and deliver reduced records to
+   consumers, avoiding a merged-file/reopen/reduce sequence.
+4. First separate streaming leaves, retained join targets and view-owned summary
+   state as above. For summary-map pressure only, compare full-map flushing with
+   bounded selective spilling using measured collapse/I/O benefit and tracking
+   overhead. Never apply summary eviction to required join targets. Enforce a
+   total process memory budget across all views, not only per-map caps.
+5. Add the next-basis producer and drift consumers to the same dependency model
+   in a later slice. Preserve the pinned prior basis and full receiver-vector
+   semantics in sections2–3. Report actual small-stream boundaries where completed
+   group totals are needed; do not promise zero additional passes.
+
+### Implementation and rerun sequence
+
+First freeze the completed current generation when its controls pass, including
+actual process timings, input/output hashes, schemas, physical boundaries and
+resource settings. If this attempt fails, retain that status; do not call its
+partial outputs a correctness baseline. The existing successful fixtures remain
+the initial baseline while full-generation acceptance is pending.
+
+Before Scala changes, complete the architecture gates with exact envelope/parser
+contracts, named view dependencies, materialization profiles, memory/I/O admission
+and expected controls. Record missing target GenevaERS services in the capability
+gap register; a Scala prototype cannot close those gaps by assertion.
+
+The first named workload is `reporting_ckb_dependency_equivalence`: two input
+partitions contain matching summary keys, one view selects a partition, another
+combines both, and a generated identified summary feeds a dependent view. Include
+metadata readiness, zero/unattributed identity, historical/reassigned/wholly
+classes, D/O conservation and all three date modes. Its cheapest falsifier is a
+matching key split across files and forced spills: combined totals must be
+unchanged, partition-selected totals distinct, and dependent consumption exactly
+once. Include an output whose key changes to prove a declared boundary is used.
+
+Run the unchanged baseline and this workload through the real Bash orchestrator
+and Scala consumers. Force tiny byte/key bounds, skewed hot keys, mostly unique
+keys, multiple merge levels and failed-attempt restart. Compare complete keyed
+outputs, decimal measures, counts, lineage/date semantics and controls; canonical
+comparison may ignore only explicitly declared row-order/format differences.
+
+Then run a representative admitted subset and finally the frozen full corpus,
+reusing accepted financial inputs rather than reposting them. Separate the
+extract/reduce comparison on identical sorted inputs from the end-to-end reporting
+comparison that also removes sort materialization. Hold output capability,
+resources and runtime settings fixed within each comparison. Preserve current
+outputs, isolate attempts, and advance generation pointers only after acceptance.
+
+Emit per-view selected facts, generated records, distinct keys, input-to-partial
+and final collapse ratios, spill rows/bytes, merge levels and bytes read/written.
+Record input traversal counts, process CPU/elapsed time, RSS high-water marks,
+peak disk use, output bytes and controls separately from orchestration. Progress
+must distinguish input consumed, key-local expansion, summary reduction and final
+validation; spill-file count is activity, not percent completion. Use measured
+phase throughput before offering an ETA. Accept the design on equivalence and
+documented resource improvement; report regressions rather than hiding them in a
+different view profile. Broader04/03/99 integration follows this bounded proof.

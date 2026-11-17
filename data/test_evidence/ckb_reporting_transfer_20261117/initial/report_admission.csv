@@ -1,0 +1,3 @@
+stage,free_kib,budget_kib,reserve_kib,basis
+report_order,189008640,135617954,41943040,canonical_plus_four_largest_file
+reporting,125990400,82358090,41943040,twice_scaled_retained_report_plus_4GiB

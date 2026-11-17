@@ -13,6 +13,15 @@ Earlier "Phase 1b" wording is historical; current synthetic work is Phase 2.
 
 ## Evidence and limits
 
+2026-11-17: Owner-designated
+[CKB architecture-transfer case](../../../docs/REPORTING_CKB_TRANSFER_STUDY.md)
+records an AI-assisted reporting implementation failing to transfer available
+CKB mechanisms, despite a contrasting fused posting flow. This is a measured
+observational case outside the separate Control repository, not a new model
+score. Inadequate training is the owner's hypothesis; its causal attribution
+remains unknown. A matched improved-architecture rerun is specified before
+execution, with correctness equivalence and measurement coverage limits.
+
 2026-11-17: [Allocation feedback and stream evolution](../../../docs/STREAM_LAYER_EVOLUTION_AND_ALLOCATION_FEEDBACK_PLAN.md)
 describes a proposed reusable engine-backed rule experimentation loop. Unchanged
 core preparation may be reused across downstream candidates. Final-rule
