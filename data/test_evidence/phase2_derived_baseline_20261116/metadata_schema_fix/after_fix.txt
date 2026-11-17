@@ -1,0 +1,10 @@
+[36mRun starting. Expected test count is: 3[0m
+[32mPhaseTwoBaselineDimensionsSpec:[0m
+[32m- metadata rekeys and shifts originals, replaces sampled supplier masters, and preserves reference ambiguity[0m
+[32m- real five-column historical and three-column generated fund references retain their actual fields[0m
+[32m- incompatible reference column order fails instead of assigning values to another field[0m
+[36mRun completed in 990 milliseconds.[0m
+[36mTotal number of tests run: 3[0m
+[36mSuites: completed 1, aborted 0[0m
+[36mTests: succeeded 3, failed 0, canceled 0, ignored 0, pending 0[0m
+[32mAll tests passed.[0m

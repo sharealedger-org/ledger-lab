@@ -1,0 +1,22 @@
+[36mRun starting. Expected test count is: 3[0m
+[32mPhaseTwoBaselineDimensionsSpec:[0m
+[32m- metadata rekeys and shifts originals, replaces sampled supplier masters, and preserves reference ambiguity[0m
+[31m- real five-column historical and three-column generated fund references retain their actual fields *** FAILED ***[0m
+[31m  java.lang.IllegalArgumentException: requirement failed[0m
+[31m  at scala.Predef$.require(Predef.scala:268)[0m
+[31m  at org.universalledger.foundation.va.corpus.PhaseTwoBaselineDimensions$.$anonfun$prepare$15(PhaseTwoBaselineDimensions.scala:63)[0m
+[31m  at org.universalledger.foundation.va.corpus.PhaseTwoBaselineDimensions$.$anonfun$prepare$15$adapted(PhaseTwoBaselineDimensions.scala:60)[0m
+[31m  at scala.collection.Iterator.foreach(Iterator.scala:943)[0m
+[31m  at scala.collection.Iterator.foreach$(Iterator.scala:943)[0m
+[31m  at scala.collection.AbstractIterator.foreach(Iterator.scala:1431)[0m
+[31m  at scala.collection.IterableLike.foreach(IterableLike.scala:74)[0m
+[31m  at scala.collection.IterableLike.foreach$(IterableLike.scala:73)[0m
+[31m  at scala.collection.AbstractIterable.foreach(Iterable.scala:56)[0m
+[31m  at org.universalledger.foundation.va.corpus.PhaseTwoBaselineDimensions$.prepare(PhaseTwoBaselineDimensions.scala:60)[0m
+[31m  ...[0m
+[32m- incompatible reference column order fails instead of assigning values to another field[0m
+[36mRun completed in 1 second, 286 milliseconds.[0m
+[36mTotal number of tests run: 3[0m
+[36mSuites: completed 1, aborted 0[0m
+[36mTests: succeeded 2, failed 1, canceled 0, ignored 0, pending 0[0m
+[31m*** 1 TEST FAILED ***[0m

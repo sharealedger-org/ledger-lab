@@ -42,6 +42,16 @@ in AGENTS and the contributor guide. Runtime checkpoints and next gates are unch
 
 ## Current plans and evidence
 
+**FY04/FY05 complete; metadata preflight defect isolated:** Full replay has passed
+financial controls for FY04 and FY05; FY03/06 still posting. Historical fund refs
+have5 columns, v6 generated3; current dimensions equality check would fail.
+Existing-class falsifier fails exactly that case (2/3 pass); isolated prefix-schema
+repair passes3/3 and preserves all actual fields/empty missing tails. Production
+source/classes remain frozen and checksums reverified. Patch/tests/receipt in
+`data/test_evidence/phase2_derived_baseline_20261116/metadata_schema_fix/`.
+Apply only after financial workers finish; then resume metadata/reporting using
+successful partitions. No full acceptance or financial replay required yet.
+
 **Full four-worker fused replay active:** Session11522, group42994, root
 `session-run.tmp/phase2_fused_baseline_v1`, launched from `da99dfe` with unchanged
 admitted `a0dae7c` financial classes. FY03/04/05/06 statuses and four live JVMs

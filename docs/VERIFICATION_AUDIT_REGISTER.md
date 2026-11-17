@@ -2354,6 +2354,15 @@ All 47 tests pass. Hash/control/cache evidence is preserved under short_year_gat
 the strict hash gate is unchanged. Fresh actual FY03 admission is still required.
 # Fused scheduler fixture continuation
 
+Metadata preflight found a real later consumer incompatibility: historical fund
+reference header5 fields, immutable generated header3, while dimensions required
+equality. Isolated actual-class regression fails before repair; prefix-only
+padding preserves historical fields, keeps absent generated tails empty and
+rejects reordered columns (3/3 pass after repair). Proposed patch is retained
+but not applied to production while financial workers run. All frozen financial
+class checksums still pass. Evidence state: isolated repair verified, production
+metadata/reporting pending. Receipt: `data/test_evidence/phase2_derived_baseline_20261116/metadata_schema_fix/`.
+
 Real FY03 v3 admission subsequently completed exit0: exact retained native GL
 hash, exact combined GL conservation over364,216 keys, 13,850,802 rows observed
 by both consumers in one posting input open; 1,105,396 ledger rows. Maximum RSS

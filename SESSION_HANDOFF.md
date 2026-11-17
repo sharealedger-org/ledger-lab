@@ -682,6 +682,18 @@ controller draft (check syntax/memory gate only); needs bounded multi-year execu
 and reporting resource admission before production launch. No full proof yet.
 # Hot-path continuation — corrected real-year restart
 
+Later preflight found dimensions will reject historical5-column/generated3-column
+fund references. Financial processing remains active, with FY04/FY05 controls
+passed and FY03/FY06 posting. DO NOT change running main source/classes: an
+isolated existing-class repair + regressions pass3 tests, and the frozen-class
+manifest still verifies. Apply
+`data/test_evidence/phase2_derived_baseline_20261116/metadata_schema_fix/proposed.patch`
+after all financial workers/global controls finish, run baseline/integrated
+checks, and continue dimensions/reporting from these successful financial outputs.
+Original driver may stop at that known dimensions gate; preserve its failed
+attempt and use a fresh dimensions generation for continuation. Receipt explains
+the exact reproducer, compiled isolated classes and remaining acceptance.
+
 FY03 admission v3 finished exit0 with exact native/combined GL conservation;
 13,850,802 journal rows, 1,105,396 ledger rows, one actual journal open,
 maximum RSS709,038,080 bytes. Receipt committed at `da99dfe`.

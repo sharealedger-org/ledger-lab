@@ -16,6 +16,13 @@ The audit register wins any evidence disagreement.
 
 ## Current checkpoint
 
+**Full-run continuation:** FY04 and FY05 financial controls have passed; FY03/06
+still posting. Metadata preflight found historical fund references have5 columns
+but generated have3; current dimensions code would reject them. A prefix-schema
+repair and regression pass3 tests in an isolated build only. Frozen production
+classes remain unchanged. Apply/check this metadata-only patch after financial
+processing, then continue reporting; full acceptance remains pending.
+
 **Full fused replay active:** Frozen financial build `a0dae7c`, driver/evidence
 checkpoint `da99dfe`; session11522, root `session-run.tmp/phase2_fused_baseline_v1`.
 Four live FY03–FY06 workers confirmed in process group42994; wave reserve
