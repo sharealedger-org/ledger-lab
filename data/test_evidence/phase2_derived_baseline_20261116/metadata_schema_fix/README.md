@@ -62,6 +62,12 @@ fixture guards each exited1 before creating an output directory; their captured
 messages are adjacent. These prove admission rejection only. The continuation's
 actual dimensions/sort/report/check/census workflow has not run or been accepted.
 
+The first filtered-class guard check caught a macOS awk regex delimiter error.
+It was corrected to a string regex and verified with `set -euo pipefail`. Copied
+manifest probes then verified that metadata-only checksum changes are excluded,
+while a changed GLPost checksum fails. The captured financial-class rejection
+is adjacent; production class bytes were never changed for these probes.
+
 After all financial work ends, inspect the full controls, apply and verify the
 metadata patch, commit that repair, then launch in its own process group:
 

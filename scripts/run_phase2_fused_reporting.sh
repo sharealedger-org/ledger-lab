@@ -45,12 +45,13 @@ dependencies="$project/target/streams/compile/dependencyClasspath/_global/stream
 [[ -f "$dependencies" ]]
 engine_git="$(sed -n 's/^engine_git=//p' "$financial/run_config.txt")"
 [[ -n "$engine_git" ]]
+git -C "$repo" cat-file -e "$engine_git^{commit}"
 # Only the declared reference metadata adapter may differ from the financial
 # build. All other main source files AND their compiled bytes must remain frozen.
 while IFS= read -r changed;do
   [[ -z "$changed" || "$changed" == 02-foundation/va_pipeline/src/main/scala/org/universalledger/foundation/va/corpus/PhaseTwoBaselineDimensions.scala ]] || { printf 'Financial source changed outside the metadata repair: %s\n' "$changed" >&2;exit 1; }
 done <<< "$(git -C "$repo" diff --name-only "$engine_git" -- 02-foundation/va_pipeline/src/main/scala 04-engines/calculation_engines/src/main/scala)"
-awk '$2 !~ /\/PhaseTwoBaselineDimensions[^/]*\.class$/' "$financial/engine_classes_sha256.txt" | shasum -a 256 --quiet -c -
+awk '$2 !~ "/PhaseTwoBaselineDimensions[^/]*[.]class$"' "$financial/engine_classes_sha256.txt" | shasum -a 256 --quiet -c -
 [[ "$(ps -p $$ -o pgid= | tr -d ' ')" == "$$" ]] || { echo 'Launch in its own process group.' >&2;exit 2; }
 pmset -g batt | head -n 1 | grep -q 'AC Power'
 (( $(df -Pk "$repo" | awk 'NR==2{print $4}') >= 41943040 ))

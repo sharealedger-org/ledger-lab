@@ -682,6 +682,13 @@ controller draft (check syntax/memory gate only); needs bounded multi-year execu
 and reporting resource admission before production launch. No full proof yet.
 # Hot-path continuation — corrected real-year restart
 
+Continuation checksum-filter follow-up: corrected macOS awk slash-delimiter
+compatibility using a string regex. With pipefail, actual frozen classes pass;
+copied manifests permit metadata-only hash changes and reject a GLPost change.
+Production classes untouched. FY09 has entered posting with its exact native GL
+hash matched and historical PO0/0 explicitly recorded, as declared for the empty
+placeholder. Other second-wave workers remain active; full acceptance pending.
+
 Prepared (not run) `scripts/run_phase2_fused_reporting.sh`: after original driver
 finishes full financial controls and stops at known metadata mismatch, apply/test
 the isolated patch, commit repair, then launch this continuation with
