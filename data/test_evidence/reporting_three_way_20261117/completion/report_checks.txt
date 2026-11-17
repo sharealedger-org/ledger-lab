@@ -1,0 +1,24 @@
+PASS reconciliation.csv rows=19943155
+PASS synthetic_validation.csv rows=20
+PASS synthetic_conservation.csv rows=3163680
+PASS financial_rows=286277734 vendors=98865 attributed_input_rows=131935804 unattributed_input_rows=154341930
+PASS vendor_temporal_summary.csv rows=984
+PASS vendor_attribute_summary.csv rows=5180
+      105.59 real       103.42 user         2.15 sys
+           209690624  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+               60253  page reclaims
+                  14  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   1  signals received
+                 122  voluntary context switches
+               36191  involuntary context switches
+       1084300780182  instructions retired
+        349528407510  cycles elapsed
+           195252224  peak memory footprint

@@ -1,0 +1,33 @@
+COMBINED view=movement_history rows=19943155
+COMBINED view=balance_history rows=19943155
+COMBINED view=reconciliation rows=19943155
+COMBINED view=relationships rows=4756111
+COMBINED view=vendor_activity rows=1052786
+COMBINED view=aim_movements rows=491385
+COMBINED view=aim_balances rows=491385
+COMBINED view=aim_combined rows=491385
+COMBINED view=vendor_temporal_cuts rows=119783906
+COMBINED view=vendor_attribute_totals rows=51229802
+COMBINED view=synthetic_conservation rows=3163680
+COMBINED view=synthetic_vendor_coverage rows=98865
+COMBINED view=analysis_packets rows=0
+COMBINED view=coverage rows=14759718
+COMBINED view=dimension_attributes rows=1098519
+      358.55 real       216.24 user        96.82 sys
+           264863744  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              107015  page reclaims
+                   0  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   7  signals received
+               58593  voluntary context switches
+              975381  involuntary context switches
+       1914756973201  instructions retired
+       1046971752898  cycles elapsed
+           244056064  peak memory footprint

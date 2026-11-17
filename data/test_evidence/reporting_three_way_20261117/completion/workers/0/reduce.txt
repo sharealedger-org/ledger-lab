@@ -1,0 +1,33 @@
+****************************************************************************************************
+                                    Ledger Lab
+                                    VA Corpus
+                  Using State of Virginia Public Financial Data
+                  step=5r  FY2003  quarter=01
+                  started 2026-11-17T14:14:31
+****************************************************************************************************
+[CLI] step=5r  inPath=/VAdata/data/  outPath=/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/phase2_reporting_three_way_v1/workers/0  year=03  quarter=01
+-----------------------------------
+RESULT step=5r rc=0 records_written=783194 merge_passes=1
+****************************************************************************************************
+                                  End of Ledger Lab step
+                  step=5r  FY2003  quarter=01
+                  status=ok  elapsed=0:00:05
+****************************************************************************************************
+        5.73 real         8.71 user         0.63 sys
+           145338368  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+               54334  page reclaims
+                  18  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   1  signals received
+                 457  voluntary context switches
+                5813  involuntary context switches
+         36436751952  instructions retired
+         29160901691  cycles elapsed
+           130805760  peak memory footprint

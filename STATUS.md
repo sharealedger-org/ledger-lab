@@ -1,5 +1,7 @@
 # Ledger Lab: Status (read this first)
 
+**2026-11-17 15:36:37 AZT (UTC−07:00) — Three-worker reporting accepted with documented precision correction.** Codex automated gate: all21 full-record comparisons, original inputs/classes, controls and seven census profiles pass. Worker wave80m37s; preparation740.76s; combination358.55s; report-only correction161.66s. Original failed census and303-share defect preserved. Accepted evidence: data/test_evidence/reporting_three_way_20261117/completion/ACCEPTANCE.md. This is an observational multi-factor engineering comparison; fixed-context future runtime is unmeasured. Allocation/basis feedback remains planned; upload deferred.
+
 Updated 2026-11-17 (Arizona). Start here, then read the relevant track status.
 The audit register wins any evidence disagreement.
 

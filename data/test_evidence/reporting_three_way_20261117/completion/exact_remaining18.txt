@@ -1,0 +1,37 @@
+PASS reconciliation.csv.gz rows=19943155 groups=98865 exact_record_multiset=true
+PASS vendor_activity.csv rows=1052786 groups=98865 exact_record_multiset=true
+PASS aim_movements.csv rows=491385 groups=98865 exact_record_multiset=true
+PASS aim_balances.csv rows=491385 groups=98865 exact_record_multiset=true
+PASS aim_combined.csv rows=491385 groups=98865 exact_record_multiset=true
+PASS cross_vendor_totals.csv rows=1556286 groups=1 exact_record_multiset=true
+PASS vendor_temporal_cuts.csv.gz rows=119783906 groups=98865 exact_record_multiset=true
+PASS vendor_temporal_summary.csv rows=984 groups=1 exact_record_multiset=true
+PASS vendor_attribute_totals.csv.gz rows=51229802 groups=98865 exact_record_multiset=true
+PASS vendor_attribute_summary.csv rows=5180 groups=1 exact_record_multiset=true
+PASS synthetic_conservation.csv rows=3163680 groups=98865 exact_record_multiset=true
+PASS synthetic_vendor_coverage.csv.gz rows=98865 groups=98865 exact_record_multiset=true
+PASS synthetic_validation.csv rows=20 groups=1 exact_record_multiset=true
+PASS analysis_packets.csv rows=0 groups=0 exact_record_multiset=true
+PASS coverage.csv rows=14759718 groups=98865 exact_record_multiset=true
+PASS dimension_attributes.csv rows=1098519 groups=98862 exact_record_multiset=true
+PASS reference_attributes.csv rows=37125 groups=1 exact_record_multiset=true
+PASS synthetic_view_config.csv rows=8 groups=1 exact_record_multiset=true
+PASS selected_outputs=18 exactly equivalent
+     3070.96 real      1197.08 user       927.16 sys
+           298844160  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              168212  page reclaims
+                   0  page faults
+                   0  swaps
+                   0  block input operations
+                   2  block output operations
+                   0  messages sent
+                   0  messages received
+                   4  signals received
+              534791  voluntary context switches
+             7111768  involuntary context switches
+      11385186778342  instructions retired
+       6940621433738  cycles elapsed
+           335400960  peak memory footprint

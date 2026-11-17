@@ -1,0 +1,12 @@
+metric,value
+financial_rows,59411761
+output_rows,72900152
+conservation_checks,1583392
+missing_transaction_date_rows,0
+partial_spill_bytes,0
+partial_merge_passes,0
+peak_partial_keys,5148
+partial_capacity_keys,10000
+ckb_full_key_folds,7952055
+ckb_input_partitions,28
+peak_accumulator_estimated_bytes,4603506

@@ -1,0 +1,6 @@
+git=e788d6756744cc44c5fafd9f5d05820e7e81f1b3
+workers=3
+heap_per_worker_mib=2048
+active_processors_per_worker=1
+free_kib=149527024
+required_kib=148377418

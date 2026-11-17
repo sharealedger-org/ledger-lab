@@ -1,5 +1,7 @@
 # CKB architecture transfer: reporting baseline and improved rerun
 
+**2026-11-17 15:36:37 AZT (UTC−07:00) — Owner-directed three-worker follow-up concluded.** Codex automated gate, direct evidence: the accepted completion bundle at data/test_evidence/reporting_three_way_20261117/completion/ACCEPTANCE.md records all21 exact output proofs and scoped timings. The single-CPU CKB attempt was interrupted after43min and is not a completed comparator. The accepted three-worker profile changes CPU/memory, compression, launch and preparation; it also required a separately timed303-share precision correction. Row-count skew did not cause a large tail: worker extraction times4724.23/4828.22/4406.88s for154341930/72524043/59411761 financial rows. Decimal MathContext is part of the analytical contract; incidental spill serialization must not determine derived division precision. Twenty regression tests pass for isolated fix9bc12a3; its fused runtime is not measured. This does not isolate training/retrieval/gate causation, fulfill the original matched single-CPU protocol, establish a replicated paper point, close target-runtime gaps, or implement allocation/basis feedback.
+
 2026-11-17 06:32:06 AZT (UTC−07:00) — Study designation during execution.
 Author: Codex; owner-directed evidence capture. This is a study protocol and
 case record, not a manuscript edit or an assertion about hidden model training.
