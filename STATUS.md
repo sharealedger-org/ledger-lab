@@ -16,6 +16,12 @@ The audit register wins any evidence disagreement.
 
 ## Current checkpoint
 
+**First full-run wave passed; second active:** FY03–FY06 each passed native and
+combined GL/row/observer controls. FY07–FY10 are now four live workers in the
+same session11522/group42994. Second-wave scratch reservation160,823,749KiB,
+free289,682,012KiB at admission plus40GiB reserve. Metadata repair below remains
+isolated/unapplied; final full-corpus/reporting acceptance remains pending.
+
 **Full-run continuation:** FY04 and FY05 financial controls have passed; FY03/06
 still posting. Metadata preflight found historical fund references have5 columns
 but generated have3; current dimensions code would reject them. A prefix-schema

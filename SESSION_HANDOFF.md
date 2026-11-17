@@ -682,6 +682,15 @@ controller draft (check syntax/memory gate only); needs bounded multi-year execu
 and reporting resource admission before production launch. No full proof yet.
 # Hot-path continuation — corrected real-year restart
 
+Latest: Wave1 FY03–FY06 COMPLETED, each actual financial control PASS. Wave2
+FY07–FY10 ACTIVE, verified JVMs47213–47216 in driver group42994/session11522.
+Second-wave resource gate passed (free289,682,012KiB, reservation160,823,749KiB
+plus40GiB). Current dashboard504/root pointer remain full replay v1. Locate
+future workers by group42994 rather than assuming old PIDs remain valid. The
+metadata correction is only a retained isolated patch (`7fe7d07`), not production
+source/classes. Preserve frozen financial build until all waves/global controls
+finish, then apply/test patch and continue metadata/reporting as described below.
+
 Later preflight found dimensions will reject historical5-column/generated3-column
 fund references. Financial processing remains active, with FY04/FY05 controls
 passed and FY03/FY06 posting. DO NOT change running main source/classes: an

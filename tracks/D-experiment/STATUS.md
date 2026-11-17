@@ -42,6 +42,14 @@ in AGENTS and the contributor guide. Runtime checkpoints and next gates are unch
 
 ## Current plans and evidence
 
+**Wave1 complete; wave2 active:** FY03–FY06 all passed financial controls and
+published FINANCIAL_YEAR_COMPLETE. FY06:16,239,790 journal rows,1,505,363 ledger
+rows,565,437 exact GL keys, one posting input open. FY07/08/09/10 now run on
+verified live JVMs47213–47216 in group42994/session11522. Second-wave gate:
+289,682,012KiB free,160,823,749KiB worker reservation plus40GiB reserve. No
+financial class changes. Keep isolated metadata patch pending until financial
+completion; full controls/reporting/results acceptance still pending.
+
 **FY04/FY05 complete; metadata preflight defect isolated:** Full replay has passed
 financial controls for FY04 and FY05; FY03/06 still posting. Historical fund refs
 have5 columns, v6 generated3; current dimensions equality check would fail.
