@@ -16,6 +16,13 @@ The audit register wins any evidence disagreement.
 
 ## Current checkpoint
 
+**2026-11-17 improved reporting rerun active:** Baseline results `cd242fc` pushed.
+Approved lossless archival and alias removal complete. Frozen isolated CKB build
+`224a7c0` runs from18:56Z in session62327 at
+`session-run.tmp/phase2_reporting_ckb_v1`, with live dashboard window1532.
+17 tests and separate-process controls pass; full equivalence/timings pending.
+See Track D. Upload remains deferred; no Q2 model execution.
+
 **2026-11-17 prior run validated:** All14 financial years and completed reporting
 passed. Original workflow session84820 exited0; exact28 input paths/counts/hashes,
 side inputs/classes, exhaustive Scala controls, census and selected identity/date

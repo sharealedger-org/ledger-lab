@@ -1,5 +1,20 @@
 # Track D: Primary research experiment
 
+**2026-11-17 improved reporting running:** Prior results commit `cd242fc` is
+pushed to origin/main. Owner-approved 13-output lossless archival and six journal
+alias removals completed, with decoded SHA verification and receipts retained in
+`data/test_evidence/phase2_derived_baseline_20261116/baseline_archival/`.
+Full matched CKB reporting rerun started 18:56Z, session62327/process68582,
+root `session-run.tmp/phase2_reporting_ckb_v1`, isolated frozen commit `224a7c0`.
+Same28 sorted inputs, 2GiB heap/one active processor; about145GiB free at
+admission, 40GiB reserve. Dashboard Terminal window1532 selects the new run.
+All17 focused tests and separate500064-row controls passed before launch.
+Actual output equivalence, full controls and paired timings remain pending.
+Separate post-engine full-record audit is being prepared; it will compile/run
+outside the frozen timed build. Upload helper and payload manifest prepared;
+no upload/publication or Q2 models. This supersedes the pilot-only/no-improved-
+implementation descriptions below.
+
 **2026-11-17 baseline accepted:** Session84820 exited0 after extraction, reduction,
 independent checks and census. Exact28 input/count/hash and side-input/class
 verification pass; four selected identity/date cases pass completed-generation

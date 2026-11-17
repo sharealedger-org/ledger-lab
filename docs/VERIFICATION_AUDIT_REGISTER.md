@@ -2573,3 +2573,16 @@ cause. Current implementation already streams leaves/retains vendor targets;
 remaining transfer gaps and matched-rerun protocol are explicit. Acceptance is
 for this named combined corpus, not generalized03 walk-forward, new allocation/
 basis processing, complete99, target GenevaERS runtime or Q2 model evaluation.
+# 2026-11-17 CKB rerun and independent output audit checkpoint
+
+Observed: baseline `cd242fc` pushed; approved successful-output archival and six
+aliases removed only after verification. Frozen isolated CKB build `224a7c0`
+started 18:56Z, session62327, driver68582. Full-run acceptance remains
+`partially_verified`: 17 fixture tests plus independent500064-row CLI controls
+pass, but no full-corpus equivalence receipt exists yet. The new run reuses
+accepted sorted financial preparation; no sort-saving timing claim is allowed.
+Post-engine audit declaration: `implementation_plans/REPORTING_OUTPUT_EQUIVALENCE.md`.
+Cheapest falsifiers will change a full record, a duplicate count and a header;
+audit implementation/tests are prepared but not yet compiled or accepted.
+This entry does not close target-runtime capability gaps or research phases.
+
