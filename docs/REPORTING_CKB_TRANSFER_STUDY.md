@@ -76,6 +76,13 @@ material actually consulted, design proposed and architecture implemented. Trace
 those separately where records exist; leave missing exposure/retrieval history
 unknown rather than treating permission as proof of comprehension.
 
+The `access_provenance/` evidence receipt adds exact copies/blob IDs from frozen
+source build d9dbd2d: CKB_LAYER_EXECUTION_MODEL, architecture gates and agent rules.
+The model already describes generated records selected by dependent views and
+numbered delivery groups; its last recorded change before that launch is
+e5b78e8 on2026-11-15. This supports availability at the full-run launch, not
+per-turn reading or availability before every earlier reporting code change.
+
 ## Baseline evidence and measurement coverage
 
 Capture root run configuration, executed driver, class hashes, source hashes and

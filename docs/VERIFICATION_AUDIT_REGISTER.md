@@ -2522,3 +2522,15 @@ split-partition equivalence and large-zero-vendor behavior before implementing
 or claiming savings. Encoded-key versus literal-key output order, late generated
 facts and other view keys require explicit treatment. Source inspection only;
 no live class change, output acceptance or target-runtime maturity promotion.
+
+## 2026-11-17 — Frozen launch architecture availability
+
+Actual d9dbd2d git tree contains CKB_LAYER_EXECUTION_MODEL.md blob70bf8a2,
+architecture gates blob43b5649 and agent rules blobbf2d043 (full exact IDs in
+access_provenance/launch_tree.txt). Exact contents and SHA-256 receipt retained
+under data/test_evidence/ckb_reporting_transfer_20261117/access_provenance/.
+The CKB model already describes dependent generated-record delivery groups;
+last change before launch e5b78e8 on2026-11-15. This supports availability at
+launch in addition to the owner's full-access statement. It does not reconstruct
+per-turn retrieval or establish training causation. No engine modification or
+report acceptance. All retained source-copy checksums verified.
