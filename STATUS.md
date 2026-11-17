@@ -16,6 +16,13 @@ The audit register wins any evidence disagreement.
 
 ## Current checkpoint
 
+**Full fused replay active:** Frozen financial build `a0dae7c`, driver/evidence
+checkpoint `da99dfe`; session11522, root `session-run.tmp/phase2_fused_baseline_v1`.
+Four live FY03–FY06 workers confirmed in process group42994; wave reserve
+116,415,527KiB with315,384,272KiB free and40GiB reserve. Dashboard window504 now
+selects this full run. Full financial/report acceptance and validated-results
+commit/Zenodo script remain pending; no publication/Q2/cost-point claim.
+
 **Real fused FY03 admission passed:** `a0dae7c`, v3/session11936 exit0. Exact
 native and combined GL controls pass; 13,850,802 journal rows observed once by
 posting/GL/permutation; 1,105,396 ledger rows. Peak RSS709,038,080 bytes within

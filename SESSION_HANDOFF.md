@@ -682,6 +682,21 @@ controller draft (check syntax/memory gate only); needs bounded multi-year execu
 and reporting resource admission before production launch. No full proof yet.
 # Hot-path continuation — corrected real-year restart
 
+FY03 admission v3 finished exit0 with exact native/combined GL conservation;
+13,850,802 journal rows, 1,105,396 ledger rows, one actual journal open,
+maximum RSS709,038,080 bytes. Receipt committed at `da99dfe`.
+
+Full replay now ACTIVE: session11522, process group42994, root
+`session-run.tmp/phase2_fused_baseline_v1`. First wave FY03–06 has four verified
+live JVMs43062–43065, one active CPU/2GiB heap each. Unified dashboard window504
+and current symlink select this full run. Frozen admitted financial classes are
+unchanged; Bash orchestration/evidence checkpoint da99dfe. Driver will advance
+remaining waves, shared financial controls, dimensions, reporting sort/extract/
+reduce/checks/census through its resource gates. Full acceptance, result review,
+separate validated-results commit and Zenodo script remain pending. Preserve
+all failed/stopped attempts and retained/raw evidence. Do not restart on a poll
+timeout; inspect session11522 and actual workers first.
+
 Actual two-worker Bash controller fixture now passes (24 combined journal rows,
 exact GL conservation). Missing-reference worker failure exposed and then verified
 a TERM/INT failure-marker fix; repeated attempt exits143 and writes FAILED.

@@ -42,6 +42,14 @@ in AGENTS and the contributor guide. Runtime checkpoints and next gates are unch
 
 ## Current plans and evidence
 
+**Full four-worker fused replay active:** Session11522, group42994, root
+`session-run.tmp/phase2_fused_baseline_v1`, launched from `da99dfe` with unchanged
+admitted `a0dae7c` financial classes. FY03/04/05/06 statuses and four live JVMs
+(43062–43065) confirmed. First wave budget116,415,527KiB plus40GiB reserve;
+315,384,272KiB free at admission. Existing dashboard window504 switched to full
+run. Next financial waves, global controls, dimensions and reporting are automatic
+and gated; all full acceptance/result review/Zenodo script remain pending.
+
 **FY03 admission completed:** v3/session11936 exit0; native+combined GL controls
 passed, 13,850,802 journal rows seen by both actual posting observers, one input
 open, 1,105,396 ledger rows, 364,216 GL keys. Process elapsed663.05sec,
