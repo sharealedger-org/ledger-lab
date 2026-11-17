@@ -854,3 +854,57 @@ admission remains conservative and unchanged: after transient sort files clear,
 projected reporting headroom is narrow (~1–2GiB beyond report budget+40GiB
 reserve at this sample), so retain current stage gate and monitor actual free
 space. Do not infer a need to archive successful outputs or weaken reserve.
+
+2026-11-17T09:46:50Z verified monitoring: nine complete journal+ledger report
+sorts throughFY39 (FY11/SY09). FY39 logs21,879,682 movement and1,607,413 balance
+rows, matching the accepted financial summary. Same driver66386/session84820,
+JVM66823 (39m21s CPU), dashboard66618 live. Latest free167,174,736KiB; no monitor
+alarm. No restart or configuration/class change. All remaining report stages and
+final deliverables are still pending; no final acceptance claim.
+
+Partial reporting count audit:18 completed sort records throughFY39 compared
+with actual accepted per-year financial row counters, allPASS/no duplicate log
+records. Temporary evidence files in phase2_fused_reporting_v2:
+expected_sort_row_counts.csv, completed_sort_row_counts.csv,
+partial_sort_count_comparison.csv. These inspect producer metadata and do not
+recalculate financial amounts. TenthFY40 active; final28-partition and report
+controls remain pending. Latest JVM check49m52s elapsed/42m47s CPU; dashboard live.
+
+2026-11-17T09:54:42Z monitoring: ten report year sorts complete throughFY40
+(FY12/SY10). Latest22,604,128 journal +1,608,995 ledger row counts match accepted
+FY40 financial summary. FY41 active. Same session84820 remains running; direct
+JVM66823 CPU45m59s/RSS595,028KiB and dashboard66618 verified. Latest free
+152,888,644KiB; no reserve alarm or configuration change. Remaining four sorts,
+extract/reduce/check/census and result/upload-script deliverables pending.
+
+2026-11-17T09:59:16Z verified wait: eleven report year sorts complete through
+FY41 (FY13/SY11), with22,292,012 movement and1,615,602 balance rows matching
+accepted producer summary. Same driver66386/session84820, JVM66823 advancing
+(50m06s CPU), dashboard66618 live. Latest free151,654,408KiB; no reserve alarm.
+Current configuration/classes unchanged. Three sorts and downstream reporting
+stages/final result deliverables remain pending.
+
+2026-11-17T10:05:57Z verified wait: twelve report year sorts complete through
+FY42 (FY14/SY12). Latest23,336,902 movement and1,628,308 balance row counts match
+accepted financial summary. Same driver66386/session84820, JVM66823 CPU55m54s,
+dashboard66618 live. Latest free142,039,932KiB; no monitor alarm. Two year sorts
+remain before the unchanged reporting resource gate/extract/reduce/check/census.
+No financial/class/configuration changes; final acceptance still pending.
+
+2026-11-17 reporting transition: all28 sorted partitions completed (14years),
+286,277,734 rows /102,677,962,038bytes. All28 per-kind/year row counters match
+accepted financial summaries; exact producer paths and actual source/sorted file
+sizes checked. Receipt full_report_sort retains manifest, processmetrics, both
+comparisons and resource admission. Sort elapsed4603.96s/RSS639,401,984bytes;
+diagnostic only. Frozen class SHA check passes after SBT extract startup.
+
+Driver session84820/group66386 automatically entered reporting after actual
+admission:125,990,400KiB free vs82,358,090KiB budget +41,943,040KiB reserve
+(margin1,689,270KiB). Old sort JVM66823 ended normally; new SBT/Scala extraction
+JVM82547 live. Dashboard66618 remains live and shows extract/reduce global rows.
+Report run_config git5f007fa reflects documentation/evidence checkpoints; compiled
+class manifest remains identical to d9dbd2d launch. No live engine/config change.
+After extract: compare input_manifest financial hashes/paths/counts to sort
+manifest, then reduction, ConnectedViewsCheck/census, result inspection and final
+validated-results commit. Only after validation create the Zenodo script. Local
+Bash3.2/curl8.7.1/shasum/tar/gzip available; jq is absent (do not introduce Python).

@@ -2,7 +2,10 @@
 
 **2026-11-17 next-phase assessment:** Owner directs the current reporting run
 to continue unchanged. Financial14-year controls passed; reporting acceptance
-remains pending (`report_order` artifact, completed sort entries through FY37).
+remains pending. All28 report sorts completed and match accepted producer
+row/path/size metadata (286,277,734 rows). Extraction JVM82547/session84820 and
+dashboard66618 confirmed live at2026-11-17T10:18:44Z. Actual reporting storage
+admission passed with40GiB reserve intact; receipt `full_report_sort` retained.
 The [stream and allocation feedback plan](../../docs/STREAM_LAYER_EVOLUTION_AND_ALLOCATION_FEEDBACK_PLAN.md)
 is design_only: reuse unchanged core inputs, apply prior committed receiver
 weights, regenerate basis alongside perspectives, quantify allocation impact,
@@ -834,3 +837,15 @@ sorting completed through FY38 (eight of14). Full dimensions receipt retained in
 `data/test_evidence/phase2_derived_baseline_20261116/full_dimensions/`, including
 product hashes, process RSS/time, sort metrics and physical-line counts.
 Compiled reporting class manifest recheck passes. Reporting acceptance pending.
+
+2026-11-17T09:43:27Z monitoring: same driver66386/session84820 and JVM66823
+confirmed live; CPU advanced to36m30s. Eight complete reporting year sorts;
+ninth (FY39 / FY11–SY09) has active spill files. Dashboard66618 live. Latest
+free168,131,088KiB, no monitor alarm. No restart/configuration/class change;
+report validation and final deliverables remain pending.
+
+2026-11-17T09:49:44Z count-evidence check: all18 completed sort log records
+(nine journal/ledger pairs) match accepted financial producer summary counters,
+with no duplicate records. Partial comparison retained at the live root as
+`partial_sort_count_comparison.csv`; it is not full report acceptance. Tenth
+partitionFY40 active; same session84820/JVM66823 and dashboard66618 verified.

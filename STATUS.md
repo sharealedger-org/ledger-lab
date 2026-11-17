@@ -17,8 +17,10 @@ The audit register wins any evidence disagreement.
 ## Current checkpoint
 
 **2026-11-17 allocation-feedback assessment:** Keep the current reporting
-configuration unchanged. Financial controls passed for all14 years; reporting
-status artifact is `report_order`, with completed sort records through FY37.
+configuration unchanged. Financial controls passed for all 14 years. All 28
+reporting sorts passed external row/path/size checks: 286,277,734 rows.
+Extraction is live (JVM82547/session84820), dashboard66618 running, confirmed
+2026-11-17T10:18:44Z. Actual storage admission passed with40GiB reserve intact.
 Final reporting acceptance remains pending. Owner explicitly approved verified
 lossless archival of89 selected inactive-attempt files; the archive receipt now
 contains `ARCHIVE_COMPLETE`. This supersedes the older archival rejection and
