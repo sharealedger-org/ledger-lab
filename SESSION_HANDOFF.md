@@ -949,3 +949,42 @@ advanced again between latest/current offset samples, delta1,354,760,192bytes,
 no new/missing/regressed paths. Fifteen bucket spill files now present. Latest
 free125,559,556KiB; no monitor alarm. No restart/engine/configuration changes.
 Final extract/reduce/controls/result review and release script remain pending.
+
+2026-11-17T10:34:33Z: extraction CPU16m40s/RSS758,968KiB, same session84820 and
+dashboard66618 live;20 bucket spill files, free125,426,696KiB, no alarm. No restart
+or live financial/configuration changes. Preparation checkpoint6d4b55d commits
+semantic review targets and local jq prerequisite receipt, not validated results.
+
+2026-11-17T10:39:16Z verified wait: same driver66386/session84820, extraction
+JVM82547 CPU21m14s/RSS759,352KiB and dashboard66618 live. All28 same financial
+input offsets advanced current->followup, delta6,054,477,824bytes, no missing/new/
+regressed paths.23 bucket spills; latest free125,334,164KiB, no reserve alarm.
+No restart/class/config changes. Extract/reduce/check/census and all final
+acceptance/deliverables remain pending; these are read-progress diagnostics only.
+
+2026-11-17T10:42:27Z verified wait: same JVM82547 CPU24m16s/RSS759,160KiB,
+session84820/driver66386 and dashboard66618 live. Followup->wait offset samples
+retain28 input files;8 advanced, none regressed/missing/new, delta2,458,910,720
+bytes. Ordered merge need not advance every input in each interval.23 bucket
+spills; latest free125,331,904KiB with no monitor alarm. No restart/config/class
+changes. All extract/reduce/controls/final deliverables remain pending.
+
+2026-11-17T10:45:53Z verified wait: same driver66386/session84820, JVM82547
+CPU27m32s/RSS760,328KiB and dashboard66618 live. Wait->observed offsets match28
+financial inputs;19 advanced, no new/missing/regressed paths, delta2,668,625,920
+bytes.23 bucket spills; latest free125,320,612KiB, no monitor alarm. No restart or
+class/config change. All final reporting controls and deliverables pending.
+
+Population interpretation receipt added: all14 native normalization counters
+copied, metadata census checked;32,899,526 constructed reassignments,
+22,707,375 observed and75,158,072 unresolved source groups. Contract explicitly
+covers full eligible historical population.49,091 v6 reused copies are excluded
+additively; they are not the attribution scope limit. Old/new financial inventory
+273,380,488 vs286,277,734 rows includes two record types. Ledger11,850,542 vs
+19,957,916 can change with vendor-key grain/new activity; exact8,107,374-row
+causal decomposition not measured. No financial amounts recomputed, code changed,
+extra engine run, maturity upgrade or report acceptance. Audit entry added.
+
+2026-11-17T10:50:28Z verified wait: same driver66386/session84820, extraction
+JVM82547 CPU32m00s/RSS760,332KiB and dashboard66618 live.25 bucket spills,
+latest free125,275,296KiB, no monitor alarm. Configuration/class profile unchanged.

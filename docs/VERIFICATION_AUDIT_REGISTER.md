@@ -2426,3 +2426,24 @@ The next-phase roadmap is design_only, with an explicit changed-old-basis
 consumer falsifier, full receiver vectors, balanced apply-back and final-rule
 verification. No implementation or target-runtime capability is promoted here.
 See `docs/STREAM_LAYER_EVOLUTION_AND_ALLOCATION_FEEDBACK_PLAN.md`.
+
+## 2026-11-17 — Combined population and ledger cardinality inspection
+
+Scope: retained historical financial input manifest, fourteen completed Scala
+normalization counters, accepted financial summaries, completed report-sort
+manifest, HistoricalJournalExit and post full-key producer code. The contract
+explicitly applies attribution to the complete eligible historical population,
+not only the v6 sample. Metadata census:32,899,526 reassigned,22,707,375 observed
+and75,158,072 unresolved historical source groups; paired group counts agree
+with261,529,946 preserved historical journal rows. The49,091 reused synthetic
+copies are excluded from additive new inputs, not the historical attribution
+population limit. Receipt: data/test_evidence/phase2_derived_baseline_20261116/
+population_interpretation/ (original counter classifications retained).
+
+Retained ledger rows11,850,542 versus new19,957,916 are different inventories,
+not a count of new economic transactions. Vendor/instrument is part of the post
+key, and group attribution updates both D/O rows; attribution and new activity
+can change cardinality. Exact causal decomposition of the8,107,374-row difference
+was not measured in a separate counterfactual. No maturity, full report acceptance,
+walk-forward state or cost-point claim is upgraded. Expanded extraction remains
+live; final reporting evidence and semantic review remain pending.

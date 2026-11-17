@@ -1,0 +1,5 @@
+check,value,status
+journal_rows_preserved,16669674,PASS
+observed_rekeyed,573643,OBSERVED
+reassigned_activity,2311116,OBSERVED
+unresolved_preserved,5450078,OBSERVED

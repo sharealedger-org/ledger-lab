@@ -4,8 +4,8 @@
 to continue unchanged. Financial14-year controls passed; reporting acceptance
 remains pending. All28 report sorts completed and match accepted producer
 row/path/size metadata (286,277,734 rows). Extraction JVM82547/session84820 and
-dashboard66618 confirmed live at2026-11-17T10:30:54Z. All28 input read positions
-advanced between latest samples (1,354,760,192bytes total; no regression). These are
+dashboard66618 confirmed live at2026-11-17T10:45:53Z. Nineteen of28 input read positions
+advanced between latest samples (2,668,625,920bytes total; no regression). These are
 buffered read diagnostics, not completed-row counts. Actual reporting storage
 admission passed with40GiB reserve intact; receipt `full_report_sort` retained.
 The [stream and allocation feedback plan](../../docs/STREAM_LAYER_EVOLUTION_AND_ALLOCATION_FEEDBACK_PLAN.md)
@@ -868,3 +868,18 @@ not passed report evidence. No financial/runtime modification or model run.
 session84820 and dashboard66618 live. Bucket partials now include0-6.csv;
 latest free125,817,012KiB with no monitor alarm. Configuration unchanged.
 Selected semantic checks remain pending finished output; no acceptance claim.
+
+2026-11-17T10:34:33Z verified wait: same extraction JVM82547/session84820 and
+dashboard66618 live, CPU16m40s,20 bucket spill files. Latest free125,426,696KiB;
+no failure/reserve alarm. Review-target/tooling preparation committed6d4b55d;
+final report acceptance/results commit/upload script remain pending.
+
+2026-11-17 population inspection: actual fourteen-year Scala counters show
+32,899,526 reassigned /22,707,375 observed /75,158,072 unresolved historical
+source groups, exhausting the paired261,529,946 historical journal rows.
+The complete eligible population is in scope, not just49,091 reused v6 copies.
+Receipt population_interpretation retains original controls and old/new record
+inventories. Ledger-row growth is not added transaction count; no exact causal
+decomposition or new financial/cost/report-acceptance claim. At10:50:28Z same
+extraction JVM82547/session84820 and dashboard66618 live;25 bucket spills,
+free125,275,296KiB, no reserve alarm. Final report controls/deliverables pending.
