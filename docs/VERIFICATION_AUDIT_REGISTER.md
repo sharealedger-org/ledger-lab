@@ -2447,3 +2447,14 @@ can change cardinality. Exact causal decomposition of the8,107,374-row differenc
 was not measured in a separate counterfactual. No maturity, full report acceptance,
 walk-forward state or cost-point claim is upgraded. Expanded extraction remains
 live; final reporting evidence and semantic review remain pending.
+
+## 2026-11-17 — Early emitted zero-key coverage observation
+
+Actual ongoing combined-report output emits vendor0000000000 asunattributed,
+blank template, no_synthetic_party_for_unattributed andidentity_rekeyedfalse;
+financial_rows150,838,846 includes journal/ledger inputs. Receipt:
+data/test_evidence/phase2_derived_baseline_20261116/early_report_review/.
+This matches one planned semantic target at emitted-key grain. Extraction remains
+live: recheck the completed published generation, all target classes and complete
+controls. No full report acceptance or maturity upgrade; no financial amounts
+recalculated outside Scala. A partial coverage line count is not final population.

@@ -1085,3 +1085,50 @@ new dashboard97164 live. Same financial driver66386/session84820, extraction8254
 group66386 unchanged; frozen class SHA verification passes. At11:38:36Z extraction
 CPU78m21s/RSS767,780KiB; latest free120,989,960KiB. No alarm/config/engine change;
 all final report controls/result review/upload-script deliverables pending.
+
+2026-11-17T11:41:33Z verified wait: same driver66386/session84820, JVM82547
+CPU81m11s/RSS767,796KiB and dashboard97164 live. Synthetic cut partials grew from
+1,693,044KiB at11:36:41Z to3,849,612KiB; raw partials now0 after consumption;
+master-cut partials859,564KiB. Latest free119,149,868KiB, no alarm. This is actual
+output/consolidation progress even when input offsets/main histories pause.
+Dashboard correction committedd6b1c7f; financial class/configuration unchanged.
+Final report validation, result inspection, results commit and upload script pending.
+
+2026-11-17T11:46:22Z verified wait: same driver66386/session84820, JVM82547
+CPU85m41s/RSS767,588KiB and dashboard97164 live. Synthetic cut partials produced/
+consolidated (5,414,520->3,818,120KiB during samples); raw partials consumed to0.
+Vendor temporal-cut output now1,966,144KiB, confirming output progress while main
+histories/input offsets can pause. Latest free118,707,180KiB, no reserve alarm.
+No restart/class/config change; final report controls and all result/upload-script
+deliverables remain pending. This is activity evidence, not full output acceptance.
+
+2026-11-17T11:50:57Z verified wait: same driver66386/session84820, JVM82547
+CPU90m04s/RSS770,904KiB and dashboard97164 live. Cut/master partials consumed to0
+then new raw/cut partials appeared; temporal-cut output3,178,560KiB. Check->resumed
+offset snapshots retain28 input paths; all28 advanced, no regression/new/missing
+paths, delta3,676,307,456bytes across the consolidation interval (not throughput).
+Latest free121,120,556KiB; no reserve alarm/config/class change. Final extract/
+reduce/control/semantic acceptance and result/upload-script deliverables pending.
+
+2026-11-17T11:56:03Z verified wait: same driver66386/session84820, JVM82547
+CPU95m21s/RSS804,756KiB and dashboard97164 live. Temporal-cut output allocation
+4,833,344KiB (from3,178,560KiB at prior checkpoint); raw/cut/master partials cycle
+through production/consumption and are currently0 in this sample. Latest free
+119,556,188KiB; no reserve alarm/config/class change. Final extraction/reduction/
+controls, semantic inspection, validated-results commit and upload script pending.
+
+Early semantic review progress: actual Scala coverage row0000000000 matches
+unattributed /blank template /no_synthetic_party_for_unattributed /
+identity_rekeyedfalse. Financial_rows150,838,846 includes journals and ledgers,
+not transactions. File had3,932 physical lines including header at observation;
+buffering means this is not a final vendor count. Receipt early_report_review
+retains the complete emitted row. Still recheck final generation, remaining
+classes, full population/hash/controls and extraction/reduction before acceptance.
+No RESULT_REVIEW_COMPLETE marker created; no financial values recalculated.
+
+2026-11-17T12:01:39Z verified wait: same driver66386/session84820, JVM82547
+CPU100m37s/RSS804,896KiB and dashboard97164 live. Temporal-cut output allocation
+6,553,664KiB; latest free117,619,060KiB, no monitor alarm/config/class change.
+Early zero-key coverage observation recorded in audit register; still no full
+report acceptance/result-review marker. Final controls, remaining semantic checks,
+validated-results commit and upload script pending.

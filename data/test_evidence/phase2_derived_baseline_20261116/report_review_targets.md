@@ -27,3 +27,9 @@ Selection evidence locations under the repository runtime tree:
 
 All runtime paths above are under session-run.tmp/. Finished extraction/reduction,
 input-manifest hash/count comparisons and report controls are still pending.
+
+Early emitted-row observation,2026-11-17: zero0000000000 hasattributionunattributed,
+blank template, no_synthetic_party_for_unattributed rule andidentity_rekeyedfalse.
+Retained in early_report_review/zero_coverage.csv. Its150,838,846 financial input
+rows are mixed journal/ledger records, not transactions. This one-key observation
+must be rechecked against the completed report; it does not complete this review.

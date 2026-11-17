@@ -4,9 +4,9 @@
 to continue unchanged. Financial14-year controls passed; reporting acceptance
 remains pending. All28 report sorts completed and match accepted producer
 row/path/size metadata (286,277,734 rows). Extraction JVM82547/session84820 and
-dashboard97164 confirmed live at2026-11-17T11:38:36Z. Input reads and report
-partial outputs advanced across observations. Current stack confirms synthetic
-dated-view generation in finishVendor; these are activity diagnostics, not
+dashboard97164 confirmed live at2026-11-17T12:01:39Z. Input reads and report
+partial outputs advanced across observations. A read-only thread sample identified
+synthetic dated-view generation in finishVendor; these are activity diagnostics, not
 completed-row counts. Actual reporting storage
 admission passed with40GiB reserve intact; receipt `full_report_sort` retained.
 The [stream and allocation feedback plan](../../docs/STREAM_LAYER_EVOLUTION_AND_ALLOCATION_FEEDBACK_PLAN.md)
@@ -900,3 +900,9 @@ partial-directory/root spill CSVs for extraction/reduction, with unchanged table
 width; actual Terminal shows1492 current spills. New display97164, same driver/
 extraction and frozen class checks pass. Receipt dashboard_activity updated;
 all final report acceptance/deliverables remain pending.
+
+2026-11-17 early semantic observation: actual emitted zero-key coverage row is
+unattributed, blank template, analyticalidentity_rekeyedfalse, with150,838,846
+mixed journal/ledger input records. Receipt early_report_review retained;
+not a transaction count, final vendor total or full acceptance. Recheck final
+published generation and all other review targets after completion.
