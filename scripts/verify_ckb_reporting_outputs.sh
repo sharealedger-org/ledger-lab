@@ -29,6 +29,22 @@ date -u '+%Y-%m-%dT%H:%M:%SZ' > "$run/EXACT_OUTPUT_EQUIVALENCE_COMPLETE"
 timing() { awk '$2=="real"{value=$1} END{if(value=="")exit 1;print value}' "$1"; }
 baseline_extract=$(timing "$baseline/report/extract.log")
 baseline_reduce=$(timing "$baseline/report/reduce.log")
+if [[ "$(cat "$run/PROFILE")" == ckb-reporting-three-way ]]; then
+  preparation=$(timing "$run/logs/vendor_range_prepare.log")
+  combination=$(timing "$run/logs/report_combine.log")
+  wave=$(awk -F, '$1=="workers_wall_seconds"{print $2}' "$run/wave_metrics.csv")
+  {
+    printf '# Three-worker reporting comparison\n\n'
+    printf 'Recorded: %s\n\n' "$(date -u '+%Y-%m-%dT%H:%M:%SZ')"
+    printf 'All 21 declared outputs passed exact complete-record multiset comparison. Original input receipts, independent controls, census and frozen classes passed.\n\n'
+    printf '| Scope | Seconds |\n|---|---:|\n| Range preparation, full input hash/row census | %s |\n| Three concurrent workers, extract plus reduction wall time | %s |\n| Final output assembly and global reduction | %s |\n\n' "$preparation" "$wave" "$combination"
+    awk -v p="$preparation" -v w="$wave" -v c="$combination" -v be="$baseline_extract" -v br="$baseline_reduce" 'BEGIN{printf "Preparation + workers + assembly: %.2f seconds. Prior serial extract/reduce: %.2f seconds.\n\n",p+w+c,be+br}'
+    printf 'The worker wave has one-second wall-clock resolution; individual JVM timing/RSS remains in workers/*/{extract,reduce}.log. Checks, census and exact audit are separate.\n\n'
+    printf 'Limits: three 2GiB/one-active-processor JVMs, compressed worker intermediates and a preparation scan differ from the serial profile. This is an engineering turnaround comparison, not an isolated parallelism effect or replicated paper result. Previously running single-worker CKB attempt was interrupted and is not a completed comparator. Financial preparation and original sorts were reused; no saving for that reuse is claimed. No upload, publication, allocation/basis loop or target-runtime maturity claim.\n'
+  } > "$run/COMPARISON.md"
+  date -u '+%Y-%m-%dT%H:%M:%SZ' > "$run/COMPARISON_RECORD_COMPLETE"
+  exit 0
+fi
 new_extract=$(timing "$run/report/extract.log")
 new_reduce=$(timing "$run/report/reduce.log")
 {

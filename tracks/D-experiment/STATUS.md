@@ -1,5 +1,40 @@
 # Track D: Primary research experiment
 
+**2026-11-17 owner-requested three-way replacement:** Single-worker driver68582
+and JVM68667 intentionally terminated after43min; outputs and
+`STOPPED_BY_OWNER_REPARTITION` retained. Its queued audit69309 was cancelled.
+Compilation/test activity during its final preparation period also prevents
+treating it as a clean completed comparator. No prior financial inputs or
+retained results were deleted. Frozen isolated branch `phase2-reporting-three-way`
+commit `e788d67` passes all18 ReportingPassSpec tests, including named
+three_range_equivalence, empty ranges, source ordinals, gzip intermediates,
+global additive summaries and corrupted range-hash rejection. Independent audit
+tool falsifiers also pass. Evidence lives in that branch's
+`data/test_evidence/reporting_three_way_v1/`.
+
+Replacement session69014/driver80675 starts verified range preparation at12:44 AZT
+in `session-run.tmp/phase2_reporting_three_way_v1`; three workers launch after
+preparation, each2GiB/1 active processor, ranges before`v`, `v` to`v5`, and`v5`
+onward. Accepted financial/sorted inputs are reused. Preparation scans source
+bytes once for original ordinals/row counts/full and interval hashes, separately
+timed. Each worker then seeks its disjoint intervals. Large worker-only views
+are compressed; assembled public reports remain ordinary CSV. Preparation,
+individual JVMs, worker-wave wall time, combination, checks/census and exact
+21-output audit are recorded separately. This differs from the serial resource/
+materialization profile and is an engineering turnaround comparison. Disk
+admission149527024KiB free versus148377418KiB conservative requirement, retaining
+40GiB reserve monitoring. Full corpus equivalence and timings remain pending.
+
+**Parallelism check, 2026-11-17 12:14 AZT:** Owner correctly observes no
+parallel reporting workers. Live JVM68667 uses ActiveProcessorCount=1; source
+ReportingPass has a serial priority-queue merge/dispatch loop. This matched
+baseline profile was an implementation choice, not a CKB requirement. Raising
+the processor flag alone cannot parallelize the loop. Future worker partitioning
+must address the dominant zero-vendor group and explicitly merge vendor features,
+contributor counts and global summaries; whole-vendor sharding alone leaves skew.
+Current frozen timing run continues unchanged. Observed read positions12.7GB;
+these are buffered read positions, not completed-row acceptance or an ETA.
+
 **2026-11-17 improved reporting running:** Prior results commit `cd242fc` is
 pushed to origin/main. Owner-approved 13-output lossless archival and six journal
 alias removals completed, with decoded SHA verification and receipts retained in

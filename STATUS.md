@@ -16,6 +16,14 @@ The audit register wins any evidence disagreement.
 
 ## Current checkpoint
 
+**2026-11-17 three-way vendor reporting replacement:** Owner requests three
+vendor-ID workers. The single-worker CKB attempt is intentionally stopped and
+preserved, without a completed timing claim. Frozen isolated build `e788d67`
+passes18 reporting tests. Replacement session69014/driver80675 at
+`session-run.tmp/phase2_reporting_three_way_v1` is preparing verified byte ranges,
+then launches three2GiB/one-active-processor JVMs. Full output acceptance and
+timings remain pending. See Track D; no upload/publication or Q2 models.
+
 **2026-11-17 improved reporting rerun active:** Baseline results `cd242fc` pushed.
 Approved lossless archival and alias removal complete. Frozen isolated CKB build
 `224a7c0` runs from18:56Z in session62327 at

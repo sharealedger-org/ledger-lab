@@ -117,7 +117,7 @@ global_stage_row() {
 render_fused() {
   local current old new sy base source phase source_state post_state checks state worker report latest stopped=no
   current="$(cat "$root/STATUS")"
-  if [[ "$(cat "$root/PROFILE")" == ckb-reporting-v1-matched-presorted ]]; then
+  if [[ "$(cat "$root/PROFILE")" == ckb-reporting-* ]]; then
     printf 'PHASE 2 CKB REPORTING COMPARISON   %s\n' "$(TZ=America/Phoenix date '+%Y-%m-%d %H:%M:%S AZT')"
   else
     printf 'PHASE 2 FUSED GENERATION PROOF   %s\n' "$(TZ=America/Phoenix date '+%Y-%m-%d %H:%M:%S AZT')"
@@ -156,11 +156,18 @@ render_fused() {
   global_stage_row 'Corpus controls' financial_controls "$root/financial_controls/BASELINE_FINANCIAL_CONTROLS_COMPLETE"
   global_stage_row 'Dimensions / metadata' dimensions "$root/dimensions/DIMENSIONS_COMPLETE"
   global_stage_row 'Reporting sort' report_order "$root/report_order/SORT_COMPLETE"
+  if [[ "$(cat "$root/PROFILE")" == ckb-reporting-three-way ]]; then
+    global_stage_row 'Vendor range preparation' vendor_range_prepare "$root/stages/vendor_range_prepare.complete"
+    for worker in 0 1 2; do
+      printf '%-23s | %-17s %-19s %-12s | %s\n' "Reporting worker $worker" - "$(cat "$root/workers/$worker/STATUS" 2>/dev/null || echo queued)" - "$(cat "$root/workers/$worker/STATUS" 2>/dev/null || echo queued)"
+    done
+    global_stage_row 'Report combination' report_combine "$root/stages/report_combine.complete"
+  fi
   global_stage_row 'Reporting extract' report_extract "$report/EXTRACT_COMPLETE"
   global_stage_row 'Reporting reduction' report_reduce "$report/REPORT_COMPLETE"
   global_stage_row 'Reporting checks' report_checks "$root/REPORT_CHECKS_COMPLETE"
   global_stage_row 'Output census' census "$root/CENSUS_COMPLETE"
-  if [[ "$(cat "$root/PROFILE")" == ckb-reporting-v1-matched-presorted ]]; then
+  if [[ "$(cat "$root/PROFILE")" == ckb-reporting-* ]]; then
     global_stage_row 'Exact output comparison' exact_output_audit "$root/EXACT_OUTPUT_EQUIVALENCE_COMPLETE"
     printf '\nFinancial preparation/sorting reused; reporting alone is timed again.\n'
     printf 'Temporal output bytes: '
@@ -181,7 +188,7 @@ render_fused() {
 }
 render() {
   if [[ -f "$root/PROFILE" ]]; then
-    case "$(cat "$root/PROFILE")" in phase2-fused-v1|ckb-reporting-v1-matched-presorted) render_fused;return;; esac
+    case "$(cat "$root/PROFILE")" in phase2-fused-v1|ckb-reporting-v1-matched-presorted|ckb-reporting-three-way) render_fused;return;; esac
   fi
   local current old new sy stage show_counts
   current="$(cat "$root/STATUS" 2>/dev/null || echo admission)"
