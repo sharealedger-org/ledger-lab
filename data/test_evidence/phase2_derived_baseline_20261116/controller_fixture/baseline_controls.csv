@@ -1,0 +1,5 @@
+check,expected,actual,status
+FY31 journal_rows,12,12,PASS
+FY31 conserved_GL_keys,5,5,PASS
+FY32 journal_rows,12,12,PASS
+FY32 conserved_GL_keys,5,5,PASS

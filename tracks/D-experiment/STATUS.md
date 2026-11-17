@@ -42,6 +42,19 @@ in AGENTS and the contributor guide. Runtime checkpoints and next gates are unch
 
 ## Current plans and evidence
 
+**Two-worker controller fixture passed:** Actual Bash controller executed two raw
+years in one wave, verifying 16 historical + 8 wholly generated = 24 journal rows
+and exact GL controls. Missing-reference fixture caused the worker failure and
+isolated scheduler group stop (exit143), without shared completion. See
+`data/test_evidence/phase2_derived_baseline_20261116/controller_fixture/`.
+Real FY03 v3 remains active; full scheduler/resource/report acceptance pending.
+
+**Corrected real-year admission restarted:** Frozen `a0dae7c`, session 11936,
+`session-run.tmp/phase2_fused_admission_v3`; starting resource gate passed with
+321,813,064 KiB free, 29,217,327-KiB worker budget and 40-GiB reserve. Dashboard
+window 504 selects v3; class hashes recorded. Native/combined GL controls,
+posting/permutation and resource acceptance remain pending. No timing claim.
+
 **Real-year gate caught invocation mismatch:** Admission v2 source counts/cache
 checks passed, but strict native GL hash correctly failed before posting. New
 wrapper used long years2003/2031; real Bash adapter contract is03/31, affecting APA

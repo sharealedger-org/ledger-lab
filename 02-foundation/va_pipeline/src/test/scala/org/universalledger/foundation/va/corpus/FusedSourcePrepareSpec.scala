@@ -10,7 +10,7 @@ class FusedSourcePrepareSpec extends AnyFunSuite {
   private def remove(file:File):Unit={if(file.isDirectory)file.listFiles().foreach(remove);Files.delete(file.toPath)}
   private def lines(file:File):Vector[String]={val s=scala.io.Source.fromFile(file,"UTF-8");try s.getLines().toVector finally s.close()}
   private val spec=new File("../sort_specs/SortedJE.sortspec")
-  private def fixture(root:File,year:Int,generated:Boolean):File={
+  private[corpus] def fixture(root:File,year:Int,generated:Boolean):File={
     val dir=new File(root,if(generated)"whole"else"history");dir.mkdirs()
     write(new File(dir,"aRefAgencyCSV.txt"),"AGY_AGENCY_CODE,AGY_AGENCY_KEY,AGY_AGENCY_NAME\n101,101,AGENCY\n")
     write(new File(dir,"aRefFundCSV.txt"),"FNDDTL_FUND_DETAIL_KEY,FNDDTL_FUND_DETAIL_CODE,FNDDTL_FUND_DETAIL_NAME\n201,201,FUND\n")

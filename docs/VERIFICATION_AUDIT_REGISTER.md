@@ -2352,3 +2352,14 @@ policy year, and fixed the independent reference fixture to the real Bash contra
 New assertions require 0031 APA periods and parseable shifted accounting dates.
 All 47 tests pass. Hash/control/cache evidence is preserved under short_year_gate/;
 the strict hash gate is unchanged. Fresh actual FY03 admission is still required.
+# Fused scheduler fixture continuation
+
+Actual `scripts/run_phase2_fused_baseline.sh` ran two bounded raw years with two
+concurrent workers and independent native reference GLs. Shared financial controls
+passed: 16 historical + 8 wholly generated = 24 journal rows, exact GL conservation
+for both years. Removing only a copied fixture FY04 GL caused a native-control
+failure, detected worker exit and own-group termination (143); no shared success.
+Evidence: `data/test_evidence/phase2_derived_baseline_20261116/controller_fixture/`.
+Evidence state: fixture-verified financial orchestration; real resource scale,
+full population and reporting remain pending. No financial main code changed.
+

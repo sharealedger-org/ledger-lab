@@ -1,0 +1,8 @@
+git=a0dae7cc07541aaa17c79005cffad47bfdbb3b82
+engine_git=a0dae7cc07541aaa17c79005cffad47bfdbb3b82
+years=03,04
+max_workers=2
+heap_max_mib=2048
+active_processors_per_worker=1
+reserve_kib=41943040
+through=financial

@@ -16,6 +16,12 @@ The audit register wins any evidence disagreement.
 
 ## Current checkpoint
 
+**Corrected fused FY03 admission restarted:** Frozen `a0dae7c`, execution
+session 11936, root `session-run.tmp/phase2_fused_admission_v3`. Starting resource
+gate passed; source processing active and live dashboard switched to v3. Strict
+native GL, combined controls and resource acceptance remain pending. This
+supersedes the active-run descriptions below; no full-year or speedup claim.
+
 **Hot-path fix ready for restart:** First fused admission deliberately stopped
 after stack samples identified repeated date-parse exceptions. Equivalent ISO
 dispatch and bounded date/period memoization pass 47 tests. Restart real FY03

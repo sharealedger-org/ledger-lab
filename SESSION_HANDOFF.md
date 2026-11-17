@@ -680,3 +680,18 @@ hashes. Preserve short_year_gate evidence and failed v2. Next freeze correction
 and run phase2_fused_admission_v3. Untracked run_phase2_fused_baseline.sh is a full
 controller draft (check syntax/memory gate only); needs bounded multi-year execution
 and reporting resource admission before production launch. No full proof yet.
+# Hot-path continuation — corrected real-year restart
+
+Actual two-worker Bash controller fixture now passes (24 combined journal rows,
+exact GL conservation). Missing-reference worker failure exposed and then verified
+a TERM/INT failure-marker fix; repeated attempt exits143 and writes FAILED.
+Evidence under `data/test_evidence/phase2_derived_baseline_20261116/controller_fixture/`.
+The full controller has report storage planning gates; no full real launch yet.
+
+Frozen `a0dae7c` restarted FY03 fused admission in session 11936 at
+`session-run.tmp/phase2_fused_admission_v3`. Starting resource gate passed;
+class hashes retained, current dashboard pointer switched and Terminal window
+504 opened. No financial acceptance yet; wait for strict native and combined
+controls before admitting multiple workers. Draft full controller remains
+untracked and requires actual fixture execution before use.
+
