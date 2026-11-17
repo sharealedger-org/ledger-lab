@@ -86,7 +86,7 @@ fused_count() {
   printf '%s>%s' "$(compact "$accepted")" "$(compact "$journals")"
 }
 global_stage_row() {
-  local label="$1" stage="$2" marker="$3" value=pending report="$root/report" state partial_count partial
+  local label="$1" stage="$2" marker="$3" value=pending report="$root/report" state partial_count partial audit_pid
   local partials=()
   [[ -d "$report" ]] || report="$report.attempt"
   if [[ -f "$marker" || -f "$root/stages/$stage.complete" ]]; then value=done
@@ -100,6 +100,10 @@ global_stage_row() {
   if [[ "$value" == RUN && -f "$root/FAILED" ]]; then value=FAILED; fi
   if [[ "$stage" == exact_output_audit && ! -f "$marker" ]]; then
     [[ ! -d "$root/exact_output_audit" ]] || value=RUN
+    if [[ -f "$root/EXACT_OUTPUT_AUDIT_RUNNING" ]]; then
+      read -r audit_pid < "$root/EXACT_OUTPUT_AUDIT_RUNNING"
+      [[ ! "$audit_pid" =~ ^[0-9]+$ ]] || ! kill -0 "$audit_pid" 2>/dev/null || value=RUN
+    fi
     [[ ! -f "$root/EXACT_OUTPUT_AUDIT_FAILED" ]] || value=FAILED
   fi
   state="$value"
@@ -168,6 +172,7 @@ render_fused() {
   global_stage_row 'Reporting checks' report_checks "$root/REPORT_CHECKS_COMPLETE"
   global_stage_row 'Output census' census "$root/CENSUS_COMPLETE"
   if [[ "$(cat "$root/PROFILE")" == ckb-reporting-* ]]; then
+    if [[ -d "$root/relationship_precision_candidate" ]]; then global_stage_row 'Precision correction' precision_review "$root/RELATIONSHIP_PRECISION_CORRECTION_COMPLETE";fi
     global_stage_row 'Exact output comparison' exact_output_audit "$root/EXACT_OUTPUT_EQUIVALENCE_COMPLETE"
     printf '\nFinancial preparation/sorting reused; reporting alone is timed again.\n'
     printf 'Temporal output bytes: '
