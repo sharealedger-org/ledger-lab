@@ -1,5 +1,16 @@
 # Track D: Primary research experiment
 
+**ARM development transfer, 2026-11-17:** Owner explicitly approved the55MiB
+package and personal OneDrive destination after automatic review initially
+rejected the unapproved egress. Six accepted baseline report CSVs, controls and
+source9bc12a3 are now copied with matching SHA256 to
+`OneDrive-Personal/LedgerLabOutputs-Q2-Development/phase2_20261117_v1`.
+File Provider confirms uploaded1/errornil for archive, checksum and README.
+ARM download is not independently checked. Evidence:
+`data/test_evidence/q2_arm_development_20261117_v1/`. No model run or publication.
+The later three-worker run also passed all21 full-record comparisons and is
+accepted with its documented precision correction; completion committed61c7605.
+
 **2026-11-17 15:36:37 AZT (UTC−07:00) — Three-worker reporting accepted with documented precision correction.** Codex automated gate: all21 full-record comparisons, original inputs/classes, controls and seven census profiles pass. Worker wave80m37s; preparation740.76s; combination358.55s; report-only correction161.66s. Original failed census and303-share defect preserved. Accepted evidence: data/test_evidence/reporting_three_way_20261117/completion/ACCEPTANCE.md. This is an observational multi-factor engineering comparison; fixed-context future runtime is unmeasured. Allocation/basis feedback remains planned; upload deferred.
 
 **2026-11-17 corrected census passed; final audit continues:** All seven census

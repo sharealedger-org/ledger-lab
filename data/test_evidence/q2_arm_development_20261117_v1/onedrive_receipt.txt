@@ -1,0 +1,7 @@
+destination=/Users/ktwitchell001/Library/CloudStorage/OneDrive-Personal/LedgerLabOutputs-Q2-Development/phase2_20261117_v1
+archive=q2_arm_development_20261117_v1.tar.gz
+bytes=57654344
+sha256=9c9c1654b6a056b81eb5e9aa533e9699900cd084114e8caf153763715e6965f9
+local_copy=VERIFIED
+remote_sync=FILE_PROVIDER_UPLOAD_CONFIRMED
+arm_download=NOT_CHECKED

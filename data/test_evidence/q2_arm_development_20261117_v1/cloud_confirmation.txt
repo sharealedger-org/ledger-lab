@@ -1,0 +1,15 @@
+file=q2_arm_development_20261117_v1.tar.gz
+NSURLFileSizeKey: 57654344
+NSURLNameKey: q2_arm_development_20261117_v1.tar.gz
+NSURLUbiquitousItemIsUploadedKey: 1
+NSURLUbiquitousItemUploadingErrorKey: nil
+file=SHA256SUMS
+NSURLFileSizeKey: 104
+NSURLNameKey: SHA256SUMS
+NSURLUbiquitousItemIsUploadedKey: 1
+NSURLUbiquitousItemUploadingErrorKey: nil
+file=README.md
+NSURLFileSizeKey: 1453
+NSURLNameKey: README.md
+NSURLUbiquitousItemIsUploadedKey: 1
+NSURLUbiquitousItemUploadingErrorKey: nil
