@@ -1291,3 +1291,13 @@ and current unfinished attempt rejected. Initial fixture /tmp→/private/tmp pat
 mismatch corrected in fixture only. No live engine change. Use after completion,
 then separately verify original sessionexit, census, fourtarget dated semantics,
 and study conclusion before final acceptance/resultscommit/Zenodohelper.
+
+2026-11-17T14:11:32Z verified wait: same session84820/driver66386, JVM82547
+CPU220m57s, dashboard97164, observer18501 live. Inputoffsets89,598,722,048 /
+102,677,962,038B (~87.3%); lastfree67,162,020KiB (~64GiB), reserveintact.
+New source-only candidate in layerplan section9: physical presortedkey equals
+vendor+14 ordinary bucketdimensions, so direct fine-key fold may remove bucket
+partials. Test actualsplit-stream ordering, lategeneratedrecords, outputorder
+(encoded vsliteral) and once-per-vendor crossview contributor count beforecode.
+Study protocol now defines counter scopes; pervendor mergelevels are not corpus
+passes, bytecounters are scopedwrites not deviceI/O. Currentjob unchanged.

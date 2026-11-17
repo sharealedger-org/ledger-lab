@@ -2509,3 +2509,16 @@ retrieved, understood and applied remains a separate question; no hidden-trainin
 cause is established. Study protocol now separates those conditions. Initial
 detached observer did not persist; persistent session57877/PID18501 was verified
 sampling actual reducer files. No financial-process change.
+
+## 2026-11-17 — Presorted bucket-grain contiguity candidate
+
+Falsifiable claim: ordinary buckets require a vendor-wide map under the current
+presorted merge contract. Source trace: ReportingSupport.reportingKey is vendor
+plus the same14 dimensions used by ReportingPass.buckets; the priority queue
+orders the selected streams by that key. Equal bucket keys are contiguous in
+that profile, making a current-full-key fold a candidate. Existing code still
+finalizes through ReportingSums at vendor break. A real-merge fixture must prove
+split-partition equivalence and large-zero-vendor behavior before implementing
+or claiming savings. Encoded-key versus literal-key output order, late generated
+facts and other view keys require explicit treatment. Source inspection only;
+no live class change, output acceptance or target-runtime maturity promotion.

@@ -52,6 +52,12 @@ training from context retrieval, reasoning, specification or implementation-gate
 failure. No general model-capability score or causal training claim is justified.
 Source inspection identifies optimization candidates, not their measured benefit.
 
+Additional candidate from the actual contract: the presorted merge key equals
+vendor plus the ordinary bucket's fourteen dimensions, but bucket finalization
+still waits for a vendor break and uses ReportingSums. A direct current-full-key
+fold may remove those partials. This is a proposed change requiring equivalence,
+consumer-order and generated-record-readiness checks, not an implemented speedup.
+
 ### Access restriction is not a sufficient explanation
 
 Owner clarification,2026-11-17: building agents had complete access to the CKB
@@ -87,6 +93,25 @@ partials cannot be reconstructed from snapshots. Use emitted Scala metrics where
 available; missing per-view collapse/CPU/I/O, historical target/leaf memory peaks,
 cache state, thermal state and competing workload measurements remain missing.
 OS RSS is not a measurement of individual join-target or summary-map state.
+
+Interpret the emitted metrics using their actual producer definitions:
+
+| Producer field | Meaning and exclusion |
+|---|---|
+| extract `reporting_input_passes` | Traversals of its selected ordered financial inputs:1 for this presorted profile. Excludes reporting-order preparation, analytical partials and downstream scans. |
+| extract `aggregate_spill_bytes` | Writes of bucket, relationship and vendor-cross partials, including their intermediate merge outputs. Excludes the synthetic accumulators and terminal reducer. |
+| extract `spill_bytes` | Initial cross-vendor spill writes for the separate reducer. Not the size of all report products. |
+| extract `aggregate_merge_passes` | Sum of accumulator merge levels across vendor folds; not a count of complete corpus traversals. |
+| synthetic `partial_spill_bytes` | Writes summed across raw, temporal, master and their two summary accumulators, including intermediate merge outputs. Excludes final report CSV writes and reads. |
+| synthetic `partial_merge_passes` | Sum of merge levels across those accumulators and vendor folds. It cannot be multiplied by full corpus size to estimate I/O. |
+| reduce `merge_passes` | Levels of its global cross-vendor merge tree. Each level includes a materialized merge and a separate reduction read/write in this implementation. |
+| reduce `intermediate_bytes` | Sum of merged and reduced intermediate files written. Excludes final CSV output, initial spills and read bytes. |
+
+These writer counters are cumulative logical file bytes, not device traffic,
+retained footprint or independently measured reads+writes. Keep overlapping
+scope and final-output exclusions explicit when constructing a totals table.
+Scala elapsed fields exclude JVM/SBT startup; OS stage timers include it. Do not
+sum nested timers or per-vendor levels as if they were independent full runs.
 
 Evidence root:
 `data/test_evidence/ckb_reporting_transfer_20261117/`.

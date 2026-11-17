@@ -1,9 +1,9 @@
 # Track D: Primary research experiment
 
-**Live observation,2026-11-17T13:52:34Z:** Actual session84820 remained running;
-driver66386, JVM82547 CPU203m11s, dashboard97164 and observer18501 live.
-Input offsets84,150,321,152/102,677,962,038B (~82.0%);
-free74,080,552KiB (~70.6GiB). Final reduction/checks/
+**Live observation,2026-11-17T14:11:32Z:** Actual session84820 waited three55s
+intervals and remained running; driver66386, JVM82547 CPU220m57s, dashboard97164
+and observer18501 live. Input offsets89,598,722,048/102,677,962,038B (~87.3%);
+free67,162,020KiB (~64GiB). Final reduction/checks/
 census/review/script pending. No restart or engine change; final acceptance
 remains incomplete. Earlier actual Terminal793 read independently confirmed
 that the compact dashboard was refreshing.
@@ -15,6 +15,16 @@ Metadata fixtures pass and missing partition/hash/side-input mutation/incomplete
 attempt are rejected. No production report acceptance or financial logic change.
 Evidence: baseline receipt_verifier/. Semantic review and session exit remain
 separate gates.
+
+Study protocol now records actual metric scopes: accumulator merge-level sums
+across vendors are not full-corpus pass counts; spill-byte fields are stage-local
+logical writes, not disk traffic or retained footprint. Source inspection only;
+terminal counters and final acceptance remain pending.
+
+Source trace also shows presorted full keys equal ordinary bucket grain. The
+layer plan now prioritizes a current-full-key fold candidate, with split-file
+fixture, encoded/literal ordering and once-per-vendor contributor checks. No
+live implementation or measured saving is claimed.
 
 **2026-11-17 measured transfer study designated mid-run:** Owner requests current
 and concluding evidence plus a formally compared improved rerun. See

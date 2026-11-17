@@ -439,6 +439,25 @@ sort level or exceptional join-state overflow; expose them separately in metrics
 
 ### Physical changes to prototype
 
+**First candidate from actual ordering:** ReportingSupport.reportingKey is vendor
+plus exactly the fourteen dimensions used by ReportingPass.buckets. The presorted
+priority queue merges financial inputs by that full key. In that profile, matching
+movement/balance/opening bucket facts are therefore contiguous across input files.
+Prototype a current-full-key fold that emits history, reconciliation and identified
+cross-view contributions at the fine-key break, rather than accumulating every
+bucket until the vendor break and spilling/remerging it. Retained vendor join
+targets still outlive those fine-key breaks. Prove the property through the real
+merge, including a large zero vendor and matching keys split among partitions.
+The indexed profile and non-prefix relationship/temporal groupings do not inherit
+this guarantee automatically. Check downstream ordering requirements: current
+ReportingSums uses encoded-key order, so literal-order streaming may change row
+order even when keyed results are equivalent. Declare an allowed order change
+or retain a required output sort; do not conceal the difference. Late generated
+records for a completed fine key require their declared ordering boundary.
+Preserve cross-vendor contributor semantics: a vendor contributes once per
+cross-view key, not once per fine-grain bucket. Route fine-key contributions
+through the declared vendor/view summary before emitting that contributor count.
+
 1. Feed the final reporting-order merge directly into the common-key consumer.
    Retain sorted canonical files as an explicit restart/debug profile, not a
    mandatory write-and-reread in the fused profile. External-sort merge levels
