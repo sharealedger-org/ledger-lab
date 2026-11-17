@@ -1,0 +1,46 @@
+RESULT reporting_sort kind=movement rows=13850802 spills=139 levels=2 bytes=5065138091 file=SortedJEFY31merged.csv
+RESULT reporting_sort kind=balance rows=1105396 spills=12 levels=1 bytes=186891426 file=LDGR2031.csv
+RESULT reporting_sort kind=movement rows=13280964 spills=133 levels=2 bytes=4860111446 file=SortedJEFY32merged.csv
+RESULT reporting_sort kind=balance rows=1070153 spills=11 levels=1 bytes=180081439 file=LDGR2032.csv
+RESULT reporting_sort kind=movement rows=11619330 spills=117 levels=2 bytes=4280148837 file=SortedJEFY33merged.csv
+RESULT reporting_sort kind=balance rows=1043032 spills=11 levels=1 bytes=175503792 file=LDGR2033.csv
+RESULT reporting_sort kind=movement rows=16239790 spills=163 levels=2 bytes=6023122532 file=SortedJEFY34merged.csv
+RESULT reporting_sort kind=balance rows=1505363 spills=16 levels=1 bytes=269229575 file=LDGR2034.csv
+RESULT reporting_sort kind=movement rows=18520160 spills=186 levels=2 bytes=6803916308 file=SortedJEFY35merged.csv
+RESULT reporting_sort kind=balance rows=1493386 spills=15 levels=1 bytes=267702467 file=LDGR2035.csv
+RESULT reporting_sort kind=movement rows=22318444 spills=224 levels=2 bytes=8181134462 file=SortedJEFY36merged.csv
+RESULT reporting_sort kind=balance rows=1554506 spills=16 levels=1 bytes=279643807 file=LDGR2036.csv
+RESULT reporting_sort kind=movement rows=17012068 spills=171 levels=2 bytes=6169567562 file=SortedJEFY37merged.csv
+RESULT reporting_sort kind=balance rows=1010562 spills=11 levels=1 bytes=169582764 file=LDGR2037.csv
+RESULT reporting_sort kind=movement rows=20779316 spills=208 levels=2 bytes=7625966807 file=SortedJEFY38merged.csv
+RESULT reporting_sort kind=balance rows=1496007 spills=15 levels=1 bytes=269721281 file=LDGR2038.csv
+RESULT reporting_sort kind=movement rows=21879682 spills=219 levels=2 bytes=8033612492 file=SortedJEFY39merged.csv
+RESULT reporting_sort kind=balance rows=1607413 spills=17 levels=2 bytes=289317669 file=LDGR2039.csv
+RESULT reporting_sort kind=movement rows=22604128 spills=227 levels=2 bytes=8302731080 file=SortedJEFY40merged.csv
+RESULT reporting_sort kind=balance rows=1608995 spills=17 levels=2 bytes=290922948 file=LDGR2040.csv
+RESULT reporting_sort kind=movement rows=22292012 spills=223 levels=2 bytes=8197645784 file=SortedJEFY41merged.csv
+RESULT reporting_sort kind=balance rows=1615602 spills=17 levels=2 bytes=293089836 file=LDGR2041.csv
+RESULT reporting_sort kind=movement rows=23336902 spills=234 levels=2 bytes=9048705583 file=SortedJEFY42merged.csv
+RESULT reporting_sort kind=balance rows=1628308 spills=17 levels=2 bytes=296069104 file=LDGR2042.csv
+RESULT reporting_sort kind=movement rows=21732818 spills=218 levels=2 bytes=8451831324 file=SortedJEFY43merged.csv
+RESULT reporting_sort kind=balance rows=1612568 spills=17 levels=2 bytes=292784116 file=LDGR2043.csv
+RESULT reporting_sort kind=movement rows=20853402 spills=209 levels=2 bytes=8081470965 file=SortedJEFY44merged.csv
+RESULT reporting_sort kind=balance rows=1606625 spills=17 levels=2 bytes=292318541 file=LDGR2044.csv
+     4603.96 real      2919.90 user      1041.57 sys
+           639401984  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              719410  page reclaims
+                 145  page faults
+                   0  swaps
+                   0  block input operations
+                   3  block output operations
+                   0  messages sent
+                   0  messages received
+                   4  signals received
+              281998  voluntary context switches
+            13183307  involuntary context switches
+      27497368649591  instructions retired
+      13208958242356  cycles elapsed
+           625467392  peak memory footprint
