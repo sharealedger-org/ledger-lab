@@ -125,6 +125,10 @@ Evidence root:
 Observer: `scripts/capture_reporting_ckb_study.sh`; initial and conclusion snapshots
 have SHA256SUMS. Capture completion/failure/unknown status, not just success.
 Completion markers mean workflow completion with result validation pending.
+The separately timestamped `environment/` receipt records the mid-run OS/JDK,
+16GiB host,2 physical cores/4 logical CPUs and declared launch build. Reporting
+uses1 active JVM processor and2GiB maximum heap. Do not backdate host observations
+or infer launch-time cache/thermal/background state from them.
 
 ## Matched comparison registered before improved execution
 

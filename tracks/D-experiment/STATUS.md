@@ -1,9 +1,9 @@
 # Track D: Primary research experiment
 
-**Live observation,2026-11-17T14:31:29Z:** Actual session84820 waited three55s
-intervals and remained running; driver66386, JVM82547 CPU238m51s, dashboard97164
-and observer18501 live. Input offsets94,123,327,488/102,677,962,038B (~91.7%);
-coverage advanced tov788..., free59,289,768KiB (~56.5GiB). Final reduction/checks/
+**Live observation,2026-11-17T14:47:01Z:** Actual session84820 waited nine55s
+intervals and remained running; driver66386, JVM82547 CPU253m28s, dashboard97164
+and observer18501 live. Input offsets97,874,083,840/102,677,962,038B (~95.3%);
+last free52,909,088KiB (~50.5GiB). Final reduction/checks/
 census/review/script pending. No restart or engine change; final acceptance
 remains incomplete. Earlier actual Terminal793 read independently confirmed
 that the compact dashboard was refreshing.
@@ -37,6 +37,12 @@ private-key-excluded normalization projection agree on reassigned_activity from
 the original zero vendor. Receipt early_report_review/reassigned_*.csv; completed
 generation/date views/wholly target/full controls still pending. No acceptance
 or maturity upgrade.
+
+Study environment receipt captured mid-run at14:47:00Z: macOS12.7.6,
+Temurin21.0.8+9,16GiB host RAM,2 physical/4 logical CPUs. Current reporting is
+still configured1 active processor/2GiB heap. Exact launch build.sbt and SHA
+receipt retained. Do not backdate this observation or infer launch thermal/cache
+conditions. No live configuration change.
 
 **2026-11-17 measured transfer study designated mid-run:** Owner requests current
 and concluding evidence plus a formally compared improved rerun. See

@@ -1301,3 +1301,12 @@ partials. Test actualsplit-stream ordering, lategeneratedrecords, outputorder
 (encoded vsliteral) and once-per-vendor crossview contributor count beforecode.
 Study protocol now defines counter scopes; pervendor mergelevels are not corpus
 passes, bytecounters are scopedwrites not deviceI/O. Currentjob unchanged.
+
+2026-11-17T14:47:01Z verified wait: same session84820/driver66386, JVM82547
+CPU253m28s, dashboard97164 and observer18501/session57877 live. Inputoffsets
+97,874,083,840/102,677,962,038B (~95.3%); lastfree52,909,088KiB (~50.5GiB),
+40GiB reserve still intact. Nine55s live-session waits this turn. Mid-run
+host/JDK/build receipt now under study environment/:16GiB,2physical/4logical,
+JDK21.0.8+9, current JVM1activeCPU/2GiB. Actualclock timestamped, not launchproof.
+Current reporting unchanged; no acceptance/releasehelper yet. Early reassigned
+link committed4842286, all samples must be rechecked in completed generation.

@@ -1,0 +1,12 @@
+captured_utc=2026-11-17T14:47:00Z
+Darwin 21.6.0 Darwin Kernel Version 21.6.0: Mon Jun 24 00:56:10 PDT 2024; root:xnu-8020.240.18.709.2~1/RELEASE_X86_64 x86_64
+ProductName:	macOS
+ProductVersion:	12.7.6
+BuildVersion:	21H1320
+hw.model: MacBookPro12,1
+hw.physicalcpu: 2
+hw.logicalcpu: 4
+hw.memsize: 17179869184
+openjdk version "21.0.8" 2025-07-15 LTS
+OpenJDK Runtime Environment Temurin-21.0.8+9 (build 21.0.8+9-LTS)
+OpenJDK 64-Bit Server VM Temurin-21.0.8+9 (build 21.0.8+9-LTS, mixed mode)
