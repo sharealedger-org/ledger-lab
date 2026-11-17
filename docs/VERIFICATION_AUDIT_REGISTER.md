@@ -2334,3 +2334,21 @@ broaden source eligibility. Full financial/report fixtures remain green. Real
 FY03 speed, class counts, memory and controls await fresh admission. Operational
 run IDs also now default to the canonical attempt path instead of repeating FY31
 across attempts; this metadata correction changes no financial fields.
+
+## 2026-11-16 22:06 AZT — Real native GL gate falsifies adapter-year invocation
+
+Optimized admission v2 finished source preparation with exact expected source
+counts and 29,248,690 date-cache hits/567 misses, then correctly failed the strict
+native historical GL hash gate before posting. Diagnosis: FusedSourcePrepare
+passed 2003/2031 to APA, whereas established run_pipeline.sh passes 03/31. APA
+uses that parameter in period/accounting-date formatting: 2003/01 versus 0003/01,
+and four-digit slash accounting dates versus canonical yy/MM/dd. This also caused
+the unparseable-accounting-date count. The first fixture used four-digit years in
+both profiles and missed the real Bash invocation boundary; no passing fixture
+is relabeled full-scale acceptance.
+
+Corrected the adapter call to two-digit years, retained 2003 as the historical
+policy year, and fixed the independent reference fixture to the real Bash contract.
+New assertions require 0031 APA periods and parseable shifted accounting dates.
+All 47 tests pass. Hash/control/cache evidence is preserved under short_year_gate/;
+the strict hash gate is unchanged. Fresh actual FY03 admission is still required.

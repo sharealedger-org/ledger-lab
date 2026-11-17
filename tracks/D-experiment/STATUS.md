@@ -42,6 +42,13 @@ in AGENTS and the contributor guide. Runtime checkpoints and next gates are unch
 
 ## Current plans and evidence
 
+**Real-year gate caught invocation mismatch:** Admission v2 source counts/cache
+checks passed, but strict native GL hash correctly failed before posting. New
+wrapper used long years2003/2031; real Bash adapter contract is03/31, affecting APA
+period/date formatting. Corrected parameter and reference fixture; 47 tests pass
+with explicit 0031-period/date assertions. Native hash gate unchanged. Fresh v3
+admission next; failed attempts are not full acceptance. Details in audit register.
+
 **Date hot-path correction verified:** Stopped first fused admission after five
 JVM samples showed four in date parsing/exception creation. No financial failure
 or accepted full-year result. Added equivalent ISO dispatch, bounded positive/

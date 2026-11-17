@@ -36,7 +36,8 @@ class FusedSourcePrepareSpec extends AnyFunSuite {
       val history=fixture(root,2003,false);val whole=fixture(root,2031,true)
       def independent(input:File,year:Int):File={
         val out=new File(root,s"adapter_$year");out.mkdirs()
-        val p=Map("outPath"->out.getPath,"year"->year.toString,"refPath"->input.getPath,
+        // Frozen real Bash invocation, not the different four-digit APA profile.
+        val p=Map("outPath"->out.getPath,"year"->f"${year%100}%02d","refPath"->input.getPath,
           "vendormaster"->new File(input,"VendorMaster.csv").getPath,"periodGranularity"->"monthly")
         standardizeAndSort.applyAPA(p++Map("inPath"->new File(input,"VARawFiles").getPath,"type"->"B"))
         standardizeAndSort.applyPO(p+ ("inPath"->new File(input,"VAPOData").getPath))
@@ -53,6 +54,9 @@ class FusedSourcePrepareSpec extends AnyFunSuite {
       FusedSourcePrepare.prepare(Vector(FusedSourcePrepare.Input(history,2003,true),FusedSourcePrepare.Input(whole,2031,false)),spec,fused,
         (_,pair)=>{assert(pair.map(r=>BigDecimal(r(25))).sum==0);originalRows+=pair.size},chunk=1,byteCap=4096,fanIn=2)
       val actual=lines(new File(fused,"SortedJEFY31merged.csv"));assert(originalRows==12 && actual.size==12)
+      val expenseRows=actual.map(_.split(",",-1)).filter(_(5)=="EXPENSE_PAYMENT")
+      assert(expenseRows.nonEmpty && expenseRows.forall(_(22).startsWith("0031/")),"APA must preserve the Bash short-year period contract")
+      assert(expenseRows.forall(r=>PhaseTwoBaselineNormalize.date(r(23)).nonEmpty),"Accounting dates remain parseable after normalization")
       assert(actual.sorted==lines(new File(reference,"SortedJEFY31merged.csv")).sorted)
       val keys=actual.map(SortEngine.extractKey(_,SortEngine.loadSpec(spec.getPath)).keyStr)
       assert(keys==keys.sorted)

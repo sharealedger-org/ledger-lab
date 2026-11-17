@@ -669,3 +669,14 @@ parser unchanged. 47 tests pass, including frozen parser differential, invalid/
 ambiguous/leap inputs, disabled/evicting/negative caches and full fused controls.
 Next freeze and restart FY03 at phase2_fused_admission_v2, then inspect actual
 cache hits/misses and all real-year controls before parallel/full admission.
+
+22:06 AZT: admission v2 stopped itself at native GL hash gate (exit1, no accepted
+year). Source counts correct; date cache 29,248,690 hits/567 misses. Root cause:
+new source wrapper passed long years2003/2031; real Bash path passes03/31 and APA
+uses it in period/accounting-date formatting. Fixed common adapter parameter to
+short year, kept historical policyyear2003. Corrected reference fixture and added
+0031 period/parseable accounting-date assertions; 47 tests pass. Do not relax GL
+hashes. Preserve short_year_gate evidence and failed v2. Next freeze correction
+and run phase2_fused_admission_v3. Untracked run_phase2_fused_baseline.sh is a full
+controller draft (check syntax/memory gate only); needs bounded multi-year execution
+and reporting resource admission before production launch. No full proof yet.

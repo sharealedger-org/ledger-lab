@@ -1,0 +1,2 @@
+capacity,max_key_chars,peak_entries,hits,misses,period_capacity,period_entries
+4096,128,567,29248690,567,64,24

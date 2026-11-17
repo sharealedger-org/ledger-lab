@@ -44,7 +44,9 @@ object FusedSourcePrepare {
           require(changed.size==rows.size)
           changed.foreach(r=>sorter.add(r.mkString(",")));accepted+=changed.size
         }
-        val common=Map("outPath"->adapterOut.getPath,"year"->input.year.toString,
+        // Match run_pipeline.sh's established short-year invocation. APA uses
+        // this value in fiscal-period/accounting-date formatting as well as names.
+        val common=Map("outPath"->adapterOut.getPath,"year"->f"${input.year%100}%02d",
           "periodGranularity"->"monthly","vendormaster"->new File(input.root,"VendorMaster.csv").getPath,
           "refPath"->input.root.getPath,"sortspec"->sortSpec.getPath)
         var before=accepted
