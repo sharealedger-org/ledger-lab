@@ -908,3 +908,44 @@ After extract: compare input_manifest financial hashes/paths/counts to sort
 manifest, then reduction, ConnectedViewsCheck/census, result inspection and final
 validated-results commit. Only after validation create the Zenodo script. Local
 Bash3.2/curl8.7.1/shasum/tar/gzip available; jq is absent (do not introduce Python).
+
+2026-11-17 extraction follow-up: session84820/JVM82547 live and accumulating
+CPU. A single read-only jcmd sample (extract_stack_checkpoint.txt in live root)
+shows ReportingPass financial fold, with regex compilation in fiscalYear at that
+instant; one sample does not establish a bottleneck. Bucket partial files0-0/
+0-1 exist while top-level writers remain buffered. Do not restart for empty
+buffered manifests. Keep current configuration per owner direction.
+
+Release tool prerequisite resolved locally: official jq1.8.2 macOSamd64 binary
+saved only under session-run.tmp/release_tools/jq-1.8.2/jq, verified published
+SHA before chmod/execution. Version and bounded JSON test pass; receipt in
+release_tooling. No global install, Python, financial code or upload. Script
+creation/acceptance remains after full result validation.
+
+Prepared report_review_targets.md from actual metadata: observed v253147...
+(original0000099085, source grouping JOURNAL ENTRY, not a resolved real party),
+reassigned v777305.../SIM_I000030, wholly v992291.../SIM_I000001 with dated
+SMALL/LARGE change and actual wholly source event, zero0000000000 with verified
+absent assignment. Private actor recipe keys excluded. Complete these semantic
+checks after reporting, alongside all controls and external population/hash
+comparisons. No new financial logic, Python or Q2 execution.
+
+2026-11-17T10:25:31Z: same extraction JVM82547 live (7m57s CPU), driver66386/
+session84820 and dashboard66618 alive. Partial spills advance through0-6.csv;
+latest free125,817,012KiB. No alarms, restart or class/config changes. No full
+report output/controls yet; buffered manifests do not imply failure.
+
+2026-11-17T10:27:58Z verified wait: all28 same financial descriptors advanced
+between two lsof offset samples, no regressions/new files, totaloffset delta
+1,101,004,800bytes. Input progress check and raw samples in live root. Offsets
+include reader buffering; do not label them completed rows or use them for a
+completion ETA. Same JVM82547 CPU10m15s/RSS756,276KiB, session84820 and dashboard
+66618 live. Bucket partials0-7/0-8/0-9 appeared. Latest free125,714,924KiB; no
+alarm/configuration change. All final reporting controls/deliverables pending.
+
+2026-11-17T10:30:54Z verified wait: same JVM82547 CPU13m08s/RSS759,240KiB,
+driver66386/session84820 and dashboard66618 live. All28 financial descriptors
+advanced again between latest/current offset samples, delta1,354,760,192bytes,
+no new/missing/regressed paths. Fifteen bucket spill files now present. Latest
+free125,559,556KiB; no monitor alarm. No restart/engine/configuration changes.
+Final extract/reduce/controls/result review and release script remain pending.

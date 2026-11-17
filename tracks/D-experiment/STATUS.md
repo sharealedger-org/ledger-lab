@@ -4,7 +4,9 @@
 to continue unchanged. Financial14-year controls passed; reporting acceptance
 remains pending. All28 report sorts completed and match accepted producer
 row/path/size metadata (286,277,734 rows). Extraction JVM82547/session84820 and
-dashboard66618 confirmed live at2026-11-17T10:18:44Z. Actual reporting storage
+dashboard66618 confirmed live at2026-11-17T10:30:54Z. All28 input read positions
+advanced between latest samples (1,354,760,192bytes total; no regression). These are
+buffered read diagnostics, not completed-row counts. Actual reporting storage
 admission passed with40GiB reserve intact; receipt `full_report_sort` retained.
 The [stream and allocation feedback plan](../../docs/STREAM_LAYER_EVOLUTION_AND_ALLOCATION_FEEDBACK_PLAN.md)
 is design_only: reuse unchanged core inputs, apply prior committed receiver
@@ -849,3 +851,20 @@ report validation and final deliverables remain pending.
 with no duplicate records. Partial comparison retained at the live root as
 `partial_sort_count_comparison.csv`; it is not full report acceptance. Tenth
 partitionFY40 active; same session84820/JVM66823 and dashboard66618 verified.
+
+2026-11-17 extraction evidence: direct thread sample confirms active financial
+fold; partial spill files appear while summary writers are buffered. Same
+JVM82547/session84820 remains live. Empty buffered manifests are not a failure.
+Release-script JSON prerequisite now exists as checksum-verified workspace-local
+jq1.8.2 (release_tooling receipt), without financial runtime changes. Upload
+script itself and final report acceptance remain pending.
+
+2026-11-17 semantic review preparation: report_review_targets.md selects actual
+observed, reassigned, wholly-generated and zero-key identities plus a dated
+SMALL/LARGE change and source event. These are pending finished-output checks,
+not passed report evidence. No financial/runtime modification or model run.
+
+2026-11-17T10:25:31Z verified wait: extraction JVM82547 CPU7m57s/RSS756,524KiB,
+session84820 and dashboard66618 live. Bucket partials now include0-6.csv;
+latest free125,817,012KiB with no monitor alarm. Configuration unchanged.
+Selected semantic checks remain pending finished output; no acceptance claim.
