@@ -104,6 +104,7 @@ render_fused() {
   current="$(cat "$root/STATUS")"
   printf 'PHASE 2 FUSED GENERATION PROOF   %s\n' "$(TZ=America/Phoenix date '+%Y-%m-%d %H:%M:%S AZT')"
   printf 'Workflow: %s\n' "$current"
+  [[ ! -f "$root/SCOPE" ]] || cat "$root/SCOPE"
   if [[ -f "$root/STOPPED_FOR_DATE_HOTPATH" ]]; then
     stopped=yes;cat "$root/STOPPED_FOR_DATE_HOTPATH"
     [[ ! -f "$repo/session-run.tmp/phase2_fused_preparation_v1/STATUS" ]] || cat "$repo/session-run.tmp/phase2_fused_preparation_v1/STATUS"

@@ -682,6 +682,17 @@ controller draft (check syntax/memory gate only); needs bounded multi-year execu
 and reporting resource admission before production launch. No full proof yet.
 # Hot-path continuation — corrected real-year restart
 
+Prepared (not run) `scripts/run_phase2_fused_reporting.sh`: after original driver
+finishes full financial controls and stops at known metadata mismatch, apply/test
+the isolated patch, commit repair, then launch this continuation with
+`--financialRoot "$PWD/session-run.tmp/phase2_fused_baseline_v1" --out
+"$PWD/session-run.tmp/phase2_fused_reporting_v2" --mode run` in own process group.
+It links immutable completed financial partitions/controls into a fresh root and
+never reposts. Original failed attempt remains intact. Syntax + incomplete/full-
+subset rejection tests pass, but no real continuation execution claim yet. Update
+dashboard pointer/new owned display after launch; optional SCOPE line identifies
+the reused financial root. Recipe/guard logs are in the metadata-schema receipt.
+
 Additional actual-data check: isolated metadata repair completed exit0 on the
 four finished years' actor candidates and full immutable historical/v6 reference/
 master/assignment inputs. Separate output

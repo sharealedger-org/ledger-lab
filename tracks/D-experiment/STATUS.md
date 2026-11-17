@@ -42,6 +42,13 @@ in AGENTS and the contributor guide. Runtime checkpoints and next gates are unch
 
 ## Current plans and evidence
 
+**Reporting continuation prepared, not run:** New Bash-only
+`scripts/run_phase2_fused_reporting.sh` links all accepted financial partitions
+into a fresh reporting generation after metadata repair, preserving original
+attempts. Syntax and fail-closed admission tests pass: incomplete full run and
+completed two-year fixture both rejected before output creation. Actual workflow
+execution remains pending after all14 financial controls and production repair.
+
 **Actual first-wave metadata preflight passed:** Isolated repaired class completed
 exit0 on actual historical/v6 master/assignment/reference snapshots plus FY31–34
 actor candidates, publishing separate DIMENSIONS_COMPLETE and all metadata

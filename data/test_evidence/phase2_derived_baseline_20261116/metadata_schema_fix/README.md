@@ -46,3 +46,31 @@ inspection; it is not a financial worker or cost measurement. Financial source
 and class files remained unchanged, and the full class checksum manifest passed
 again afterward. The production patch remains unapplied. The actual all-year
 metadata generation and reporting consumers still require later acceptance.
+
+## Prepared reporting continuation — not executed yet
+
+`scripts/run_phase2_fused_reporting.sh` defaults to check-only. Its run mode
+requires all14 completed years, the actual shared Scala financial completion
+marker with all three full-population counts, unchanged financial main source
+and class bytes (except the declared dimensions adapter), AC and resource gates.
+It links accepted financial partitions/controls into a fresh reporting generation;
+it never invokes transformation or posting. Original financial and failed metadata
+attempts remain intact. The new dashboard can show its explicit continuation scope.
+
+Shell syntax checks pass. Actual incomplete full-root and completed two-year
+fixture guards each exited1 before creating an output directory; their captured
+messages are adjacent. These prove admission rejection only. The continuation's
+actual dimensions/sort/report/check/census workflow has not run or been accepted.
+
+After all financial work ends, inspect the full controls, apply and verify the
+metadata patch, commit that repair, then launch in its own process group:
+
+```bash
+exec bash scripts/run_phase2_fused_reporting.sh --mode run \
+  --financialRoot "$PWD/session-run.tmp/phase2_fused_baseline_v1" \
+  --out "$PWD/session-run.tmp/phase2_fused_reporting_v2"
+```
+
+Switch the live dashboard pointer to the new root after startup. Keep the
+original financial root and its failure marker/evidence; full acceptance and
+validated-results commit still require actual reporting and result inspection.

@@ -2354,6 +2354,14 @@ All 47 tests pass. Hash/control/cache evidence is preserved under short_year_gat
 the strict hash gate is unchanged. Fresh actual FY03 admission is still required.
 # Fused scheduler fixture continuation
 
+Prepared separate Bash reporting continuation for the known metadata repair. It
+requires all14 actual financial completions and the three full-population Scala
+control totals, preserves source partitions through links, and validates frozen
+financial main source/classes while allowing only the declared metadata adapter
+change. Syntax, stdin filtered-class verification and rejection of incomplete/
+two-year fixture roots pass without creating output. Full continuation runtime
+remains unverified; no financial or reporting success is inferred from guards.
+
 Actual metadata preflight subsequently completed exit0 using the isolated repair
 on full actual reference/master/assignment snapshots and FY31–34 actor candidates.
 Published separate DIMENSIONS_COMPLETE plus metadata products. Master sort:
