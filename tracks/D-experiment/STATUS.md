@@ -1,5 +1,16 @@
 # Track D: Primary research experiment
 
+**Three reporting workers live, 2026-11-17 12:56 AZT:** Preparation completed
+successfully in740.76s. Concurrent JVMs84355/84356/84357 in driver group80675
+are extracting workers0/1/2; all three have live CPU activity. Verified financial
+range counts are154341930,72524043,59411761 respectively, totaling286277734.
+Selected byte intervals total102677954310 bytes (ledger headers excluded), with
+full-file and interval hashes retained in `vendor_ranges.csv`. Worker0 is the
+unattributed range; other workers process attributed vendors concurrently.
+Compressed report outputs are appearing; final global collapse, full controls,
+census and exact21-output comparison remain pending. Dashboard window1532
+selects the new root. No completed timing or performance ratio is claimed yet.
+
 **Final-collapse wiring verified:** Owner explicitly confirms final cross-worker
 sort/collapse work. Frozen `e788d67` already invokes ReportingPartitionCombine
 after all three worker reductions. Cross-vendor totals use6 key fields, temporal

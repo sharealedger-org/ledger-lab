@@ -1,0 +1,48 @@
+RANGES kind=balance rows=1105396 path=/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/phase2_fused_reporting_v2/report_order/FY31/LDGR2031.csv
+RANGES kind=balance rows=1070153 path=/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/phase2_fused_reporting_v2/report_order/FY32/LDGR2032.csv
+RANGES kind=balance rows=1043032 path=/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/phase2_fused_reporting_v2/report_order/FY33/LDGR2033.csv
+RANGES kind=balance rows=1505363 path=/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/phase2_fused_reporting_v2/report_order/FY34/LDGR2034.csv
+RANGES kind=balance rows=1493386 path=/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/phase2_fused_reporting_v2/report_order/FY35/LDGR2035.csv
+RANGES kind=balance rows=1554506 path=/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/phase2_fused_reporting_v2/report_order/FY36/LDGR2036.csv
+RANGES kind=balance rows=1010562 path=/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/phase2_fused_reporting_v2/report_order/FY37/LDGR2037.csv
+RANGES kind=balance rows=1496007 path=/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/phase2_fused_reporting_v2/report_order/FY38/LDGR2038.csv
+RANGES kind=balance rows=1607413 path=/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/phase2_fused_reporting_v2/report_order/FY39/LDGR2039.csv
+RANGES kind=balance rows=1608995 path=/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/phase2_fused_reporting_v2/report_order/FY40/LDGR2040.csv
+RANGES kind=balance rows=1615602 path=/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/phase2_fused_reporting_v2/report_order/FY41/LDGR2041.csv
+RANGES kind=balance rows=1628308 path=/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/phase2_fused_reporting_v2/report_order/FY42/LDGR2042.csv
+RANGES kind=balance rows=1612568 path=/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/phase2_fused_reporting_v2/report_order/FY43/LDGR2043.csv
+RANGES kind=balance rows=1606625 path=/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/phase2_fused_reporting_v2/report_order/FY44/LDGR2044.csv
+RANGES kind=movement rows=13850802 path=/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/phase2_fused_reporting_v2/report_order/FY31/SortedJEFY31merged.csv
+RANGES kind=movement rows=13280964 path=/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/phase2_fused_reporting_v2/report_order/FY32/SortedJEFY32merged.csv
+RANGES kind=movement rows=11619330 path=/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/phase2_fused_reporting_v2/report_order/FY33/SortedJEFY33merged.csv
+RANGES kind=movement rows=16239790 path=/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/phase2_fused_reporting_v2/report_order/FY34/SortedJEFY34merged.csv
+RANGES kind=movement rows=18520160 path=/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/phase2_fused_reporting_v2/report_order/FY35/SortedJEFY35merged.csv
+RANGES kind=movement rows=22318444 path=/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/phase2_fused_reporting_v2/report_order/FY36/SortedJEFY36merged.csv
+RANGES kind=movement rows=17012068 path=/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/phase2_fused_reporting_v2/report_order/FY37/SortedJEFY37merged.csv
+RANGES kind=movement rows=20779316 path=/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/phase2_fused_reporting_v2/report_order/FY38/SortedJEFY38merged.csv
+RANGES kind=movement rows=21879682 path=/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/phase2_fused_reporting_v2/report_order/FY39/SortedJEFY39merged.csv
+RANGES kind=movement rows=22604128 path=/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/phase2_fused_reporting_v2/report_order/FY40/SortedJEFY40merged.csv
+RANGES kind=movement rows=22292012 path=/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/phase2_fused_reporting_v2/report_order/FY41/SortedJEFY41merged.csv
+RANGES kind=movement rows=23336902 path=/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/phase2_fused_reporting_v2/report_order/FY42/SortedJEFY42merged.csv
+RANGES kind=movement rows=21732818 path=/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/phase2_fused_reporting_v2/report_order/FY43/SortedJEFY43merged.csv
+RANGES kind=movement rows=20853402 path=/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/phase2_fused_reporting_v2/report_order/FY44/SortedJEFY44merged.csv
+RANGES kind=synthetic_assignment rows=98862 path=/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/phase2_fused_reporting_v2/dimensions/synthetic_assignments.csv
+RANGES kind=vendor rows=39165 path=/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/phase2_fused_reporting_v2/dimensions/VendorMaster.csv
+      740.76 real       607.32 user        59.88 sys
+           158269440  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+               58250  page reclaims
+                   0  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   9  signals received
+                1598  voluntary context switches
+             1348783  involuntary context switches
+       6839831532817  instructions retired
+       2212530640305  cycles elapsed
+           133091328  peak memory footprint

@@ -21,7 +21,9 @@ vendor-ID workers. The single-worker CKB attempt is intentionally stopped and
 preserved, without a completed timing claim. Frozen isolated build `e788d67`
 passes18 reporting tests. Replacement session69014/driver80675 at
 `session-run.tmp/phase2_reporting_three_way_v1` is preparing verified byte ranges,
-then launches three2GiB/one-active-processor JVMs. Full output acceptance and
+then launches three2GiB/one-active-processor JVMs. Preparation passed740.76s;
+all three reporting JVMs are now verified live (84355/84356/84357).
+Full output acceptance and
 timings remain pending. See Track D; no upload/publication or Q2 models.
 
 **2026-11-17 improved reporting rerun active:** Baseline results `cd242fc` pushed.
