@@ -1,5 +1,21 @@
 # Track D: Primary research experiment
 
+**Live observation,2026-11-17T13:52:34Z:** Actual session84820 remained running;
+driver66386, JVM82547 CPU203m11s, dashboard97164 and observer18501 live.
+Input offsets84,150,321,152/102,677,962,038B (~82.0%);
+free74,080,552KiB (~70.6GiB). Final reduction/checks/
+census/review/script pending. No restart or engine change; final acceptance
+remains incomplete. Earlier actual Terminal793 read independently confirmed
+that the compact dashboard was refreshing.
+
+Receipt verifier `scripts/verify_phase2_report_receipts.sh` is prepared for
+after-completion use: exact28 producer/sort/extract rows+hashes, actual source/
+sorted sizes, side-input hashes, Scala verdict-scan receipts and frozen classes.
+Metadata fixtures pass and missing partition/hash/side-input mutation/incomplete
+attempt are rejected. No production report acceptance or financial logic change.
+Evidence: baseline receipt_verifier/. Semantic review and session exit remain
+separate gates.
+
 **2026-11-17 measured transfer study designated mid-run:** Owner requests current
 and concluding evidence plus a formally compared improved rerun. See
 [CKB reporting transfer study](../../docs/REPORTING_CKB_TRANSFER_STUDY.md), ID
@@ -941,3 +957,29 @@ master retains JOURNAL ENTRY.2,487,019 mixed financial input rows, not transacti
 Receipt early_report_review/observed_*.csv; analytical template attribution is not
 legal-party resolution. Full date/attribute/final-generation/controls and other
 classes remain pending; no result-review completion or maturity upgrade.
+
+2026-11-17T13:38:14Z verified continuation: driver66386/session84820,
+extractor82547, dashboard97164 and measurement observer18501 live. Read-only
+input offsets81,181,802,496/102,677,962,038 bytes (~79.1%); not completion-time
+percent. Free79,478,644KiB, reserve intact. Frozen reporting class manifest
+rechecked successfully. Study/initial evidence committed ed5efbb/a6a1e7c.
+Selected actual master/SAL/CAR inputs now retained in report_review_reference;
+FY-cutoff master semantics distinguished from temporal date modes. Final report
+acceptance, concluding study interpretation, validated-results commit and Zenodo
+script remain pending. No financial config change or Q2 execution.
+
+2026-11-17T13:40:57Z verified wait on actual session84820: driver66386,
+JVM82547 CPU192m41s/RSS805,176KiB, dashboard97164 and observer18501 all live.
+Emitted coverage advanced into v519...; actual root reducer inputs73 files /
+213,556,055bytes at13:40:14Z. Report attempt allocation47,395,984KiB. Latest
+monitor free79,072,588KiB; reserve intact and no new completion/failure marker.
+Official Zenodo draft-upload/checksum interface rechecked and recorded in
+release_tooling; script implementation still awaits final financial/report
+acceptance. This turn is a verified wait, not completed report acceptance.
+
+2026-11-17T13:43:36Z verified wait: same session84820/driver66386,
+JVM82547 CPU195m04s and dashboard97164/observer18501 live. Financial receipt
+recheck matches all14 producer summaries and28 PASS controls; frozen class hashes
+pass. Input offsets82,199,969,792/102,677,962,038B (~80.1%), lastfree77,823,020KiB.
+Extraction remains running; report/release acceptance pending. Recheck receipt:
+full_financial/live_receipt_recheck_20261117.txt under the baseline evidence root.

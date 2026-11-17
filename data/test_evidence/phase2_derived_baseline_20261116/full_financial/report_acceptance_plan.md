@@ -48,3 +48,12 @@ or establish a replicated cost point. Protocol:
 docs/REPORTING_CKB_TRANSFER_STUDY.md. Retain concluding evidence and interpretation
 as part of final result review, including implementation transfer failure despite
 owner-confirmed complete builder access. Do not infer hidden training causation.
+
+Prepared receipt helper: scripts/verify_phase2_report_receipts.sh REPORT_ROOT
+FINANCIAL_ROOT NEW_EVIDENCE_DIRECTORY (all absolute). It rejects unfinished or
+failed attempts before creating evidence, compares all28 financial partitions
+and producer/extract hashes, checks actual source/sorted sizes, verifies small
+side-input hashes, requires nonempty Scala-parser control scans and frozen class
+hashes. Metadata-fixture evidence: ../receipt_verifier/. It does not replace
+session exit verification, final semantic review or census inspection, and has
+not accepted the running report. No financial logic is computed by the helper.

@@ -16,3 +16,17 @@ bucket string and empty file list passed. This is not upload-script acceptance;
 that script remains scheduled after combined financial/report validation.
 No Python added or invoked. A future script can accept an explicit JQ path;
 do not rely on this ignored local binary being installed on another machine.
+
+2026-11-17 continuation preparation: rechecked the official developer API before
+implementation, https://developers.zenodo.org/ (file-upload quickstart and
+Deposition File representation). Bucket PUT uploads are addressed through the
+selected draft's links.bucket; remote file metadata exposes MD5 checksum and
+size. A resumable helper must check actual remote state against local size/hash,
+not trust only a prior local success receipt. SHA-256 remains the artifact
+manifest identity; record MD5 separately for remote transport verification.
+
+The documented default record budget is50GB total/up to100 files, requiring an
+explicit package/record partition plan for any larger release. Check before
+remote mutation rather than silently omitting artifacts or creating records.
+No token, draft API mutation, upload, package compression or script implementation
+was performed during this check. The after-validation gate remains in effect.

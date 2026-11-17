@@ -1,0 +1,4 @@
+instID,instEffectDate,instEffectEndDate,instHolderName,instTypeID,instVendorAddress,instVendorCity,instVendorState,instVendorPostalCode,instAuditTrail,instNIGPClass,instNIGPDesc,instGeoRegion,instSizeTier,instContractType,instPaymentChannel,instCounterpartySector,instExposureType,instMaturityProxy,instRiskWeightProxy,instFXCurrency,instFederalCFDA,instFederalAgency
+v777305469290280721924923592149096066,2030-01-01,9999-99-99,Fictional Supplier v777305469290280721924923592149096066,FICTIONAL_REASSIGNED,,,,,,,,,,,,,,,,USD,,
+v992291562825503351596510708858841042,2030-01-01,2032-05-31,Fictional Supplier v992291562825503351596510708858841042,,,,,,,,,VA,SMALL,CONTRACTED,ACH,COMMERCIAL,SERVICE,,,USD,,
+v992291562825503351596510708858841042,2032-06-01,9999-99-99,Fictional Supplier v992291562825503351596510708858841042,,,,,,,,,VA,LARGE,CONTRACTED,ACH,COMMERCIAL,SERVICE,,,USD,,

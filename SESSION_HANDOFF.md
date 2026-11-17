@@ -1255,3 +1255,39 @@ from actual retrieval, comprehension and implementation. Observer correction:
 initial detached PID18370 did not persist; session57877/PID18501 was verified
 sampling, and operational references were corrected. Do not stop the observer
 when ending a chat turn; final substantive interpretation remains pending.
+
+2026-11-17T13:38:14Z resumed goal verified wait: session84820 alive; driver66386,
+JVM82547 CPU190m09s/RSS805,176KiB, dashboard97164, observer18501/session57877.
+Actual sorted-input byte offsets~79.1%; free79,478,644KiB. Frozen class hashes
+pass. Study committed ed5efbb plus excluded-log receipt a6a1e7c. Added selected
+reference facts under phase2_derived_baseline_20261116/report_review_reference:
+wholly master SMALL at FY2031 cutoff, LARGE FY2032 onward; synthetic I1 LOW/owner1
+at fixed AS_OF, HIGH/owner2 at RUN_DATE, source facts only, final outputs pending.
+Current run unchanged. Do not implement Zenodo helper until financial/report
+acceptance passes; then prepare explicit artifact/version/checksum/resume manifests
+and offline tests, no actual upload/publication. Study concluding interpretation
+also remains required after actual terminal evidence capture.
+
+2026-11-17T13:40:57Z verified wait: same session84820 and all four processes
+live, extractor CPU192m41s. Coveragev519..., reducer initial files73 /213,556,055B.
+Report attempt47,395,984KiB, free79,072,588KiB at lastmonitor. No failure/completion
+marker. release_tooling receipt now records official bucket-PUT, remote-MD5/size
+verification and record-budget constraints for future after-validation helper;
+no upload/API mutation/new Python. Continue monitoring existing job, do not restart.
+
+2026-11-17T13:43:36Z verified session84820 wait. Inputoffsets~80.1%, JVM82547
+CPU195m04s; driver66386, dashboard97164 and observer18501 live. All14 retained
+financial summaries compare equal to years/FYxx/fused_year_summary.csv; actual
+shared control file equals retainedreceipt and has28 PASS/0fail. Classhashespass.
+Receipt full_financial/live_receipt_recheck_20261117.txt. Extraction, final report
+review/conclusion, validatedresultscommit and Zenodohelper remain pending.
+
+2026-11-17T13:52:34Z: session84820 stilllive; driver66386, JVM82547 CPU203m11s,
+dashboard97164 and observer18501. Inputoffsets84,150,321,152/102,677,962,038B
+(~82.0%), free74,080,552KiB, reserveintact. Prepared postengine receipt checker
+scripts/verify_phase2_report_receipts.sh ROOT FINANCIAL_ROOT NEW_EVIDENCE_DIR.
+Metadata complete fixturepass; missingpartition/hash mismatch/changedsideinput
+and current unfinished attempt rejected. Initial fixture /tmp→/private/tmp path
+mismatch corrected in fixture only. No live engine change. Use after completion,
+then separately verify original sessionexit, census, fourtarget dated semantics,
+and study conclusion before final acceptance/resultscommit/Zenodohelper.

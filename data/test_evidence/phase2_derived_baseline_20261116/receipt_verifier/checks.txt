@@ -1,0 +1,14 @@
+metadata_fixture=/private/tmp/phase2-receipts.qwwFw5
+complete28: PASS
+missing_partition: rejected
+hash_mismatch: rejected
+actual_incomplete_attempt: rejected before evidence creation
+Fixture paths canonicalized /tmp to /private/tmp after initial mismatch.
+No financial engine execution or replacement calculation.
+financial partition count/total mismatch
+Receipt verification failed: external report population comparison
+extract population/hash mismatch: /private/tmp/phase2-receipts.qwwFw5/root/report_order/FY31/SortedJEFY31merged.csv
+Receipt verification failed: external report population comparison
+complete28_with_side_input: PASS
+changed_side_input: rejected
+Receipt verification failed: side input changed hash: /private/tmp/phase2-receipts.qwwFw5/frozen_class.txt

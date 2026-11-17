@@ -1,0 +1,8 @@
+2026-11-17T13:43:36Z read-only recheck during reporting extraction.
+All14 full_financial/FYxx_summary.csv files match actual
+session-run.tmp/phase2_fused_baseline_v1/years/FYxx/fused_year_summary.csv via cmp.
+Retained baseline_controls.csv matches actual financial_controls receipt via cmp.
+Actual shared control statuses:28 rows,0 non-PASS.
+Frozen reporting_classes_sha256.txt verification passed.
+This is receipt immutability/verdict evidence, not a second financial execution,
+independent recalculation, or completed report acceptance.
