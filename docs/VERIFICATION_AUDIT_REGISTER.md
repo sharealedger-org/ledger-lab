@@ -2354,6 +2354,14 @@ All 47 tests pass. Hash/control/cache evidence is preserved under short_year_gat
 the strict hash gate is unchanged. Fresh actual FY03 admission is still required.
 # Fused scheduler fixture continuation
 
+Actual metadata preflight subsequently completed exit0 using the isolated repair
+on full actual reference/master/assignment snapshots and FY31–34 actor candidates.
+Published separate DIMENSIONS_COMPLETE plus metadata products. Master sort:
+435,183 input rows; assignment sort494,880; buffers32MiB/fan-in16. Metrics and
+output hashes retained in the metadata-schema receipt. Production source/classes
+remain unchanged and class checksum verification passed afterward. This proves
+actual first-wave metadata preparation only, not all-year metadata or reporting.
+
 Metadata preflight found a real later consumer incompatibility: historical fund
 reference header5 fields, immutable generated header3, while dimensions required
 equality. Isolated actual-class regression fails before repair; prefix-only

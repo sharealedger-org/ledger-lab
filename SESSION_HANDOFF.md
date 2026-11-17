@@ -682,6 +682,14 @@ controller draft (check syntax/memory gate only); needs bounded multi-year execu
 and reporting resource admission before production launch. No full proof yet.
 # Hot-path continuation — corrected real-year restart
 
+Additional actual-data check: isolated metadata repair completed exit0 on the
+four finished years' actor candidates and full immutable historical/v6 reference/
+master/assignment inputs. Separate output
+`session-run.tmp/fused_metadata_schema_fix_v1/actual_first_wave_dimensions`
+has DIMENSIONS_COMPLETE; metrics/hashes retained in the metadata-schema receipt.
+Production patch still unapplied; financial classes rechecked unchanged. All-year
+metadata and reporting remain pending. No need to rerun this first-wave preflight.
+
 Latest: Wave1 FY03–FY06 COMPLETED, each actual financial control PASS. Wave2
 FY07–FY10 ACTIVE, verified JVMs47213–47216 in driver group42994/session11522.
 Second-wave resource gate passed (free289,682,012KiB, reservation160,823,749KiB

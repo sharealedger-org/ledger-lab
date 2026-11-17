@@ -42,6 +42,13 @@ in AGENTS and the contributor guide. Runtime checkpoints and next gates are unch
 
 ## Current plans and evidence
 
+**Actual first-wave metadata preflight passed:** Isolated repaired class completed
+exit0 on actual historical/v6 master/assignment/reference snapshots plus FY31–34
+actor candidates, publishing separate DIMENSIONS_COMPLETE and all metadata
+products. Retained metrics/hashes in the metadata-schema receipt. Production
+financial source/classes still unchanged and checksums reverified. Full all-year
+metadata/reporting acceptance remains pending after financial processing.
+
 **Wave1 complete; wave2 active:** FY03–FY06 all passed financial controls and
 published FINANCIAL_YEAR_COMPLETE. FY06:16,239,790 journal rows,1,505,363 ledger
 rows,565,437 exact GL keys, one posting input open. FY07/08/09/10 now run on

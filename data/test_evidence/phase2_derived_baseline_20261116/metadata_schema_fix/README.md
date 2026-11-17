@@ -29,3 +29,20 @@ use a fresh dimensions output generation. No successful financial replay is need
 
 Acceptance remains pending: actual full metadata publication, reporting and final
 result review. This is a reference adapter correction, not financial or Q2 work.
+
+## Actual first-wave metadata preflight
+
+The isolated version subsequently completed exit0 against immutable actual
+historical/v6 master/reference/assignment snapshots and the four completed
+FY31–FY34 actor-candidate files. Output generation:
+`session-run.tmp/fused_metadata_schema_fix_v1/actual_first_wave_dimensions`.
+It published DIMENSIONS_COMPLETE, master, assignments and all five references.
+The master sort consumed435,183 candidate rows/125,704,736 bytes; assignments
+494,880 rows/71,262,720 bytes, with32MiB bounded buffers and fan-in16. Actual
+sort metrics, completion marker and output hashes are retained adjacent.
+
+This preflight used512MiB/one CPU and ran concurrently as post-engine metadata
+inspection; it is not a financial worker or cost measurement. Financial source
+and class files remained unchanged, and the full class checksum manifest passed
+again afterward. The production patch remains unapplied. The actual all-year
+metadata generation and reporting consumers still require later acceptance.
