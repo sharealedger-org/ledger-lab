@@ -1,0 +1,6 @@
+archive_bytes=57654344
+source_baseline=phase2_fused_reporting_v2_ACCEPTED
+source_revision=9bc12a3
+local_archive=session-run.tmp/q2_arm_development_20261117_v1.tar.gz
+one_drive_copy=BLOCKED_PENDING_EXPLICIT_PAYLOAD_AND_DESTINATION_APPROVAL
+proposed_destination=OneDrive-Personal/LedgerLabOutputs-Q2-Development/phase2_20261117_v1
