@@ -1,5 +1,9 @@
 # Non-archived document catalog
 
+Added2026-11-17: [Stream evolution and allocation feedback](STREAM_LAYER_EVOLUTION_AND_ALLOCATION_FEEDBACK_PLAN.md)
+— design_only roadmap for layers03–05/99, reusable allocation iterations,
+denominator drift, final verification and prospective AIM experiments.
+
 Updated 2026-11-15 after `3085967`. Start at [the document map](README.md) for a
 short reading path. This catalog covers tracked/non-ignored repository prose:
 Markdown, HTML explainers and README/method text. It excludes raw `.txt` data,

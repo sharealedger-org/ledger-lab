@@ -8,6 +8,10 @@ locates individual records. Neither is a request to read every document.
 
 ## Understand the argument and contribute
 
+[Next-phase stream and allocation feedback plan](STREAM_LAYER_EVOLUTION_AND_ALLOCATION_FEEDBACK_PLAN.md)
+maps reusable core processing, prior-run bases, regenerated denominators and
+allocation impact into layers03–05/99. Design_only; current reporting continues.
+
 | Need | Entry point | Scope |
 |---|---|---|
 | Understand the research position | [Overview](../LEDGER_LAB_OVERVIEW.md) | Motivating claims, evidence limits and current phase structure |

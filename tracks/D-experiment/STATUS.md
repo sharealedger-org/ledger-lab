@@ -1,5 +1,17 @@
 # Track D: Primary research experiment
 
+**2026-11-17 next-phase assessment:** Owner directs the current reporting run
+to continue unchanged. Financial14-year controls passed; reporting acceptance
+remains pending (`report_order` artifact, completed sort entries through FY37).
+The [stream and allocation feedback plan](../../docs/STREAM_LAYER_EVOLUTION_AND_ALLOCATION_FEEDBACK_PLAN.md)
+is design_only: reuse unchanged core inputs, apply prior committed receiver
+weights, regenerate basis alongside perspectives, quantify allocation impact,
+and verify the final rules with the new basis. Approximate three-hour downstream
+cycles are a planning assumption. A stable denominator total alone is insufficient
+when receiver weights change. No new engine or Q2 model executed. Owner-approved
+89-file inactive-attempt archival completed with decode/SHA verification;
+receipt: `session-run.tmp/inactive_phase2_archive_v1/ARCHIVE_COMPLETE`.
+
 Updated 2026-11-16 (Arizona). Latest bounded financial-lineage checkpoint:
 **`5e44a8e`** (lineage-v2, pushed). Initial Track D consolidation: `ddde891`; broader collaborator review and path reorganization follow here;
 those infrastructure commits made no engine changes or financial executions.

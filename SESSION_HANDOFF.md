@@ -809,3 +809,31 @@ class hashes retained, current dashboard pointer switched and Terminal window
 controls before admitting multiple workers. Draft full controller remains
 untracked and requires actual fixture execution before use.
 
+
+## 2026-11-17 — Reusable downstream iterations and basis feedback plan
+
+Owner directs the current configuration to continue; no live financial classes
+or reporting configuration changed. STATUS artifact remains report_order; log
+contains completed journal/ledger sorts through FY37. Process enumeration was
+unavailable in this sandbox, so this observation alone is not a fresh liveness
+proof. Reporting acceptance and final deliverables remain pending.
+
+Added docs/STREAM_LAYER_EVOLUTION_AND_ALLOCATION_FEEDBACK_PLAN.md (design_only).
+Unchanged core preparation can be reused; owner estimates roughly three hours
+for subsequent allocation/analytic cycles. Eight cycles/day is a steady-state
+ceiling before overhead, with final verification occupying a cycle. Regenerated
+basis must include receiver weights, not just totals; final rules/current frozen
+data must be verified against the newly generated basis. Legacy allocation does
+not read prior divisors; recorded scoped audit finding. No Q2 model execution.
+
+Owner explicitly approved verified lossless archival of the exact89 selected
+inactive-attempt files. Receipt session-run.tmp/inactive_phase2_archive_v1 has
+ARCHIVE_COMPLETE, manifest and events; old rejection descriptions are superseded.
+No additional archival scope is authorized by that approval.
+
+Follow-up direct process check (escalated read-only): reporting driver66386,
+ReportingSort JVM66823 live (35min elapsed,30min accumulated CPU); dashboard66618
+live for phase2_fused_reporting_v2. Session84820 remains running. No restart.
+Archive receipt's89 compressed-file SHA hashes rechecked successfully; normalized
+actual selected paths match the owner-approved proposal exactly. Archived bytes
+40,585,489,959 ->2,467,501,061. Final report validation is still pending.

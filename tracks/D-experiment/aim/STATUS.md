@@ -13,6 +13,14 @@ Earlier "Phase 1b" wording is historical; current synthetic work is Phase 2.
 
 ## Evidence and limits
 
+2026-11-17: [Allocation feedback and stream evolution](../../../docs/STREAM_LAYER_EVOLUTION_AND_ALLOCATION_FEEDBACK_PLAN.md)
+describes a proposed reusable engine-backed rule experimentation loop. Unchanged
+core preparation may be reused across downstream candidates. Final-rule
+verification must compare full receiver bases and allocation results, rather
+than denominator totals alone. Three-hour cycles are an owner planning estimate;
+the new loop is not implemented or timed. Repeated rule-search loops are
+development examples, with separate held-out evaluation required. No AIM run.
+
 | Item | Recorded result and limitation |
 |---|---|
 | AIM1 | Non-zero count gap across 14 years; partially verified for the specified key/count comparison, not predictive superiority |

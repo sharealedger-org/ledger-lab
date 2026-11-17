@@ -16,6 +16,18 @@ The audit register wins any evidence disagreement.
 
 ## Current checkpoint
 
+**2026-11-17 allocation-feedback assessment:** Keep the current reporting
+configuration unchanged. Financial controls passed for all14 years; reporting
+status artifact is `report_order`, with completed sort records through FY37.
+Final reporting acceptance remains pending. Owner explicitly approved verified
+lossless archival of89 selected inactive-attempt files; the archive receipt now
+contains `ARCHIVE_COMPLETE`. This supersedes the older archival rejection and
+pause descriptions below. The [next-phase plan](docs/STREAM_LAYER_EVOLUTION_AND_ALLOCATION_FEEDBACK_PLAN.md)
+separates reusable core preparation from allocation/analytic iterations and
+requires final-rule verification using the newly generated receiver basis.
+Three-hour iterations/eight daily cycles are planning assumptions, not timings
+of an implemented allocation loop. No live financial changes or AIM execution.
+
 **Owner-authorized reporting restart:** All14 financial years and shared controls
 passed, totaling266,319,818 journal rows. Metadata reference-schema repair now
 passes74 tests across12 suites in two runs, including the unchanged financial

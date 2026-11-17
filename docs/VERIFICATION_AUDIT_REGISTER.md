@@ -2407,3 +2407,22 @@ Evidence: `data/test_evidence/phase2_derived_baseline_20261116/controller_fixtur
 Evidence state: fixture-verified financial orchestration; real resource scale,
 full population and reporting remain pending. No financial main code changed.
 
+
+## 2026-11-17 — Allocation feedback producer/consumer assessment
+
+Scope: current `financialAllocation.scala`, `generate_allocation_divisors.sh`,
+`run_pipeline.sh`, and the fused baseline/reporting drivers. Falsifiable claim:
+the inspected allocation entry point consumes a prior-run denominator file.
+Cheapest falsifier: trace its arguments and file reads. It takes the ledger and
+rules, loads ledger rows, and computes receiver weights from that ledger; no
+prior-basis input is read. The shell helper produces group totals using awk and
+is not an eligible Scala mainline implementation. Current fused drivers schedule
+neither allocation nor denominator generation nor the legacy99 hook.
+
+Finding: the inspected path does not demonstrate the intended lagged-basis
+consumer. Earlier partially_verified allocation wording must not be generalized
+to this contract; reconstruct its named historical fixture before reassessment.
+The next-phase roadmap is design_only, with an explicit changed-old-basis
+consumer falsifier, full receiver vectors, balanced apply-back and final-rule
+verification. No implementation or target-runtime capability is promoted here.
+See `docs/STREAM_LAYER_EVOLUTION_AND_ALLOCATION_FEEDBACK_PLAN.md`.
