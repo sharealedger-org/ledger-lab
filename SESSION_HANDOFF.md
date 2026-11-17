@@ -1069,3 +1069,19 @@ cellRUN0spills reflects temporary consolidation, not a halt. Movement grew
 45,768,704->376,029,184. Earlier exact observation time not retained; later sample
 11:33:26Z. Manifest remains buffered. Latest free123,561,736KiB; final acceptance
 pending. Use output growth as well as input offsets during spill/output phases.
+
+2026-11-17 reporting-output phase verification: one jcmd sample confirms
+SyntheticReporting.finishVendor (raw/extract_output_stack.txt in live root;
+scoped excerpt in dashboard_activity). Main history sizes can pause while
+synthetic/master partial files grow. At11:36:41Z cut/raw/master-cut partials used
+1,693,044 /1,164,072 /469,364KiB. This is phase evidence, not a bottleneck claim.
+
+Dashboard counter coverage corrected: initial bucket-only count0 missed these
+active files. Current script counts CSVs in *_partials plus rootspill_*.csv for
+active extraction/reduction; count is temporary and can fall. Same82-character
+row, no columns/rows added. Syntax/read-only rendering pass; actual Terminal793
+showsRUN1492spills. Exact old dashboard95648/window/tty verified before refreshing;
+new dashboard97164 live. Same financial driver66386/session84820, extraction82547/
+group66386 unchanged; frozen class SHA verification passes. At11:38:36Z extraction
+CPU78m21s/RSS767,780KiB; latest free120,989,960KiB. No alarm/config/engine change;
+all final report controls/result review/upload-script deliverables pending.

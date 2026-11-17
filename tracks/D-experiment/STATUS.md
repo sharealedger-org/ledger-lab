@@ -4,9 +4,10 @@
 to continue unchanged. Financial14-year controls passed; reporting acceptance
 remains pending. All28 report sorts completed and match accepted producer
 row/path/size metadata (286,277,734 rows). Extraction JVM82547/session84820 and
-dashboard95648 confirmed live at2026-11-17T11:30:48Z. All28 input read positions
-advanced between latest samples (3,218,079,744bytes total; no regression). These are
-buffered read diagnostics, not completed-row counts. Actual reporting storage
+dashboard97164 confirmed live at2026-11-17T11:38:36Z. Input reads and report
+partial outputs advanced across observations. Current stack confirms synthetic
+dated-view generation in finishVendor; these are activity diagnostics, not
+completed-row counts. Actual reporting storage
 admission passed with40GiB reserve intact; receipt `full_report_sort` retained.
 The [stream and allocation feedback plan](../../docs/STREAM_LAYER_EVOLUTION_AND_ALLOCATION_FEEDBACK_PLAN.md)
 is design_only: reuse unchanged core inputs, apply prior committed receiver
@@ -892,3 +893,10 @@ new dashboard95648 live, financial driver66386/session84820 and extraction82547
 unchanged; reporting class SHA check passes. Receipt dashboard_activity retained.
 At11:33:26Z output histories/reconciliation have grown to273–376MB while input
 manifest remains buffered; final report/control/semantic acceptance still pending.
+
+2026-11-17 dashboard coverage correction: bucket-only count missed active
+synthetic/master partials during finishVendor. Current display counts named
+partial-directory/root spill CSVs for extraction/reduction, with unchanged table
+width; actual Terminal shows1492 current spills. New display97164, same driver/
+extraction and frozen class checks pass. Receipt dashboard_activity updated;
+all final report acceptance/deliverables remain pending.

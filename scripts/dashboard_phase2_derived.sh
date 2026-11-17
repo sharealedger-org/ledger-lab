@@ -86,7 +86,7 @@ fused_count() {
   printf '%s>%s' "$(compact "$accepted")" "$(compact "$journals")"
 }
 global_stage_row() {
-  local label="$1" stage="$2" marker="$3" value=pending report="$root/report" state partial_count
+  local label="$1" stage="$2" marker="$3" value=pending report="$root/report" state partial_count partial
   local partials=()
   [[ -d "$report" ]] || report="$report.attempt"
   if [[ -f "$marker" || -f "$root/stages/$stage.complete" ]]; then value=done
@@ -100,10 +100,12 @@ global_stage_row() {
   if [[ "$value" == RUN && -f "$root/FAILED" ]]; then value=FAILED; fi
   state="$value"
   # Current temporary files show activity; consolidation can reduce this count.
-  if [[ "$stage" == report_extract && "$value" == RUN && -d "$report/bucket_partials" ]]; then
-    partials=("$report"/bucket_partials/*.csv)
+  if [[ ( "$stage" == report_extract || "$stage" == report_reduce ) && "$value" == RUN && -d "$report" ]]; then
+    partials=("$report"/*_partials/*.csv "$report"/spill_*.csv)
     partial_count=0
-    [[ ! -f "${partials[0]:-}" ]] || partial_count="${#partials[@]}"
+    for partial in "${partials[@]}"; do
+      [[ ! -f "$partial" ]] || partial_count=$((partial_count+1))
+    done
     value="RUN $partial_count spills"
   fi
   printf '%-23s | %-17s %-19s %-12s | %s\n' "$label" - "$value" - "$state"
