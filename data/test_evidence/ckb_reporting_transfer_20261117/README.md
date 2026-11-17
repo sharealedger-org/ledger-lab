@@ -17,3 +17,10 @@ Verification: Bash syntax passed. A temporary completed-workflow fixture with
 one reducer spill exercised initial capture, terminal capture and success outcome;
 both snapshot SHA256SUMS verified. This tests the observer, not financial behavior.
 Independent final interpretation and matched rerun results remain pending.
+
+Final baseline: workflow completed15:17:18UTC; original session84820 exit0.
+CONCLUSION.md records actual timings, controls and interpretation. conclusion/
+contains the observer's final snapshot with verified SHA256SUMS. Observer18501
+finished normally; its retained PID is historical, not current liveness. Final
+financial/report acceptance is recorded separately in full_reporting/ACCEPTANCE.md.
+Improved implementation and paired timing have not yet run.

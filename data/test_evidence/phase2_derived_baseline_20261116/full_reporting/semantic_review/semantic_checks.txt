@@ -1,0 +1,3 @@
+PASS wholly temporal: fixed asof LOW/owner1; run HIGH/owner2; event before-baseline and both dated transitions observed
+PASS master: wholly FY2031 SMALL/FY2032+ LARGE; reassigned FICTIONAL_REASSIGNED; observed source type EXP preserved
+PASS zero samples: three modes remain unattributed with no template or party

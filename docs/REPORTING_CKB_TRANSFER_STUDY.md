@@ -52,6 +52,15 @@ training from context retrieval, reasoning, specification or implementation-gate
 failure. No general model-capability score or causal training claim is justified.
 Source inspection identifies optimization candidates, not their measured benefit.
 
+Preserve the mechanisms that already exist: ReportingPass streams leaf financial
+records through consumers without retaining the complete vendor SJE history,
+retains current-vendor dimension targets, merges ordered inputs and summarizes
+matching keys in bounded maps. Runtime peak_vendor_rows is a consumed-row counter,
+not resident leaf-record count. The missing transfer concerns direct ordered-key
+folds, generated-record dependent-view routing and avoidable summary/merge
+materialization; do not describe this implementation as buffering all150million
+zero-vendor SJEs or having no CKB mechanisms at all.
+
 Additional candidate from the actual contract: the presorted merge key equals
 vendor plus the ordinary bucket's fourteen dimensions, but bucket finalization
 still waits for a vendor break and uses ReportingSums. A direct current-full-key
@@ -177,3 +186,21 @@ attempt, then compare outputs and measurements before interpreting performance.
 No manuscript is changed, no new model is trained and no publication/upload is
 authorized here. Layer02/05 redesign and later03/04/99 integration remain subject
 to architecture gates and target-runtime capability qualification.
+
+## Progress-estimation correction during the baseline
+
+An assistant estimate used77% input read and2h56m elapsed to extrapolate roughly
+53m remaining under a constant-rate assumption. The original estimate's exact
+writing time is not recorded here; those approximate inputs are preserved as
+stated, not asserted to be a synchronized independent measurement. The estimate
+was too optimistic. At2026-11-17T14:51:01Z (07:51:01AZT), direct observation found
+96.2% input bytes consumed after4h33m of extraction, with reduction/validation
+still pending. The owner reported that more than50m had passed since the earlier
+estimate, and directed continuation after the correction.
+
+The estimate is withdrawn. Input consumption is not completed-work percentage:
+vendor-break summary expansion/merging pauses input reading and final summary
+work remains after corpus EOF. The improved profile must expose these phases
+separately. Do not reuse that extrapolation as measured throughput, a completion
+promise or performance evidence. This is also a failure of progress communication,
+distinct from the architecture-transfer finding and its unresolved cause.

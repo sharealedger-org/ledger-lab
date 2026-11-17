@@ -1,18 +1,21 @@
 # Track D: Primary research experiment
 
-**Live observation,2026-11-17T14:47:01Z:** Actual session84820 waited nine55s
-intervals and remained running; driver66386, JVM82547 CPU253m28s, dashboard97164
-and observer18501 live. Input offsets97,874,083,840/102,677,962,038B (~95.3%);
-last free52,909,088KiB (~50.5GiB). Final reduction/checks/
-census/review/script pending. No restart or engine change; final acceptance
-remains incomplete. Earlier actual Terminal793 read independently confirmed
-that the compact dashboard was refreshing.
+**2026-11-17 baseline accepted:** Session84820 exited0 after extraction, reduction,
+independent checks and census. Exact28 input/count/hash and side-input/class
+verification pass; four selected identity/date cases pass completed-generation
+review. See [accepted results](../../data/test_evidence/phase2_derived_baseline_20261116/full_reporting/ACCEPTANCE.md)
+and [study conclusion](../../data/test_evidence/ckb_reporting_transfer_20261117/CONCLUSION.md).
+Dashboard97164 remains available. Observers/producers completed normally. Owner
+requests prior results committed/pushed first, then uploader and improved rerun.
+No publication, Q2 models or improved implementation yet. Exact13-file verified
+archival now approved for space; only pilot copy exists, original retained.
 
 Receipt verifier `scripts/verify_phase2_report_receipts.sh` is prepared for
 after-completion use: exact28 producer/sort/extract rows+hashes, actual source/
 sorted sizes, side-input hashes, Scala verdict-scan receipts and frozen classes.
 Metadata fixtures pass and missing partition/hash/side-input mutation/incomplete
-attempt are rejected. No production report acceptance or financial logic change.
+attempt are rejected. The actual completed-run receipt verification now passes;
+no financial logic changed.
 Evidence: baseline receipt_verifier/. Semantic review and session exit remain
 separate gates.
 

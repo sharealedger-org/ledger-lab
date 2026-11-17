@@ -2547,3 +2547,29 @@ This verifies a scoped attribution link during extraction, not final dated-view
 behavior, full population/financial/report acceptance or legal-party truth.
 Recheck the completed generation; no RESULT_REVIEW_COMPLETE marker or maturity
 upgrade. No financial values recomputed outside Scala.
+
+## 2026-11-17 — Combined baseline accepted after completed reporting
+
+Actual workflow session84820 exited0; EXTRACT_COMPLETE/REPORT_COMPLETE,
+REPORT_CHECKS_COMPLETE/CENSUS_COMPLETE/WORKFLOW_COMPLETE present with no failure.
+The exact28 financial inputs match accepted14-year producer counts, sorter bytes
+and actual extractor SHA256:286,277,734 rows. Side-input and frozen class hashes
+pass. Independent Scala scans passed19,943,155 reconciliation keys,3,163,680
+conservation checks and20 reference cases; coverage counts agree. Census hashes
+and inventories complete. Selected zero/observed/reassigned/wholly identity and
+dated-view cases pass completed-generation inspection, retaining fiscal-cutoff
+versus event/asof/run semantics and identity/provenance qualifications.
+
+Receipt: data/test_evidence/phase2_derived_baseline_20261116/full_reporting/
+ACCEPTANCE.md, receipts/, semantic_review/. Post-engine raw sampler produced all
+samples; its timing wrapper could not read kern.clockrate under sandbox and
+returned1, so no missing sampler resource metrics are claimed. This did not affect
+the original successful workflow. Monetary controls remain Scala-produced.
+
+The measured observational CKB baseline conclusion and terminal snapshot are in
+ckb_reporting_transfer_20261117/. Synthetic partial writes172,057,919,331B identify
+materialization work; they do not isolate per-view CPU or prove a speedup/training
+cause. Current implementation already streams leaves/retains vendor targets;
+remaining transfer gaps and matched-rerun protocol are explicit. Acceptance is
+for this named combined corpus, not generalized03 walk-forward, new allocation/
+basis processing, complete99, target GenevaERS runtime or Q2 model evaluation.

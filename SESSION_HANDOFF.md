@@ -1310,3 +1310,30 @@ host/JDK/build receipt now under study environment/:16GiB,2physical/4logical,
 JDK21.0.8+9, current JVM1activeCPU/2GiB. Actualclock timestamped, not launchproof.
 Current reporting unchanged; no acceptance/releasehelper yet. Early reassigned
 link committed4842286, all samples must be rechecked in completed generation.
+
+## 2026-11-17 validated prior-run results
+
+Original session84820 exited0; workflow marker15:17:18UTC. Extract/reduce/checks/
+census finished; final exact28-input/hash/side-input/class verification and four
+selected identity/date semantic checks pass. RESULT_REVIEW_COMPLETE now exists.
+Evidence: phase2_derived_baseline_20261116/full_reporting/ACCEPTANCE.md and study
+CONCLUSION.md/conclusion/ snapshot. ExtractOS17416.02s, reduce32.16s, checks112.13s,
+census414.21s. Postengine sampler emitted all rows but OS timing wrapper returned1
+on sandbox kern.clockrate read; record this limit, not a financial failure.
+
+Owner now explicitly requests prior-run results committed and pushed FIRST.
+Exclude unfinished uploader/archive preparation from that results commit. Then
+finish the upload helper with no upload/publication, and implement/test/re-execute
+improved reporting for matched timings. User approved verified lossless archival
+of the exact13 files in rerun_archive_proposal/files.tsv (108.36GiB); this is new
+successful-output authorization, separate from earlier89 inactive files. Only a
+verified movement_history pilot.gz has been created; its original is retained.
+No other approved original has yet been removed and archival has not started.
+
+Uncommitted uploader scripts/evidence are separate pending work. Source-inventory
+job session86809 may still be hashing GL/permutation/small public outputs; inspect
+its handle. It is postengine metadata work, not a financial producer. A zsh path
+variable initially shadowed PATH; corrected inventory uses bash/artifact_path.
+Use the approved archive to recover space while retaining exact sorted rerun
+inputs. Do not overwrite original frozen classes: implement in an isolated build
+or worktree. No improved implementation or rerun has started.

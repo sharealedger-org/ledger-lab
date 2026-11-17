@@ -16,6 +16,17 @@ The audit register wins any evidence disagreement.
 
 ## Current checkpoint
 
+**2026-11-17 prior run validated:** All14 financial years and completed reporting
+passed. Original workflow session84820 exited0; exact28 input paths/counts/hashes,
+side inputs/classes, exhaustive Scala controls, census and selected identity/date
+semantics verified. [Accepted results](data/test_evidence/phase2_derived_baseline_20261116/full_reporting/ACCEPTANCE.md)
+and [measured case conclusion](data/test_evidence/ckb_reporting_transfer_20261117/CONCLUSION.md)
+are retained. Reporting extraction4h50m16s; separate reduction32s including startup.
+Owner requests results committed/pushed first, then upload-script completion and
+improved-architecture rerun. No upload/publication or Q2 models. Older running/
+pending checkpoints below are historical. New13-file verified archival is owner
+approved for rerun space; only its pilot copy exists, original retained.
+
 **2026-11-17 formally recorded CKB transfer case:** Owner now designates the
 ongoing reporting attempt as an observational measured baseline and requests a
 matched improved-architecture rerun. The
