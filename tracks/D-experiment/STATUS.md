@@ -42,6 +42,14 @@ in AGENTS and the contributor guide. Runtime checkpoints and next gates are unch
 
 ## Current plans and evidence
 
+**FY09 accepted; five of14 financial years passed:** Native GL hash matched the
+retained reference exactly, declared missing-PO placeholder produced0/0 accepted
+rows, and all17,012,068 combined journal rows reached GL/permutation during one
+posting read. Ledger1,010,562; exact GL keys356,272. FY07/08/10 still posting in
+session11522/group42994. Continuation class guards now verified on macOS with
+both metadata-only allowance and financial-change rejection. Production metadata
+patch remains unapplied; full financial/report acceptance still pending.
+
 **Reporting continuation prepared, not run:** New Bash-only
 `scripts/run_phase2_fused_reporting.sh` links all accepted financial partitions
 into a fresh reporting generation after metadata repair, preserving original

@@ -682,6 +682,13 @@ controller draft (check syntax/memory gate only); needs bounded multi-year execu
 and reporting resource admission before production launch. No full proof yet.
 # Hot-path continuation — corrected real-year restart
 
+Latest financial progress: FY09 COMPLETED with17,012,068 journal rows,1,010,562
+ledger rows,356,272 exact GL keys, one input open and observer row conservation.
+Historical PO0/0 is the declared empty placeholder; native GL exact hash matched.
+Five years now accepted (FY03–06,09); FY07/08/10 posting, session11522/group42994
+live. Reporting continuation guard fix is committed at48df91e; metadata production
+patch remains unapplied until all financial processing/global controls finish.
+
 Continuation checksum-filter follow-up: corrected macOS awk slash-delimiter
 compatibility using a string regex. With pipefail, actual frozen classes pass;
 copied manifests permit metadata-only hash changes and reject a GLPost change.
