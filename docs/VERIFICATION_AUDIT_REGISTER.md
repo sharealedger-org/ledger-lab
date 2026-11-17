@@ -2174,3 +2174,44 @@ hash checks still pass. Original datasets/evidence remain unchanged. No Python,
 Q2 evaluation, Control read, private manuscript edit or new clean cost point.
 Generalized multi-stream context generation, future modeling/feature sufficiency,
 economic realism and GERS-001/002/003 remain outside this verified scope.
+
+## 2026-11-16 15:26 AZT — Derived baseline admitted, execution pending
+
+Claim under test: fresh raw historical replay plus wholly-generated sources reaches
+actual posting and sequential reporting with exact historical GL preservation and
+combined GL conservation, excluding reused financial copies. Cheapest startup
+falsifier: committed check-only driver and run-mode frozen-input hash checks.
+Both passed at 3f2e3ab with AC and ~346 GiB free. Actual producer/consumer path is
+scripts/run_phase2_derived_baseline.sh: raw TTL/ARE -> historical normalization ->
+financial merge -> post/GL -> reporting sort -> sequential report -> controls.
+Active attempt session-run.tmp/phase2_derived_baseline_v1 begins historical_03;
+execution session 25831. Full claim remains partially_verified at fixture scope;
+launch does not establish corpus financial/report success or a cost point.
+
+### First integrated replay intermediate checks, 2026-11-16 15:44 AZT
+
+Fresh historical FY03 produced 13,508,560 journals. Its GL SHA-256 exactly
+matches retained original FY03 (`f86fafe44e6fb6e0e3a1878001cf6bb02fa59af63b223cf62dda2d6f15d98160`).
+Wholly-generated SY01 produced 342,242 journals. Both producer stages returned;
+normalization process 8252 is live with bounded ~1-GiB RSS. Evidence and hashes:
+data/test_evidence/phase2_derived_baseline_20261116/. Scope remains intermediate:
+no combined posting, full-population controls or final reporting acceptance yet.
+Legacy canonical-evidence wrapper diagnostics reread journal data outside recorded
+Scala engine time; those diagnostics do not establish exact financial acceptance.
+
+## 2026-11-16 evening AZT — Actual posting handoff failure and correction
+
+V1 failed after successful FY03 normalization: run_pipeline.sh creates a fresh
+isolated generation, while the derived driver supplied no --seedFromCommitted.
+Step 3 reported 0>0 rows and GL found no SortedJEFY31 inputs. This falsifies the
+claim that the original Bash driver connected the merged partition to posting.
+The earlier Scala fixture reached consumers directly and missed this boundary.
+Failed attempt/driver/logs remain in phase2_derived_baseline_20261116/failed_v1.
+
+Orchestration correction now sets the established seed flag for 3,20,21. Named
+actual-Bash regression passes: 1,520 SJE rows consumed, ledger/GL/permutation
+produced, merged source hash unchanged. Baseline plus integrated fixture: 23 pass.
+The harness first failed loading a function through process substitution; loading
+a saved function file fixes that harness failure. No financial engine code changed.
+Correction is verified at bounded handoff scope only; fresh full v2 remains pending.
+Owner explicitly resumed after pause and requested compact class rows/stage columns.

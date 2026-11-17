@@ -1,0 +1,27 @@
+[info] welcome to sbt 1.10.11 (Eclipse Adoptium Java 21.0.8)
+[info] loading settings for project global-plugins from idea.sbt...
+[info] loading global plugins from /Users/ktwitchell001/.sbt/1.0/plugins
+[info] loading settings for project va_pipeline-build from assembly.sbt, plugins.sbt...
+[info] loading project definition from /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/project
+[info] loading settings for project root from build.sbt...
+[info] set current project to va_pipeline (in build file:/Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/)
+[info] running org.universalledger.foundation.va.corpus.PhaseTwoBaselineNormalize --source /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/phase2_derived_baseline_v1/native/FY03/SortedJEFY03merged.csv --objects /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/corpus_admission_20261115_receipts_v2/inputs/aRefObjectCSV.txt --sortSpec /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/sort_specs/SortedJE.sortspec --out /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/phase2_derived_baseline_v1/normalized/FY31 --year 2003
+[success] Total time: 2987 s (0:49:47.0), completed Nov 16, 2026, 4:29:49 PM
+     2995.93 real      2696.19 user       208.21 sys
+          1051447296  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              603184  page reclaims
+                  17  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   8  messages sent
+                   8  messages received
+                  53  signals received
+               46326  voluntary context switches
+             3874903  involuntary context switches
+      21059516761034  instructions retired
+       9769402705163  cycles elapsed
+          1059078144  peak memory footprint

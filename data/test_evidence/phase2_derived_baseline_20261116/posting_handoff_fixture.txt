@@ -1,0 +1,220 @@
+[2026-11-16 20:51:31] ======================================================================
+[2026-11-16 20:51:31] Universal Ledger Pipeline Run  [run_20261116_205131_24856]
+[2026-11-16 20:51:31]   curve              = CCP2
+[2026-11-16 20:51:31]   config             = phase2-derived-v1
+[2026-11-16 20:51:31]   profile            = phase2-derived-v1
+[2026-11-16 20:51:31]   materialization    = persist-sjes
+[2026-11-16 20:51:31]   period_granularity = monthly
+[2026-11-16 20:51:31]   inPath  = /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/phase2_posting_handoff_v2/input/VARawFiles/
+[2026-11-16 20:51:31]   outPath = /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/phase2_posting_handoff_v2/financial.generations/run_20261116_205131_24856/
+[2026-11-16 20:51:31]   years   = 03
+[2026-11-16 20:51:31]   steps   = 3,20,21
+[2026-11-16 20:51:31]   logFile = /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/phase2_posting_handoff_v2/financial.generations/run_20261116_205131_24856/pipeline_results.log
+[2026-11-16 20:51:31] ======================================================================
+[2026-11-16 20:51:31] ------  Year 03  -------------------------------------------------------
+[2026-11-16 20:51:31] START  step=3  year=03  quarter=01
+[info] welcome to sbt 1.10.11 (Eclipse Adoptium Java 21.0.8)
+[info] loading settings for project global-plugins from idea.sbt...
+[info] loading global plugins from /Users/ktwitchell001/.sbt/1.0/plugins
+[info] loading settings for project va_pipeline-build from assembly.sbt, plugins.sbt...
+[info] loading project definition from /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/project
+[info] loading settings for project root from build.sbt...
+[info] set current project to va_pipeline (in build file:/Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/)
+[info] running org.universalledger.foundation.va.ledger.LedgerApp --step 3 --inPath /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/phase2_posting_handoff_v2/input/VARawFiles/ --outPath /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/phase2_posting_handoff_v2/financial.generations/run_20261116_205131_24856/ --year 03 --quarter 01 --periodGranularity monthly
+****************************************************************************************************
+                                    Ledger Lab
+                                    VA Corpus
+                  Using State of Virginia Public Financial Data
+                  step=3 - Post  FY2003  quarter=01
+                  started 2026-11-16T20:51:42
+****************************************************************************************************
+[CLI] step=3  inPath=/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/phase2_posting_handoff_v2/input/VARawFiles/  outPath=/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/phase2_posting_handoff_v2/financial.generations/run_20261116_205131_24856/  year=03  quarter=01
+-----------------------------------
+****************************************************************************************************
+                                Post Module
+Start Time: Mon Nov 16 20:51:42 MST 2026
+****************************************************************************************************
+processing file: /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/phase2_posting_handoff_v2/financial.generations/run_20261116_205131_24856/SortedJEFY03merged.csv
+No existing ledger file.  File will be created: LDGR2003.csv
+----------------------------------
+****************************************************************************************************
+Files Processed:               1
+Journal Records Read:          1520
+Ledger Records Read:           0
+Ledger Records Written:        442
+Process End Time:      Mon Nov 16 20:51:42 MST 2026
+****************************************************************************************************
+RESULT step=3 year=2003 rc=0 records_read=1520 records_written=442 elapsed_s=1 input_bytes=362997 output_bytes=59913
+RESOURCE step=3 year=2003 jvm_heap_bytes=1073741824
+****************************************************************************************************
+                                  End of Ledger Lab step
+                  step=3 - Post  FY2003  quarter=01
+                  status=ok  elapsed=0:00:00
+****************************************************************************************************
+[success] Total time: 1 s, completed Nov 16, 2026, 8:51:42 PM
+       11.03 real        25.27 user         1.70 sys
+           679436288  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              297630  page reclaims
+                   0  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   8  messages sent
+                   8  messages received
+                  38  signals received
+                 119  voluntary context switches
+               63079  involuntary context switches
+         56939182555  instructions retired
+         85727780122  cycles elapsed
+           652275712  peak memory footprint
+[2026-11-16 20:51:42] RESULT step=3 year=03 quarter=01 elapsed_s=11 rc=0 records_read=1520 records_written=442 input_bytes=362997 output_bytes=59913 outPath_bytes=795216
+[2026-11-16 20:51:42] RESOURCE step=3 year=03 peak_rss_bytes=679436288 peak_memory_footprint_bytes=652275712 jvm_heap_bytes=1073741824 cpu_user_seconds=25.27 cpu_system_seconds=1.70 cpu_total_seconds=26.97
+[2026-11-16 20:51:42] START  step=20  year=03  quarter=01
+[info] welcome to sbt 1.10.11 (Eclipse Adoptium Java 21.0.8)
+[info] loading settings for project global-plugins from idea.sbt...
+[info] loading global plugins from /Users/ktwitchell001/.sbt/1.0/plugins
+[info] loading settings for project va_pipeline-build from assembly.sbt, plugins.sbt...
+[info] loading project definition from /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/project
+[info] loading settings for project root from build.sbt...
+[info] set current project to va_pipeline (in build file:/Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/)
+[info] running org.universalledger.foundation.va.ledger.LedgerApp --step 20 --inPath /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/phase2_posting_handoff_v2/financial.generations/run_20261116_205131_24856/ --outPath /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/phase2_posting_handoff_v2/financial.generations/run_20261116_205131_24856/ --year 03 --quarter 01 --periodGranularity monthly
+****************************************************************************************************
+                                    Ledger Lab
+                                    VA Corpus
+                  Using State of Virginia Public Financial Data
+                  step=20 - GL Bal  FY2003  quarter=01
+                  started 2026-11-16T20:51:54
+****************************************************************************************************
+[CLI] step=20  inPath=/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/phase2_posting_handoff_v2/financial.generations/run_20261116_205131_24856/  outPath=/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/phase2_posting_handoff_v2/financial.generations/run_20261116_205131_24856/  year=03  quarter=01
+-----------------------------------
+****************************************************************************************************
+                         Step 20 — CCP1 GL Post (GLPost)
+Start Time: Mon Nov 16 20:51:54 MST 2026
+****************************************************************************************************
+  SortedJE files : SortedJEFY03merged.csv
+  Output file    : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/phase2_posting_handoff_v2/financial.generations/run_20261116_205131_24856/GL2003.csv
+  GL balance rows written : 27
+  Journal rows read       : 1,520
+  Output                  : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/phase2_posting_handoff_v2/financial.generations/run_20261116_205131_24856/GL2003.csv
+STATUS: COMPLETE
+RESULT step=20 year=03 rc=0 records_read=1520 records_written=27 elapsed_s=1 input_bytes=362997 output_bytes=955 net_amount=0.00
+RESOURCE step=20 year=03 jvm_heap_bytes=1073741824
+****************************************************************************************************
+Process End Time: Mon Nov 16 20:51:54 MST 2026
+****************************************************************************************************
+****************************************************************************************************
+                                  End of Ledger Lab step
+                  step=20 - GL Bal  FY2003  quarter=01
+                  status=ok  elapsed=0:00:00
+****************************************************************************************************
+[success] Total time: 1 s, completed Nov 16, 2026, 8:51:54 PM
+       12.36 real        24.75 user         1.71 sys
+           602402816  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              269990  page reclaims
+                   0  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   8  messages sent
+                   8  messages received
+                  32  signals received
+                 118  voluntary context switches
+               62413  involuntary context switches
+         52807934679  instructions retired
+         80384463332  cycles elapsed
+           575770624  peak memory footprint
+[2026-11-16 20:51:54] RESULT step=20 year=03 quarter=01 elapsed_s=12 rc=0 records_read=1520 records_written=27 input_bytes=362997 output_bytes=955 outPath_bytes=796605
+[2026-11-16 20:51:54] RESOURCE step=20 year=03 peak_rss_bytes=602402816 peak_memory_footprint_bytes=575770624 jvm_heap_bytes=1073741824 cpu_user_seconds=24.75 cpu_system_seconds=1.71 cpu_total_seconds=26.46
+[2026-11-16 20:51:54] START  step=21  year=03  quarter=01
+[info] welcome to sbt 1.10.11 (Eclipse Adoptium Java 21.0.8)
+[info] loading settings for project global-plugins from idea.sbt...
+[info] loading global plugins from /Users/ktwitchell001/.sbt/1.0/plugins
+[info] loading settings for project va_pipeline-build from assembly.sbt, plugins.sbt...
+[info] loading project definition from /Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/project
+[info] loading settings for project root from build.sbt...
+[info] set current project to va_pipeline (in build file:/Users/ktwitchell001/workspace/sharealedger/ledger-lab/02-foundation/va_pipeline/)
+[info] running org.universalledger.foundation.va.ledger.LedgerApp --step 21 --inPath /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/phase2_posting_handoff_v2/financial.generations/run_20261116_205131_24856/ --outPath /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/phase2_posting_handoff_v2/financial.generations/run_20261116_205131_24856/ --year 03 --quarter 01 --periodGranularity monthly
+****************************************************************************************************
+                                    Ledger Lab
+                                    VA Corpus
+                  Using State of Virginia Public Financial Data
+                  step=21 - Permute  FY2003  quarter=01
+                  started 2026-11-16T20:52:05
+****************************************************************************************************
+[CLI] step=21  inPath=/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/phase2_posting_handoff_v2/financial.generations/run_20261116_205131_24856/  outPath=/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/phase2_posting_handoff_v2/financial.generations/run_20261116_205131_24856/  year=03  quarter=01
+-----------------------------------
+****************************************************************************************************
+                         Step 21 — CCP1 Permutation Capacity (PermutationGenerator)
+Start Time: Mon Nov 16 20:52:05 MST 2026
+****************************************************************************************************
+  SortedJE files : SortedJEFY03merged.csv
+  Output file    : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/phase2_posting_handoff_v2/financial.generations/run_20261116_205131_24856/PERM_TBL2003.csv
+  GL keys (rows written)   : 27
+  Journal rows read        : 1,520
+  Vendor rows (observed)   : 442
+  Capacity (dependencies removed): 6292
+  Capacity (independent bound)   : 6292
+  Varying dimensions       : transIPID;transJrnlDescript
+  Vendor-determined (CAR)  : transContractID
+  Dropped by dependency    : transJrnlLineID<-transJrnlDescript
+  Buffer capacity / spills : 1000000 / 0 files, 0 records, reduce 0s
+  Vendor order             : ok
+  Determinants not tracked : none
+  Output                   : /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/phase2_posting_handoff_v2/financial.generations/run_20261116_205131_24856/PERM_TBL2003.csv
+STATUS: COMPLETE
+RESULT step=21 year=03 rc=0 records_read=1520 records_written=27 elapsed_s=1 input_bytes=362997 output_bytes=1048 vendor_rows=442 capacity=6292 capacity_independent=6292 varying_dims=transIPID;transJrnlDescript car_dims=transContractID dropped_dims=transJrnlLineID<-transJrnlDescript capacity_dims=transIPID;transJrnlDescript buffer_overflow=false spill_files=0 spill_records=0 reduce_seconds=0 vendor_order=ok fd_untracked_dims=none
+RESOURCE step=21 year=03 jvm_heap_bytes=1073741824
+****************************************************************************************************
+Process End Time: Mon Nov 16 20:52:06 MST 2026
+****************************************************************************************************
+****************************************************************************************************
+                                  End of Ledger Lab step
+                  step=21 - Permute  FY2003  quarter=01
+                  status=ok  elapsed=0:00:00
+****************************************************************************************************
+[success] Total time: 2 s, completed Nov 16, 2026, 8:52:06 PM
+       11.41 real        25.61 user         1.73 sys
+           612630528  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              281839  page reclaims
+                   1  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   8  messages sent
+                   8  messages received
+                  29  signals received
+                 119  voluntary context switches
+               70298  involuntary context switches
+         56442575865  instructions retired
+         84015332938  cycles elapsed
+           596598784  peak memory footprint
+[2026-11-16 20:52:06] RESULT step=21 year=03 quarter=01 elapsed_s=12 rc=0 records_read=1520 records_written=27 input_bytes=362997 output_bytes=1048 outPath_bytes=798170
+[2026-11-16 20:52:06] RESOURCE step=21 year=03 peak_rss_bytes=612630528 peak_memory_footprint_bytes=596598784 jvm_heap_bytes=1073741824 cpu_user_seconds=25.61 cpu_system_seconds=1.73 cpu_total_seconds=27.34
+[2026-11-16 20:52:19] RESULT step=21s years=03 rc=0 gl_keys=27 vendor_rows=442 capacity=6292 capacity_independent=6292 years_missing=none
+[2026-11-16 20:52:19] ======================================================================
+[2026-11-16 20:52:19] Pipeline complete.  [run_20261116_205131_24856]
+[2026-11-16 20:52:19]   total_compute_s     = 35
+[2026-11-16 20:52:19]   total_storage_bytes = 798546
+[2026-11-16 20:52:19]   master_file_count   = 0  (enabled=Y rows in ViewSpec.csv)
+[2026-11-16 20:52:19]   capability_layer    = CCP2
+[2026-11-16 20:52:19]   period_granularity  = monthly
+[2026-11-16 20:52:19]   materialization     = persist-sjes
+[2026-11-16 20:52:19]   ldgr_row_count      = 442
+[2026-11-16 20:52:19]   ldgr_file_bytes     = 59913
+[2026-11-16 20:52:19]   view_file_bytes     = 0
+[2026-11-16 20:52:19]   permutation_rows    = 442
+[2026-11-16 20:52:19]   permutation_capacity = 6292
+[2026-11-16 20:52:19]   cost_surface        = /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/phase2_posting_handoff_v2/financial.generations/run_20261116_205131_24856/cost_surface.csv
+[2026-11-16 20:52:19] ======================================================================
+[2026-11-16 20:52:19] Cost point recorded → /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/phase2_posting_handoff_v2/financial.generations/run_20261116_205131_24856/cost_surface.csv
+Canonical evidence written to /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/phase2_posting_handoff_v2/financial.generations/run_20261116_205131_24856/metrics
+Interpretation written to /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/phase2_posting_handoff_v2/financial.generations/run_20261116_205131_24856/interpretation/interpretation.csv and /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/phase2_posting_handoff_v2/financial.generations/run_20261116_205131_24856/interpretation/run_report.md

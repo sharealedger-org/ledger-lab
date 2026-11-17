@@ -1,0 +1,37 @@
+PHASE 2 — HISTORICAL + GENERATED BASELINE   2026-11-16 20:54:28 AZT
+Current stage: post_31
+FAILED rc=1
+
+YEAR / CLASS       | Pay JEs     PO JEs      Merge       ID/Date     Post        GL Bal      Permute     | STATE
+FY03 historical    | 227s        17s         54s         2996s       -           44s         -           | prepared
+  rows in>out      | 6.7M>13.4M  52k>105k    13.5M>13.5M 13.5M       -           13.5M>364k  -           |
+SY01 generated     | 18s         13s         11s         -           -           11s         -           | prepared
+  rows in>out      | 130k>260k   41k>82k     342k>342k   -           -           342k>60     -           |
+SY01 combined      | -           -           49s         -           9s          FAILED      -           | FAILED
+  rows in>out      | -           -           13.9M       -           0>0         -           -           |
+FY04/SY02          | -           -           -           -           -           -           -           | queued
+FY05/SY03          | -           -           -           -           -           -           -           | queued
+FY06/SY04          | -           -           -           -           -           -           -           | queued
+FY07/SY05          | -           -           -           -           -           -           -           | queued
+FY08/SY06          | -           -           -           -           -           -           -           | queued
+FY09/SY07          | -           -           -           -           -           -           -           | queued
+FY10/SY08          | -           -           -           -           -           -           -           | queued
+FY11/SY09          | -           -           -           -           -           -           -           | queued
+FY12/SY10          | -           -           -           -           -           -           -           | queued
+FY13/SY11          | -           -           -           -           -           -           -           | queued
+FY14/SY12          | -           -           -           -           -           -           -           | queued
+FY15/SY13          | -           -           -           -           -           -           -           | queued
+FY16/SY14          | -           -           -           -           -           -           -           | queued
+CORPUS STAGES (shared across all years)
+  financial_controls   -
+  dimensions           -
+  report_order         -
+  reporting            -
+  report_checks        -
+  census               -
+
+Times: seconds; active-year rows: input>output. DASHBOARD_COUNTS=all shows every count row.
+Historical/generated rows prepare inputs; combined rows merge and post them. Completion requires controls.
+Latest disk sample (UTC, free KiB, allocated KiB): 2026-11-16T23:29:58Z,346322260,15607940
+Run: /Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/phase2_derived_baseline_v1
+Refresh: 0s; Ctrl-C closes this display only.

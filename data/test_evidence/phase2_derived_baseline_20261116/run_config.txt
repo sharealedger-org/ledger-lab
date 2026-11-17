@@ -1,0 +1,5 @@
+git=3f2e3abe7f91207e6c4cd7c6ceb0c7c592ccd188
+years=03,04,05,06,07,08,09,10,11,12,13,14,15,16
+historical=/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/corpus_admission_20261115_receipts_v2/inputs
+generated=/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/phase2_full_v6/inputs
+subset=/Users/ktwitchell001/workspace/sharealedger/ledger-lab/session-run.tmp/phase2_wholly_sources_v1

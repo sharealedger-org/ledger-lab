@@ -528,3 +528,53 @@ Combined producer/consumer, identity/calendar/provenance contracts, bounded fixt
 storage admission/offload plan and actual reporting evaluation remain required.
 Current ~73 GiB free; prior 26.37-GiB next-pass forecast applies only to v6 and must
 not be reused for historical+synthetic. No Q2 model evaluation or deletion approval.
+
+## 2026-11-16 15:26 AZT — Post-reboot integrated replay launched
+
+Owner requested startup. Read root/Track D status, preparation receipt, derived
+baseline contract, verification protocol and actual driver. Clean prepared commit
+3f2e3ab; no existing financial driver. Check-only and run-mode frozen input hash
+checks passed, AC attached, ~346 GiB free against 300-GiB starting gate.
+Actual attempt: session-run.tmp/phase2_derived_baseline_v1, execution session
+25831, starting historical_03. Initial nohup launcher exited before creating an
+attempt; persistent execution is active. Caffeinate and process/storage monitoring
+started; 40-GiB stage gates unchanged. Cloud-service startup contention observed.
+Do not relaunch or edit financial/config code while active. Inspect STATUS/logs,
+FAILED or WORKFLOW_COMPLETE; workflow completion still requires financial/report
+controls and interpretation before acceptance/results commit. No Q2/publication.
+
+Owner subsequently requested autonomous continuation while away and a live
+dashboard. Read-only scripts/dashboard_phase2_derived.sh added, Bash syntax and
+single-render checks passed; opened in Terminal window 86 at 15:30 AZT with
+30-second refresh. It reports this attempt's own STATUS/log/storage records;
+returned stages are explicitly not final acceptance. Active autonomous objective
+covers monitoring, failure investigation, financial/report validation, evidence,
+validated-results preparation and the previously authorized Zenodo script; no
+publication or Q2 evaluation. No measured engine/config change.
+
+At owner request, integrated the new display into dashboard_full_corpus.sh:
+default auto-selects the prepared derived attempt; --derived [absolute-root]
+[seconds] selects explicitly; --legacy [seconds] or VA_LOGS/VA_OUT retains the
+original corpus display. Syntax, default single-render and explicit single-render
+checks passed. Financial driver and configuration remain unchanged.
+
+16:01 AZT monitoring checkpoint: original execution session 25831 remains live.
+Historical FY03 raw GL equals retained original; generated SY01 has 342,242
+journals. Normalization finished its source-order input (~8 GiB) and external sort,
+and is emitting paired-source identity lineage and financial-order wrappers.
+At latest sample ~319 GiB free; no failure recorded. Do not restart the driver.
+All-year normalization/posting/report acceptance remains pending. The unified
+terminal dashboard process was confirmed live; no financial/config code changed.
+
+## 2026-11-16 evening AZT — Owner resumed; posting handoff repaired
+
+V1 failed at post_31: no seed flag meant the isolated generation had no prepared
+journals. Preserve failed_v1 receipt; raw FY03 GL equivalence and normalization
+remain intermediate evidence, not full acceptance. Actual Bash handoff regression
+now passes with 1,520 rows, unchanged input hash and actual ledger/GL/permutation.
+23 baseline/integrated Scala tests pass. No Scala financial change. Freeze fix,
+then launch a fresh full phase2_derived_baseline_v2; do not restart v1 in place.
+Owner requests familiar stage columns and synthetic class rows. Unified dashboard
+now displays historical/generated/combined rows, times/counts and corpus stages;
+queued years collapse and active-year counts expand to keep width/height bounded.
+Zenodo script/results commit still await actual full validation. No Q2/publication.

@@ -16,6 +16,22 @@ The audit register wins any evidence disagreement.
 
 ## Current checkpoint
 
+**Corrected replay preparation, 2026-11-16 evening AZT:** First attempt stopped
+at SY01 posting: the Bash handoff omitted `--seedFromCommitted`, so its isolated
+posting generation received no merged journals. No final financial/report claim.
+The orchestration-only fix passes an actual Bash-to-Scala handoff test and all
+23 baseline/integrated Scala tests. Owner resumed work after pausing. Fresh
+attempt `phase2_derived_baseline_v2` is next; preserve v1 failure/normalization
+evidence. The unified dashboard now uses historical/generated/combined rows and
+Pay JEs, PO JEs, Merge, ID/Date, Post, GL Bal and Permute columns.
+
+**Post-reboot replay started, 2026-11-16 15:26 AZT:** Prepared `3f2e3ab`
+driver is active at `session-run.tmp/phase2_derived_baseline_v1`, beginning
+historical FY03 transformation. Frozen input hashes, AC and starting disk gate
+pass (~346 GiB free); process/storage monitoring and stage reserves enabled.
+Full validation remains pending. Track D records startup details; reboot-wait
+instructions below are superseded by this launch.
+
 **Latest owner sequence — preparation, commit, reboot, full raw replay:** Finish
 integration preparation and its bounded checks, commit that preparation, then
 leave large execution stopped for owner reboot. After reboot run one fresh

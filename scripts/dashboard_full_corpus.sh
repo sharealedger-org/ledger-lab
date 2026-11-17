@@ -1,4 +1,26 @@
 #!/usr/bin/env bash
+# Unified entry point: automatically displays the prepared derived baseline when
+# present. --derived [root] [seconds] selects it explicitly; --legacy [seconds]
+# selects the original full-corpus display. VA_LOGS/VA_OUT also select legacy.
+# The default refresh interval remains 30 seconds; derived interval 0 renders once.
+dashboard_repo="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+derived_root="$dashboard_repo/session-run.tmp/phase2_derived_baseline_v1"
+if [[ -d "$dashboard_repo/session-run.tmp/phase2_derived_baseline.current" ]]; then
+  derived_root="$(cd "$dashboard_repo/session-run.tmp/phase2_derived_baseline.current" && pwd -P)"
+fi
+case "${1:-}" in
+  --derived)
+    shift
+    if [[ "${1:-}" == /* ]]; then derived_root="$1"; shift; fi
+    exec bash "$dashboard_repo/scripts/dashboard_phase2_derived.sh" "$derived_root" "${1:-30}"
+    ;;
+  --legacy) shift ;;
+  *)
+    if [[ -z "${VA_LOGS:-}" && -z "${VA_OUT:-}" && -f "$derived_root/STATUS" ]]; then
+      exec bash "$dashboard_repo/scripts/dashboard_phase2_derived.sh" "$derived_root" "${1:-30}"
+    fi
+    ;;
+esac
 # Read-only per-year dashboard for scripts/run_full_corpus.sh. Usage: bash scripts/dashboard_full_corpus.sh [seconds]  (default 30; Ctrl-C to stop)
 # Parses START/RESULT lines in $HOME/workspace/va_fresh_logs/run2_prep_fy*.log and run2_chain_fy*.log. Changes nothing, runs no engine step.
 # The "rows" line under each year shows records read>written for each finished step (written only when the step reports no input

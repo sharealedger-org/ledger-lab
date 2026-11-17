@@ -64,7 +64,10 @@ scala() {
 pipeline() {
   local stage="$1" input="$2" out="$3" year="$4" steps="$5"
   gate "$stage"; printf '%s\n' "$stage" > "$root/STATUS"
-  bash "$repo/scripts/run_pipeline.sh" --inPath "$input/VARawFiles" --poPath "$input/VAPOData" --outPath "$out" --years "$year" --steps "$steps" --ttlType B --vendorMaster "$input/VendorMaster.csv" --periodGranularity monthly --curve CCP2 --profile phase2-derived-v1 --materialization persist-sjes --config phase2-derived-v1 > "$root/logs/$stage.log" 2>&1
+  # Posting runs in a new isolated generation and must receive the merged SJE
+  # partition already prepared at its committed output root.
+  if [[ "$steps" == 3,20,21 ]]; then set -- --seedFromCommitted; else set --; fi
+  bash "$repo/scripts/run_pipeline.sh" "$@" --inPath "$input/VARawFiles" --poPath "$input/VAPOData" --outPath "$out" --years "$year" --steps "$steps" --ttlType B --vendorMaster "$input/VendorMaster.csv" --periodGranularity monthly --curve CCP2 --profile phase2-derived-v1 --materialization persist-sjes --config phase2-derived-v1 > "$root/logs/$stage.log" 2>&1
 }
 IFS=, read -ra year_list <<< "$years"
 paths=""; normalizations=""; ordered=""

@@ -42,6 +42,45 @@ in AGENTS and the contributor guide. Runtime checkpoints and next gates are unch
 
 ## Current plans and evidence
 
+**Owner resumes, evening 2026-11-16 AZT:** V1 stopped at posting because the
+launcher did not seed its isolated generation with the prepared merged journals.
+Preserved failure logs prove the missing consumer input; no combined acceptance.
+Fixed only the Bash handoff (`--seedFromCommitted`); actual Bash-to-Scala test
+passes (1,520 journals consumed, ledger/GL/permutation produced, input hash
+unchanged), alongside 22 unchanged baseline tests plus the integrated fixture.
+Fresh full v2 replay follows the correction checkpoint; no Scala financial change.
+Dashboard restored stage/time/count columns, with historical/generated/combined
+class rows. Queued years stay compact; active-year counts expand below each row.
+All previous active-v1 statements below are superseded; full acceptance pending.
+
+**Post-reboot launch, 2026-11-16 15:26 AZT:** Prepared driver from `3f2e3ab`
+is active in execution session 25831 at `session-run.tmp/phase2_derived_baseline_v1`;
+initial stage `historical_03`. Input hashes, AC and 300-GiB start gate passed
+(~346 GiB free). Caffeinate, minute process/storage monitoring and 40-GiB stage
+gates enabled. Post-reboot cloud-service contention observed; timing exploratory.
+Initial detached launcher exited before admission; persistent launch is the actual
+attempt. Full controls/interpretation pending; preserve engine/config while active.
+No Q2 evaluation or publication. This supersedes reboot-wait instructions below.
+
+Owner requests autonomous continuation while away. Unified live terminal display:
+`bash scripts/dashboard_full_corpus.sh` automatically selects this attempt;
+`--derived [absolute-root] [seconds]` selects explicitly and `--legacy [seconds]`
+retains the original view (also selected by VA_LOGS/VA_OUT overrides). Display
+refreshes every 30 seconds; it reads logs only. Syntax and one-render checks pass.
+Financial driver/config are unchanged. Autonomous monitoring and validation active.
+
+First full-scale year progress: native FY03 produced 13,508,560 journals and a GL
+whose hash matches retained FY03 exactly. Wholly-generated SY01 produced 342,242
+journals; historical normalization is active. See the pending
+[execution receipt](../../data/test_evidence/phase2_derived_baseline_20261116/README.md).
+These are intermediate checks; combined posting/full-corpus acceptance is pending.
+
+**16:30 AZT:** FY03 normalization completed with all 13,508,560 journal rows
+preserved, 2,232,134 source groups reassigned and bounded sort buffers. Peak RSS
+1,051,447,296 bytes; process wall 2,995.93 seconds. Combined SY01 posting is active.
+Compact controls/sort metrics/log retained in the pending execution receipt.
+All-year financial controls and reporting remain pending; no new cost-point claim.
+
 **Latest owner sequence:** Complete integration preparation and bounded checks,
 make a preparation commit, wait for owner reboot, then run fresh raw
 transformation/posting/reporting. Validate/iterate as needed and commit accepted

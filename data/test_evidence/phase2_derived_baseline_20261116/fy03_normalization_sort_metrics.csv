@@ -1,0 +1,3 @@
+partition,rows,input_bytes,output_bytes,spills,merge_levels,fan_in,chunk_rows,cumulative_sort_bytes,elapsed_seconds,peak_buffer_bytes,buffer_byte_cap
+source_order_sorted.csv,13508560,8558255960,8558255960,255,2,16,100000,25674767880,157.201758089,33554432,33554432
+financial_order_sorted.csv,13508560,9610553455,9610553455,287,3,16,100000,38442213820,246.98666387,33554430,33554432

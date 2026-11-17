@@ -1,0 +1,1 @@
+PASS actual derived Bash handoff: merged source unchanged; posting/GL/permutation completed

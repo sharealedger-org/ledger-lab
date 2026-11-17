@@ -1,0 +1,1 @@
+scripts/test_phase2_posting_handoff.sh: line 20: pipeline: command not found
