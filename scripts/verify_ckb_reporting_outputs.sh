@@ -26,4 +26,22 @@ classpath="$audit/classes:$engine_classes:$library"
   "$baseline/report" "$run/report" "$audit/scratch" > "$audit/comparison.log" 2>&1
 shasum -a 256 --quiet -c "$audit/source_sha256.txt"
 date -u '+%Y-%m-%dT%H:%M:%SZ' > "$run/EXACT_OUTPUT_EQUIVALENCE_COMPLETE"
+timing() { awk '$2=="real"{value=$1} END{if(value=="")exit 1;print value}' "$1"; }
+baseline_extract=$(timing "$baseline/report/extract.log")
+baseline_reduce=$(timing "$baseline/report/reduce.log")
+new_extract=$(timing "$run/report/extract.log")
+new_reduce=$(timing "$run/report/reduce.log")
+{
+  printf '# Completed reporting comparison\n\n'
+  printf 'Recorded: %s\n\n' "$(date -u '+%Y-%m-%dT%H:%M:%SZ')"
+  printf 'All 21 declared outputs passed exact full-record multiset comparison, including duplicates. Input manifests, independent reporting controls, output census and frozen reporting classes passed the driver gates.\n\n'
+  printf '| Scope | Baseline seconds | CKB seconds |\n|---|---:|---:|\n'
+  printf '| Extract JVM including startup | %s | %s |\n' "$baseline_extract" "$new_extract"
+  printf '| Reduction JVM including startup | %s | %s |\n\n' "$baseline_reduce" "$new_reduce"
+  awk -v be="$baseline_extract" -v br="$baseline_reduce" -v ne="$new_extract" -v nr="$new_reduce" \
+    'BEGIN{printf "Combined extract/reduce: %.2f seconds baseline; %.2f seconds CKB; observed ratio %.3fx.\n\n",be+br,ne+nr,(be+br)/(ne+nr)}'
+  printf 'Scope: accepted financial preparation and all 28 sorted financial partitions reused. Sorting, financial generation, checks, census and this audit are excluded from that ratio. Per-process timing/RSS and engine counters remain in their original logs/metrics.\n\n'
+  printf 'Limits: one sequential observational pair, designated mid-baseline; no replicated paper cost point or causal training claim. Read-only monitoring occurred during processing. Startup/cache/environment differences are not isolated. This comparison does not implement an allocation/denominator feedback loop or establish target GenevaERS capability maturity. No upload or publication occurred.\n'
+} > "$run/COMPARISON.md"
+date -u '+%Y-%m-%dT%H:%M:%SZ' > "$run/COMPARISON_RECORD_COMPLETE"
 echo 'Exact output equivalence complete; broader study acceptance remains separate.'
