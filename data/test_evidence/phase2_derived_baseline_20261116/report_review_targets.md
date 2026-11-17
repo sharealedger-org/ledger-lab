@@ -33,3 +33,11 @@ blank template, no_synthetic_party_for_unattributed rule andidentity_rekeyedfals
 Retained in early_report_review/zero_coverage.csv. Its150,838,846 financial input
 rows are mixed journal/ledger records, not transactions. This one-key observation
 must be rechecked against the completed report; it does not complete this review.
+
+Early emitted observed-target observation,2026-11-17: v253147... usesSIM_I000011
+via prepared_sorted_assignment_stream,2,487,019 financial input rows and reporting
+identity_rekeyedfalse. Original0000099085 and normalized assignments agree;
+master retains JOURNAL ENTRY. Actual records retained as early_report_review/
+observed_*.csv. This is analytical template attribution, not legal-identity
+resolution; upstream structural rekeying still occurred as declared. Recheck all
+attribute/date views and final controls against the completed generation.

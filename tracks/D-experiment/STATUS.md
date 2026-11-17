@@ -4,7 +4,7 @@
 to continue unchanged. Financial14-year controls passed; reporting acceptance
 remains pending. All28 report sorts completed and match accepted producer
 row/path/size metadata (286,277,734 rows). Extraction JVM82547/session84820 and
-dashboard97164 confirmed live at2026-11-17T12:01:39Z. Input reads and report
+dashboard97164 confirmed live at2026-11-17T12:50:46Z. Input reads and report
 partial outputs advanced across observations. A read-only thread sample identified
 synthetic dated-view generation in finishVendor; these are activity diagnostics, not
 completed-row counts. Actual reporting storage
@@ -906,3 +906,11 @@ unattributed, blank template, analyticalidentity_rekeyedfalse, with150,838,846
 mixed journal/ledger input records. Receipt early_report_review retained;
 not a transaction count, final vendor total or full acceptance. Recheck final
 published generation and all other review targets after completion.
+
+2026-11-17 early observed-target sample: v253147... now emitted withSIM_I000011,
+prepared_sorted_assignment_stream and reportingidentity_rekeyedfalse. Original
+0000099085 and prepared assignments agree; normalization recordsobserved_rekeyed,
+master retains JOURNAL ENTRY.2,487,019 mixed financial input rows, not transactions.
+Receipt early_report_review/observed_*.csv; analytical template attribution is not
+legal-party resolution. Full date/attribute/final-generation/controls and other
+classes remain pending; no result-review completion or maturity upgrade.

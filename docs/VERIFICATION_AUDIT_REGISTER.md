@@ -2458,3 +2458,16 @@ This matches one planned semantic target at emitted-key grain. Extraction remain
 live: recheck the completed published generation, all target classes and complete
 controls. No full report acceptance or maturity upgrade; no financial amounts
 recalculated outside Scala. A partial coverage line count is not final population.
+
+## 2026-11-17 — Early observed-group reporting link
+
+Actual emitted coverage forv253147763127656255907762210784412714 usesSIM_I000011
+and prepared_sorted_assignment_stream, financial_rows2,487,019 and reporting
+identity_rekeyedfalse. Original0000099085 and prepared stable-key assignments
+both matchSIM_I000011; normalization candidate recordsobserved_rekeyed; combined
+master preserves JOURNAL ENTRY. Actual records in early_report_review/observed_*.csv.
+This verifies the scoped emitted assignment link, not legal-party resolution,
+actual business attributes, financial amounts or full report acceptance. Reporting
+identity preservation is distinct from the earlier declared structural rekey.
+Full attribute/date checks, completed-generation recheck, remaining classes and
+complete controls remain pending. No maturity upgrade or result-review marker.

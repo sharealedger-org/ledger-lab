@@ -1,0 +1,2 @@
+instID,instEffectDate,instEffectEndDate,instHolderName,instTypeID,instVendorAddress,instVendorCity,instVendorState,instVendorPostalCode,instAuditTrail,instNIGPClass,instNIGPDesc,instGeoRegion,instSizeTier,instContractType,instPaymentChannel,instCounterpartySector,instExposureType,instMaturityProxy,instRiskWeightProxy,instFXCurrency,instFederalCFDA,instFederalAgency
+v253147763127656255907762210784412714,2031-01-01,9999-99-99,JOURNAL ENTRY,EXP,REDACTED_ADDRESS,REDACTED_CITY,VA,00000,2026-11-14,,,SE,SMALL,CONTRACTED,EFT,CORPORATE,OPERATING-EXP,MEDIUM-TERM,100%,USD,,

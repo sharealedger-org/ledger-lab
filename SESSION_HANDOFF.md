@@ -1132,3 +1132,88 @@ CPU100m37s/RSS804,896KiB and dashboard97164 live. Temporal-cut output allocation
 Early zero-key coverage observation recorded in audit register; still no full
 report acceptance/result-review marker. Final controls, remaining semantic checks,
 validated-results commit and upload script pending.
+
+2026-11-17T12:09:06Z verified wait: same driver66386/session84820, JVM82547
+CPU107m35s/RSS805,660KiB and dashboard97164 live. Temporal-cut output allocation
+8,618,048KiB; latest free114,582,848KiB, no reserve alarm/config/class change.
+Early zero-key observation committed8308a55 as scoped partial evidence, not final
+report acceptance. Final extraction/reduction/control/semantic checks, validated
+results commit and upload script remain pending.
+
+2026-11-17T12:13:12Z verified wait: same driver66386/session84820, JVM82547
+CPU111m26s/RSS806,316KiB and dashboard97164 live. Temporal-cut output allocation
+9,912,384KiB (from8,618,048KiB at12:09); partial directories continue cycling.
+Latest free112,960,816KiB; no reserve alarm/config/class change. Final extraction/
+reduction/control/semantic acceptance, validated-results commit and upload script
+remain pending. No full output or cost-point claim.
+
+2026-11-17T12:18:10Z verified wait: same driver66386/session84820, JVM82547
+CPU116m11s/RSS805,808KiB and dashboard97164 live. Temporal-cut output allocation
+11,468,864KiB; latest free110,727,440KiB, no reserve alarm/config/class change.
+Coverage had13,524 physical lines including header at an earlier session sample;
+last complete sampled keyv137053...; planned observed targetv253147... not yet
+emitted, not a failure. Keep all remaining semantic targets pending final output.
+Final extraction/reduction/controls, validated-results commit and upload script
+remain pending; partial coverage counts are not final populations.
+
+2026-11-17T12:22:26Z verified wait: same driver66386/session84820, JVM82547
+CPU120m17s/RSS805,808KiB and dashboard97164 live. Temporal-cut output allocation
+13,090,880KiB (from11,468,864KiB at12:18); partial directories continue cycling.
+Latest free108,917,828KiB; no reserve alarm/config/class change. Final extraction/
+reduction/control/semantic acceptance, validated-results commit and upload script
+remain pending; no full population or timing claim.
+
+2026-11-17T12:26:30Z verified wait: same driver66386/session84820, JVM82547
+CPU124m12s/RSS805,808KiB and dashboard97164 live. Temporal-cut output allocation
+14,368,832KiB (from13,090,880KiB at12:22); partial directories continue cycling.
+Latest free107,167,348KiB; no reserve alarm/config/class change. Final extraction/
+reduction/control/semantic acceptance, validated-results commit and upload script
+remain pending; these are activity samples, not complete result evidence.
+
+2026-11-17T12:30:44Z verified wait: same driver66386/session84820, JVM82547
+CPU128m14s/RSS806,132KiB and dashboard97164 live. Temporal-cut output allocation
+15,728,704KiB; a new1,257,224KiB cut-partial batch was produced then consumed.
+Latest free105,083,372KiB; no reserve alarm/config/class change. Final extraction/
+reduction/control/semantic acceptance, validated-results commit and upload script
+remain pending; partial-file/output activity does not establish final acceptance.
+
+2026-11-17T12:35:55Z verified wait: same driver66386/session84820, JVM82547
+CPU133m20s/RSS805,556KiB and dashboard97164 live. Temporal-cut allocation holds
+15,827,008KiB while raw partials grow26,980->270,692KiB across observations,
+confirming work despite a paused final view file. Latest free104,832,028KiB;
+no reserve alarm/config/class change. Coverage sampled21,386 physical lines
+including header, lastcompletev216697...; plannedv253147... not yet emitted.
+Final extraction/reduction/control/semantic acceptance and all deliverables pending.
+
+2026-11-17T12:40:14Z verified wait: same driver66386/session84820, JVM82547
+CPU137m28s/RSS805,556KiB and dashboard97164 live. Temporal-cut allocation holds
+15,827,008KiB while new cut partials grow0->3,375,384KiB; raw393,240KiB and
+master-cut18,828KiB. Latest free101,218,392KiB; no reserve alarm/config/class
+change. This is actual partial production, not stalled final output. Final
+extract/reduce/controls/semantic acceptance and all result/upload-script deliverables
+remain pending; no full acceptance claim.
+
+2026-11-17T12:46:15Z verified wait: same driver66386/session84820, JVM82547
+CPU143m09s/RSS805,528KiB and dashboard97164 live. Large cut batch peaked at
+5,533,484KiB in this interval then was consumed; temporal-cut output allocation
+now19,710,016KiB, sampled raw/cut/master partials0. Latest free100,628,092KiB;
+no reserve alarm/config/class change. Final extraction/reduction/control/semantic
+acceptance, validated-results commit and upload script remain pending.
+
+2026-11-17T12:50:46Z verified wait: same driver66386/session84820, JVM82547
+CPU147m32s/RSS805,528KiB and dashboard97164 live. Temporal-cut allocation now
+20,627,520KiB; new cut partials677,304KiB after raw-group consumption. Latest
+free99,188,372KiB; no reserve alarm/config/class change. Coverage sampled23,352
+physical lines including header earlier in session, lastcompletev236240...;
+plannedv253147... still not emitted at latest target check. Final extract/reduce/
+controls/semantic acceptance and result/upload-script deliverables remain pending.
+
+Observed-target early review progress: actualv253147763127656255907762210784412714
+coverage usesSIM_I000011 /prepared_sorted_assignment_stream /2,487,019 financial
+input rows /reportingidentity_rekeyedfalse. Original0000099085 and prepared
+assignment bothSIM_I000011, masterJOURNAL ENTRY effective2031-01-01, source
+normalization classobserved_rekeyed. Actual records copied toearly_report_review/
+observed_*.csv. Attributed here means analytical template, not resolved legal
+party/actual business attributes; reporting identity preservation does not undo
+the upstream structural recode. Full date/attribute/final-generation rechecks,
+otherclasses, controls and all final deliverables still pending. No review marker.

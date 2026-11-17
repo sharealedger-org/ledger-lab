@@ -20,7 +20,7 @@ The audit register wins any evidence disagreement.
 configuration unchanged. Financial controls passed for all 14 years. All 28
 reporting sorts passed external row/path/size checks: 286,277,734 rows.
 Extraction is live (JVM82547/session84820), dashboard97164 running, confirmed
-2026-11-17T12:01:39Z. Input reads and report partials advanced across observations;
+2026-11-17T12:50:46Z. Input reads and report partials advanced across observations;
 this is progress evidence, not completed-row acceptance. Actual storage admission
 passed with40GiB reserve intact.
 Final reporting acceptance remains pending. Owner explicitly approved verified
