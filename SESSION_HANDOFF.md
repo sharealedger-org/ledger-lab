@@ -1,5 +1,18 @@
 # Ledger Lab Handoff
 
+## 2026-11-18 Q2 exploration
+
+The [Q2 process](tracks/D-experiment/aim/Q2_PROCESS.md) contains launch and replay
+instructions for the read-only Scala explorer. The accepted report replay
+produced 240 masked development examples from 80 FY2044 relationship cells.
+A separate FY2041 replay preserved signed amounts and numeric-looking agency
+codes. Fresh Scala compilation and ScalaTest passed 165 tests. The connected
+identity fixture passed separately.
+The examples are available locally under `session-run.tmp/q2-explorer/`.
+The next model task is to compare the three encodings on matched training
+evidence, distinguishing field completion from range-conditioned suggestions.
+No training or model scoring ran.
+
 ## 2026-11-16 preparation checkpoint before owner reboot
 
 Latest owner sequence supersedes earlier pre-commit-run notes: preparation commit,

@@ -50,6 +50,34 @@ retains detailed result paths, decisions and corrections.
 
 ## Next work and decisions
 
+**2026-11-18 Q2 exploration started:** The [Q2 process](Q2_PROCESS.md) records
+the verbalized versus native tuple comparison, a separate numerical path, and
+the first accepted-report interaction. Changing from signed amount to
+contributing row count changed the leading agency in a selected FY2044
+commitment slice. Amount ranges selected different agencies and an empty range.
+The initial placeholder match exposed the need to carry attribution explicitly.
+Exploratory exact-data results only. Allocation and reclass are outside the
+proposed Phase 2 scope. No training or scoring ran.
+
+**Interactive checkpoint:** The Scala explorer supports filters, rank and range
+queries, and paired prose, tuple, and typed-numeric examples. It exported 240
+masked development examples from 80 FY2044 cells and exercised a separate
+negative expense-payment case. Fresh compilation and ScalaTest reported 165
+passed, and the connected identity fixture passed separately. Launch steps, data boundaries, and implications for
+the first learned range test are in [Q2 process](Q2_PROCESS.md).
+
+**2026-11-18 Q2 proposal, revised after reading the Codex reflections:** Test
+whether one reusable representation supports investigations that change
+dimensions, measures, learned concepts, periods and business domains as evidence
+emerges. Explore conditional completion with associated metrics and uncertainty.
+Score whole held-out inquiry sequences, including unsupported combinations and
+revisions under later evidence.
+The existing vendor activity predictor is one possible probe of that capability.
+Local development inspection found 491,385 combined feature rows across
+FY2030–FY2044, of which 269,711 carry the existing matched-eligibility flag.
+Delivery and settlement require independent lifecycle evidence. Allocation and
+basis feedback remain planned. No evaluation or training ran.
+
 **Owner scope clarification, 2026-11-16:** Current preparation imagines source-data
 conditions that might support envisioned AIM functionality. Extensive design of
 these new models and their features has not occurred; their eventual architectures
