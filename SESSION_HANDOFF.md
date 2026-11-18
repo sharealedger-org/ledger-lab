@@ -1,5 +1,21 @@
 # Ledger Lab Handoff
 
+## 2026-11-18 (TRACK D / AIM): learned continuation and shared starter data
+
+Owner clarified that predefined-category translation is too narrow: explore an
+LLM predicting the next useful financial response with its associated measure.
+Call these interactions explorations. The Q2 process now records the discussion
+and proposes 6–10 development conversations, separating exact retrieval from
+prediction, usefulness from numeric accuracy, and development from held-out data.
+No training or model scoring ran. This supersedes treating field-completion
+encoding comparison alone as the immediate next task.
+
+Owner requested the OneDrive starter packages in Git. `data/q2-development/`
+preserves both packages and provenance; the larger gzip uses ordered 40 MiB parts.
+`bash scripts/start_q2_explorer.sh` verifies/restores the report and launches the
+standalone Scala explorer. The ARM launch at source `7b0f626` loaded 80 FY2044
+cells. See AIM status and Q2 process for limits and the proposed next step.
+
 ## 2026-11-18 Q2 exploration
 
 The [Q2 process](tracks/D-experiment/aim/Q2_PROCESS.md) contains launch and replay
@@ -1363,3 +1379,10 @@ pass mocks; docs/PHASE_TWO_ZENODO_HELPER.md givescommands. No realnetwork/APIupl
 Generate payloadmanifest after ARCHIVE_COMPLETE. Current scriptsready markertrue,
 actualpayload verification deferred. Implementimprovedflow in isolatedworktree
 from new helper-preparation commit; preserve main baseline targetclasses.
+# (TRACK D / AIM) 2026-11-18 ARM explorer launch
+
+Verified the OneDrive explorer archive checksum, extracted locally, built the
+standalone Scala pipeline at `7b0f626`, and opened the explorer in Terminal.
+Smoke check loaded the documented FY2044 vendor's 80 cells and exited cleanly.
+Launcher: `session-run.tmp/q2-explorer/Launch Explorer.command`. See AIM status.
+No training, scoring, or financial replay.

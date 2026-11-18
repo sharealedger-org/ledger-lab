@@ -50,6 +50,29 @@ retains detailed result paths, decisions and corrections.
 
 ## Next work and decisions
 
+**2026-11-18 owner clarification and sharing:** Q2 targets learned prediction of
+the next useful financial response with an associated measure, not merely
+translation into predefined filters. [Q2 process](Q2_PROCESS.md) logs this
+discussion and proposes a 6–10-conversation development pilot before choosing a
+training design. Owner requested both OneDrive starter packages be versioned;
+see [shared data and launcher](../../../data/q2-development/README.md).
+Source baseline `7b0f626`; no model training/scoring or payroll result. Next:
+review pilot conversations and exact-versus-predicted response contract. Model
+and numerical architecture remain undecided.
+
+Sharing verification: original archives, four split parts, reconstructed gzip,
+and all 16 inner starter manifest entries passed checksums. Shared Bash launcher
+passed syntax and end-to-end sbt smoke checks, loading 80 cells and exiting 0.
+
+**2026-11-18 ARM explorer launch:** At source commit `7b0f626`, verified the
+OneDrive `explorer_20261118_v1` archive against its `SHA256SUMS`, extracted it
+locally, and compiled the standalone `02-foundation/va_pipeline` project.
+The documented FY2044 vendor loaded 80 report cells and exited cleanly in a
+smoke check. Opened the interactive launcher in Terminal; local launcher and
+report are in `session-run.tmp/q2-explorer/`. Root sbt launch failed on missing
+assembly-plugin symbols; standalone build succeeded. Next: interactive
+development exploration; no training or scoring ran and no new decision waits.
+
 **2026-11-18 Q2 exploration started:** The [Q2 process](Q2_PROCESS.md) records
 the verbalized versus native tuple comparison, a separate numerical path, and
 the first accepted-report interaction. Changing from signed amount to

@@ -42,6 +42,8 @@ Seeded 2026-11-11 from the handoff entries. On the same day the handoff was trim
 
 ## AI and financial exploration (Track D / AIM)
 
+- [ ] **2026-11-18 proposed continuation pilot:** Author 6–10 development conversations asking for useful next financial responses and associated measures without requiring users to specify categories. Separate retrieved facts from predicted responses; review usefulness, numerical accuracy and abstention before selecting a matched training design. See [Q2 process](tracks/D-experiment/aim/Q2_PROCESS.md#proposed-next-step-a-small-continuation-pilot).
+
 - **Native-AI exploration (owner, 2026-11-14; historical Phase 1b wording):** Design reusable conditional exploration of corpus dimensions, measures and learned concepts; define exact versus estimated answers, held-out question combinations and a bounded Intel pilot. Keep prior task-specific tests as limited evidence. See `tracks/D-experiment/CODEX_REFLECTIONS.md`, 2026-11-14 entry. Do not select a runtime/model or claim capacity without investigation.
 
 - [ ] **Track B review prerequisite:** resolve `00YY/MM` payment-period handling in `fit_vendor_survival_balance.py` and `fit_vendor_survival_combined.py` against `three_model_core.py`, then rerun affected comparisons with old evidence preserved. Codex source finding, 2026-11-12 22:37 AZT; score impact unknown. Before LLM training, distinguish a practical model comparison from a language-prior ablation and fix input/inference contracts ([assessment](tracks/D-experiment/PAPER2_ASSESSMENT_2026-11-12.md)). No new Python authorized by this note.

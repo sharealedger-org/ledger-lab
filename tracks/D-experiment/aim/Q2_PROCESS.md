@@ -57,6 +57,10 @@ One development example can be rendered as “For the selected vendor, Virginia 
 
 ## Run the interactive explorer
 
+For a fresh checkout, the versioned [starter data](../../../data/q2-development/README.md)
+and `bash scripts/start_q2_explorer.sh` restore the report and launch the standalone
+Scala project. The historical machine-local paths below describe the first replay.
+
 Run this from the repository root. It opens the full accepted local report and retains only the selected vendor and fiscal year. Filters are exact and intersect. The explorer displays report cells at their stored grain, so select the event, currency, fund, commodity, and contract before interpreting a rank as a comparison among agencies.
 
 ```bash
@@ -105,3 +109,57 @@ The export creates a new CSV from the active dimension filters. It emits one mas
 - Keep related cases together when preparing fresh test data. All three target masks for a cell share a cell ID, and nearby years can repeat the same vendor, agency, and commodity context. A row-random split could reward recall of that context. Current exports are development data.
 
 Local transcripts, example CSV, and verification logs are under `session-run.tmp/q2-explorer/`. The standard sbt launch could not write its boot lock in the restricted session. A fresh cached Scala compilation of the pipeline and test sources succeeded, and ScalaTest reported 165 passed. The connected identity fixture passed separately using its retained output. The explorer replay used the accepted reports. This run supplies no trained-model result.
+
+## Session log: 2026-11-18, language interface and learned continuation
+
+The ARM session restored the owner-provided OneDrive relationship report after
+verifying its archive checksum. Standalone Scala compilation succeeded and the
+documented FY2044 vendor loaded 80 cells. The explorer was opened in Terminal.
+`rank amount` sorts existing cells by signed amount; it does not aggregate agency
+totals. Payroll exploration was discussed, but payroll categories were not mapped
+and no payroll result was produced. Employee counts cannot be inferred from
+contributing-row counts.
+
+The owner accepted an LLM conversational interface to this exact explorer and
+preferred the term **explorations**, rather than queries suggesting generated SQL.
+The assistant initially proposed translating language into explicit financial
+dimensions, filters and requested measures. The owner corrected that narrowing:
+requiring users to specify categories adds little new functionality. The intended
+experiment should expose prediction of the next response with an associated
+measure, allowing relevant fields or learned concepts to emerge from context.
+
+Working interpretation: financial tuples are a learned representation, not a
+form the user must complete. An open request such as “Where should we look next?”
+may elicit a proposed financial relationship and numerical prediction with stated
+uncertainty. This remains a hypothesis. The current Scala explorer provides exact
+reference cells; no trained financial model, conversational continuation score,
+or numerical-head result has been demonstrated. Scala mainline financial
+processing remains unchanged; a learned consumer does not replace its accounting.
+
+### Proposed next step: a small continuation pilot
+
+1. Author 6–10 short development conversations using supported report cells:
+   start with a broad interest, ask an open follow-up, then change a measure,
+   period, or direction of inquiry. Include an empty-result case and a request
+   beyond available evidence. Do not require every dimension in the user's turn.
+2. For each context, capture a candidate next financial response together with
+   the relationship it proposes, associated signed measure and unit, period,
+   grain, and uncertainty or abstention. Preserve the original language; an
+   intermediate representation must not silently close an open question.
+3. Use the conversational assistant plus exact Scala access as the first
+   baseline. Label retrieved facts separately from predictions. Record the
+   assistant's candidate before revealing a withheld numerical reference when
+   assessing prediction, and disclose its prior exposure to these development
+   examples. Checking a retrieved value is not evidence of learned prediction.
+4. Review whether continuations are useful and numerically grounded. There may
+   be several useful next responses, so assess relevance and contextual support
+   separately from numerical error, sign/unit correctness, and abstention.
+   Scala can verify supported cells; broader totals need a declared computation.
+5. Use the reviewed conversations to specify a matched prose/text-tuple/typed-
+   numeric training comparison. Reserve fresh contexts and related entity/year
+   groups before training; development examples are not the final evaluation.
+   Model choice, numerical architecture, and training remain future decisions.
+
+This proposes a concrete pilot; it does not authorize or report a training run.
+The owner also requested committing the OneDrive starter packages so collaborators
+can reproduce the exact-data baseline without access to the original machine.
