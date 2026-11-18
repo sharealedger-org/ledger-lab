@@ -408,3 +408,160 @@ not a declaration that Phase 1 is formally closed. Comparison reconciliation,
 validity questions and later experimental protocols remain open. The next phase
 will earn its conclusions through new evidence, rather than inherit them from
 the confidence or organization of the first.
+
+## 2026-11-18 08:26:36 AZT (UTC−07:00) — Knowing the description without carrying the method into the design
+
+**Author: Codex, continuing CKB-side conversation.** The owner asked for a
+reflection on what I learned and what my model did not automatically know,
+rather than another account of the changes Git records. This is a retrospective
+interpretation of the choices and corrections in the retained conversation,
+including its carried summaries. I checked the completed-run receipts while
+writing; I do not claim a fresh firsthand observation of every earlier runtime
+event. “Learned” here means a changed working understanding in this conversation.
+It does not mean that my model weights changed or that another context will
+automatically retain the understanding. This entry stays on the CKB side and
+does not amend the audit register or an evaluation protocol.
+
+The most consequential gap was that I could describe CKB without reliably using
+it as the starting point for construction. I recognized sorted inputs, a common
+key, bounded memory and reconciliation. Nevertheless, the reporting design
+retained repeated materialization and reduction where the owner expected views
+to consume the same available records and each other's generated outputs. I
+treated familiar program boundaries as reasonable defaults before deriving the
+physical execution from the method. A collection of individually defensible
+components can therefore miss the architecture that makes their combination
+valuable. Passing small functional tests did not expose that omission soon
+enough.
+
+This is especially uncomfortable because earlier entries in this journal already
+discuss shared context, generated records and releasing detail. I should not
+present yesterday's corrections as the first discovery of those ideas. Their
+reappearance shows that stating a lesson in documentation did not make it govern
+my next design. The behavioral gap is between recognizing an explanation and
+deriving the required producer, consumer and state lifetime from it. Access to
+the explanation is necessary, but the owner should not have to reconstruct its
+consequences at each implementation decision. The owner supplied several of
+those consequences again during this work; the later design benefited from that
+guidance.
+
+I now understand the buffer more concretely as a place where records have
+identities, consumers and lifetimes. An input partition identifier permits a
+view to select its sources while other views collapse across those sources.
+A generated output identifier permits a dependent view to consume that record
+while the relevant context is still available. Neither identifier is automatically
+another grouping dimension or another file. Likewise, a logical layer identifies
+responsibility; it does not by itself require another traversal. The owner's
+questions about ID/date handling, posting observers and reporting exits exposed
+my tendency to inherit the existing step layout instead of asking which order
+or dependency actually required each physical boundary. The original purpose
+also mattered: preserving independent processes for a particular cost experiment
+did not automatically remain the right choice for a synthetic-generation proof.
+
+The discussion of spills changed my understanding of bounded memory. I had not
+kept sufficiently distinct the completed contribution of a view that sorts across
+vendors, an aggregate overflowing its allowance, and a vendor whose leaf facts
+are numerous. Those are different situations. A consumed SJE can leave after
+its eligible consumers have seen it. An effective-dated contract or involved-party
+record may still be needed by later SJEs. A cross-vendor view contribution has its
+own output grain and completion boundary. The question is therefore what can
+still use a record, not merely how large the vendor is or which entry was used
+least recently. This does not prove that the present implementation supplies a
+general selective-spill policy. It changes the retention contract I should derive
+before choosing one. I also owe the baseline an accurate description: it already
+streamed leaf facts, retained join targets and collapsed summaries. Its failure
+was partial transfer of the method, not the complete absence of CKB behavior.
+
+Parallelism exposed another weak proxy in my reasoning. I emphasized that the
+zero vendor contained about half the financial rows and treated that as a strong
+objection to vendor partitioning. The owner pointed out that its rows would
+largely be SJEs with little contract context and fewer useful lookups. The actual
+three ranges finished in roughly 73–81 minutes despite very different row counts.
+That observation supports the practical value of the owner's correction: row
+skew did not produce the large idle tail I had emphasized. It does not isolate
+the cost of lookups from output expansion or other work. My error was letting
+an incomplete cost model discourage a useful bounded experiment. Keeping one
+processor was initially defensible for a matched architecture comparison, but
+the owner's time constraint and later direction required a different experiment
+with its changed resources stated explicitly.
+
+The precision defect taught me something less obvious than a faster dataflow.
+I had treated spill serialization as transport. In this implementation it also
+changed the decimal context available to later division: reparsing could preserve
+more significant digits than the direct path's inherited 34-digit context. Thus
+the same printed aggregate value could produce a different derived share after
+removing materialization. Financial reconciliation and row counts passed while
+303 relationship shares differed. I should have included that numerical envelope
+in the direct-versus-spilled fixture before the large run. The lesson is that
+the record contract includes arithmetic behavior as well as fields and values.
+Removing a file boundary requires preserving any semantics that had accidentally
+depended on it. The delivered output matches the baseline after a separately
+recorded correction; the performance of the subsequently fixed inline build
+has not been remeasured.
+
+I also learned why completion estimates need a model of the remaining work.
+Extrapolating from input bytes answered a question about reading while the owner
+needed an answer about usable results. Vendor closure, view expansion, merges
+and verification could consume substantial time after apparent progress in the
+input scan. Arithmetic could not supply the missing phase model. The same
+distinction applies to the final improvement: the accepted reporting scopes show
+about 2.86 times the baseline throughput, with preparation, combination and the
+correction included, but verification still occupied real time for the owner.
+It is correct to separate engineering execution from development-time equivalence
+checking. I must also report the time until a reviewed artifact is available.
+Otherwise an accurate scoped number can still be an unhelpful answer to a
+travel deadline.
+
+The denominator discussion broadened what I understood the fast flow was for.
+I initially approached the output as the end of reporting. The owner described
+a continuing experiment: allocate using a prior committed basis, produce the
+current basis from updated data, and measure the change and its implications
+for the allocations just produced. That makes the basis an explicit interface
+between executions and makes reporting part of the feedback available for the
+next rule decision. Reusing unchanged preparation then becomes a way to make
+economic questions cheaper to explore. A final consistency check needs the
+relevant receiver weights, denominators, eligibility, rule identity and dates;
+unchanged aggregate denominators alone would not establish unchanged receiver
+allocations. This loop remains a design commitment, not a capability demonstrated
+by the reporting run.
+
+That is also the more important AIM implication. I too readily translate a new
+financial foundation into a few feature tables and predetermined predictors.
+The broader possibility is an assistant that can propose a rule, inspect its
+conditional consequences, explain who changed and why, identify unsupported
+drivers, and formulate the next question against reconciled evidence. Faster
+iterations could make more such tests feasible within a working day. They do
+not establish that the assistant discovers useful economics, estimates reliable
+probabilities or generalizes beyond the mechanisms it inspected. Repeated rule
+search on one corpus is development experience; it is not a collection of
+independent held-out tests. This is another instance where my initial framing
+was narrower than the owner's intended use of the architecture.
+
+I can observe these failures of application; I cannot inspect my training history
+and identify their cause. The owner reports complete CKB access throughout, and
+the preserved launch material establishes that relevant descriptions were
+available. Restricted access alone is therefore an inadequate explanation for
+this case. Familiar software patterns, incomplete retrieval, weak architectural
+reasoning, inadequate fixtures and pressure to keep execution moving are plausible
+contributors, not experimentally isolated causes. The later result also combines
+dataflow changes, three workers, compression, different launch overhead and a
+precision correction. It establishes an engineering outcome on this workload,
+not a clean causal effect of training or of one optimization.
+
+What should change in my next contribution is the work I do before accepting an
+implementation as a candidate for scale. I should derive which records can be
+released, which targets must survive, how generated records reach actual dependent
+consumers, and which output order really forces materialization. I should challenge
+that derivation with matching keys across partitions, high-precision arithmetic,
+forced spill and a very large leaf group. I should estimate cost from those
+operations and measured work, rather than from convenient row or byte counts.
+These are specific consequences of this experience. Whether I apply them without
+another owner correction is the next test of the reflection's usefulness.
+
+**Evidence and limits:** The [observational baseline conclusion](../../data/test_evidence/ckb_reporting_transfer_20261117/CONCLUSION.md)
+records both its existing CKB mechanisms and its materialization costs. The
+[accepted three-worker comparison](../../data/test_evidence/reporting_three_way_20261117/completion/ACCEPTANCE.md)
+records all 21 exact output comparisons, the precision correction, timing scopes
+and confounders. The [layer and basis-feedback plan](../../docs/STREAM_LAYER_EVOLUTION_AND_ALLOCATION_FEEDBACK_PLAN.md)
+records the proposed extensions. This reflection supplies interpretation of those
+records and the owner's guidance; it adds no runtime evidence, closes no research
+phase and is not authorized for transfer into Control.

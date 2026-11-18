@@ -1,5 +1,15 @@
 # Track D: Primary research experiment
 
+**2026-11-18 reflection added:** Owner requested an account of what Codex failed
+to apply automatically and learned through the work, rather than an execution
+chronology. The individually timestamped entry in
+[CODEX_REFLECTIONS.md](CODEX_REFLECTIONS.md) addresses the recurring gap between
+describing and applying CKB, record liveness/spill distinctions, vendor work skew,
+decimal context, completion estimates and the allocation/AIM feedback objective.
+It distinguishes conversation-level learning from unknown training causes and
+adds no implementation/evidence upgrade. CKB-side journal only; no Control
+disclosure. Runtime facts are linked to accepted receipts.
+
 **ARM development transfer, 2026-11-17:** Owner explicitly approved the55MiB
 package and personal OneDrive destination after automatic review initially
 rejected the unapproved egress. Six accepted baseline report CSVs, controls and
