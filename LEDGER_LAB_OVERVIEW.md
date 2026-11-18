@@ -1,13 +1,53 @@
-# Ledger Lab: The research argument and what tests it
+# Ledger Lab: Following a financial question where the evidence leads
 
-Ledger Lab studies whether a financial architecture can preserve useful business
-detail, support new accounting/reporting questions and reduce the total cost of
-maintaining and using that information. The central proposal is an instrument
-ledger with attributes that carry the dates when they apply, and reusable, ordered financial
-processing. An instrument is the identified business entity whose state is carried
-forward—for example, a vendor or contract in a declared workload.
-The experiment must establish where this helps, where it costs more and what it
-cannot answer. [STATUS.md](STATUS.md) gives the current checkpoint.
+A financial system is usually built around reports people already know they
+need. Ledger Lab asks what it would cost to preserve enough business detail to
+answer questions nobody specified when the ledger was designed. It also asks
+whether an AI can use that history to propose a question, test an idea, and
+decide what to investigate next while making clear what the evidence supports.
+
+## An investigation you could run
+
+Suppose an AI notices that a shared expense appears to track a different
+activity from the one used to allocate it. It proposes a new rule. The
+financial engine applies both rules to the same records, reconciles the results,
+and shows which recipients would bear more or less cost. The result suggests
+a follow-up: does the proposed driver still hold in another period?
+
+- **Financial history** preserves the identities, dates, and relationships that
+  let an investigator move from a total to the activity behind it.
+- **Reusable processing** lets the engine reuse preparation when a rule changes.
+  The cost experiment asks how much work each additional question or rule
+  iteration requires.
+- **Measurement** establishes the consequences of the proposed rule. Whether
+  the driver reflects how the business works is a separate empirical question.
+  Observations, rule-based calculations, learned associations, forecasts, and
+  scenario assumptions each call for different evidence.
+
+The [allocation feedback loop](docs/STREAM_LAYER_EVOLUTION_AND_ALLOCATION_FEEDBACK_PLAN.md)
+is a proposed implementation of this example. The engine would apply a prior
+committed allocation basis, derive updated weights and eligibility from new
+data, and measure how the updated basis would change each recipient's allocation.
+
+## What the AI experiment adds
+
+AI-generated SQL is a strong candidate benchmark for open-ended reporting and
+can support parts of the investigation. The proposed test is whether a reusable
+learned model helps identify worthwhile relationships or follow-up questions
+across unfamiliar combinations of dates, dimensions, and measures. Concepts
+such as churn or seasonality could become part of an ongoing investigation,
+with associated financial measures calculated under declared rules and
+predictions accompanied by their horizon and uncertainty.
+
+A proposed evaluation would hold back whole investigations, including cases
+where new evidence changes the next question or leaves a relationship
+unresolved. It could compare the usefulness of what each approach finds,
+whether its calculations reconcile, how often it makes unsupported claims,
+and how much preparation and runtime it takes to reach a usable result.
+Existing single-task prediction tests are initial probes. The
+[Codex reflections](tracks/D-experiment/CODEX_REFLECTIONS.md)
+describe the broader research objective. [STATUS.md](STATUS.md) gives the
+current checkpoint.
 
 ## The distinction behind the research
 
@@ -18,7 +58,8 @@ later questions. That does not establish that an institution deleted its raw
 history: the question is which retained representation answers a request, and
 what reconstruction, maintenance and reconciliation it requires.
 
-An instrument ledger carries identity and declared balance dimensions forward,
+An instrument is an identified business entity, such as a vendor or contract,
+whose state is carried forward. An instrument ledger carries identity and declared balance dimensions forward,
 then resolves attributes under an explicit date policy. Detailed events remain
 available for audit and questions that the balance grain cannot answer. A joined
 attribute does not restore an event sequence already absent from that balance.
@@ -47,7 +88,7 @@ measurements and independent controls must test it.
 | Workstream | Question | Evidence required |
 |---|---|---|
 | [CCP: cost/capability](tracks/D-experiment/ccp/STATUS.md) | How do retained outputs, sorting, state and enabled financial capabilities affect total cost? | Comparable workloads, actual resource/pass/storage measurements, controls and replicates |
-| [AIM: AI/exploration](tracks/D-experiment/aim/STATUS.md) | Which distinctions support prediction or reusable financial inquiry, and what is lost at a declared representation? | Matched populations/tasks, valid temporal splits, held-out questions, baselines and explicit uncertainty |
+| [AIM: AI/exploration](tracks/D-experiment/aim/STATUS.md) | Which distinctions support prediction or reusable financial inquiry, and what information does a given representation lose? | Matched populations/tasks, valid temporal splits, held-out questions, baselines and explicit uncertainty |
 
 The Mix graph studies the event/balance materialization trade-off; the Process
 graph studies added financial capabilities; the Engine graph compares execution
@@ -60,9 +101,11 @@ The old CCP/AIM IDs remain useful protocol/evidence identifiers.
 - Monthly Virginia (VA) pipelines completed at corpus scale, including a later expanded
   expenditure/revenue/purchase-order workload. Named output sets matched across selected
   executions. Scope, implementation and timing differ between checkpoints.
-- The separate expanded reporting corpus attempt failed. Later bounded fixtures
-  exercise revised reporting and synthetic connections; they do not establish
-  successful corpus reporting or a new cost point.
+- An earlier expanded reporting attempt failed. A later three-worker reporting
+  run passed all 21 full-record comparisons against its baseline after a documented
+  precision correction. The comparison changed several factors at once, so it
+  does not isolate the effect of a single design change. See the
+  [acceptance record](data/test_evidence/reporting_three_way_20261117/completion/ACCEPTANCE.md).
 - AIM3 has task-specific predictive signal. Posted-total/instrument-balance
   baselines and combined features complicate any broad advantage claim; a fiscal-
   period discrepancy leaves the reported incremental gain provisional.
@@ -93,7 +136,7 @@ lineage and a failed locked protocol, outside the main evidence path.
 
 ## How to collaborate or challenge the approach
 
-Start with Track D, then the workstream relevant to your task. The
+After this overview, start with [Track D](tracks/D-experiment/STATUS.md), then the workstream relevant to your task. The
 [contributor guide](CONTRIBUTOR_ONBOARDING.md) explains the implementation and
 reading discipline. Preserve a failed test or alternative explanation so another
 researcher can examine it. The archives retain the fuller development of the
