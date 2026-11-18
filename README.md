@@ -1,36 +1,32 @@
 # Ledger Lab
 
-Ledger Lab is the public research successor to the Universal Ledger proof of concept. It is an
-Apache-2.0 research prototype for examining how financial events, instrument-level state,
-calculation engines, and reporting perspectives fit together.
+Ledger Lab is an open research project on the cost and reliability of financial
+inquiry. It tests whether a financial system can preserve enough business detail
+to answer questions people did not anticipate when they designed the ledger,
+and do so at a practical cost.
 
-The repository uses public Virginia expenditure data and includes small sanitized fixtures.
-Full historical inputs are external to Git and must be supplied separately. A successful fixture
-run demonstrates behavior on that fixture; it does not by itself establish scale, cost, or the
-general validity of the research claims.
+The AI research extends that question. Can an AI propose a relationship worth
+investigating, test a change to an accounting rule, and use the reconciled result
+to decide what to examine next? Can it distinguish what happened, what follows
+under a proposed rule, and what the evidence leaves uncertain?
+
+Ledger Lab is the Apache-2.0 research successor to the Universal Ledger proof
+of concept. It uses Virginia public financial records and small fixtures, with
+controlled synthetic cases under development. The prototype has reproduced
+selected financial and reporting outputs at scale. The minimum-cost hypothesis
+and the broader AI inquiry hypothesis remain open. Full historical inputs are
+supplied separately from Git.
 
 ## Start here
 
-Start with [STATUS.md](STATUS.md), then the [primary Track D experiment](tracks/D-experiment/STATUS.md).
-Its two workstreams are [Cost Curve Points (CCP)](tracks/D-experiment/ccp/STATUS.md)
-and [AI/model evidence tests (AIM)](tracks/D-experiment/aim/STATUS.md), formerly B1/B2.
-Track A supplies possible conclusion material from outside this repository;
-Berka/Track C is retained as a footnote candidate, outside the main work path.
+- [Plain-English overview](LEDGER_LAB_OVERVIEW.md) introduces the research through an allocation example.
+- [Current status](STATUS.md) defines the core terms and links to the [primary Track D experiment](tracks/D-experiment/STATUS.md) and its [cost](tracks/D-experiment/ccp/STATUS.md) and [AI](tracks/D-experiment/aim/STATUS.md) workstreams.
+- The [contributor guide](CONTRIBUTOR_ONBOARDING.md), [quickstart](QUICKSTART.md), and [document map](docs/README.md) cover contributions, fixture runs, and technical references.
 
-- New to the argument: [plain-English overview](LEDGER_LAB_OVERVIEW.md); [core terms](STATUS.md#terms-used-on-this-path) are defined before the checkpoint details.
-- Contributing with or without AI: [contributor guide](CONTRIBUTOR_ONBOARDING.md).
-- Building/running a small fixture: [quickstart](QUICKSTART.md).
-- Finding a contract, evidence receipt or historical rationale: [document map](docs/README.md).
-
-For new readers, use the overview once between root status and Track D; returning
-contributors can go directly to the selected workstream.
-
-The old [project brief](docs/archive/PROJECT_BRIEF_PRE_READABILITY_2026-11-15.md) is retained directly in the archive; the current overview provides the short project explanation.
-
-Current statuses point to the relevant evidence and limitations. Older experiment
-plans preserve IDs and locked protocols; their dated queues and expected outcomes
-are not today's priorities or established findings. Archives preserve the research
-reasoning, including failed approaches and disagreements, for targeted reading.
+The [archived project brief](docs/archive/PROJECT_BRIEF_PRE_READABILITY_2026-11-15.md)
+and older experiment plans preserve the history of the research, including
+earlier protocols and failed approaches. Use the current status pages to find
+the latest evidence and its limitations.
 
 ## Clean repo / canonical archive start state
 
